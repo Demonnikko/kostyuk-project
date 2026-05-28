@@ -21,73 +21,72 @@
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
       overflow-x: hidden;
     }
+    body { position: relative; }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 0 20px 120px;
+    /* === HERO — полноэкранный фон с логотипом === */
+    .hero {
       position: relative;
-      background: #0a0a14;
+      width: 100%;
+      height: 100vh;
+      min-height: 580px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 60px;
+      overflow: hidden;
+    }
+    .hero__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      animation: bgZoom 28s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+    @keyframes bgZoom {
+      from { transform: scale(1.0); }
+      to   { transform: scale(1.08); }
     }
 
-    .wrap {
+    /* Тёмная виньетка по краям + плавный переход к контенту снизу */
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%),
+        linear-gradient(180deg, rgba(8,8,16,0.3) 0%, rgba(8,8,16,0) 25%, rgba(8,8,16,0) 60%, rgba(8,8,16,0.85) 88%, var(--bg) 100%);
+      pointer-events: none;
+    }
+
+    .hero__content {
       position: relative;
       z-index: 2;
-      width: 100%;
-      max-width: 880px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       text-align: center;
+      width: 100%;
+      padding: 0 20px;
     }
 
-    /* === HERO логотип — показываем картинку как есть, чтобы она была целиком видна === */
-    .hero {
-      width: 100%;
-      max-width: 640px;
-      margin: 0 auto;
-      position: relative;
-      padding-top: 24px;
-    }
-    .hero-img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 24px;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-      animation: heroFloat 6s ease-in-out infinite alternate;
-    }
-    @keyframes heroFloat {
-      from { transform: translateY(0); }
-      to   { transform: translateY(-6px); }
-    }
-    /* На мобильном — обрезаем по краям, чтобы было компактнее */
-    @media (max-width: 600px) {
-      .hero { max-width: 420px; padding-top: 12px; }
-      .hero-img { border-radius: 18px; }
-    }
     .hero-tag {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 22px;
-      margin: 28px auto 0;
+      padding: 11px 24px;
       border-radius: 999px;
       background: rgba(14, 14, 26, 0.55);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(203, 161, 40, 0.4);
+      border: 1px solid rgba(203, 161, 40, 0.42);
       color: var(--gold2);
       font-size: 11px;
       letter-spacing: 0.42em;
       text-transform: uppercase;
       font-weight: 600;
+      margin-bottom: 16px;
     }
     .hero-tag .dot {
       width: 6px; height: 6px; border-radius: 50%;
@@ -100,64 +99,107 @@
       50%      { opacity: 1; transform: scale(1.15); }
     }
 
-    .subtitle {
+    .hero__subtitle {
       max-width: 540px;
-      margin: 20px auto 32px;
+      margin: 0 auto;
       font-size: clamp(14px, 2.3vw, 16px);
       line-height: 1.55;
-      color: var(--muted);
+      color: #d6d6e0;
       letter-spacing: 0.01em;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.6);
     }
 
-    /* Фоновое сияние под всё */
-    body::before {
+    .hero__scroll {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      opacity: 0.7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: scrollHint 2.2s ease-in-out infinite;
+    }
+    .hero__scroll::after {
       content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 30%, rgba(203, 161, 40, 0.08) 0%, transparent 55%),
-        radial-gradient(circle at 80% 80%, rgba(120, 80, 30, 0.05) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
+      width: 1px;
+      height: 22px;
+      background: linear-gradient(180deg, var(--gold2), transparent);
+    }
+    @keyframes scrollHint {
+      0%, 100% { transform: translate(-50%, 0); }
+      50%      { transform: translate(-50%, 6px); }
     }
 
-    /* === Карточки разделов === */
+    /* === Секция карточек === */
+    .sections {
+      position: relative;
+      z-index: 2;
+      padding: 40px 20px 120px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .sections__title {
+      font-size: clamp(20px, 3vw, 26px);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 0%, var(--gold2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .sections__lead {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 36px;
+      letter-spacing: 0.02em;
+    }
+
     .cards {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 14px;
-      width: 100%;
-      max-width: 760px;
+      gap: 16px;
+      max-width: 980px;
+      margin: 0 auto;
     }
     @media (min-width: 760px) {
-      .cards { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      .cards { grid-template-columns: repeat(3, 1fr); gap: 20px; }
     }
 
     .card {
       position: relative;
       display: block;
-      padding: 24px 22px;
+      padding: 28px 24px;
       border-radius: 22px;
-      background: linear-gradient(180deg, rgba(20, 20, 32, 0.78) 0%, rgba(14, 14, 24, 0.82) 100%);
-      border: 1px solid rgba(203, 161, 40, 0.25);
+      background: linear-gradient(180deg, rgba(20, 20, 32, 0.85) 0%, rgba(14, 14, 24, 0.92) 100%);
+      border: 1px solid rgba(203, 161, 40, 0.22);
       text-decoration: none;
       color: inherit;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
       text-align: left;
     }
     .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(203, 161, 40, 0.65);
-      box-shadow: 0 18px 50px rgba(203, 161, 40, 0.18);
+      transform: translateY(-8px);
+      border-color: rgba(203, 161, 40, 0.7);
+      box-shadow: 0 24px 60px rgba(203, 161, 40, 0.2);
     }
     .card::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(203, 161, 40, 0.15) 0%, transparent 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(203, 161, 40, 0.18) 0%, transparent 70%);
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
@@ -165,25 +207,25 @@
     .card:hover::after { opacity: 1; }
 
     .card__icon {
-      width: 50px;
-      height: 50px;
-      margin-bottom: 16px;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 18px;
       object-fit: contain;
-      filter: drop-shadow(0 6px 14px rgba(203, 161, 40, 0.4));
+      filter: drop-shadow(0 6px 16px rgba(203, 161, 40, 0.45));
     }
     .card__title {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 700;
       letter-spacing: 0.01em;
       margin-bottom: 6px;
       color: #fff;
     }
     .card__desc {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 16px;
-      min-height: 38px;
+      line-height: 1.55;
+      margin-bottom: 18px;
+      min-height: 42px;
     }
     .card__arrow {
       display: inline-flex;
@@ -203,13 +245,13 @@
 
     .card--soon .card__soon-badge {
       position: absolute;
-      top: 14px;
-      right: 14px;
+      top: 16px;
+      right: 16px;
       font-size: 9px;
       letter-spacing: 0.1em;
       color: var(--gold);
-      border: 1px solid rgba(203, 161, 40, 0.5);
-      padding: 3px 8px;
+      border: 1px solid rgba(203, 161, 40, 0.55);
+      padding: 3px 9px;
       border-radius: 999px;
       text-transform: uppercase;
       background: rgba(14, 14, 26, 0.6);
@@ -217,14 +259,14 @@
     }
 
     footer {
-      margin-top: 44px;
+      margin-top: 50px;
       font-size: 11px;
       color: var(--muted);
       letter-spacing: 0.08em;
       opacity: 0.7;
     }
 
-    /* === Анимация появления === */
+    /* Reveal-анимация */
     .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
     .reveal.in { opacity: 1; transform: translateY(0); }
     .delay-1 { transition-delay: 0.15s; }
@@ -232,37 +274,52 @@
     .delay-3 { transition-delay: 0.45s; }
     .delay-4 { transition-delay: 0.6s; }
 
+    /* === Мобильная адаптация === */
     @media (max-width: 600px) {
-      .hero-space { height: 58vh; padding-bottom: 18px; }
-      .card { padding: 20px 18px; }
+      .hero { min-height: 92vh; padding-bottom: 80px; }
+      .hero-tag { font-size: 10px; padding: 9px 18px; letter-spacing: 0.32em; }
+      .card { padding: 22px 20px; }
+      .sections { padding: 30px 16px 100px; }
+    }
+    @media (max-width: 380px) {
+      .hero__bg { object-position: 50% 35%; }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero reveal" id="rv0">
-      <img class="hero-img" src="/images/kostyuk-project-bg.jpg" alt="KOSTYUK PROJECT" />
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <img class="hero__bg" src="/images/kostyuk-project-bg.jpg" alt="KOSTYUK PROJECT" />
+    <div class="hero__overlay"></div>
+
+    <div class="hero__content">
+      <div class="hero-tag reveal" id="rv0">
+        <span class="dot"></span>
+        <span>иллюзионист · Ярославль</span>
+      </div>
+      <p class="hero__subtitle reveal delay-1">
+        Авторские шоу, частные мероприятия и школа фокусов.<br>
+        Один проект — три направления.
+      </p>
     </div>
 
-    <div class="hero-tag reveal delay-1" id="rvTag">
-      <span class="dot"></span>
-      <span>иллюзионист · Ярославль</span>
-    </div>
+    <div class="hero__scroll reveal delay-2">Листайте вниз</div>
+  </section>
 
-    <p class="subtitle reveal delay-2" id="rv1">
-      Авторские шоу, частные мероприятия и школа фокусов.<br>
-      Один проект — три направления.
-    </p>
+  <!-- ===== РАЗДЕЛЫ ===== -->
+  <section class="sections">
+    <h2 class="sections__title reveal">Выберите раздел</h2>
+    <p class="sections__lead reveal delay-1">Каждый раздел — отдельный сайт со своими ценами и программами</p>
 
     <div class="cards">
-      <a class="card reveal delay-3" href="/show/">
+      <a class="card reveal delay-2" href="/show/">
         <img class="card__icon" src="/show/icons/magician.png" alt="" />
         <div class="card__title">Частные заказы</div>
         <div class="card__desc">Шоу-программа на праздник, корпоратив или свадьбу.</div>
         <div class="card__arrow">Перейти</div>
       </a>
 
-      <a class="card reveal delay-4" href="/school/">
+      <a class="card reveal delay-3" href="/school/">
         <img class="card__icon" src="/show/icons/wand.png" alt="" />
         <div class="card__title">Школа фокусов</div>
         <div class="card__desc">Первая школа фокусов в Ярославле для детей 7–13 лет.</div>
@@ -279,16 +336,15 @@
     </div>
 
     <footer>© 2026 · Дмитрий Костюк · Иллюзионист</footer>
-  </div>
+  </section>
 
   <script>
-    // Появление с задержкой
     window.addEventListener('load', function() {
       setTimeout(function() {
         document.querySelectorAll('.reveal').forEach(function(el) {
           el.classList.add('in');
         });
-      }, 80);
+      }, 100);
     });
   </script>
 </body>
