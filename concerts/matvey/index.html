@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Спасти Матвея — Магический квест-спектакль · Дмитрий Костюк</title>
+  <meta name="description" content="Спасти Матвея — магический квест-спектакль для всей семьи. Зрители — участники спасательной операции. Исход решаешь ты." />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg: #0a0420;
+      --bg2: #14082e;
+      --violet: #8b5fe5;
+      --violet-light: #c89cff;
+      --violet-glow: #d4b5ff;
+      --gold: #ffb850;
+      --gold-light: #ffd698;
+      --text: #f5edff;
+      --muted: rgba(245, 237, 255, 0.6);
+      --border: rgba(184, 144, 255, 0.28);
+    }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* === КОСМОС НА ФОНЕ === */
+    .cosmos {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(140, 80, 240, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(255, 180, 80, 0.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 20% 60%, rgba(100, 60, 200, 0.15) 0%, transparent 50%);
+    }
+    .cosmos::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background-image:
+        radial-gradient(2px 2px at 15% 22%, #fff 50%, transparent 100%),
+        radial-gradient(1px 1px at 38% 67%, #fff 50%, transparent 100%),
+        radial-gradient(1px 1px at 72% 14%, rgba(212,181,255,0.9) 50%, transparent 100%),
+        radial-gradient(2px 2px at 88% 84%, rgba(255,214,152,0.9) 50%, transparent 100%),
+        radial-gradient(1px 1px at 24% 88%, #fff 50%, transparent 100%),
+        radial-gradient(2px 2px at 58% 32%, rgba(212,181,255,0.9) 50%, transparent 100%),
+        radial-gradient(1px 1px at 12% 51%, #fff 50%, transparent 100%),
+        radial-gradient(1px 1px at 67% 78%, rgba(255,214,152,0.7) 50%, transparent 100%);
+      background-repeat: repeat;
+      background-size: 700px 700px;
+      animation: twinkle 6s linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.5; }
+      50%      { opacity: 0.9; }
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px 10px 14px;
+      border-radius: 999px;
+      background: rgba(20, 8, 46, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+    .back-btn:hover { background: rgba(140, 80, 240, 0.2); transform: translateX(-3px); }
+    .back-btn::before { content: '‹'; font-size: 18px; line-height: 1; }
+
+    main { position: relative; z-index: 2; }
+
+    /* ========= HERO ========= */
+    .hero {
+      min-height: 100vh;
+      padding: 80px 20px 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+    /* Светящееся облако за афишей */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(212, 181, 255, 0.4) 0%, rgba(140, 80, 240, 0.15) 40%, transparent 70%);
+      filter: blur(40px);
+      z-index: -1;
+      animation: heroGlow 8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes heroGlow {
+      from { transform: translateX(-50%) scale(1); opacity: 0.7; }
+      to   { transform: translateX(-50%) scale(1.12); opacity: 1; }
+    }
+
+    .poster-wrap {
+      max-width: 380px;
+      width: 100%;
+      margin-bottom: 36px;
+      position: relative;
+      animation: floatPoster 7s ease-in-out infinite alternate;
+    }
+    @keyframes floatPoster {
+      from { transform: translateY(0) rotate(-0.3deg); }
+      to   { transform: translateY(-10px) rotate(0.3deg); }
+    }
+    .poster {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 30, 0.7),
+        0 0 80px rgba(140, 80, 240, 0.35);
+      display: block;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(140, 80, 240, 0.08);
+      border: 1px solid var(--border);
+      font-size: 10.5px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--violet-light);
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    h1.title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(46px, 11vw, 102px);
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      line-height: 0.95;
+      background: linear-gradient(135deg, #ffffff 0%, #ffd698 35%, #c89cff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 14px;
+      text-shadow: 0 0 60px rgba(200, 156, 255, 0.3);
+    }
+    .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(16px, 2.6vw, 22px);
+      color: var(--violet-light);
+      max-width: 540px;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    .meta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+    .meta__item {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(245, 237, 255, 0.85);
+      padding: 7px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(140, 80, 240, 0.08);
+    }
+    .meta__item strong { color: var(--gold-light); font-weight: 700; }
+
+    .buy-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--violet-light) 0%, var(--violet) 50%, #6e3fd2 100%);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      box-shadow: 0 14px 40px rgba(140, 80, 240, 0.55), 0 0 0 1px rgba(255,255,255,0.15) inset;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+    .buy-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 50px rgba(140, 80, 240, 0.7), 0 0 0 1px rgba(255,255,255,0.2) inset;
+    }
+
+    /* ========= SECTIONS ========= */
+    .section {
+      padding: 90px 20px;
+      max-width: 880px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .section__eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--violet-light);
+      margin-bottom: 14px;
+      display: block;
+    }
+    .section__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(30px, 5vw, 48px);
+      font-weight: 700;
+      margin-bottom: 28px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 0%, var(--violet-light) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .section__text {
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(245, 237, 255, 0.85);
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .section__text strong { color: var(--gold-light); font-weight: 600; }
+    .section__quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(20px, 3vw, 26px);
+      color: var(--gold-light);
+      max-width: 680px;
+      margin: 50px auto;
+      padding: 30px;
+      position: relative;
+      line-height: 1.4;
+    }
+    .section__quote::before, .section__quote::after {
+      content: '"';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 80px;
+      line-height: 1;
+      color: rgba(255, 184, 80, 0.3);
+      position: absolute;
+    }
+    .section__quote::before { left: 0; top: -10px; }
+    .section__quote::after { right: 0; bottom: -50px; }
+
+    /* Уровни квеста — карточки */
+    .levels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .level {
+      padding: 24px 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(60, 30, 130, 0.25) 0%, rgba(20, 8, 46, 0.45) 100%);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .level:hover {
+      border-color: rgba(184, 144, 255, 0.55);
+      transform: translateY(-4px);
+    }
+    .level::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--violet-light), transparent);
+      opacity: 0.5;
+    }
+    .level__num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--violet-light);
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+    .level__title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .level__desc {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    /* Footer CTA */
+    .footer-cta {
+      padding: 80px 20px 160px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(140, 80, 240, 0.18) 0%, transparent 60%),
+        transparent;
+      position: relative;
+    }
+    .footer-cta__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+    .footer-cta__sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* === МОДАЛКА БРОНИ === */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9800;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 100px;
+      overflow-y: auto;
+    }
+    .modal.show { display: flex; }
+    .modal__box {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(180deg, var(--bg2) 0%, #0a0420 100%);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 32px 24px 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 80px rgba(140, 80, 240, 0.25);
+      position: relative;
+    }
+    .modal__close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal__close:hover { background: rgba(140, 80, 240, 0.2); }
+    .modal__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #fff 0%, var(--violet-light) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .modal__sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .ticket-card {
+      background: linear-gradient(180deg, rgba(60, 30, 130, 0.3) 0%, rgba(20, 8, 46, 0.5) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+    .ticket-card__type {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, var(--gold-light) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 6px;
+    }
+    .ticket-card__desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .field { display: block; margin-bottom: 14px; }
+    .field__label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--violet-light);
+      margin-bottom: 6px;
+    }
+    .field__input,
+    .field__textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      transition: border-color 0.25s ease, background 0.25s ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field__input:focus,
+    .field__textarea:focus {
+      outline: none;
+      border-color: var(--violet-light);
+      background: rgba(0,0,0,0.55);
+    }
+    .field__textarea { resize: vertical; min-height: 70px; }
+    .qty-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 12px 0;
+    }
+    .qty-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--violet-light) 0%, var(--violet) 100%);
+      color: #fff;
+      border: none;
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .qty-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 800;
+      font-size: 32px;
+      color: #fff;
+      min-width: 44px;
+      text-align: center;
+    }
+    .modal__submit {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--violet-light) 0%, var(--violet) 50%, #6e3fd2 100%);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.2s ease;
+    }
+    .modal__submit:hover { transform: translateY(-1px); }
+    .modal__submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .modal__success { text-align: center; padding: 24px 8px; }
+    .modal__success-icon { font-size: 64px; margin-bottom: 14px; }
+    .modal__success h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--violet-light);
+    }
+    .modal__success p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+    /* === Bottom nav === */
+    #kpBottomNav {
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      z-index: 9500;
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      background: rgba(14, 8, 30, 0.92);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      width: min(94vw, 440px);
+      justify-content: space-between;
+    }
+    .kp-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 8px 6px;
+      border-radius: 999px;
+      color: #c9c9d4;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      transition: color 0.25s ease, background 0.25s ease;
+    }
+    .kp-tab .kp-tab-icon {
+      width: 22px; height: 22px; object-fit: contain;
+      margin-bottom: 2px;
+      filter: grayscale(0.5) opacity(0.7) brightness(1.15);
+    }
+    .kp-tab:hover { color: var(--violet-light); }
+    .kp-tab:hover .kp-tab-icon { filter: none; }
+    .kp-tab.active {
+      color: #fff;
+      background: linear-gradient(135deg, var(--violet-light) 0%, var(--violet) 100%);
+    }
+    .kp-tab.active .kp-tab-icon { filter: none; }
+    .kp-tab-wrap { flex: 1; display: flex; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s ease, transform 1s cubic-bezier(0.2,0.8,0.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .d-1 { transition-delay: 0.15s; }
+    .d-2 { transition-delay: 0.3s; }
+    .d-3 { transition-delay: 0.45s; }
+    .d-4 { transition-delay: 0.6s; }
+  </style>
+</head>
+<body>
+  <div class="cosmos"></div>
+  <a class="back-btn" href="/concerts">К афише</a>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="poster-wrap reveal">
+        <img class="poster" src="/concerts/images/matvey.jpg" alt="Афиша Спасти Матвея" />
+      </div>
+      <div class="eyebrow reveal d-1">Магический квест-спектакль</div>
+      <h1 class="title reveal d-1">СПАСТИ МАТВЕЯ</h1>
+      <div class="subtitle reveal d-2">Исход решаешь ты</div>
+
+      <div class="meta reveal d-3">
+        <span class="meta__item"><strong>6+</strong></span>
+        <span class="meta__item">1,5 часа</span>
+        <span class="meta__item">7 уровней</span>
+        <span class="meta__item">Для семьи</span>
+      </div>
+
+      <button class="buy-cta reveal d-4" onclick="openMatveyModal()">Купить билет</button>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section">
+      <span class="section__eyebrow">О спектакле</span>
+      <h2 class="section__title">Поход в музей превращается в квест</h2>
+      <p class="section__text">
+        Отец и сын идут в Музей Магии. Обычный день. Обычный билет. Но что-то идёт не так — таинственный
+        <strong>Дух забирает Матвея в цифровой плен</strong>. И теперь у иллюзиониста Димы нет выбора —
+        нужно его спасать.
+      </p>
+      <p class="section__text">
+        В этом квесте <strong>зрители — не пассивная публика</strong>. Это спасательная команда. От их голоса,
+        эмоций и подсказок зависит, через какой уровень они пройдут и каким будет финал.
+      </p>
+
+      <div class="section__quote">
+        Семь сложных уровней. От разминирования до управления снежной стихией. Финал зависит от тебя.
+      </div>
+    </section>
+
+    <!-- LEVELS -->
+    <section class="section">
+      <span class="section__eyebrow">Что предстоит</span>
+      <h2 class="section__title">7 уровней квеста</h2>
+
+      <div class="levels">
+        <div class="level">
+          <div class="level__num">01</div>
+          <div class="level__title">Зов из музея</div>
+          <div class="level__desc">Матвей исчезает в одном из залов. На связи остаётся только цифровое эхо.</div>
+        </div>
+        <div class="level">
+          <div class="level__num">02</div>
+          <div class="level__title">Разминирование</div>
+          <div class="level__desc">Один неверный шаг — и комната взрывается. Голос зала направляет руку.</div>
+        </div>
+        <div class="level">
+          <div class="level__num">03</div>
+          <div class="level__title">Карты Духа</div>
+          <div class="level__desc">Колода живёт своей жизнью. Угадай — и пройдёшь дальше.</div>
+        </div>
+        <div class="level">
+          <div class="level__num">04</div>
+          <div class="level__title">Лабиринт времени</div>
+          <div class="level__desc">Прошлое и будущее меняются местами. Спаси воспоминания Матвея.</div>
+        </div>
+        <div class="level">
+          <div class="level__num">05</div>
+          <div class="level__title">Снежная стихия</div>
+          <div class="level__desc">Управляй погодой на сцене. Сила мысли — реальная или нет?</div>
+        </div>
+        <div class="level">
+          <div class="level__num">06</div>
+          <div class="level__title">Голос Духа</div>
+          <div class="level__desc">Лицом к лицу с антагонистом. Только слова зрителей помогут.</div>
+        </div>
+        <div class="level">
+          <div class="level__num">07</div>
+          <div class="level__title">Финал</div>
+          <div class="level__desc">Спаси Матвея. Или потеряй его. Финал зависит от зала.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER CTA -->
+    <section class="footer-cta">
+      <div class="footer-cta__title">Готовы стать спасательной командой?</div>
+      <div class="footer-cta__sub">Оставьте заявку — менеджер свяжется и подтвердит дату.</div>
+      <button class="buy-cta" onclick="openMatveyModal()">Купить билет</button>
+    </section>
+  </main>
+
+  <!-- ============== МОДАЛКА БРОНИ ============== -->
+  <div class="modal" id="bookingModal" role="dialog" aria-modal="true">
+    <div class="modal__box">
+      <button class="modal__close" onclick="closeMatveyModal()" aria-label="Закрыть">×</button>
+
+      <div id="bookingForm">
+        <div class="modal__title">СПАСТИ МАТВЕЯ</div>
+        <div class="modal__sub">Магический квест-спектакль · 6+</div>
+
+        <div class="ticket-card">
+          <div class="ticket-card__type">Семейный билет</div>
+          <div class="ticket-card__desc">Один билет — одно место. Дети младше 6 — бесплатно на коленях родителя.</div>
+        </div>
+
+        <form id="bookingFormEl" onsubmit="return submitMatveyBooking(event)">
+          <label class="field">
+            <span class="field__label">Желаемая дата</span>
+            <input class="field__input" type="text" name="eventDate" placeholder="например: 5 марта 2026" />
+          </label>
+
+          <div class="field">
+            <span class="field__label">Сколько билетов</span>
+            <div class="qty-row">
+              <button type="button" class="qty-btn" id="qtyMinus" onclick="changeQty(-1)">−</button>
+              <span class="qty-val" id="qtyVal">2</span>
+              <button type="button" class="qty-btn" id="qtyPlus" onclick="changeQty(1)">+</button>
+            </div>
+            <input type="hidden" name="ticketCount" id="ticketCount" value="2" />
+          </div>
+
+          <label class="field">
+            <span class="field__label">Ваше имя *</span>
+            <input class="field__input" type="text" name="name" required placeholder="Как к вам обращаться" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Телефон *</span>
+            <input class="field__input" type="tel" name="phone" required placeholder="+7 999 123-45-67" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Telegram (необязательно)</span>
+            <input class="field__input" type="text" name="telegram" placeholder="@username" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Возраст детей и комментарий</span>
+            <textarea class="field__textarea" name="comment" placeholder="Например: ребёнку 7 лет, нужно близко к сцене"></textarea>
+          </label>
+
+          <button class="modal__submit" type="submit" id="bookingSubmit">Забронировать</button>
+        </form>
+      </div>
+
+      <div id="bookingSuccess" style="display:none">
+        <div class="modal__success">
+          <div class="modal__success-icon">✨</div>
+          <h3>Заявка принята</h3>
+          <p>Менеджер Екатерина свяжется с вами,<br>чтобы подтвердить дату и места.</p>
+          <button class="modal__submit" onclick="closeMatveyModal()" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav id="kpBottomNav" aria-label="Kostyuk Project">
+    <div class="kp-tab-wrap">
+      <a class="kp-tab" href="/">
+        <img class="kp-tab-icon" src="/icons/magician.png" alt="" />
+        <span>Частные заказы</span>
+      </a>
+    </div>
+    <div class="kp-tab-wrap">
+      <a class="kp-tab" href="/school/">
+        <img class="kp-tab-icon" src="/icons/wand.png" alt="" />
+        <span>Школа фокусов</span>
+      </a>
+    </div>
+    <div class="kp-tab-wrap">
+      <a class="kp-tab active" href="/concerts">
+        <img class="kp-tab-icon" src="/icons/smoke.png" alt="" />
+        <span>Концерты</span>
+      </a>
+    </div>
+  </nav>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
+      }, 100);
+    });
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.section__title, .section__text, .level, .footer-cta__title, .footer-cta__sub').forEach(function(el) {
+      el.classList.add('reveal');
+      obs.observe(el);
+    });
+
+    // === МОДАЛКА ===
+    var bookingModal = document.getElementById('bookingModal');
+    function openMatveyModal() {
+      bookingModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMatveyModal() {
+      bookingModal.classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(function() {
+        document.getElementById('bookingForm').style.display = '';
+        document.getElementById('bookingSuccess').style.display = 'none';
+        var f = document.getElementById('bookingFormEl');
+        if (f) f.reset();
+        setQty(2);
+      }, 300);
+    }
+    window.openMatveyModal = openMatveyModal;
+    window.closeMatveyModal = closeMatveyModal;
+    bookingModal.addEventListener('click', function(e) {
+      if (e.target === bookingModal) closeMatveyModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && bookingModal.classList.contains('show')) closeMatveyModal();
+    });
+
+    function setQty(val) {
+      val = Math.max(1, Math.min(15, val));
+      document.getElementById('qtyVal').textContent = val;
+      document.getElementById('ticketCount').value = val;
+      document.getElementById('qtyMinus').disabled = val <= 1;
+      document.getElementById('qtyPlus').disabled = val >= 15;
+    }
+    function changeQty(delta) {
+      var cur = parseInt(document.getElementById('ticketCount').value, 10) || 1;
+      setQty(cur + delta);
+    }
+    window.changeQty = changeQty;
+    setQty(2);
+
+    function getSource() {
+      try {
+        if (window.vkBridge || /VKBridge/i.test(navigator.userAgent)) return 'vk';
+        if (window.Telegram && window.Telegram.WebApp) return 'tg';
+      } catch (e) {}
+      return 'web';
+    }
+    async function submitMatveyBooking(e) {
+      e.preventDefault();
+      var btn = document.getElementById('bookingSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Отправляем...';
+      var form = e.target;
+      var data = new FormData(form);
+      var payload = {
+        show: 'matvey',
+        eventDate: data.get('eventDate') || '',
+        ticketType: 'Семейный билет',
+        ticketCount: parseInt(data.get('ticketCount'), 10) || 1,
+        name: data.get('name') || '',
+        phone: data.get('phone') || '',
+        telegram: data.get('telegram') || '',
+        comment: data.get('comment') || '',
+        source: getSource(),
+      };
+      try {
+        var r = await fetch('/api/lead-concert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        var json = await r.json();
+        if (json && json.ok) {
+          document.getElementById('bookingForm').style.display = 'none';
+          document.getElementById('bookingSuccess').style.display = 'block';
+        } else {
+          alert('Не удалось отправить заявку. Попробуйте позже.');
+          btn.disabled = false;
+          btn.textContent = 'Забронировать';
+        }
+      } catch (err) {
+        alert('Ошибка сети. Попробуйте ещё раз.');
+        btn.disabled = false;
+        btn.textContent = 'Забронировать';
+      }
+      return false;
+    }
+    window.submitMatveyBooking = submitMatveyBooking;
+  </script>
+</body>
+</html>
