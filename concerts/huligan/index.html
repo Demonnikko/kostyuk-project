@@ -206,24 +206,212 @@
       cursor: pointer;
       border: 1px solid rgba(255, 144, 0, 0.6);
       transition: transform 0.25s ease, box-shadow 0.25s ease;
-      opacity: 0.6;
-      pointer-events: none;
       position: relative;
       transform: skewX(-4deg);
     }
-    .buy-cta::after {
-      content: 'СКОРО';
+    .buy-cta:hover {
+      transform: skewX(-4deg) translateY(-2px);
+      box-shadow: 0 16px 44px rgba(255, 60, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    /* === МОДАЛКА БРОНИ === */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9800;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 100px;
+      overflow-y: auto;
+    }
+    .modal.show { display: flex; }
+    .modal__box {
+      width: 100%;
+      max-width: 520px;
+      background: linear-gradient(180deg, #14080a 0%, #0c0503 100%);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 32px 24px 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.85), 0 0 80px rgba(255, 60, 0, 0.25);
+      position: relative;
+    }
+    .modal__close {
       position: absolute;
-      top: -12px;
-      right: -12px;
-      font-size: 10px;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal__close:hover { background: rgba(255, 110, 0, 0.25); }
+    .modal__title {
+      font-family: 'Anton', sans-serif;
+      font-size: 30px;
+      font-weight: 400;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+      background: linear-gradient(180deg, #FFE566 0%, #FF9000 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transform: skewX(-3deg);
+    }
+    .modal__sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    /* Карточка билета (общий вход) */
+    .ticket-card {
+      background: linear-gradient(180deg, rgba(60, 20, 5, 0.45) 0%, rgba(20, 8, 4, 0.45) 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 20px;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+    .ticket-card__type {
+      font-family: 'Anton', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #fff 0%, #FFE566 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 6px;
+      transform: skewX(-2deg);
+    }
+    .ticket-card__desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .ticket-card__price {
+      font-family: 'Anton', sans-serif;
+      font-size: 14px;
+      color: var(--fire);
       letter-spacing: 0.18em;
-      background: #FFE566;
-      color: #1a0a02;
-      padding: 5px 11px;
-      border-radius: 999px;
-      box-shadow: 0 4px 12px rgba(255, 200, 0, 0.55);
-      transform: skewX(4deg);
+      opacity: 0.7;
+    }
+
+    /* Поля формы */
+    .field {
+      display: block;
+      margin-bottom: 14px;
+    }
+    .field__label {
+      display: block;
+      font-family: 'Anton', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fire);
+      margin-bottom: 6px;
+    }
+    .field__input,
+    .field__textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      transition: border-color 0.25s ease, background 0.25s ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field__input:focus,
+    .field__textarea:focus {
+      outline: none;
+      border-color: var(--fire);
+      background: rgba(0,0,0,0.65);
+    }
+    .field__textarea { resize: vertical; min-height: 70px; }
+
+    /* Счётчик билетов */
+    .qty-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 12px 0;
+    }
+    .qty-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #FF9000 0%, #FF3D00 100%);
+      color: #fff;
+      border: none;
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .qty-val {
+      font-family: 'Anton', sans-serif;
+      font-size: 32px;
+      color: #fff;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .modal__submit {
+      width: 100%;
+      padding: 18px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #FF9000 0%, #FF3D00 60%, #A81800 100%);
+      color: #fff;
+      font-family: 'Anton', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 144, 0, 0.6);
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      transform: skewX(-2deg);
+    }
+    .modal__submit:hover { transform: skewX(-2deg) translateY(-1px); }
+    .modal__submit:disabled { opacity: 0.5; cursor: not-allowed; transform: skewX(-2deg); }
+
+    .modal__success {
+      text-align: center;
+      padding: 24px 8px;
+    }
+    .modal__success-icon {
+      font-size: 64px;
+      margin-bottom: 14px;
+    }
+    .modal__success h3 {
+      font-family: 'Anton', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      color: var(--fire-bright);
+      transform: skewX(-3deg);
+    }
+    .modal__success p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     /* Stamp "только 40 мест" */
@@ -435,7 +623,7 @@
         <span class="meta__item">Только 40 мест</span>
       </div>
 
-      <button class="buy-cta reveal d-4">Купить билет</button>
+      <button class="buy-cta reveal d-4" onclick="openHuliganModal()">Купить билет</button>
     </section>
 
     <section class="section">
@@ -484,11 +672,79 @@
     </section>
 
     <section class="footer-cta">
-      <div class="footer-cta__title">Скоро откроется продажа</div>
-      <div class="footer-cta__sub">40 мест — это серьёзно. Билетов мало, разлетаются быстро. Подпишись на анонсы.</div>
-      <button class="buy-cta">Купить билет</button>
+      <div class="footer-cta__title">40 мест — мало. Бери сейчас.</div>
+      <div class="footer-cta__sub">Билеты разлетаются быстро. Оставь бронь — менеджер свяжется.</div>
+      <button class="buy-cta" onclick="openHuliganModal()">Купить билет</button>
     </section>
   </main>
+
+  <!-- ============== МОДАЛКА БРОНИ ============== -->
+  <div class="modal" id="bookingModal" role="dialog" aria-modal="true">
+    <div class="modal__box">
+      <button class="modal__close" onclick="closeHuliganModal()" aria-label="Закрыть">×</button>
+
+      <div id="bookingForm">
+        <div class="modal__title">ХУЛИGAN</div>
+        <div class="modal__sub">Магический стендап · 16+</div>
+
+        <div class="ticket-card">
+          <div class="ticket-card__type">Общий вход</div>
+          <div class="ticket-card__desc">
+            40 мест на шоу. Без рассадки — садись где удобно.<br>Главное — успеть купить.
+          </div>
+          <div class="ticket-card__price">Скоро цены</div>
+        </div>
+
+        <form id="bookingFormEl" onsubmit="return submitHuliganBooking(event)">
+          <label class="field">
+            <span class="field__label">Желаемая дата</span>
+            <input class="field__input" type="text" name="eventDate" placeholder="например: 31 января 2026" />
+          </label>
+
+          <div class="field">
+            <span class="field__label">Сколько билетов</span>
+            <div class="qty-row">
+              <button type="button" class="qty-btn" id="qtyMinus" onclick="changeQty(-1)">−</button>
+              <span class="qty-val" id="qtyVal">2</span>
+              <button type="button" class="qty-btn" id="qtyPlus" onclick="changeQty(1)">+</button>
+            </div>
+            <input type="hidden" name="ticketCount" id="ticketCount" value="2" />
+          </div>
+
+          <label class="field">
+            <span class="field__label">Ваше имя *</span>
+            <input class="field__input" type="text" name="name" required placeholder="Как к вам обращаться" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Телефон *</span>
+            <input class="field__input" type="tel" name="phone" required placeholder="+7 999 123-45-67" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Telegram (необязательно)</span>
+            <input class="field__input" type="text" name="telegram" placeholder="@username" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Комментарий</span>
+            <textarea class="field__textarea" name="comment" placeholder="Пожелания, вопросы"></textarea>
+          </label>
+
+          <button class="modal__submit" type="submit" id="bookingSubmit">Забронировать</button>
+        </form>
+      </div>
+
+      <div id="bookingSuccess" style="display:none">
+        <div class="modal__success">
+          <div class="modal__success-icon">🔥</div>
+          <h3>Принято!</h3>
+          <p>Менеджер Екатерина свяжется с вами,<br>чтобы подтвердить дату и оплату.</p>
+          <button class="modal__submit" onclick="closeHuliganModal()" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Огонь</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <nav id="kpBottomNav" aria-label="Kostyuk Project">
     <div class="kp-tab-wrap">
@@ -537,6 +793,102 @@
       el.classList.add('reveal');
       obs.observe(el);
     });
+
+    // ============== МОДАЛКА ==============
+    var bookingModal = document.getElementById('bookingModal');
+
+    function openHuliganModal() {
+      bookingModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeHuliganModal() {
+      bookingModal.classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(function() {
+        document.getElementById('bookingForm').style.display = '';
+        document.getElementById('bookingSuccess').style.display = 'none';
+        var f = document.getElementById('bookingFormEl');
+        if (f) f.reset();
+        setQty(2);
+      }, 300);
+    }
+    window.openHuliganModal = openHuliganModal;
+    window.closeHuliganModal = closeHuliganModal;
+
+    bookingModal.addEventListener('click', function(e) {
+      if (e.target === bookingModal) closeHuliganModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && bookingModal.classList.contains('show')) closeHuliganModal();
+    });
+
+    // ============== СЧЁТЧИК БИЛЕТОВ ==============
+    function setQty(val) {
+      val = Math.max(1, Math.min(10, val));
+      document.getElementById('qtyVal').textContent = val;
+      document.getElementById('ticketCount').value = val;
+      document.getElementById('qtyMinus').disabled = val <= 1;
+      document.getElementById('qtyPlus').disabled = val >= 10;
+    }
+    function changeQty(delta) {
+      var cur = parseInt(document.getElementById('ticketCount').value, 10) || 1;
+      setQty(cur + delta);
+    }
+    window.changeQty = changeQty;
+    setQty(2);
+
+    // ============== ОТПРАВКА ==============
+    function getSource() {
+      try {
+        if (window.vkBridge || /VKBridge/i.test(navigator.userAgent)) return 'vk';
+        if (window.Telegram && window.Telegram.WebApp) return 'tg';
+      } catch (e) {}
+      return 'web';
+    }
+
+    async function submitHuliganBooking(e) {
+      e.preventDefault();
+      var btn = document.getElementById('bookingSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Отправляем...';
+
+      var form = e.target;
+      var data = new FormData(form);
+      var payload = {
+        show: 'huligan',
+        eventDate: data.get('eventDate') || '',
+        ticketType: 'Общий вход',
+        ticketCount: parseInt(data.get('ticketCount'), 10) || 1,
+        name: data.get('name') || '',
+        phone: data.get('phone') || '',
+        telegram: data.get('telegram') || '',
+        comment: data.get('comment') || '',
+        source: getSource(),
+      };
+
+      try {
+        var r = await fetch('/api/lead-concert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        var json = await r.json();
+        if (json && json.ok) {
+          document.getElementById('bookingForm').style.display = 'none';
+          document.getElementById('bookingSuccess').style.display = 'block';
+        } else {
+          alert('Не удалось отправить заявку. Попробуйте позже или напишите Екатерине.');
+          btn.disabled = false;
+          btn.textContent = 'Забронировать';
+        }
+      } catch (err) {
+        alert('Ошибка сети. Попробуйте ещё раз.');
+        btn.disabled = false;
+        btn.textContent = 'Забронировать';
+      }
+      return false;
+    }
+    window.submitHuliganBooking = submitHuliganBooking;
   </script>
 </body>
 </html>
