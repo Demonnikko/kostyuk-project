@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Концерты — KOSTYUK PROJECT</title>
+  <meta name="description" content="Авторские шоу Дмитрия Костюка — Секрет, ХУЛИgan, Спасти Матвея. Скоро." />
+  <link rel="icon" href="/show/icons/apple-touch-icon.png" />
+  <style>
+    :root {
+      --bg: #0a0a14;
+      --bg2: #12121e;
+      --gold: #cba128;
+      --gold2: #e7c776;
+      --text: #f0f0f5;
+      --muted: #8a8a98;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px 20px 120px;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(203, 161, 40, 0.12) 0%, transparent 55%),
+        linear-gradient(180deg, #0a0a14 0%, #12121e 100%);
+    }
+    .logo-mark {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 24px;
+      opacity: 0.85;
+      filter: drop-shadow(0 6px 18px rgba(203, 161, 40, 0.45));
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+      opacity: 0.85;
+    }
+    h1 {
+      font-size: clamp(32px, 7vw, 54px);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.02em;
+      margin-bottom: 18px;
+    }
+    .lead {
+      max-width: 540px;
+      color: #c9c9d4;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    .shows {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 720px;
+      margin-bottom: 44px;
+    }
+    .show-card {
+      flex: 1 1 200px;
+      max-width: 230px;
+      padding: 18px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(203, 161, 40, 0.18);
+      backdrop-filter: blur(8px);
+      text-align: left;
+    }
+    .show-card__age {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      border: 1px solid rgba(203, 161, 40, 0.4);
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .show-card__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    .show-card__desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .soon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
+      color: #0a0a14;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: 0 8px 24px rgba(203, 161, 40, 0.35);
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0a0a14;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* ===== KOSTYUK PROJECT — НИЖНЕЕ МЕНЮ ===== */
+    #kpBottomNav {
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      z-index: 9500;
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      background: rgba(14, 14, 26, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(203, 161, 40, 0.32);
+      border-radius: 999px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+      width: min(94vw, 440px);
+      justify-content: space-between;
+      font-family: inherit;
+    }
+    .kp-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 8px 6px;
+      border-radius: 999px;
+      color: #c9c9d4;
+      text-decoration: none;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 11px;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      transition: color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .kp-tab .kp-tab-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      margin-bottom: 2px;
+      filter: grayscale(0.5) opacity(0.7) brightness(1.15);
+      transition: filter 0.25s ease, transform 0.25s ease;
+    }
+    .kp-tab:hover { color: var(--gold2); }
+    .kp-tab:hover .kp-tab-icon { filter: none; transform: translateY(-1px); }
+    .kp-tab.active {
+      color: #0e0e1a;
+      background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
+      box-shadow: 0 4px 14px rgba(203, 161, 40, 0.45);
+    }
+    .kp-tab.active .kp-tab-icon { filter: none; }
+    .kp-tab-wrap { position: relative; flex: 1; display: flex; }
+
+    @media (min-width: 900px) {
+      #kpBottomNav { bottom: 22px; width: 460px; }
+      .kp-tab { padding: 10px 8px; font-size: 12px; }
+      .kp-tab .kp-tab-icon { width: 24px; height: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <img class="logo-mark" src="/show/icons/smoke.png" alt="" />
+  <div class="eyebrow">KOSTYUK PROJECT</div>
+  <h1>Концертные шоу</h1>
+  <p class="lead">
+    Раздел в разработке. Скоро здесь появятся афиша, билеты и подробности по трём авторским шоу Дмитрия Костюка.
+  </p>
+
+  <div class="shows">
+    <div class="show-card">
+      <span class="show-card__age">12+</span>
+      <div class="show-card__title">СЕКРЕТ</div>
+      <div class="show-card__desc">2 часа. Один артист. Один секрет. Исповедь с иллюзиями.</div>
+    </div>
+    <div class="show-card">
+      <span class="show-card__age">16+</span>
+      <div class="show-card__title">ХУЛИgan</div>
+      <div class="show-card__desc">Магический стендап без цензуры. Юмор и иллюзии.</div>
+    </div>
+    <div class="show-card">
+      <span class="show-card__age">6+</span>
+      <div class="show-card__title">СПАСТИ МАТВЕЯ</div>
+      <div class="show-card__desc">Квест-шоу для семьи. Зрители — участники спасательной операции.</div>
+    </div>
+  </div>
+
+  <div class="soon-badge"><span class="pulse"></span> Скоро</div>
+
+  <!-- НИЖНЕЕ МЕНЮ -->
+  <nav id="kpBottomNav" role="navigation" aria-label="Kostyuk Project">
+    <div class="kp-tab-wrap">
+      <a class="kp-tab" href="/show/">
+        <img class="kp-tab-icon" src="/show/icons/magician.png" alt="" />
+        <span>Частные заказы</span>
+      </a>
+    </div>
+    <div class="kp-tab-wrap">
+      <a class="kp-tab" href="/school/">
+        <img class="kp-tab-icon" src="/show/icons/wand.png" alt="" />
+        <span>Школа фокусов</span>
+      </a>
+    </div>
+    <div class="kp-tab-wrap">
+      <a class="kp-tab active" href="#" aria-current="page">
+        <img class="kp-tab-icon" src="/show/icons/smoke.png" alt="" />
+        <span>Концерты</span>
+      </a>
+    </div>
+  </nav>
+</body>
+</html>
