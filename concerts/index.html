@@ -2,144 +2,257 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Концерты — KOSTYUK PROJECT</title>
-  <meta name="description" content="Авторские шоу Дмитрия Костюка — Секрет, ХУЛИgan, Спасти Матвея. Скоро." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Концертные шоу — KOSTYUK PROJECT</title>
+  <meta name="description" content="Авторские концертные шоу Дмитрия Костюка: Секрет, ХУЛИgan, Спасти Матвея. Афиша, билеты, бронирование." />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/images/kp-favicon.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
-  <link rel="shortcut icon" href="/images/kp-favicon-32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg: #0a0a14;
-      --bg2: #12121e;
-      --gold: #cba128;
-      --gold2: #e7c776;
+      --bg: #06060c;
+      --bg2: #0a0a14;
       --text: #f0f0f5;
       --muted: #8a8a98;
+      --gold: #cba128;
+      --gold2: #e7c776;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
+    html, body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ==== HERO ==== */
+    .hero {
+      padding: 80px 20px 50px;
+      text-align: center;
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(203, 161, 40, 0.15) 0%, transparent 60%),
+        var(--bg);
     }
-    body {
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      opacity: 0.9;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(34px, 7vw, 64px);
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #fff 0%, var(--gold2) 60%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 16px;
+    }
+    .lead {
+      max-width: 540px;
+      margin: 0 auto;
+      font-size: clamp(14px, 2.2vw, 16px);
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* ==== SHOWS GRID ==== */
+    .shows {
+      padding: 30px 20px 120px;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 760px) {
+      .shows { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    }
+    @media (min-width: 1100px) {
+      .shows { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    }
+
+    .show {
+      position: relative;
+      display: block;
+      border-radius: 24px;
+      overflow: hidden;
+      aspect-ratio: 2/3;
+      background: var(--bg2);
+      transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+      cursor: pointer;
+      isolation: isolate;
+    }
+    .show:hover {
+      transform: translateY(-10px);
+    }
+    .show__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
+      z-index: 0;
+    }
+    .show:hover .show__img { transform: scale(1.06); }
+
+    .show__overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.92) 100%);
+      transition: opacity 0.4s ease;
+    }
+
+    .show__content {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 2;
+      padding: 26px 24px;
+      color: #fff;
+    }
+    .show__age {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.4);
+      margin-bottom: 12px;
+      opacity: 0.85;
+    }
+    .show__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    .show__sub {
+      font-size: 13.5px;
+      opacity: 0.85;
+      margin-bottom: 18px;
+    }
+    .show__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      color: #0a0a14;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+    .show:hover .show__cta { transform: translateX(4px); background: #fff; }
+    .show__cta::after { content: '→'; font-weight: 800; }
+
+    /* ==== ИНДИВИДУАЛЬНЫЕ ЦВЕТА ==== */
+
+    /* SECRET — золото + тёмно-синий */
+    .show--secret {
+      border: 1px solid rgba(203, 161, 40, 0.3);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .show--secret:hover { box-shadow: 0 30px 80px rgba(203, 161, 40, 0.3); }
+    .show--secret .show__overlay {
+      background: linear-gradient(180deg, rgba(8,8,22,0.0) 25%, rgba(8,8,22,0.65) 60%, rgba(8,8,22,0.96) 100%);
+    }
+    .show--secret .show__title {
+      background: linear-gradient(135deg, #fff 0%, #e7c776 70%, #cba128 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .show--secret .show__age {
+      border-color: rgba(231, 199, 118, 0.5);
+      color: #e7c776;
+    }
+
+    /* HULIGAN — огонь + кирпич */
+    .show--huligan {
+      border: 1px solid rgba(255, 110, 0, 0.35);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .show--huligan:hover { box-shadow: 0 30px 80px rgba(255, 100, 0, 0.3); }
+    .show--huligan .show__overlay {
+      background: linear-gradient(180deg, rgba(15,8,4,0.0) 25%, rgba(20,8,2,0.65) 60%, rgba(15,5,2,0.96) 100%);
+    }
+    .show--huligan .show__title {
+      background: linear-gradient(180deg, #FFE566 0%, #FF9000 50%, #FF3D00 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .show--huligan .show__age {
+      border-color: rgba(255, 144, 0, 0.6);
+      color: #FFB347;
+    }
+
+    /* MATVEY — заглушка, скоро */
+    .show--matvey {
+      border: 1px solid rgba(110, 80, 220, 0.3);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+      background: linear-gradient(135deg, #0d0830 0%, #1a0d3a 50%, #0a1238 100%);
+    }
+    .show--matvey:hover { box-shadow: 0 30px 80px rgba(110, 80, 220, 0.3); }
+    .show--matvey .show__placeholder {
+      position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 30px;
       text-align: center;
-      padding: 24px 20px 120px;
-      background:
-        radial-gradient(circle at 50% 30%, rgba(203, 161, 40, 0.12) 0%, transparent 55%),
-        linear-gradient(180deg, #0a0a14 0%, #12121e 100%);
+      z-index: 1;
     }
-    .logo-mark {
-      width: 64px;
-      height: 64px;
+    .show--matvey .show__placeholder-icon {
+      font-size: 76px;
       margin-bottom: 24px;
       opacity: 0.85;
-      filter: drop-shadow(0 6px 18px rgba(203, 161, 40, 0.45));
-      animation: float 4s ease-in-out infinite;
+      filter: drop-shadow(0 10px 30px rgba(140, 100, 255, 0.45));
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    .eyebrow {
-      font-size: 12px;
-      letter-spacing: 0.32em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 14px;
-      opacity: 0.85;
-    }
-    h1 {
-      font-size: clamp(32px, 7vw, 54px);
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
+    .show--matvey .show__placeholder-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 0%, #b8a8ff 60%, #6e50dc 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      letter-spacing: 0.02em;
-      margin-bottom: 18px;
-    }
-    .lead {
-      max-width: 540px;
-      color: #c9c9d4;
-      font-size: 16px;
-      line-height: 1.6;
-      margin-bottom: 40px;
-    }
-    .shows {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      justify-content: center;
-      max-width: 720px;
-      margin-bottom: 44px;
-    }
-    .show-card {
-      flex: 1 1 200px;
-      max-width: 230px;
-      padding: 18px 16px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid rgba(203, 161, 40, 0.18);
-      backdrop-filter: blur(8px);
-      text-align: left;
-    }
-    .show-card__age {
-      display: inline-block;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--gold);
-      border: 1px solid rgba(203, 161, 40, 0.4);
-      padding: 2px 7px;
-      border-radius: 999px;
       margin-bottom: 10px;
     }
-    .show-card__title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      letter-spacing: 0.02em;
-    }
-    .show-card__desc {
+    .show--matvey .show__placeholder-sub {
       font-size: 13px;
-      color: var(--muted);
-      line-height: 1.4;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 18px;
     }
-    .soon-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
-      color: #0a0a14;
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.1em;
+    .show--matvey .show__soon {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      box-shadow: 0 8px 24px rgba(203, 161, 40, 0.35);
+      color: #b8a8ff;
+      border: 1px solid rgba(184, 168, 255, 0.4);
+      padding: 6px 14px;
+      border-radius: 999px;
     }
-    .pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #0a0a14;
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; transform: scale(0.9); }
-      50% { opacity: 1; transform: scale(1.1); }
-    }
+    .show--matvey .show__overlay { display: none; }
+    .show--matvey .show__content { display: none; }
 
-    /* ===== KOSTYUK PROJECT — НИЖНЕЕ МЕНЮ ===== */
+    /* ==== BOTTOM NAV (KOSTYUK PROJECT) ==== */
     #kpBottomNav {
       position: fixed;
       left: 50%;
@@ -169,7 +282,6 @@
       padding: 8px 6px;
       border-radius: 999px;
       color: #c9c9d4;
-      text-decoration: none;
       cursor: pointer;
       background: transparent;
       border: none;
@@ -178,7 +290,6 @@
       line-height: 1.1;
       letter-spacing: 0.02em;
       transition: color 0.25s ease, background 0.25s ease, transform 0.25s ease;
-      -webkit-tap-highlight-color: transparent;
     }
     .kp-tab .kp-tab-icon {
       width: 22px;
@@ -186,10 +297,10 @@
       object-fit: contain;
       margin-bottom: 2px;
       filter: grayscale(0.5) opacity(0.7) brightness(1.15);
-      transition: filter 0.25s ease, transform 0.25s ease;
+      transition: filter 0.25s ease;
     }
     .kp-tab:hover { color: var(--gold2); }
-    .kp-tab:hover .kp-tab-icon { filter: none; transform: translateY(-1px); }
+    .kp-tab:hover .kp-tab-icon { filter: none; }
     .kp-tab.active {
       color: #0e0e1a;
       background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 100%);
@@ -197,43 +308,62 @@
     }
     .kp-tab.active .kp-tab-icon { filter: none; }
     .kp-tab-wrap { position: relative; flex: 1; display: flex; }
-
     @media (min-width: 900px) {
       #kpBottomNav { bottom: 22px; width: 460px; }
       .kp-tab { padding: 10px 8px; font-size: 12px; }
       .kp-tab .kp-tab-icon { width: 24px; height: 24px; }
     }
+
+    /* ==== REVEAL ==== */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .d-1 { transition-delay: 0.1s; }
+    .d-2 { transition-delay: 0.25s; }
+    .d-3 { transition-delay: 0.4s; }
+    .d-4 { transition-delay: 0.55s; }
   </style>
 </head>
 <body>
-  <img class="logo-mark" src="/icons/smoke.png" alt="" />
-  <div class="eyebrow">KOSTYUK PROJECT</div>
-  <h1>Концертные шоу</h1>
-  <p class="lead">
-    Раздел в разработке. Скоро здесь появятся афиша, билеты и подробности по трём авторским шоу Дмитрия Костюка.
-  </p>
+  <section class="hero">
+    <div class="eyebrow reveal">KOSTYUK PROJECT · АФИША</div>
+    <h1 class="reveal d-1">Концертные шоу</h1>
+    <p class="lead reveal d-2">Три авторских шоу Дмитрия Костюка. Иллюзия, юмор, спектакль. Выберите, что посмотреть.</p>
+  </section>
 
-  <div class="shows">
-    <div class="show-card">
-      <span class="show-card__age">12+</span>
-      <div class="show-card__title">СЕКРЕТ</div>
-      <div class="show-card__desc">2 часа. Один артист. Один секрет. Исповедь с иллюзиями.</div>
-    </div>
-    <div class="show-card">
-      <span class="show-card__age">16+</span>
-      <div class="show-card__title">ХУЛИgan</div>
-      <div class="show-card__desc">Магический стендап без цензуры. Юмор и иллюзии.</div>
-    </div>
-    <div class="show-card">
-      <span class="show-card__age">6+</span>
-      <div class="show-card__title">СПАСТИ МАТВЕЯ</div>
-      <div class="show-card__desc">Квест-шоу для семьи. Зрители — участники спасательной операции.</div>
-    </div>
-  </div>
+  <section class="shows">
+    <a class="show show--secret reveal d-2" href="/concerts/secret">
+      <img class="show__img" src="/concerts/images/secret.jpg" alt="Шоу Секрет" loading="lazy" />
+      <div class="show__overlay"></div>
+      <div class="show__content">
+        <span class="show__age">12+</span>
+        <div class="show__title">СЕКРЕТ</div>
+        <div class="show__sub">Шоу, которое вдохновляет</div>
+        <span class="show__cta">Подробнее</span>
+      </div>
+    </a>
 
-  <div class="soon-badge"><span class="pulse"></span> Скоро</div>
+    <a class="show show--huligan reveal d-3" href="/concerts/huligan">
+      <img class="show__img" src="/concerts/images/huligan.jpg" alt="Шоу ХУЛИgan" loading="lazy" />
+      <div class="show__overlay"></div>
+      <div class="show__content">
+        <span class="show__age">16+</span>
+        <div class="show__title">ХУЛИgan</div>
+        <div class="show__sub">Магический стендап</div>
+        <span class="show__cta">Подробнее</span>
+      </div>
+    </a>
 
-  <!-- НИЖНЕЕ МЕНЮ -->
+    <div class="show show--matvey reveal d-4">
+      <div class="show__placeholder">
+        <div class="show__placeholder-icon">🎭</div>
+        <div class="show__placeholder-title">СПАСТИ МАТВЕЯ</div>
+        <div class="show__placeholder-sub">Квест-шоу для семьи · 6+</div>
+        <span class="show__soon">скоро</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- KOSTYUK PROJECT bottom nav -->
   <nav id="kpBottomNav" role="navigation" aria-label="Kostyuk Project">
     <div class="kp-tab-wrap">
       <a class="kp-tab" href="/">
@@ -254,5 +384,13 @@
       </a>
     </div>
   </nav>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
+      }, 100);
+    });
+  </script>
 </body>
 </html>
