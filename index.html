@@ -4,15 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>KOSTYUK PROJECT — Иллюзионист Дмитрий Костюк</title>
-  <meta name="description" content="Авторские шоу, частные заказы и школа фокусов Дмитрия Костюка. Один проект — три направления." />
+  <meta name="description" content="Авторские шоу, частные мероприятия и школа фокусов Дмитрия Костюка. Один проект — три направления." />
   <link rel="icon" href="/show/icons/apple-touch-icon.png" />
+  <link rel="preload" as="image" href="/images/kostyuk-project-bg.jpg" />
   <style>
     :root {
       --bg: #0a0a14;
       --gold: #cba128;
       --gold2: #e7c776;
       --text: #f0f0f5;
-      --muted: #8a8a98;
+      --muted: #aeaeb8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -23,102 +24,143 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
+
+    /* === ФОНОВАЯ КАРТИНКА === */
+    .bg-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      animation: bgZoom 24s ease-in-out infinite alternate;
+    }
+    @keyframes bgZoom {
+      from { transform: scale(1.02); }
+      to   { transform: scale(1.10); }
+    }
+
+    /* Виньетка + затемнение в нижней части под контент */
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at center top, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.35) 55%, rgba(8,8,16,0.95) 100%),
+        linear-gradient(180deg, rgba(8,8,16,0.0) 35%, rgba(8,8,16,0.78) 70%, #0a0a14 100%);
+      pointer-events: none;
+    }
+
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 20px;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(203, 161, 40, 0.18) 0%, transparent 60%),
-        radial-gradient(circle at 80% 70%, rgba(120, 80, 30, 0.08) 0%, transparent 50%),
-        linear-gradient(180deg, #0a0a14 0%, #060610 100%);
       min-height: 100vh;
+      padding: 0 20px 120px;
+      position: relative;
     }
 
-    /* Звёзды */
-    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: #fff;
-      border-radius: 50%;
-      opacity: 0;
-      animation: twinkle 4s ease-in-out infinite;
-    }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 0.7; }
+    .wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 880px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
 
-    .wrap { position: relative; z-index: 2; max-width: 880px; width: 100%; }
-
-    .brand {
+    /* === HERO зона: занимает верхние ~62vh, чтобы был виден логотип на фоне === */
+    .hero-space {
+      width: 100%;
+      height: 62vh;
+      min-height: 380px;
+      max-height: 720px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 24px;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: rgba(14, 14, 26, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(203, 161, 40, 0.4);
+      color: var(--gold2);
       font-size: 11px;
-      letter-spacing: 0.45em;
+      letter-spacing: 0.42em;
       text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 18px;
-      opacity: 0.9;
+      font-weight: 600;
     }
-    h1 {
-      font-size: clamp(38px, 9vw, 76px);
-      font-weight: 800;
-      background: linear-gradient(135deg, #fff 0%, var(--gold2) 50%, var(--gold) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.01em;
-      line-height: 1.05;
-      margin-bottom: 16px;
+    .hero-tag .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold2);
+      box-shadow: 0 0 12px var(--gold2);
+      animation: pulse 1.6s ease-in-out infinite;
     }
-    h1 .accent { font-style: italic; font-weight: 400; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.9); }
+      50%      { opacity: 1; transform: scale(1.15); }
+    }
 
     .subtitle {
-      font-size: clamp(15px, 2.5vw, 18px);
-      color: #c9c9d4;
       max-width: 580px;
-      margin: 0 auto 56px;
-      line-height: 1.6;
+      margin: 24px auto 36px;
+      font-size: clamp(14px, 2.3vw, 17px);
+      line-height: 1.55;
+      color: var(--muted);
+      letter-spacing: 0.01em;
     }
 
+    /* === Карточки разделов === */
     .cards {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 18px;
-      max-width: 720px;
-      margin: 0 auto;
+      gap: 14px;
+      width: 100%;
+      max-width: 760px;
     }
     @media (min-width: 760px) {
-      .cards { grid-template-columns: repeat(3, 1fr); }
+      .cards { grid-template-columns: repeat(3, 1fr); gap: 18px; }
     }
 
     .card {
       position: relative;
       display: block;
-      padding: 28px 22px;
+      padding: 24px 22px;
       border-radius: 22px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%);
-      border: 1px solid rgba(203, 161, 40, 0.22);
+      background: linear-gradient(180deg, rgba(20, 20, 32, 0.78) 0%, rgba(14, 14, 24, 0.82) 100%);
+      border: 1px solid rgba(203, 161, 40, 0.25);
       text-decoration: none;
       color: inherit;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
       text-align: left;
     }
     .card:hover {
       transform: translateY(-6px);
-      border-color: rgba(203, 161, 40, 0.55);
-      box-shadow: 0 20px 50px rgba(203, 161, 40, 0.18);
+      border-color: rgba(203, 161, 40, 0.65);
+      box-shadow: 0 18px 50px rgba(203, 161, 40, 0.18);
     }
     .card::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(203, 161, 40, 0.12) 0%, transparent 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(203, 161, 40, 0.15) 0%, transparent 70%);
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
@@ -126,33 +168,34 @@
     .card:hover::after { opacity: 1; }
 
     .card__icon {
-      width: 56px;
-      height: 56px;
-      margin-bottom: 18px;
+      width: 50px;
+      height: 50px;
+      margin-bottom: 16px;
       object-fit: contain;
-      filter: drop-shadow(0 6px 14px rgba(203, 161, 40, 0.35));
+      filter: drop-shadow(0 6px 14px rgba(203, 161, 40, 0.4));
     }
     .card__title {
-      font-size: 22px;
+      font-size: 19px;
       font-weight: 700;
       letter-spacing: 0.01em;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      color: #fff;
     }
     .card__desc {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--muted);
       line-height: 1.5;
-      margin-bottom: 18px;
-      min-height: 42px;
+      margin-bottom: 16px;
+      min-height: 38px;
     }
     .card__arrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       color: var(--gold2);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .card__arrow::after {
@@ -161,11 +204,10 @@
     }
     .card:hover .card__arrow::after { transform: translateX(6px); }
 
-    .card--soon { opacity: 0.85; }
     .card--soon .card__soon-badge {
       position: absolute;
-      top: 16px;
-      right: 16px;
+      top: 14px;
+      right: 14px;
       font-size: 9px;
       letter-spacing: 0.1em;
       color: var(--gold);
@@ -173,43 +215,67 @@
       padding: 3px 8px;
       border-radius: 999px;
       text-transform: uppercase;
+      background: rgba(14, 14, 26, 0.6);
+      backdrop-filter: blur(8px);
     }
 
     footer {
-      margin-top: 60px;
-      font-size: 12px;
+      margin-top: 44px;
+      font-size: 11px;
       color: var(--muted);
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+    }
+
+    /* === Анимация появления === */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: 0.15s; }
+    .delay-2 { transition-delay: 0.3s; }
+    .delay-3 { transition-delay: 0.45s; }
+    .delay-4 { transition-delay: 0.6s; }
+
+    @media (max-width: 600px) {
+      .hero-space { height: 58vh; padding-bottom: 18px; }
+      .card { padding: 20px 18px; }
     }
   </style>
 </head>
 <body>
-  <div class="stars" id="stars"></div>
+  <div class="bg-wrap">
+    <img class="bg-img" src="/images/kostyuk-project-bg.jpg" alt="KOSTYUK PROJECT" />
+    <div class="bg-overlay"></div>
+  </div>
 
   <div class="wrap">
-    <div class="brand">KOSTYUK PROJECT</div>
-    <h1>Дмитрий Костюк<br><span class="accent">иллюзионист</span></h1>
-    <p class="subtitle">
-      Авторские шоу, частные мероприятия и школа фокусов. Один проект — три направления.
-      Выберите интересующий раздел.
+    <div class="hero-space">
+      <div class="hero-tag reveal" id="rv0">
+        <span class="dot"></span>
+        <span>иллюзионист · Ярославль</span>
+      </div>
+    </div>
+
+    <p class="subtitle reveal delay-1" id="rv1">
+      Авторские шоу, частные мероприятия и школа фокусов.<br>
+      Один проект — три направления.
     </p>
 
     <div class="cards">
-      <a class="card" href="/show/">
+      <a class="card reveal delay-2" href="/show/" id="rv2">
         <img class="card__icon" src="/show/icons/magician.png" alt="" />
         <div class="card__title">Частные заказы</div>
         <div class="card__desc">Шоу-программа на праздник, корпоратив или свадьбу.</div>
         <div class="card__arrow">Перейти</div>
       </a>
 
-      <a class="card" href="/school/">
+      <a class="card reveal delay-3" href="/school/" id="rv3">
         <img class="card__icon" src="/show/icons/wand.png" alt="" />
         <div class="card__title">Школа фокусов</div>
         <div class="card__desc">Первая школа фокусов в Ярославле для детей 7–13 лет.</div>
         <div class="card__arrow">Перейти</div>
       </a>
 
-      <a class="card card--soon" href="/concerts/">
+      <a class="card card--soon reveal delay-4" href="/concerts/" id="rv4">
         <span class="card__soon-badge">Скоро</span>
         <img class="card__icon" src="/show/icons/smoke.png" alt="" />
         <div class="card__title">Концертные шоу</div>
@@ -222,19 +288,14 @@
   </div>
 
   <script>
-    // Звёзды
-    (function(){
-      var stars = document.getElementById('stars');
-      for (var i = 0; i < 80; i++){
-        var s = document.createElement('div');
-        s.className = 'star';
-        s.style.left = Math.random() * 100 + 'vw';
-        s.style.top  = Math.random() * 100 + 'vh';
-        s.style.animationDelay = (Math.random() * 4) + 's';
-        s.style.transform = 'scale(' + (0.5 + Math.random() * 1.5) + ')';
-        stars.appendChild(s);
-      }
-    })();
+    // Появление с задержкой
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          el.classList.add('in');
+        });
+      }, 80);
+    });
   </script>
 </body>
 </html>
