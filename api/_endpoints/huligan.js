@@ -5,7 +5,7 @@ const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID) || 196783025;
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 const TICKET_LINK_SECRET = process.env.TICKET_LINK_SECRET || '';
 const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
-import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
+import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
 const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app54466228_-209268664';
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();
@@ -33,7 +33,7 @@ const TBANK_SUCCESS_URL = String(process.env.TBANK_HULIGAN_SUCCESS_URL || `${TIC
 const TBANK_FAIL_URL = String(process.env.TBANK_HULIGAN_FAIL_URL || `${TICKET_PUBLIC_ORIGIN}/huligan.html?pay=fail`).trim();
 const TBANK_API_TEST_BASE = 'https://securepay.tinkoff.ru/v2';
 const TBANK_API_PROD_BASE = 'https://securepay.tinkoff.ru/v2';
-import {  runHuliganAutoCleanup  } from '../_lib/autoCleanup';
+import {  runHuliganAutoCleanup  } from '../../shared/autoCleanup';
 
 const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted']);
 
@@ -721,7 +721,7 @@ function publicBookingView(bookingId, booking, full = false) {
   };
 }
 
-import {  setCors  } from '../_lib/cors';
+import {  setCors  } from '../../shared/cors';
 
 export default async (req, res) => {
   setCors(req, res, { methods: 'POST, GET, OPTIONS' });

@@ -1,7 +1,7 @@
-import {  fbGet, fbPut  } from '../_lib/firebase';
-import {  setCors  } from '../_lib/cors';
-import {  getTrustedTelegramUserId  } from '../_lib/tg';
-import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
+import {  fbGet, fbPut  } from '../../shared/firebase';
+import {  setCors  } from '../../shared/cors';
+import {  getTrustedTelegramUserId  } from '../../shared/tg';
+import {  runSecretAutoCleanup  } from '../../shared/autoCleanup';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const MAX_SEATS_MUTATION = 10;

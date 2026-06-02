@@ -92,11 +92,11 @@ async function fbPatch(path, data) {
   });
 }
 
-import {  setCors  } from '../_lib/cors';
-import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
-import {  buildTicketLink  } from '../_lib/ticketAccess';
-import {  getTrustedTelegramUserId  } from '../_lib/tg';
-import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
+import {  setCors  } from '../../shared/cors';
+import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
+import {  buildTicketLink  } from '../../shared/ticketAccess';
+import {  getTrustedTelegramUserId  } from '../../shared/tg';
+import {  runSecretAutoCleanup  } from '../../shared/autoCleanup';
 
 const VK_TOKEN = (process.env.VK_TOKEN || '').trim();
 const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app54466228_-209268664';

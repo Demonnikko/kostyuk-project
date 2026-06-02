@@ -1,8 +1,8 @@
 import crypto from 'crypto';
-import {  fbGet, fbPut  } from '../_lib/firebase';
-import {  setCors  } from '../_lib/cors';
-import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
-import {  validateTicketAccess  } from '../_lib/ticketAccess';
+import {  fbGet, fbPut  } from '../../shared/firebase';
+import {  setCors  } from '../../shared/cors';
+import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
+import {  validateTicketAccess  } from '../../shared/ticketAccess';
 
 const TICKET_LINK_SECRET = String(process.env.TICKET_LINK_SECRET || '').trim();
 const MAX_HISTORY = 200;

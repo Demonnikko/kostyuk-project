@@ -2,7 +2,7 @@
 // Защищено паролем администратора (x-admin-pass-b64) или токеном ADMIN_TOKEN (x-admin-token / ?token=)
 
 import {  kv  } from '@vercel/kv';
-import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
+import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
 
 export default async function handler(req, res) {
   // CORS — только админ-домены

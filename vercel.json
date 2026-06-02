@@ -3,10 +3,5 @@
   "redirects": [
     { "source": "/show", "destination": "/", "permanent": true },
     { "source": "/show/", "destination": "/", "permanent": true }
-  ],
-  "functions": {
-    "api/**/*.js": {
-      "includeFiles": "api/_lib/**"
-    }
-  }
+  ]
 }
