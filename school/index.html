@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
   <title>Abracadabra — Первая школа фокусов в Ярославле</title>
   <meta name="description" content="ABRACADABRA — первая школа фокусов в Ярославле для детей 7–13 лет от иллюзиониста Дмитрия Костюка." />
   <meta property="og:title" content="Abracadabra — Школа фокусов для детей 7–13 лет" />
@@ -28,7 +28,7 @@
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     :root {
       --bg: #05080b;
       --card: #0d121c;
@@ -50,6 +50,7 @@
       color: var(--text);
       line-height: 1.65;
       overflow-x: hidden;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     }
     img { max-width: 100%; height: auto; display: block; }
     a { color: var(--gold); text-decoration: none; transition: color 0.3s; }
@@ -90,6 +91,7 @@
       position: relative;
       overflow: hidden;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1009,17 +1011,17 @@
 
   <!-- ===== KOSTYUK PROJECT — НИЖНЕЕ МЕНЮ ===== -->
   <style>
-    .footer-spacer { height: 80px; }
+    .footer-spacer { height: calc(80px + env(safe-area-inset-bottom, 0px)); }
     #kpBottomNav {
       position: fixed;
       left: 50%;
-      bottom: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
       transform: translateX(-50%);
       z-index: 9500;
       display: flex;
       gap: 4px;
       padding: 6px;
-      background: rgba(14, 14, 26, 0.85);
+      background: rgba(14, 14, 26, 0.92);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(203, 161, 40, 0.32);
@@ -1109,9 +1111,10 @@
     @media (max-width: 380px) {
       .kp-tab { font-size: 10px; padding: 7px 4px; }
       .kp-tab .kp-tab-icon { width: 20px; height: 20px; }
+      #kpBottomNav { width: 96vw; }
     }
     @media (min-width: 900px) {
-      #kpBottomNav { bottom: 22px; width: 460px; }
+      #kpBottomNav { bottom: calc(22px + env(safe-area-inset-bottom, 0px)); width: min(460px, 94vw); }
       .kp-tab { padding: 10px 8px; font-size: 12px; }
       .kp-tab .kp-tab-icon { width: 24px; height: 24px; }
     }

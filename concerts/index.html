@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
   <title>Концертные шоу — KOSTYUK PROJECT</title>
   <meta name="description" content="Авторские концертные шоу Дмитрия Костюка: Секрет, ХУЛИgan, Спасти Матвея. Афиша, билеты, бронирование." />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
@@ -31,11 +31,15 @@
       --gold2: #e7c776;
       --gold3: #fff0c2;
     }
+    html {
+      overflow-x: hidden;
+    }
     html, body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -80,7 +84,7 @@
     .hero {
       position: relative;
       z-index: 2;
-      padding: 100px 20px 40px;
+      padding: 80px 16px 32px;
       text-align: center;
     }
     .eyebrow {
@@ -111,11 +115,11 @@
     }
     h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(44px, 9vw, 96px);
+      font-size: clamp(38px, 10vw, 96px);
       font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.0;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     h1 .word {
       display: inline-block;
@@ -141,20 +145,22 @@
     .stage {
       position: relative;
       z-index: 2;
-      padding: 50px 16px 140px;
+      padding: 32px 12px calc(90px + env(safe-area-inset-bottom, 0px));
       max-width: 1380px;
       margin: 0 auto;
     }
     .shows {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 32px;
+      gap: 20px;
     }
     @media (min-width: 760px) {
       .shows { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+      .stage { padding: 40px 20px calc(100px + env(safe-area-inset-bottom, 0px)); }
     }
     @media (min-width: 1100px) {
       .shows { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+      .stage { padding: 50px 32px calc(110px + env(safe-area-inset-bottom, 0px)); }
     }
 
     /* Карточка шоу */
@@ -221,8 +227,11 @@
       position: absolute;
       left: 0; right: 0; bottom: 0;
       z-index: 3;
-      padding: 30px 28px 28px;
+      padding: 24px 20px 22px;
       color: #fff;
+    }
+    @media (min-width: 480px) {
+      .show__content { padding: 30px 28px 28px; }
     }
     .show__badge {
       display: inline-block;
@@ -238,7 +247,7 @@
     }
     .show__title {
       font-family: var(--title-font, 'Cormorant Garamond', serif);
-      font-size: clamp(30px, 3.5vw, 42px);
+      font-size: clamp(28px, 7vw, 42px);
       font-weight: 700;
       letter-spacing: 0.01em;
       line-height: 0.95;
@@ -356,13 +365,13 @@
     #kpBottomNav {
       position: fixed;
       left: 50%;
-      bottom: 14px;
+      bottom: calc(10px + env(safe-area-inset-bottom, 0px));
       transform: translateX(-50%);
       z-index: 9500;
       display: flex;
       gap: 4px;
       padding: 6px;
-      background: rgba(14, 14, 26, 0.85);
+      background: rgba(14, 14, 26, 0.92);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(203, 161, 40, 0.32);
@@ -389,6 +398,8 @@
       font-size: 11px;
       letter-spacing: 0.02em;
       transition: color 0.25s ease, background 0.25s ease;
+      -webkit-tap-highlight-color: transparent;
+      text-decoration: none;
     }
     .kp-tab .kp-tab-icon {
       width: 22px;
@@ -405,8 +416,13 @@
     }
     .kp-tab.active .kp-tab-icon { filter: none; }
     .kp-tab-wrap { flex: 1; display: flex; }
+    @media (max-width: 360px) {
+      #kpBottomNav { width: 96vw; }
+      .kp-tab { padding: 7px 4px; font-size: 10px; }
+      .kp-tab .kp-tab-icon { width: 20px; height: 20px; }
+    }
     @media (min-width: 900px) {
-      #kpBottomNav { bottom: 22px; width: 460px; }
+      #kpBottomNav { bottom: calc(22px + env(safe-area-inset-bottom, 0px)); width: 460px; }
       .kp-tab { padding: 10px 8px; font-size: 12px; }
       .kp-tab .kp-tab-icon { width: 24px; height: 24px; }
     }

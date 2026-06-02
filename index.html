@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
   <title>Дмитрий Костюк — Частные мероприятия</title>
   <meta name="description"
     content="Премиальное шоу иллюзиониста Дмитрия Костюка. Частные события, корпоративы, концерты.">
@@ -56,7 +56,8 @@
 
     html {
       scroll-behavior: smooth;
-      -webkit-tap-highlight-color: transparent
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
     }
 
     body {
@@ -64,7 +65,8 @@
       color: var(--text);
       background: #000;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     }
 
     a {
@@ -268,9 +270,9 @@
       justify-content: flex-end;
       text-align: center;
       gap: .7rem;
-      padding: 0 16px 28px;
+      padding: 0 16px calc(28px + env(safe-area-inset-bottom, 0px));
       position: relative;
-      overflow: hidden
+      overflow: hidden;
     }
 
     .hero__bg {
@@ -1119,7 +1121,7 @@
     /* ===== FLOATING BUTTON ===== */
     .fab {
       position: fixed;
-      bottom: 16px;
+      bottom: calc(80px + env(safe-area-inset-bottom, 0px));
       right: 16px;
       z-index: 99;
       width: 56px;
@@ -1133,7 +1135,7 @@
       box-shadow: 0 4px 24px rgba(203, 161, 53, .4);
       transition: transform .25s, box-shadow .25s;
       display: grid;
-      place-items: center
+      place-items: center;
     }
 
     .fab:active {
@@ -1295,7 +1297,7 @@
     /* ===== FOOTER ===== */
     footer {
       padding: 1.2rem 16px 24px;
-      text-align: center
+      text-align: center;
     }
 
     .copy {
@@ -1304,6 +1306,15 @@
     }
 
     /* ===== RESPONSIVE ===== */
+    @media(max-width: 380px) {
+      :root {
+        --fs-h1: clamp(26px, 8vw, 40px);
+        --fs-h2: clamp(18px, 5.5vw, 26px);
+      }
+      .section { padding: 2rem 12px; }
+      .packGrid { max-width: 100%; }
+      .single-review { padding: 1rem 0.9rem; }
+    }
     @media(min-width:768px) {
       .packGrid {
         grid-template-columns: repeat(3, 1fr);
@@ -1319,17 +1330,26 @@
       }
 
       .hero {
-        padding-bottom: 48px
+        padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px))
       }
 
       .metrics {
         grid-template-columns: repeat(4, 1fr)
+      }
+
+      .fab {
+        bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+        right: 24px;
       }
     }
 
     @media(min-width:1024px) {
       .gallery {
         columns: 4
+      }
+      .fab {
+        bottom: 32px;
+        right: 32px;
       }
     }
 
@@ -2205,13 +2225,13 @@
     #kpBottomNav {
       position: fixed;
       left: 50%;
-      bottom: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
       transform: translateX(-50%);
       z-index: 9500;
       display: flex;
       gap: 4px;
       padding: 6px;
-      background: rgba(14, 14, 26, 0.85);
+      background: rgba(14, 14, 26, 0.92);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(203, 161, 40, 0.32);
@@ -2301,9 +2321,10 @@
     @media (max-width: 380px) {
       .kp-tab { font-size: 10px; padding: 7px 4px; }
       .kp-tab .kp-tab-icon { width: 20px; height: 20px; }
+      #kpBottomNav { width: 96vw; }
     }
     @media (min-width: 900px) {
-      #kpBottomNav { bottom: 22px; width: 460px; }
+      #kpBottomNav { bottom: calc(22px + env(safe-area-inset-bottom, 0px)); width: 460px; }
       .kp-tab { padding: 10px 8px; font-size: 12px; }
       .kp-tab .kp-tab-icon { width: 24px; height: 24px; }
     }
