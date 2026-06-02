@@ -1,8 +1,8 @@
-const crypto = require('crypto');
-const { fbGet, fbPut } = require('./_firebase');
-const { setCors } = require('./_cors');
-const { isAdminAuthorized } = require('./_adminAuth');
-const { validateTicketAccess } = require('./_ticketAccess');
+import crypto from 'crypto';
+import {  fbGet, fbPut  } from '../_lib/firebase';
+import {  setCors  } from '../_lib/cors';
+import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  validateTicketAccess  } from '../_lib/ticketAccess';
 
 const TICKET_LINK_SECRET = String(process.env.TICKET_LINK_SECRET || '').trim();
 const MAX_HISTORY = 200;
@@ -476,7 +476,7 @@ async function gatherHistory(show, limit) {
     .slice(0, Math.min(MAX_HISTORY, Math.max(1, Number(limit || 50))));
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(req, res, { methods: 'GET, POST, OPTIONS' });
   if (req.method === 'OPTIONS') return res.status(200).end();
 

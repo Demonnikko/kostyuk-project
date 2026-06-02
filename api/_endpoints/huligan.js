@@ -1,11 +1,11 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID) || 196783025;
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 const TICKET_LINK_SECRET = process.env.TICKET_LINK_SECRET || '';
 const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
-const { isAdminAuthorized } = require('./_adminAuth');
+import {  isAdminAuthorized  } from '../_lib/adminAuth';
 const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app54466228_-209268664';
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();
@@ -33,7 +33,7 @@ const TBANK_SUCCESS_URL = String(process.env.TBANK_HULIGAN_SUCCESS_URL || `${TIC
 const TBANK_FAIL_URL = String(process.env.TBANK_HULIGAN_FAIL_URL || `${TICKET_PUBLIC_ORIGIN}/huligan.html?pay=fail`).trim();
 const TBANK_API_TEST_BASE = 'https://securepay.tinkoff.ru/v2';
 const TBANK_API_PROD_BASE = 'https://securepay.tinkoff.ru/v2';
-const { runHuliganAutoCleanup } = require('./_autoCleanup');
+import {  runHuliganAutoCleanup  } from '../_lib/autoCleanup';
 
 const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted']);
 
@@ -721,9 +721,9 @@ function publicBookingView(bookingId, booking, full = false) {
   };
 }
 
-const { setCors } = require('./_cors');
+import {  setCors  } from '../_lib/cors';
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(req, res, { methods: 'POST, GET, OPTIONS' });
   await runHuliganAutoCleanup().catch(() => {});
 

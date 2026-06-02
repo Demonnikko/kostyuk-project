@@ -34,4 +34,4 @@ async function fbDelete(path) {
   await fetch(`${FB_URL}/${path}.json${FIREBASE_SECRET}`, { method: 'DELETE' });
 }
 
-module.exports = { fbGet, fbPut, fbPatch, fbDelete, FB_URL, FIREBASE_SECRET };
+export { fbGet, fbPut, fbPatch, fbDelete, FB_URL, FIREBASE_SECRET };

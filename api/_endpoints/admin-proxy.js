@@ -1,10 +1,10 @@
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET || '';
-const {
+import { 
   getAdminPassword, setAdminPassword, readAdminPass,
   verifyPassword, isHashedPassword,
   SECURE_PASS_PATH
-} = require('./_adminAuth');
+ } from '../_lib/adminAuth';
 
 // ── Белый список разрешённых Firebase-путей ──
 const ALLOWED_PATH_PREFIXES = [
@@ -42,7 +42,7 @@ function checkRateLimit(ip) {
   return e.count <= 120;
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');

@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TG_INITDATA_MAX_AGE_SEC = Number(process.env.TG_INITDATA_MAX_AGE_SEC || 86400);
@@ -63,7 +63,7 @@ function getTrustedTelegramUserId(initDataRaw) {
   return v.ok ? Number(v.userId) : null;
 }
 
-module.exports = {
+export {
   verifyTelegramInitData,
   getTrustedTelegramUserId
 };

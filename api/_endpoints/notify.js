@@ -1,17 +1,17 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID) || 196783025;
-const { isAdminAuthorized } = require('./_adminAuth');
-const { validateTicketAccess } = require('./_ticketAccess');
+import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  validateTicketAccess  } from '../_lib/ticketAccess';
 const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app54466228_-209268664';
 const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();
 const TELEGRAM_SECRET_WEBAPP_URL = (process.env.TELEGRAM_SECRET_WEBAPP_URL || `${TICKET_PUBLIC_ORIGIN}/index.html`).trim();
 const ADMIN_PANEL_URL = (process.env.SECRET_ADMIN_PANEL_URL || 'https://vk-tickets.vercel.app/admin.html').trim();
-const { getTrustedTelegramUserId } = require('./_tg');
-const { runSecretAutoCleanup } = require('./_autoCleanup');
+import {  getTrustedTelegramUserId  } from '../_lib/tg';
+import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const VKPAY_SECRET_ENABLED = String(process.env.VKPAY_SECRET_ENABLED || process.env.VKPAY_ENABLED || '').trim().toLowerCase() === 'true';
@@ -397,9 +397,9 @@ async function confirmSecretBookingAndNotify(bookingId, booking, meta = {}) {
   return { ok: true };
 }
 
-const { setCors } = require('./_cors');
+import {  setCors  } from '../_lib/cors';
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(req, res, { methods: 'POST, OPTIONS' });
   await runSecretAutoCleanup().catch(() => {});
 

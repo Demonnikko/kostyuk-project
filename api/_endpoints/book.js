@@ -3,7 +3,7 @@
  * Создаёт бронирование для мест в зале (шоу "Секрет").
  * Выполняет серверную проверку доступности мест и корректности цен.
  */
-const crypto = require('crypto');
+import crypto from 'crypto';
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
@@ -92,11 +92,11 @@ async function fbPatch(path, data) {
   });
 }
 
-const { setCors } = require('./_cors');
-const { isAdminAuthorized } = require('./_adminAuth');
-const { buildTicketLink } = require('./_ticketAccess');
-const { getTrustedTelegramUserId } = require('./_tg');
-const { runSecretAutoCleanup } = require('./_autoCleanup');
+import {  setCors  } from '../_lib/cors';
+import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  buildTicketLink  } from '../_lib/ticketAccess';
+import {  getTrustedTelegramUserId  } from '../_lib/tg';
+import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
 
 const VK_TOKEN = (process.env.VK_TOKEN || '').trim();
 const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app54466228_-209268664';
@@ -184,7 +184,7 @@ async function tgSendTicketReady(chatId, bookingId) {
   return tgSend(chatId, `Поздравляю с приобретением билета.\nСекрет ближе, чем тебе кажется 👇\nВот твой билет: ${tgLink}`);
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(req, res, { methods: 'POST, OPTIONS' });
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

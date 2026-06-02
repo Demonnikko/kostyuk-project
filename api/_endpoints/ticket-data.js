@@ -1,9 +1,9 @@
-const { fbGet, buildTicketLink, validateTicketAccess } = require('./_ticketAccess');
-const { runSecretAutoCleanup } = require('./_autoCleanup');
+import {  fbGet, buildTicketLink, validateTicketAccess  } from '../_lib/ticketAccess';
+import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
 
-const { setCors } = require('./_cors');
+import {  setCors  } from '../_lib/cors';
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(req, res, { publicRead: true, methods: 'GET, OPTIONS' });
   await runSecretAutoCleanup().catch(() => {});
 

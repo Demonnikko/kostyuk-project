@@ -29,7 +29,7 @@ function sanitize(s, max = 120) {
   return s.replace(/[\r\n\t]+/g, ' ').replace(/[<>]/g, '').trim().slice(0, max);
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(res, req.headers.origin);
 
   if (req.method === 'OPTIONS') {

@@ -1,10 +1,10 @@
 // /api/admin-chats — просмотр сохранённых диалогов с Екатериной
 // Защищено паролем администратора (x-admin-pass-b64) или токеном ADMIN_TOKEN (x-admin-token / ?token=)
 
-const { kv } = require('@vercel/kv');
-const { isAdminAuthorized } = require('./_lib/adminAuth');
+import {  kv  } from '@vercel/kv';
+import {  isAdminAuthorized  } from '../_lib/adminAuth';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // CORS — только админ-домены
   const allowedOrigins = [
     'https://site76-kostyuk.vercel.app',

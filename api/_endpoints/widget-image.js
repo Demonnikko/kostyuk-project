@@ -1,9 +1,9 @@
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 
-const { setCors } = require('./_cors');
+import {  setCors  } from '../_lib/cors';
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(req, res, { publicRead: true, methods: 'GET, OPTIONS' });
 
   const { id } = req.query;

@@ -2,7 +2,7 @@
 // Ведёт клиента по логике квиза, считает реальные цены
 // Сохраняет диалоги в Vercel KV. Telegram-пуш только при оставлении контакта.
 
-import { KNOWLEDGE } from './knowledge.js';
+import { KNOWLEDGE } from '../_lib/knowledge.js';
 import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {

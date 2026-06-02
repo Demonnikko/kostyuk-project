@@ -2,7 +2,7 @@
  * Общие функции для работы с VK API.
  * Используется notify.js, huligan.js, broadcast.js, remind.js.
  */
-const crypto = require('crypto');
+import crypto from 'crypto';
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID) || 196783025;
 
@@ -33,4 +33,4 @@ async function vkSend(userId, text, keyboard) {
   }
 }
 
-module.exports = { vkSend, VK_TOKEN, ADMIN_ID };
+export { vkSend, VK_TOKEN, ADMIN_ID };

@@ -3,11 +3,11 @@
 //   • напоминание за 24 часа до шоу всем подтверждённым гостям
 //   • запрос на отзыв на следующий день после шоу
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
-const { issueTicketLink } = require('./_ticketAccess');
+import {  issueTicketLink  } from '../_lib/ticketAccess';
 
 // Русские месяцы для парсинга даты из Firebase
 const RU_MONTHS = {
@@ -78,7 +78,7 @@ function reviewKeyboard() {
   };
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   // Принимаем GET (Vercel cron) и POST (ручной тест из браузера)
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

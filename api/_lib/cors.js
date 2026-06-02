@@ -50,4 +50,4 @@ function setCors(req, res, opts = {}) {
   res.setHeader('Expires', '0');
 }
 
-module.exports = { setCors, isAllowedOrigin };
+export { setCors, isAllowedOrigin };

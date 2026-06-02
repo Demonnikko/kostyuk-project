@@ -1,7 +1,7 @@
-const { fbGet, fbPut } = require('./_firebase');
-const { setCors } = require('./_cors');
-const { getTrustedTelegramUserId } = require('./_tg');
-const { runSecretAutoCleanup } = require('./_autoCleanup');
+import {  fbGet, fbPut  } from '../_lib/firebase';
+import {  setCors  } from '../_lib/cors';
+import {  getTrustedTelegramUserId  } from '../_lib/tg';
+import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const MAX_SEATS_MUTATION = 10;
@@ -38,7 +38,7 @@ async function isSecretSalesPaused() {
   return Boolean(showCfg && showCfg.salesPaused === true);
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   const corsTargetMethod = String(req.headers?.['access-control-request-method'] || req.method || '').toUpperCase();
   const isPublicRead = corsTargetMethod === 'GET';
   setCors(req, res, { publicRead: isPublicRead, methods: 'GET, POST, OPTIONS' });

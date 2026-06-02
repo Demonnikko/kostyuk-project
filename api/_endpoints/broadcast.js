@@ -3,9 +3,9 @@
  * Массовая рассылка в VK и/или Telegram.
  * Доступ только администратору (x-admin-pass / x-admin-pass-b64).
  */
-const crypto = require('crypto');
-const { isAdminAuthorized } = require('./_adminAuth');
-const { setCors } = require('./_cors');
+import crypto from 'crypto';
+import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  setCors  } from '../_lib/cors';
 
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
@@ -110,7 +110,7 @@ async function collectRecipients() {
   };
 }
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   setCors(req, res, { methods: 'POST, OPTIONS' });
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
