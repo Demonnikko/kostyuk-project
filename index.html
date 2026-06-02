@@ -91,61 +91,6 @@
       }
     }
 
-    /* ===== PRELOADER ===== */
-    .preloader {
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.2rem;
-      transition: opacity .8s ease, visibility .8s ease
-    }
-
-    .preloader.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none
-    }
-
-    .preloader__spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid rgba(203, 161, 53, .15);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin .8s linear infinite
-    }
-
-    .preloader__text {
-      font: 700 clamp(18px, 5vw, 24px) var(--ff-head);
-      color: var(--gold);
-      letter-spacing: .1em;
-      opacity: 0;
-      animation: fadeUp .8s ease .3s forwards
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg)
-      }
-    }
-
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-
-      from {
-        opacity: 0;
-        transform: translateY(10px)
-      }
-    }
-
     /* ===== SCROLL PROGRESS ===== */
     .scroll-progress {
       position: fixed;
@@ -1776,10 +1721,6 @@
 <body>
 
   <!-- ===== PRELOADER ===== -->
-  <div class="preloader" id="preloader">
-    <div class="preloader__spinner"></div>
-    <div class="preloader__text">Дмитрий Костюк</div>
-  </div>
 
   <!-- ===== SCROLL PROGRESS ===== -->
   <div class="scroll-progress" id="scrollProgress"></div>
@@ -2502,10 +2443,9 @@
     });
     function haptic() { }
 
-    /* ===== PRELOADER & EFFECTS ===== */
+    /* ===== EFFECTS ===== */
     window.addEventListener('load', function () {
       setTimeout(function () {
-        document.getElementById('preloader').classList.add('hidden');
         initTitleGlitch(document.querySelector('.title'));
       }, 800);
 
