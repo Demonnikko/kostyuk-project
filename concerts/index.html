@@ -12,6 +12,14 @@
   <link rel="preload" as="image" href="/concerts/images/huligan.jpg" />
   <link rel="preload" as="image" href="/concerts/images/matvey.jpg" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&family=Anton&display=swap" rel="stylesheet" />
+  <!-- PostHog Analytics -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveDomains".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('YOUR_POSTHOG_API_KEY', {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'identified_only'
+    });
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
@@ -410,6 +418,149 @@
     .d-2 { transition-delay: 0.28s; }
     .d-3 { transition-delay: 0.44s; }
     .d-4 { transition-delay: 0.6s; }
+
+    /* ==== KOSTYUK PORTAL ==== */
+    #kostyukPortal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, #0b0a18 0%, #000 75%);
+      transition: opacity 0.5s ease;
+      overflow: hidden;
+    }
+    #kostyukPortal.active {
+      opacity: 1;
+      pointer-events: all;
+      animation: kpZoom 1.8s cubic-bezier(0.5,0,0.3,1) forwards;
+    }
+    @keyframes kpZoom {
+      0%   { transform: scale(1); filter: blur(0); }
+      70%  { transform: scale(1.05); }
+      100% { transform: scale(1.25); filter: blur(2px); }
+    }
+    .kp-ring-outer, .kp-ring-inner {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(0.2);
+    }
+    .kp-ring-outer {
+      width: 460px; height: 460px;
+      margin: -230px 0 0 -230px;
+      border: 1px solid rgba(201,168,76,0.55);
+      box-shadow: 0 0 60px rgba(201,168,76,0.25), inset 0 0 60px rgba(201,168,76,0.18);
+    }
+    .kp-ring-inner {
+      width: 280px; height: 280px;
+      margin: -140px 0 0 -140px;
+      border: 1px dashed rgba(201,168,76,0.75);
+      box-shadow: 0 0 40px rgba(201,168,76,0.3);
+    }
+    #kostyukPortal.active .kp-ring-outer { animation: kpRingOut 1.8s cubic-bezier(0.22,1,0.36,1) forwards; }
+    #kostyukPortal.active .kp-ring-inner { animation: kpRingIn 1.8s cubic-bezier(0.22,1,0.36,1) forwards 0.15s; }
+    @keyframes kpRingOut {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.2) rotate(0deg);   border-width: 3px; }
+      40%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(4) rotate(120deg);   border-width: 0.5px; }
+    }
+    @keyframes kpRingIn {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.15) rotate(0deg); }
+      35%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(3)    rotate(-180deg); }
+    }
+    .kp-core {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 14px; height: 14px;
+      margin: -7px 0 0 -7px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff5d6, #cba128 40%, transparent 80%);
+      box-shadow: 0 0 30px rgba(255,245,214,0.9), 0 0 80px rgba(201,168,76,0.7), 0 0 160px rgba(201,168,76,0.4);
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-core { animation: kpCore 1.8s ease-out forwards; }
+    @keyframes kpCore {
+      0%   { opacity: 0; transform: scale(0); }
+      15%  { opacity: 1; transform: scale(1); }
+      55%  { opacity: 1; transform: scale(3.5); box-shadow: 0 0 80px #fff5d6, 0 0 160px rgba(201,168,76,1), 0 0 240px rgba(201,168,76,0.6); }
+      100% { opacity: 0; transform: scale(18); }
+    }
+    .kp-rays {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 4px; height: 4px;
+      margin: -2px 0 0 -2px;
+      opacity: 0;
+    }
+    .kp-ray {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 2px; height: 0;
+      transform-origin: top center;
+      background: linear-gradient(180deg, rgba(201,168,76,0.9), transparent 80%);
+      box-shadow: 0 0 14px rgba(201,168,76,0.7);
+    }
+    .kp-ray:nth-child(1){transform:translateX(-50%) rotate(0deg)}
+    .kp-ray:nth-child(2){transform:translateX(-50%) rotate(45deg)}
+    .kp-ray:nth-child(3){transform:translateX(-50%) rotate(90deg)}
+    .kp-ray:nth-child(4){transform:translateX(-50%) rotate(135deg)}
+    .kp-ray:nth-child(5){transform:translateX(-50%) rotate(180deg)}
+    .kp-ray:nth-child(6){transform:translateX(-50%) rotate(225deg)}
+    .kp-ray:nth-child(7){transform:translateX(-50%) rotate(270deg)}
+    .kp-ray:nth-child(8){transform:translateX(-50%) rotate(315deg)}
+    #kostyukPortal.active .kp-rays { animation: kpRaysFade 1.8s ease-out forwards 0.2s; }
+    #kostyukPortal.active .kp-ray  { animation: kpRayGrow 1.6s ease-out forwards 0.2s; }
+    @keyframes kpRaysFade { 0%{opacity:0} 30%{opacity:1} 100%{opacity:0.3} }
+    @keyframes kpRayGrow  { 0%{height:0} 100%{height:60vh} }
+    .kp-star {
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: #fff5d6;
+      box-shadow: 0 0 4px #fff5d6;
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-star { animation: kpStar 1.8s ease-out forwards; }
+    @keyframes kpStar {
+      0%   { opacity: 0; transform: scale(0); }
+      50%  { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.3); }
+    }
+    .kp-name {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) translateY(120px);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(22px, 4.5vw, 44px);
+      color: #cba128;
+      letter-spacing: 0.45em;
+      white-space: nowrap;
+      text-shadow: 0 0 24px rgba(201,168,76,0.6), 0 0 60px rgba(201,168,76,0.3);
+      display: flex;
+    }
+    .kp-name span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      filter: blur(6px);
+    }
+    #kostyukPortal.active .kp-name span { animation: kpLetter 0.6s ease-out forwards; }
+    @keyframes kpLetter {
+      0%   { opacity: 0; transform: translateY(20px); filter: blur(6px); }
+      60%  { opacity: 1; transform: translateY(0);    filter: blur(0); }
+      100% { opacity: 0; transform: translateY(-8px); filter: blur(2px); }
+    }
+    .kp-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-vignette { animation: kpVig 1.8s ease-out forwards; }
+    @keyframes kpVig { 0%{opacity:0} 100%{opacity:1} }
   </style>
 </head>
 <body>
@@ -467,13 +618,13 @@
   <!-- KOSTYUK PROJECT bottom nav -->
   <nav id="kpBottomNav" role="navigation" aria-label="Kostyuk Project">
     <div class="kp-tab-wrap">
-      <a class="kp-tab" href="/">
+      <a class="kp-tab" href="/" onclick="return kpNavigate(event, '/')">
         <img class="kp-tab-icon" src="/icons/magician.png" alt="" />
         <span>Частные заказы</span>
       </a>
     </div>
     <div class="kp-tab-wrap">
-      <a class="kp-tab" href="/school/">
+      <a class="kp-tab" href="/school/" onclick="return kpNavigate(event, '/school/')">
         <img class="kp-tab-icon" src="/icons/wand.png" alt="" />
         <span>Школа фокусов</span>
       </a>
@@ -486,7 +637,53 @@
     </div>
   </nav>
 
+  <!-- ===== KOSTYUK PORTAL ===== -->
+  <div id="kostyukPortal">
+    <div class="kp-vignette"></div>
+    <div class="kp-rays">
+      <div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div>
+      <div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div>
+    </div>
+    <div class="kp-ring-outer"></div>
+    <div class="kp-ring-inner"></div>
+    <div class="kp-core"></div>
+    <div class="kp-name" id="kpName"></div>
+  </div>
+
   <script>
+    // Инициализация портала
+    (function(){
+      var nameEl = document.getElementById('kpName');
+      'KOSTYUK PROJECT'.split('').forEach(function(ch, i){
+        var s = document.createElement('span');
+        s.textContent = ch === ' ' ? '\u00a0' : ch;
+        s.style.animationDelay = (0.45 + i * 0.07) + 's';
+        nameEl.appendChild(s);
+      });
+      var portal = document.getElementById('kostyukPortal');
+      for (var i = 0; i < 60; i++){
+        var st = document.createElement('div');
+        st.className = 'kp-star';
+        st.style.left = Math.random() * 100 + 'vw';
+        st.style.top  = Math.random() * 100 + 'vh';
+        st.style.animationDelay = (Math.random() * 0.8) + 's';
+        st.style.transform = 'scale(' + (0.5 + Math.random() * 1.5) + ')';
+        portal.appendChild(st);
+      }
+    })();
+
+    function kpNavigate(e, url) {
+      if (e) e.preventDefault();
+      var portal = document.getElementById('kostyukPortal');
+      if (portal) {
+        portal.classList.add('active');
+        setTimeout(function(){ window.location.href = url; }, 1750);
+      } else {
+        window.location.href = url;
+      }
+      return false;
+    }
+
     window.addEventListener('load', function() {
       setTimeout(function() {
         document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
