@@ -4,7 +4,7 @@
  * Доступ только администратору (x-admin-pass / x-admin-pass-b64).
  */
 import crypto from 'crypto';
-import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
 import {  setCors  } from '../_lib/cors';
 
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';

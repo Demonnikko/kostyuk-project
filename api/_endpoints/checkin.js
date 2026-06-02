@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import {  fbGet, fbPut  } from '../_lib/firebase';
 import {  setCors  } from '../_lib/cors';
-import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
 import {  validateTicketAccess  } from '../_lib/ticketAccess';
 
 const TICKET_LINK_SECRET = String(process.env.TICKET_LINK_SECRET || '').trim();

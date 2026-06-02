@@ -1,5 +1,5 @@
 import {  buildTicketLink, fbGet  } from '../_lib/ticketAccess';
-import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
 import {  setCors  } from '../_lib/cors';
 import {  getTrustedTelegramUserId  } from '../_lib/tg';
 import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';

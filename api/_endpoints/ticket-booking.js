@@ -1,6 +1,6 @@
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
-import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
 import {  getTrustedTelegramUserId  } from '../_lib/tg';
 import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';

@@ -4,7 +4,7 @@ import {
   getAdminPassword, setAdminPassword, readAdminPass,
   verifyPassword, isHashedPassword,
   SECURE_PASS_PATH
- } from '../_lib/adminAuth';
+ } from '../_lib/adminAuth.js';
 
 // ── Белый список разрешённых Firebase-путей ──
 const ALLOWED_PATH_PREFIXES = [

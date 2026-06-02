@@ -93,7 +93,7 @@ async function fbPatch(path, data) {
 }
 
 import {  setCors  } from '../_lib/cors';
-import {  isAdminAuthorized  } from '../_lib/adminAuth';
+import {  isAdminAuthorized  } from '../_lib/adminAuth.js';
 import {  buildTicketLink  } from '../_lib/ticketAccess';
 import {  getTrustedTelegramUserId  } from '../_lib/tg';
 import {  runSecretAutoCleanup  } from '../_lib/autoCleanup';
