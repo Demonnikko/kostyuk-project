@@ -1,9 +1,10 @@
 // /api/admin-chats — просмотр сохранённых диалогов с Екатериной
-// Защищено токеном ADMIN_TOKEN (передавать в заголовке x-admin-token или ?token=)
+// Защищено паролем администратора (x-admin-pass-b64) или токеном ADMIN_TOKEN (x-admin-token / ?token=)
 
-import { kv } from '@vercel/kv';
+const { kv } = require('@vercel/kv');
+const { isAdminAuthorized } = require('./_lib/adminAuth');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS — только админ-домены
   const allowedOrigins = [
     'https://site76-kostyuk.vercel.app',
@@ -16,21 +17,33 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-token');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-token, x-admin-pass, x-admin-pass-b64');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'Method Not Allowed' });
 
-  // Авторизация
-  const adminToken = process.env.ADMIN_TOKEN;
-  if (!adminToken) {
-    return res.status(500).json({ ok: false, error: 'ADMIN_TOKEN not configured' });
+  // 1) Проверка авторизации двумя способами:
+  // Способ А: Пароль администратора (через isAdminAuthorized)
+  let authorized = false;
+  try {
+    authorized = await isAdminAuthorized(req, req.body);
+  } catch (e) {
+    authorized = false;
   }
-  const token =
-    req.headers['x-admin-token'] ||
-    (req.query && req.query.token) ||
-    '';
-  if (token !== adminToken) {
+
+  // Способ Б: ADMIN_TOKEN (обратная совместимость)
+  if (!authorized) {
+    const adminToken = process.env.ADMIN_TOKEN;
+    const token =
+      req.headers['x-admin-token'] ||
+      (req.query && req.query.token) ||
+      '';
+    if (adminToken && token === adminToken) {
+      authorized = true;
+    }
+  }
+
+  if (!authorized) {
     return res.status(401).json({ ok: false, error: 'Unauthorized' });
   }
 
@@ -107,4 +120,4 @@ export default async function handler(req, res) {
     console.error('admin-chats error:', err);
     return res.status(500).json({ ok: false, error: 'Internal server error' });
   }
-}
+};

@@ -1,0 +1,4067 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Администратор — KOSTYUK PROJECT</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg: #080816;
+      --bg2: #0e0c20;
+      --bg3: #13112a;
+      --gold: #c9a228;
+      --gold2: #e8c540;
+      --text: #f0e6d0;
+      --dim: rgba(240, 230, 208, 0.55);
+      --border: rgba(201, 162, 39, 0.2);
+      --red: #e85348;
+      --green: #3dbf6e;
+      --blue: #4a8fd9;
+      --red2: #ff2a00;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100dvh;
+    }
+
+    /* ── Login ── */
+    .login-screen {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 162, 39, 0.1) 0%, transparent 60%);
+    }
+
+    .login-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .login-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: var(--gold);
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--dim);
+      margin-bottom: 28px;
+    }
+
+    .login-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--dim);
+      margin-bottom: 6px;
+      letter-spacing: .5px;
+    }
+
+    .inp {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(201, 162, 40, 0.2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .inp:focus {
+      border-color: rgba(201, 162, 40, 0.5);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #a87c14, #e8c540, #a87c14);
+      color: #09090f;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(201, 162, 39, 0.35);
+      transition: transform .12s;
+    }
+
+    .btn-primary:active {
+      transform: scale(.97);
+    }
+
+    .login-hint {
+      font-size: 12px;
+      color: var(--dim);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* Eye button */
+    .pass-wrap {
+      position: relative;
+    }
+
+    .pass-wrap .eye-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--dim);
+      font-size: 17px;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .pass-wrap .eye-btn:hover {
+      color: var(--gold);
+    }
+
+    .pass-wrap .inp {
+      padding-right: 40px;
+    }
+
+    /* ── App layout ── */
+    .app {
+      display: flex;
+      min-height: 100dvh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 210px;
+      flex-shrink: 0;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 20px;
+      position: sticky;
+      top: 0;
+      height: 100dvh;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    .sidebar-logo-sub {
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    /* Show switcher */
+    .show-switcher {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .show-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--dim);
+      transition: color .15s, background .15s;
+      letter-spacing: .2px;
+    }
+
+    .show-tab.active {
+      color: var(--gold);
+      background: rgba(201, 162, 39, 0.08);
+      box-shadow: inset 0 -2px 0 var(--gold);
+    }
+
+    .show-tab:hover:not(.active) {
+      color: var(--text);
+    }
+
+    /* Mobile show switcher (top of main) */
+    .mobile-show-switcher {
+      display: none;
+      border-bottom: 1px solid var(--border);
+      margin: -16px -16px 16px;
+    }
+
+    .sidebar-nav {
+      padding: 12px 0;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 20px;
+      font-size: 14px;
+      color: var(--dim);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: rgba(201, 162, 39, 0.08);
+      color: var(--gold);
+      border-left-color: var(--gold);
+    }
+
+    .nav-icon {
+      font-size: 16px;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--red);
+      color: #fff;
+      border-radius: 10px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(201, 162, 39, 0.25);
+      color: var(--dim);
+      border-radius: 8px;
+      padding: 9px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-logout:hover {
+      color: var(--text);
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      padding: 24px;
+      max-width: calc(100% - 210px);
+      overflow-x: hidden;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    /* Filter tabs */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .ftab {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--dim);
+      transition: all .15s;
+    }
+
+    .ftab.active {
+      background: rgba(201, 162, 39, 0.15);
+      border-color: rgba(201, 162, 39, 0.4);
+      color: var(--gold);
+    }
+
+    /* Booking cards */
+    .booking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .booking-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color .2s;
+    }
+
+    .booking-card:hover {
+      border-color: rgba(201, 162, 39, 0.4);
+    }
+
+    .bk-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .bk-id {
+      font-size: 12px;
+      color: var(--dim);
+      font-family: monospace;
+    }
+
+    .bk-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .bk-phone {
+      font-size: 13px;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pill-pending-pay {
+      background: rgba(201, 162, 39, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+    }
+
+    .pill-pending-conf {
+      background: rgba(74, 143, 217, 0.15);
+      color: var(--blue);
+      border: 1px solid rgba(74, 143, 217, 0.3);
+    }
+
+    .pill-confirmed {
+      background: rgba(61, 191, 110, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(61, 191, 110, 0.3);
+    }
+
+    .pill-cancelled {
+      background: rgba(232, 83, 72, 0.12);
+      color: var(--red);
+      border: 1px solid rgba(232, 83, 72, 0.25);
+    }
+
+    .pill-refunded {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--dim);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .bk-seats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .bk-seat-tag {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 12px;
+    }
+
+    .bk-meta {
+      font-size: 12px;
+      color: var(--dim);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .bk-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-confirm {
+      background: rgba(61, 191, 110, 0.15);
+      border: 1px solid rgba(61, 191, 110, 0.4);
+      color: var(--green);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s;
+    }
+
+    .btn-confirm:hover {
+      background: rgba(61, 191, 110, 0.25);
+    }
+
+    .btn-cancel {
+      background: rgba(232, 83, 72, 0.1);
+      border: 1px solid rgba(232, 83, 72, 0.3);
+      color: var(--red);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(232, 83, 72, 0.2);
+    }
+
+    .btn-view-ticket {
+      background: rgba(201, 162, 39, 0.1);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      color: var(--gold);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-vk-dm {
+      background: rgba(74, 107, 188, 0.12);
+      border: 1px solid rgba(74, 107, 188, 0.35);
+      color: #7b9fe8;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 12px;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .user-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(201, 162, 39, 0.15);
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .user-meta {
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    .review-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+
+    .review-stars {
+      color: #c9a228;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .review-text {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.6;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .review-meta {
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    /* Settings form */
+    .settings-grid {
+      display: grid;
+      gap: 20px;
+      max-width: 500px;
+    }
+
+    .settings-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .settings-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 14px;
+      letter-spacing: .5px;
+    }
+
+    .btn-save-settings {
+      background: rgba(201, 162, 39, 0.15);
+      border: 1px solid rgba(201, 162, 39, 0.4);
+      color: var(--gold);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      margin-top: 12px;
+      transition: background .15s;
+    }
+
+    .btn-save-settings:hover {
+      background: rgba(201, 162, 39, 0.25);
+    }
+
+    /* Promo codes */
+    .promo-create {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      max-width: 500px;
+    }
+
+    .promo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .promo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 600px;
+    }
+
+    .promo-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .promo-code {
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 1px;
+      flex: 1;
+    }
+
+    .promo-desc {
+      font-size: 12px;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    .promo-uses {
+      font-size: 12px;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .promo-inactive {
+      opacity: 0.45;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      border: none;
+    }
+
+    .btn-sm-toggle {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+    }
+
+    .btn-sm-toggle.active {
+      background: rgba(61, 191, 110, 0.15);
+      color: var(--green);
+    }
+
+    .btn-sm-del {
+      background: rgba(232, 83, 72, 0.1);
+      color: var(--red);
+    }
+
+    /* Hall map mini */
+    .hall-mini {
+      max-width: 420px;
+    }
+
+    .hall-mini svg {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(12, 10, 28, .97);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .5);
+      transform: translateY(-80px);
+      opacity: 0;
+      transition: transform .3s, opacity .3s;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--dim);
+      font-size: 14px;
+    }
+
+    .empty-icon {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* ── Dashboard styles ── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .25s, transform .2s;
+    }
+
+    .metric-card:hover {
+      border-color: rgba(201, 162, 39, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(201, 162, 39, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .metric-title {
+      font-size: 11px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gold2);
+      font-family: 'Playfair Display', serif;
+    }
+
+    .metric-sub {
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .metric-icon {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      font-size: 32px;
+      opacity: 0.15;
+    }
+
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .quick-link-card {
+      background: linear-gradient(135deg, var(--bg2) 0%, rgba(201,162,39,0.03) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .25s, transform .2s, box-shadow .2s;
+    }
+
+    .quick-link-card:hover {
+      border-color: rgba(201, 162, 39, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(201, 162, 39, 0.06);
+    }
+
+    .ql-icon {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      background: rgba(201, 162, 39, 0.08);
+      border: 1px solid rgba(201, 162, 39, 0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .ql-body {
+      flex: 1;
+    }
+
+    .ql-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .ql-desc {
+      font-size: 11px;
+      color: var(--dim);
+    }
+
+    .ql-arrow {
+      font-size: 16px;
+      color: var(--dim);
+      transition: transform .2s;
+    }
+
+    .quick-link-card:hover .ql-arrow {
+      transform: translateX(4px);
+      color: var(--gold);
+    }
+
+    .dashboard-sections {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-sections {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .activity-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      height: 100%;
+    }
+
+    .activity-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .activity-timeline::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -16px;
+      top: 4px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 2px solid var(--bg);
+      transform: translateX(-4px);
+    }
+
+    .timeline-dot.green { background: var(--green); }
+    .timeline-dot.blue { background: var(--blue); }
+    .timeline-dot.gold { background: var(--gold); }
+    .timeline-dot.red { background: var(--red); }
+
+    .timeline-time {
+      font-size: 11px;
+      color: var(--dim);
+      margin-bottom: 2px;
+    }
+
+    .timeline-content {
+      color: var(--text);
+    }
+
+    .timeline-content strong {
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* ── Split-view chats styles ── */
+    .chats-container {
+      display: flex;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      height: calc(100vh - 130px);
+      min-height: 500px;
+      overflow: hidden;
+    }
+
+    .chats-sidebar {
+      width: 320px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.01);
+      flex-shrink: 0;
+    }
+
+    .chats-search-box {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chats-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(201, 162, 39, 0.08);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: background .2s;
+    }
+
+    .chat-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .chat-item.active {
+      background: rgba(201, 162, 39, 0.07);
+      box-shadow: inset 3px 0 0 var(--gold);
+    }
+
+    .chat-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-item-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      padding-right: 8px;
+    }
+
+    .chat-item-time {
+      font-size: 10.5px;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+
+    .chat-item-preview {
+      font-size: 12px;
+      color: var(--dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .chat-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    .badge-contact {
+      background: rgba(61, 191, 110, 0.15);
+      border: 1px solid rgba(61, 191, 110, 0.3);
+      color: var(--green);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 600;
+    }
+
+    .chat-window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      position: relative;
+    }
+
+    .chat-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: var(--dim);
+      font-size: 14px;
+      text-align: center;
+      padding: 24px;
+      background: radial-gradient(circle at center, rgba(201, 162, 39, 0.03) 0%, transparent 60%);
+    }
+
+    .chat-placeholder-icon {
+      font-size: 44px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .chat-header {
+      padding: 14px 20px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .chat-header-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-header-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-header-subtitle {
+      font-size: 11.5px;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    .quiz-summary {
+      background: rgba(201, 162, 39, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 12px 20px 0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .quiz-summary-title {
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 6px;
+      font-size: 12.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quiz-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 6px 16px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(201, 162, 39, 0.02) 0%, transparent 80%);
+    }
+
+    .msg-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .msg-bubble-wrap {
+      display: flex;
+      gap: 10px;
+      max-width: 80%;
+    }
+
+    .msg-bubble-wrap.bot {
+      align-self: flex-start;
+    }
+
+    .msg-bubble-wrap.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(201, 162, 39, 0.15);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .msg-avatar.bot {
+      background: linear-gradient(135deg, #a87c14, #e8c540);
+      color: #000;
+      border: none;
+    }
+
+    .msg-bubble {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .bot .msg-bubble {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border-top-left-radius: 2px;
+    }
+
+    .user .msg-bubble {
+      background: rgba(201, 162, 39, 0.09);
+      border: 1px solid var(--border);
+      color: #f7eed8;
+      border-top-right-radius: 2px;
+    }
+
+    .msg-time {
+      font-size: 9.5px;
+      color: var(--dim);
+      margin-top: 2px;
+      align-self: flex-end;
+    }
+
+    .bot .msg-time {
+      margin-left: 38px;
+    }
+
+    .user .msg-time {
+      margin-right: 38px;
+    }
+
+    .btn-chat-back {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+    }
+
+    /* Mobile adaptation */
+    @media (max-width: 600px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        max-width: 100%;
+        padding: 16px 16px 80px;
+      }
+
+      .mobile-show-switcher {
+        display: flex;
+      }
+
+      /* Split chats mobile view */
+      .chats-container {
+        height: calc(100vh - 160px);
+      }
+
+      .chats-sidebar {
+        width: 100%;
+        border-right: none;
+      }
+
+      .chat-window {
+        width: 100%;
+      }
+
+      .chats-container.chat-open .chats-sidebar {
+        display: none;
+      }
+
+      .chats-container:not(.chat-open) .chat-window {
+        display: none;
+      }
+
+      .btn-chat-back {
+        display: block;
+      }
+
+      .quiz-summary {
+        margin: 10px 12px 0;
+        padding: 10px;
+      }
+
+      .quiz-summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-messages {
+        padding: 12px;
+      }
+
+      .msg-bubble-wrap {
+        max-width: 90%;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .metric-card {
+        padding: 14px;
+      }
+
+      .metric-value {
+        font-size: 22px;
+      }
+
+      .quick-links-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg2);
+        border-top: 1px solid var(--border);
+        z-index: 50;
+      }
+
+      .bnav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px 4px;
+        font-size: 10px;
+        color: var(--dim);
+        cursor: pointer;
+        transition: color .15s;
+      }
+
+      .bnav-item.active {
+        color: var(--gold);
+      }
+
+      .bnav-icon {
+        font-size: 20px;
+        margin-bottom: 2px;
+      }
+    }
+
+    @media (min-width: 601px) {
+      .bottom-nav {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Login -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-icon">🗝️</div>
+    <div class="login-title">Панель управления</div>
+    <div class="login-sub">KOSTYUK PROJECT</div>
+    <div class="login-card">
+      <div class="form-group">
+        <label>Пароль администратора</label>
+        <div class="pass-wrap">
+          <input type="password" class="inp" id="loginPwd" placeholder="••••••••"
+            onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="eye-btn" type="button" onclick="togglePass('loginPwd',this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Войти</button>
+      <div class="login-hint" style="opacity:0.4">Введите пароль администратора</div>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" class="app" style="display:none">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-title">Панель управления</div>
+        <div class="sidebar-logo-sub">KOSTYUK PROJECT</div>
+      </div>
+
+      <!-- Show switcher (sidebar) -->
+      <div class="show-switcher">
+        <div class="show-tab active" data-show="secret" onclick="switchShow('secret')">🎭 Секрет</div>
+        <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')">😈 ХУЛИgan</div>
+      </div>
+
+      <!-- Глобальный nav -->
+      <nav class="sidebar-nav" id="navGlobal" style="border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px;">
+        <div class="nav-item active" onclick="showSection('dashboard')" data-sec="dashboard">
+          <span class="nav-icon">📊</span> Дашборд
+        </div>
+        <div class="nav-item" onclick="showSection('chats')" data-sec="chats">
+          <span class="nav-icon">💬</span> Диалоги AI
+        </div>
+      </nav>
+
+      <!-- Секрет nav -->
+      <nav class="sidebar-nav" id="navSecret">
+        <div class="nav-item" onclick="showSection('bookings')" data-sec="bookings">
+          <span class="nav-icon">📋</span> Заявки
+          <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-item" onclick="showSection('users')" data-sec="users">
+          <span class="nav-icon">👥</span> Пользователи
+        </div>
+        <div class="nav-item" onclick="showSection('reviews')" data-sec="reviews">
+          <span class="nav-icon">⭐</span> Отзывы
+        </div>
+        <div class="nav-item" onclick="showSection('settings')" data-sec="settings">
+          <span class="nav-icon">⚙️</span> Настройки
+        </div>
+        <div class="nav-item" onclick="showSection('promo')" data-sec="promo">
+          <span class="nav-icon">🎫</span> Промокоды
+        </div>
+        <div class="nav-item" onclick="showSection('hall')" data-sec="hall">
+          <span class="nav-icon">🗺</span> Схема зала
+        </div>
+        <div class="nav-item" onclick="showSection('broadcast')" data-sec="broadcast">
+          <span class="nav-icon">📣</span> Рассылки
+        </div>
+      </nav>
+
+      <!-- ХУЛИgan nav -->
+      <nav class="sidebar-nav" id="navHuligan" style="display:none">
+        <div class="nav-item" onclick="showSection('hul-bookings')" data-sec="hul-bookings">
+          <span class="nav-icon">📋</span> Заявки
+          <span class="nav-badge" id="huliganBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-item" onclick="showSection('hul-users')" data-sec="hul-users">
+          <span class="nav-icon">👥</span> Пользователи
+        </div>
+        <div class="nav-item" onclick="showSection('hul-reviews')" data-sec="hul-reviews">
+          <span class="nav-icon">⭐</span> Отзывы
+        </div>
+        <div class="nav-item" onclick="showSection('hul-settings')" data-sec="hul-settings">
+          <span class="nav-icon">⚙️</span> Настройки
+        </div>
+        <div class="nav-item" onclick="showSection('hul-promo')" data-sec="hul-promo">
+          <span class="nav-icon">🎫</span> Промокоды
+        </div>
+        <div class="nav-item" onclick="showSection('broadcast')" data-sec="broadcast">
+          <span class="nav-icon">📣</span> Рассылки
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()">↩ Выйти</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+      <!-- Mobile show switcher -->
+      <div class="mobile-show-switcher">
+        <div class="show-tab active" data-show="secret" onclick="switchShow('secret')" style="padding:12px 8px">🎭
+          Секрет</div>
+        <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')" style="padding:12px 8px">😈 ХУЛИgan
+        </div>
+      </div>
+
+      <!-- Dashboard Section -->
+      <div class="section active" id="sec-dashboard">
+        <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>📊 Дашборд аналитики</span>
+          <button class="btn-sm" onclick="refreshDashboard()" style="background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.3); color:var(--gold); padding:8px 14px; border-radius:8px; display:flex; align-items:center; gap:6px;">🔄 Обновить</button>
+        </div>
+        
+        <!-- Metrics Grid -->
+        <div class="dashboard-grid">
+          <div class="metric-card">
+            <span class="metric-title">Выручка за сегодня</span>
+            <span class="metric-value" id="dashRevenue">0 ₽</span>
+            <span class="metric-sub" id="dashRevenueSub">Секрет + ХУЛИgan</span>
+            <span class="metric-icon">💰</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Билетов продано сегодня</span>
+            <span class="metric-value" id="dashTicketsSold">0 шт</span>
+            <span class="metric-sub" id="dashTicketsSoldSub">Оплаченные заказы</span>
+            <span class="metric-icon">🎫</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Ожидают подтверждения</span>
+            <span class="metric-value" id="dashPendingConf">0</span>
+            <span class="metric-sub" id="dashPendingConfSub">Требуют вашего внимания</span>
+            <span class="metric-icon">⏳</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Активных чатов сегодня</span>
+            <span class="metric-value" id="dashActiveChats">0</span>
+            <span class="metric-sub" id="dashActiveChatsSub">Сессии с ИИ помощником</span>
+            <span class="metric-icon">🤖</span>
+          </div>
+        </div>
+
+        <!-- Quick Links Grid -->
+        <div class="section-title" style="font-size:16px; margin-top:28px; margin-bottom:12px;">🏠 Быстрые переходы на ваши сайты</div>
+        <div class="quick-links-grid">
+          <a href="/" target="_blank" class="quick-link-card">
+            <div class="ql-icon">🏠</div>
+            <div class="ql-body">
+              <div class="ql-title">Главный сайт</div>
+              <div class="ql-desc">Презентация бренда Дмитрия Костюка</div>
+            </div>
+            <div class="ql-arrow">➔</div>
+          </a>
+          <a href="/concerts/" target="_blank" class="quick-link-card">
+            <div class="ql-icon">🎸</div>
+            <div class="ql-body">
+              <div class="ql-title">Шоу & Билеты</div>
+              <div class="ql-desc">Покупка билетов на «Секрет» и «ХУЛИgan»</div>
+            </div>
+            <div class="ql-arrow">➔</div>
+          </a>
+          <a href="/school/" target="_blank" class="quick-link-card">
+            <div class="ql-icon">🪄</div>
+            <div class="ql-body">
+              <div class="ql-title">Школа магии</div>
+              <div class="ql-desc">Обучение фокусам, курсы и видео</div>
+            </div>
+            <div class="ql-arrow">➔</div>
+          </a>
+        </div>
+
+        <!-- Dashboard Layout Bottom: Activity Timeline -->
+        <div class="dashboard-sections">
+          <div class="activity-card">
+            <div class="activity-title">⚡ Живая активность и заказы</div>
+            <div class="activity-timeline" id="dashTimeline">
+              <div class="empty-state">⏳ Сбор последних событий...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chats Section -->
+      <div class="section" id="sec-chats">
+        <div class="section-title">💬 Диалоги с AI-помощником Екатериной</div>
+        
+        <div class="chats-container" id="chatsContainer">
+          <!-- Sidebar: Chats list -->
+          <div class="chats-sidebar">
+            <div class="chats-search-box">
+              <input class="inp" id="chatsSearch" placeholder="Поиск по имени или телефону..." oninput="filterChatsList()" style="padding: 8px 12px; font-size:13px; border-radius:8px;">
+            </div>
+            <div class="chats-list" id="chatsList">
+              <div class="empty-state">⏳ Загрузка списка диалогов...</div>
+            </div>
+          </div>
+          
+          <!-- Content window: Chat history -->
+          <div class="chat-window" id="chatWindow">
+            <!-- Header (shows when chat selected) -->
+            <div class="chat-header" id="chatHeader" style="display:none">
+              <button class="btn-chat-back" onclick="closeActiveChat()">⬅</button>
+              <div class="chat-header-info">
+                <div class="chat-header-title" id="chatHeaderTitle">—</div>
+                <div class="chat-header-subtitle" id="chatHeaderSubtitle">—</div>
+              </div>
+              <div id="chatHeaderActions">
+                <!-- Direct contact links inject here -->
+              </div>
+            </div>
+            
+            <!-- Quiz Context Summary (shows if quiz answered) -->
+            <div class="quiz-summary" id="chatQuizSummary" style="display:none">
+              <div class="quiz-summary-title">📝 Ответы в квизе пользователя:</div>
+              <div class="quiz-summary-grid" id="chatQuizGrid">
+                <!-- Quiz values inject here -->
+              </div>
+            </div>
+            
+            <!-- Chat history messages -->
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-placeholder">
+                <div class="chat-placeholder-icon">💬</div>
+                <div>Выберите диалог в левой колонке для просмотра истории переписки с ИИ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Tools Menu Section -->
+      <div class="section" id="sec-mobile-menu">
+        <div class="section-title">🛠️ Управление шоу <span id="mobileMenuShowName" style="color: var(--gold)">«Секрет»</span></div>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px;" id="mobileMenuGrid">
+          <!-- Buttons render dynamically based on active show (secret / huligan) -->
+        </div>
+      </div>
+
+      <!-- ══ СЕКРЕТ ══ -->
+
+      <!-- Bookings -->
+      <div class="section" id="sec-bookings">
+        <div class="section-title">📋 Заявки — Шоу «Секрет»</div>
+        <details style="margin-bottom:16px">
+          <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--gold);padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;list-style:none">
+            ➕ Создать билет вручную
+          </summary>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:14px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="form-group" style="margin-bottom:0">
+                <label>Имя и фамилия</label>
+                <input class="inp" id="manualName" placeholder="Иван Петров">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Телефон</label>
+                <input class="inp" id="manualPhone" placeholder="+7 (999) 000-00-00">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Зона</label>
+                <select class="inp" id="manualZone">
+                  <option value="vip">VIP — 1400 ₽</option>
+                  <option value="standart" selected>Стандарт — 1100 ₽</option>
+                  <option value="econom">Эконом — 800 ₽</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Стол № / Место №</label>
+                <div style="display:flex;gap:6px">
+                  <input class="inp" id="manualTable" type="number" min="1" max="50" placeholder="1" style="width:50%">
+                  <input class="inp" id="manualSeat" type="number" min="0" max="20" placeholder="0" style="width:50%">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Цена (₽, пусто = по зоне)</label>
+                <input class="inp" id="manualPrice" type="number" min="0" placeholder="">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>VK ID покупателя (для уведомления)</label>
+                <input class="inp" id="manualVkId" type="number" placeholder="123456789">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Telegram ID (chat_id)</label>
+                <input class="inp" id="manualTgId" type="number" placeholder="269357522">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Telegram @username (опционально)</label>
+                <input class="inp" id="manualTgUsername" placeholder="@username">
+              </div>
+            </div>
+            <button class="btn-save-settings" onclick="adminCreateSecretTicket()" style="width:100%">🎟 Создать билет и выдать</button>
+            <div id="manualCreateResult" style="margin-top:8px;font-size:12px"></div>
+          </div>
+        </details>
+        <div class="filter-tabs">
+          <div class="ftab active" onclick="filterBookings('all',this)">Все</div>
+          <div class="ftab" onclick="filterBookings('pending_payment',this)">Ожидают оплаты</div>
+          <div class="ftab" onclick="filterBookings('pending_confirmation',this)">Ждут подтверждения</div>
+          <div class="ftab" onclick="filterBookings('confirmed',this)">Подтверждённые</div>
+          <div class="ftab" onclick="filterBookings('cancelled',this)">Отменённые</div>
+        </div>
+        <div class="booking-list" id="bookingList">
+          <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка заявок...</div>
+        </div>
+      </div>
+
+      <!-- Settings (Секрет) -->
+      <div class="section" id="sec-settings">
+        <div class="section-title">⚙️ Настройки — Шоу «Секрет»</div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="settings-card-title">🎭 Шоу</div>
+            <div class="form-group">
+              <label>Название</label>
+              <input class="inp" id="cfgTitle" placeholder="Шоу «Секрет»">
+            </div>
+            <div class="form-group">
+              <label>Дата</label>
+              <input class="inp" id="cfgDate" placeholder="28 февраля 2026">
+            </div>
+            <div class="form-group">
+              <label>Время</label>
+              <input class="inp" id="cfgTime" placeholder="18:00">
+            </div>
+            <div class="form-group">
+              <label>Площадка</label>
+              <input class="inp" id="cfgVenue" placeholder="Арт-площадка Лампа">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Адрес</label>
+              <input class="inp" id="cfgAddress" placeholder="Ярославль, ул. Нахимсона, 21">
+            </div>
+            <button class="btn-save-settings" onclick="saveShow()">💾 Сохранить</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">⛔ Продажи билетов</div>
+            <div id="secretSalesStateBadge" style="margin-bottom:14px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-size:13px;color:var(--dim)">
+              Статус продаж загружается...
+            </div>
+            <label style="display:flex;gap:10px;align-items:flex-start;line-height:1.5;font-size:13px;color:var(--text);margin-bottom:10px">
+              <input type="checkbox" id="cfgSalesPaused" onchange="renderSalesStateSummary('secret')"
+                style="margin-top:2px;accent-color:#e85348;transform:scale(1.12);flex-shrink:0">
+              <span>Остановить новые продажи билетов на шоу «Секрет»</span>
+            </label>
+            <div style="font-size:12px;color:var(--dim);line-height:1.55;margin-bottom:0">
+              Когда режим включён, новые брони и новые покупки больше не создаются. Уже оформленные билеты при этом сохраняются.
+            </div>
+            <button class="btn-save-settings" onclick="saveSecretSalesState()">⛔ Сохранить статус продаж</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">💰 Цены</div>
+            <div class="form-group">
+              <label>VIP (₽)</label>
+              <input class="inp" id="priceVip" type="number" placeholder="1400">
+            </div>
+            <div class="form-group">
+              <label>Стандарт (₽)</label>
+              <input class="inp" id="priceStandart" type="number" placeholder="1100">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Эконом (₽)</label>
+              <input class="inp" id="priceEconom" type="number" placeholder="800">
+            </div>
+            <button class="btn-save-settings" onclick="savePrices()">💾 Сохранить</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">💳 Реквизиты для оплаты</div>
+            <div class="form-group">
+              <label>СБП — номер телефона</label>
+              <input class="inp" id="paymentSbp" placeholder="+7 (909) 276-33-86">
+            </div>
+            <div class="form-group">
+              <label>Номер карты</label>
+              <input class="inp" id="paymentCard" placeholder="4276 XXXX XXXX XXXX">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Имя владельца карты</label>
+              <input class="inp" id="paymentHolder" placeholder="DMITRIY KOSTYUK">
+            </div>
+            <button class="btn-save-settings" onclick="savePayment()">💾 Сохранить</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">🔐 Изменить пароль</div>
+            <div class="form-group">
+              <label>Текущий пароль</label>
+              <div class="pass-wrap">
+                <input class="inp" id="oldPwd" type="password" placeholder="••••••••">
+                <button class="eye-btn" type="button" onclick="togglePass('oldPwd',this)" tabindex="-1">👁</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Новый пароль</label>
+              <div class="pass-wrap">
+                <input class="inp" id="newPwd" type="password" placeholder="••••••••">
+                <button class="eye-btn" type="button" onclick="togglePass('newPwd',this)" tabindex="-1">👁</button>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Повторите пароль</label>
+              <div class="pass-wrap">
+                <input class="inp" id="newPwd2" type="password" placeholder="••••••••">
+                <button class="eye-btn" type="button" onclick="togglePass('newPwd2',this)" tabindex="-1">👁</button>
+              </div>
+            </div>
+            <button class="btn-save-settings" onclick="changePassword()">💾 Сменить пароль</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Promo codes (Секрет) -->
+      <div class="section" id="sec-promo">
+        <div class="section-title">🎫 Промокоды — Шоу «Секрет»</div>
+        <div class="promo-create">
+          <div style="font-size:14px;font-weight:600;color:var(--gold);margin-bottom:14px">Создать промокод</div>
+          <div class="promo-grid">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Код (латиница)</label>
+              <input class="inp" id="newPromoCode" placeholder="ДРУГ2026" style="text-transform:uppercase">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Тип скидки</label>
+              <select class="inp" id="newPromoType" onchange="togglePromoValue()">
+                <option value="percent">Процент (20%)</option>
+                <option value="fixed">Сумма (−500 ₽)</option>
+                <option value="free">Бесплатный (0 ₽)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0" id="promoValueRow">
+              <label>Значение</label>
+              <input class="inp" id="newPromoValue" type="number" placeholder="20">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Количество использований</label>
+              <select class="inp" id="newPromoUsesSelect" onchange="togglePromoUsesCustom()">
+                <option value="-1">Безлимитно ∞</option>
+                <option value="1">1 раз</option>
+                <option value="3">3 раза</option>
+                <option value="5">5 раз</option>
+                <option value="10">10 раз</option>
+                <option value="20">20 раз</option>
+                <option value="custom">Указать своё...</option>
+              </select>
+              <input class="inp" id="newPromoUsesCustom" type="number" min="1" placeholder="Введите число" style="display:none;margin-top:8px">
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:12px;margin-bottom:0">
+            <label>Описание (необязательно)</label>
+            <input class="inp" id="newPromoDesc" placeholder="Для друзей и партнёров">
+          </div>
+          <div class="promo-grid" style="margin-top:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Действует с (необязательно)</label>
+              <input class="inp" id="newPromoFrom" type="date">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Действует до (необязательно)</label>
+              <input class="inp" id="newPromoUntil" type="date">
+            </div>
+          </div>
+          <button class="btn-save-settings" onclick="createPromo()">+ Создать промокод</button>
+        </div>
+        <div class="promo-list" id="promoList">
+          <div class="empty-state"><span class="empty-icon">🎫</span>Промокодов пока нет</div>
+        </div>
+      </div>
+
+      <!-- Users (Секрет) -->
+      <div class="section" id="sec-users">
+        <div class="section-title">👥 Пользователи — Шоу «Секрет»</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Все пользователи, которые оформляли билеты.
+          Нажми на имя — откроется диалог ВКонтакте.</div>
+        <div id="usersList">
+          <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- Reviews (Секрет) -->
+      <div class="section" id="sec-reviews">
+        <div class="section-title">⭐ Отзывы — Шоу «Секрет»</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Отзывы гостей о шоу. За каждый отзыв
+          пользователь получает промокод 15% на следующее шоу.</div>
+        <div id="reviewsList">
+          <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- Hall map -->
+      <div class="section" id="sec-hall">
+        <div class="section-title">🗺 Схема зала — Шоу «Секрет»</div>
+        <div style="margin-bottom:12px;font-size:13px;color:var(--dim)">
+          Текущий статус мест. Обновляется при переходе в раздел.
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;">
+          <span><span
+              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;opacity:0.25;margin-right:4px"></span>VIP
+            — свободно</span>
+          <span><span
+              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;opacity:0.25;margin-right:4px"></span>Стандарт
+            — свободно</span>
+          <span><span
+              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;opacity:0.25;margin-right:4px"></span>Эконом
+            — свободно</span>
+          <span><span
+              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;border:1.5px solid #fff;margin-right:4px"></span>✓
+            Продан</span>
+          <span><span
+              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;border:1.5px solid #ffcc44;margin-right:4px"></span>⏳
+            Ожидает</span>
+          <span><span
+              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgba(201,162,39,0.35);margin-right:4px"></span>🕐
+            Бронь</span>
+        </div>
+        <div id="hallCounter" style="margin-bottom:12px;font-size:13px;font-weight:600"></div>
+        <div class="hall-mini">
+          <svg id="adminHallSvg" viewBox="0 0 490 515" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="ag" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="3" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <rect x="110" y="14" width="270" height="44" rx="7" fill="rgba(201,162,39,0.08)"
+              stroke="rgba(201,162,39,0.45)" stroke-width="1.5" />
+            <text x="245" y="41" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif"
+              font-size="11" fill="rgba(201,162,39,0.5)" font-weight="600" letter-spacing="5">С Ц Е Н А</text>
+            <g id="adminHall"></g>
+          </svg>
+        </div>
+        <button class="btn-save-settings" onclick="loadAdminHall()">🔄 Обновить</button>
+      </div>
+
+      <!-- Broadcasts -->
+      <div class="section" id="sec-broadcast">
+        <div class="section-title">📣 Рассылки — VK + Telegram</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:14px">
+          Отправка идёт по всем пользователям из баз: `bot_users`, `ticket_users`, `ticket_bookings`, `huligan_bookings`.
+        </div>
+        <div class="settings-card" style="max-width:760px">
+          <div class="form-group">
+            <label>Текст рассылки</label>
+            <textarea class="inp" id="broadcastMessage" rows="7" placeholder="Введите сообщение для рассылки..." style="resize:vertical"></textarea>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 16px">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)">
+              <input type="checkbox" id="broadcastVk" checked> VK
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)">
+              <input type="checkbox" id="broadcastTg" checked> Telegram
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)">
+              <input type="checkbox" id="broadcastDryRun"> Только проверка (без отправки)
+            </label>
+          </div>
+          <button class="btn-save-settings" onclick="sendBroadcast()" style="max-width:300px">🚀 Отправить рассылку</button>
+          <div id="broadcastResult" style="margin-top:12px;font-size:12px;line-height:1.5;color:var(--dim)"></div>
+        </div>
+      </div>
+
+      <!-- ══ ХУЛИgan ══ -->
+
+      <!-- Заявки (ХУЛИgan) -->
+      <div class="section" id="sec-hul-bookings">
+        <div class="section-title">📋 Заявки — ХУЛИgan</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:12px">
+          Заказы билетов на шоу ХУЛИgan. Нажми «Подтвердить» — пользователь получит билет автоматически.
+        </div>
+        <details style="margin-bottom:16px">
+          <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--gold);padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;list-style:none">
+            ➕ Создать билет вручную
+          </summary>
+          <div id="hulManualForm" style="background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:14px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="form-group" style="margin-bottom:0">
+                <label>Имя и фамилия</label>
+                <input class="inp" id="hulManualName" placeholder="Иван Петров">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Тип билета</label>
+                <select class="inp" id="hulManualType">
+                  <option value="">Загрузка...</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Цена (₽, пусто = стандартная)</label>
+                <input class="inp" id="hulManualPrice" type="number" min="0" placeholder="">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>VK ID покупателя (для уведомления)</label>
+                <input class="inp" id="hulManualVkId" type="number" placeholder="123456789">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Telegram ID (chat_id)</label>
+                <input class="inp" id="hulManualTgId" type="number" placeholder="269357522">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label>Telegram @username (опционально)</label>
+                <input class="inp" id="hulManualTgUsername" placeholder="@username">
+              </div>
+            </div>
+            <button class="btn-save-settings" onclick="adminCreateHuliganTicket()" style="width:100%">🎟 Создать билет и выдать</button>
+            <div id="hulManualCreateResult" style="margin-top:8px;font-size:12px"></div>
+          </div>
+        </details>
+        <div id="huliganOrdersList">
+          <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- Пользователи (ХУЛИgan) -->
+      <div class="section" id="sec-hul-users">
+        <div class="section-title">👥 Пользователи — ХУЛИgan</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Все, кто покупал билеты на ХУЛИgan.</div>
+        <div id="huliganUsersList">
+          <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- Отзывы (ХУЛИgan) -->
+      <div class="section" id="sec-hul-reviews">
+        <div class="section-title">⭐ Отзывы — ХУЛИgan</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Отзывы гостей о шоу ХУЛИgan.</div>
+        <div id="huliganReviewsList">
+          <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- Настройки (ХУЛИgan) -->
+      <div class="section" id="sec-hul-settings">
+        <div class="section-title">⚙️ Настройки — ХУЛИgan</div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="settings-card-title">😈 Шоу</div>
+            <div class="form-group">
+              <label>Название</label>
+              <input class="inp" id="hulCfgTitle" placeholder="ХУЛИgan 18+">
+            </div>
+            <div class="form-group">
+              <label>Дата</label>
+              <input class="inp" id="hulCfgDate" placeholder="15 марта 2026">
+            </div>
+            <div class="form-group">
+              <label>Время</label>
+              <input class="inp" id="hulCfgTime" placeholder="20:00">
+            </div>
+            <div class="form-group">
+              <label>Площадка</label>
+              <input class="inp" id="hulCfgVenue" placeholder="Клуб Вельвет">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Адрес</label>
+              <input class="inp" id="hulCfgAddress" placeholder="Ярославль, ул. Свободы, 12">
+            </div>
+            <button class="btn-save-settings" onclick="saveHuliganShow()">💾 Сохранить</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">⛔ Продажи билетов</div>
+            <div id="huliganSalesStateBadge" style="margin-bottom:14px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-size:13px;color:var(--dim)">
+              Статус продаж загружается...
+            </div>
+            <label style="display:flex;gap:10px;align-items:flex-start;line-height:1.5;font-size:13px;color:var(--text);margin-bottom:10px">
+              <input type="checkbox" id="hulSalesPaused" onchange="renderSalesStateSummary('huligan')"
+                style="margin-top:2px;accent-color:#e85348;transform:scale(1.12);flex-shrink:0">
+              <span>Остановить новые продажи билетов на ХУЛИgan</span>
+            </label>
+            <div style="font-size:12px;color:var(--dim);line-height:1.55;margin-bottom:0">
+              Когда режим включён, сайт перестаёт создавать новые брони и останавливает новые продажи по ХУЛИgan.
+            </div>
+            <button class="btn-save-settings" onclick="saveHuliganSalesState()">⛔ Сохранить статус продаж</button>
+          </div>
+
+          <div class="settings-card" style="grid-column:span 2">
+            <div class="settings-card-title">🎟 Типы билетов</div>
+            <div id="ticketTypesManager" style="margin-bottom:12px">
+              <div style="color:var(--dim);font-size:13px">⏳ Загрузка...</div>
+            </div>
+            <button class="btn-save-settings" onclick="showAddTicketTypeForm()" style="background:rgba(255,117,0,0.2);border:1px solid rgba(255,117,0,0.4);color:#ff9944">+ Добавить тип</button>
+            <div id="addTicketTypeForm" style="display:none;margin-top:14px;padding:14px;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid rgba(255,255,255,0.1)">
+              <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:12px">Новый тип билета</div>
+              <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:start;margin-bottom:8px">
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Иконка</label>
+                  <input class="inp" id="newTypeIcon" placeholder="👑" style="text-align:center;font-size:18px">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Название</label>
+                  <input class="inp" id="newTypeName" placeholder="VIP">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Цена (₽)</label>
+                  <input class="inp" id="newTypePrice" type="number" placeholder="3000">
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 110px;gap:8px;margin-bottom:12px;align-items:start">
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Описание (что входит)</label>
+                  <textarea class="inp" id="newTypeDesc" rows="2" placeholder="Лучшие места, приоритетный вход..."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Цвет</label>
+                  <input class="inp" id="newTypeColor" type="color" value="#c9a228" style="height:42px;padding:4px;cursor:pointer">
+                </div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn-save-settings" onclick="addTicketType()" style="margin-top:0;flex:1">💾 Добавить</button>
+                <button onclick="document.getElementById('addTicketTypeForm').style.display='none'" style="flex:none;background:none;border:1px solid rgba(255,255,255,0.15);color:var(--dim);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13px">Отмена</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">💳 Реквизиты</div>
+            <div class="form-group">
+              <label>СБП — номер телефона</label>
+              <input class="inp" id="hulPaymentSbp" placeholder="+7 (909) 276-33-86">
+            </div>
+            <div class="form-group">
+              <label>Номер карты</label>
+              <input class="inp" id="hulPaymentCard" placeholder="4276 XXXX XXXX XXXX">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Имя владельца карты</label>
+              <input class="inp" id="hulPaymentHolder" placeholder="DMITRIY KOSTYUK">
+            </div>
+            <button class="btn-save-settings" onclick="saveHuliganPayment()">💾 Сохранить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Промокоды (ХУЛИgan) -->
+      <div class="section" id="sec-hul-promo">
+        <div class="section-title">🎫 Промокоды — ХУЛИgan</div>
+        <div class="promo-create">
+          <div style="font-size:14px;font-weight:600;color:var(--gold);margin-bottom:14px">Создать промокод</div>
+          <div class="promo-grid">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Код (латиница)</label>
+              <input class="inp" id="hulNewPromoCode" placeholder="ХУЛИГАН2026" style="text-transform:uppercase">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Тип скидки</label>
+              <select class="inp" id="hulNewPromoType" onchange="toggleHuliganPromoValue()">
+                <option value="percent">Процент (20%)</option>
+                <option value="fixed">Сумма (−500 ₽)</option>
+                <option value="free">Бесплатный (0 ₽)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0" id="hulPromoValueRow">
+              <label>Значение</label>
+              <input class="inp" id="hulNewPromoValue" type="number" placeholder="20">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Количество использований</label>
+              <select class="inp" id="hulNewPromoUsesSelect" onchange="toggleHuliganPromoUsesCustom()">
+                <option value="-1">Безлимитно ∞</option>
+                <option value="1">1 раз</option>
+                <option value="3">3 раза</option>
+                <option value="5">5 раз</option>
+                <option value="10">10 раз</option>
+                <option value="20">20 раз</option>
+                <option value="custom">Указать своё...</option>
+              </select>
+              <input class="inp" id="hulNewPromoUsesCustom" type="number" min="1" placeholder="Введите число" style="display:none;margin-top:8px">
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:12px;margin-bottom:0">
+            <label>Описание (необязательно)</label>
+            <input class="inp" id="hulNewPromoDesc" placeholder="Для друзей">
+          </div>
+          <div class="promo-grid" style="margin-top:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Действует с (необязательно)</label>
+              <input class="inp" id="hulNewPromoFrom" type="date">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Действует до (необязательно)</label>
+              <input class="inp" id="hulNewPromoUntil" type="date">
+            </div>
+          </div>
+          <button class="btn-save-settings" onclick="createHuliganPromo()">+ Создать промокод</button>
+        </div>
+        <div class="promo-list" id="huliganPromoList">
+          <div class="empty-state"><span class="empty-icon">🎫</span>Промокодов пока нет</div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Unified Mobile bottom nav -->
+  <div class="bottom-nav" id="bottomNav" style="display:none">
+    <div class="bnav-item active" onclick="showSection('dashboard')" data-bsec="dashboard">
+      <span class="bnav-icon">📊</span>Аналитика
+    </div>
+    <div class="bnav-item" onclick="showSection('chats')" data-bsec="chats">
+      <span class="bnav-icon">💬</span>Диалоги
+    </div>
+    <div class="bnav-item" onclick="switchShow('secret')" data-bsec="bookings">
+      <span class="bnav-icon">🎭</span>Секрет
+    </div>
+    <div class="bnav-item" onclick="switchShow('huligan')" data-bsec="hul-bookings">
+      <span class="bnav-icon">😈</span>ХУЛИgan
+    </div>
+    <div class="bnav-item" onclick="showSection('mobile-menu')" data-bsec="mobile-menu">
+      <span class="bnav-icon">🛠️</span>Меню
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const FB = 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
+    let currentFilter = 'all';
+
+    function toBase64Utf8(str) {
+      try {
+        return btoa(unescape(encodeURIComponent(String(str || ''))));
+      } catch {
+        return '';
+      }
+    }
+
+    function isHeaderAsciiSafe(str) {
+      return /^[\x20-\x7E]*$/.test(String(str || ''));
+    }
+
+    function adminHeaders(extra = {}) {
+      const headers = Object.assign({}, extra);
+      const pass = String(window._adminPass || '');
+      const b64 = toBase64Utf8(pass);
+      if (b64) headers['x-admin-pass-b64'] = b64;
+      return headers;
+    }
+
+    function togglePass(id, btn) {
+      const inp = document.getElementById(id);
+      if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+      else { inp.type = 'password'; btn.textContent = '👁'; }
+    }
+    let allBookings = {};
+    let allHuliganOrders = {};
+    let allChats = [];
+    let activeChatSid = null;
+    let chatsSearchQuery = '';
+    let currentShow = 'secret';
+
+    // ── Dashboard logic ──
+    async function loadDashboard() {
+      const revEl = document.getElementById('dashRevenue');
+      const soldEl = document.getElementById('dashTicketsSold');
+      const pendingEl = document.getElementById('dashPendingConf');
+      const activeChatsEl = document.getElementById('dashActiveChats');
+      const timelineEl = document.getElementById('dashTimeline');
+      if (!revEl || !soldEl || !pendingEl || !activeChatsEl || !timelineEl) return;
+
+      // Получаем дату начала сегодняшнего дня (местное время)
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+      // Загружаем данные броней (если ещё не загружены)
+      if (!Object.keys(allBookings).length) {
+        const secBookings = await fbGet('ticket_bookings') || {};
+        if (!secBookings.error) allBookings = secBookings;
+      }
+      if (!Object.keys(allHuliganOrders).length) {
+        const hulBookings = await fbGet('huligan_bookings') || {};
+        if (!hulBookings.error) allHuliganOrders = hulBookings;
+      }
+
+      // Выручка и билеты за сегодня
+      let revenueToday = 0;
+      let ticketsToday = 0;
+      let pendingConfirmationCount = 0;
+      const events = [];
+
+      // Обрабатываем "Секрет" bookings
+      for (const [id, b] of Object.entries(allBookings)) {
+        if (!b) continue;
+        const isConfirmed = b.status === 'confirmed';
+        const isPending = b.status === 'pending_confirmation' || b.status === 'pending_payment';
+        const isToday = b.createdAt >= todayStart;
+
+        if (isPending) pendingConfirmationCount++;
+
+        if (isToday) {
+          if (isConfirmed) {
+            revenueToday += Number(b.discountedTotal || b.total || 0);
+            ticketsToday += (b.seats || []).length;
+          }
+          events.push({
+            type: isConfirmed ? 'green' : isPending ? 'gold' : 'red',
+            time: b.createdAt,
+            content: `Шоу <strong>«Секрет»</strong>: заказ от <b>${esc(b.name)}</b> на сумму <b>${b.discountedTotal || b.total || 0} ₽</b> (${isConfirmed ? 'оплачен' : isPending ? 'ожидает оплаты' : 'отменен'})`
+          });
+        }
+      }
+
+      // Обрабатываем "ХУЛИgan" bookings
+      for (const [id, o] of Object.entries(allHuliganOrders)) {
+        if (!o) continue;
+        const isConfirmed = o.status === 'confirmed';
+        const isPending = o.status === 'waiting_admin';
+        const isToday = o.createdAt >= todayStart;
+
+        if (isPending) pendingConfirmationCount++;
+
+        if (isToday) {
+          if (isConfirmed) {
+            revenueToday += Number(o.finalPrice != null ? o.finalPrice : (o.originalPrice || 0));
+            ticketsToday += 1;
+          }
+          events.push({
+            type: isConfirmed ? 'green' : isPending ? 'gold' : 'red',
+            time: o.createdAt,
+            content: `Шоу <strong>«ХУЛИgan»</strong>: билет для <b>${esc(o.name)}</b> на сумму <b>${o.finalPrice != null ? o.finalPrice : (o.originalPrice || 0)} ₽</b> (${isConfirmed ? 'подтвержден' : isPending ? 'ждет подтверждения' : 'создан'})`
+          });
+        }
+      }
+
+      // Обновляем метрики на экране
+      revEl.textContent = `${fmt(revenueToday)} ₽`;
+      soldEl.textContent = `${ticketsToday} шт`;
+      pendingEl.textContent = pendingConfirmationCount;
+      if (pendingConfirmationCount > 0) {
+        pendingEl.style.color = 'var(--red)';
+      } else {
+        pendingEl.style.color = 'var(--green)';
+      }
+
+      // Загружаем статистику чатов с сервера
+      try {
+        const r = await fetch(`/api/admin-chats?action=stats`, { headers: adminHeaders() });
+        const chatsStats = await r.json();
+        if (chatsStats && chatsStats.ok && chatsStats.stats) {
+          activeChatsEl.textContent = chatsStats.stats.recentChecked || 0;
+        } else {
+          activeChatsEl.textContent = '0';
+        }
+      } catch (e) {
+        activeChatsEl.textContent = '—';
+      }
+
+      // Добавим события из чата в таймлайн (если они сегодняшние)
+      try {
+        const cr = await fetch(`/api/admin-chats?action=list&limit=15`, { headers: adminHeaders() });
+        const chatListRes = await cr.json();
+        if (chatListRes && chatListRes.ok && chatListRes.sessions) {
+          for (const s of chatListRes.sessions) {
+            if (s.lastAt >= todayStart) {
+              const name = s.contact?.name || s.contact?.firstName || 'Посетитель';
+              const text = s.lastUserMsg || s.firstUserMsg || 'Начал диалог';
+              events.push({
+                type: 'blue',
+                time: s.lastAt,
+                content: `AI-Ассистент: переписка с <strong>${esc(name)}</strong> (сообщений: ${s.messagesCount}) <span style="opacity:0.6;font-size:11px;">"${esc(text)}"</span>`
+              });
+            }
+          }
+        }
+      } catch (e) {}
+
+      // Сортируем таймлайн по времени
+      events.sort((a, b) => b.time - a.time);
+
+      if (events.length === 0) {
+        timelineEl.innerHTML = `<div class="empty-state" style="padding:20px 0;"><span class="empty-icon">☕</span>Сегодня активности пока не зафиксировано. Все новые заказы и чаты появятся здесь!</div>`;
+      } else {
+        timelineEl.innerHTML = events.slice(0, 10).map(ev => `
+          <div class="timeline-item">
+            <span class="timeline-dot ${ev.type}"></span>
+            <div class="timeline-time">${new Date(ev.time).toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</div>
+            <div class="timeline-content">${ev.content}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    async function refreshDashboard() {
+      toast('🔄 Обновляем показатели дашборда...');
+      allBookings = {};
+      allHuliganOrders = {};
+      await loadDashboard();
+    }
+
+    // ── Chats logic ──
+    async function loadChatsList() {
+      const listEl = document.getElementById('chatsList');
+      if (!listEl) return;
+      try {
+        const r = await fetch(`/api/admin-chats?action=list&limit=80`, { headers: adminHeaders() });
+        const data = await r.json();
+        if (data && data.ok && data.sessions) {
+          allChats = data.sessions;
+          renderChatsList();
+        } else {
+          listEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⚠️</span>Ошибка при получении чатов: ${data?.error || 'Неизвестно'}</div>`;
+        }
+      } catch (e) {
+        listEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⚠️</span>Ошибка сети при загрузке чатов</div>`;
+      }
+    }
+
+    function renderChatsList() {
+      const listEl = document.getElementById('chatsList');
+      if (!listEl) return;
+      
+      const filtered = allChats.filter(c => {
+        if (!chatsSearchQuery) return true;
+        const q = chatsSearchQuery.toLowerCase();
+        const name = (c.contact?.name || c.contact?.firstName || '').toLowerCase();
+        const phone = (c.contact?.phone || '').toLowerCase();
+        const tg = (c.contact?.tgUsername || '').toLowerCase();
+        return name.includes(q) || phone.includes(q) || tg.includes(q) || c.sid.toLowerCase().includes(q);
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="empty-state"><span class="empty-icon">🔍</span>Чаты не найдены</div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(c => {
+        const name = c.contact?.name || c.contact?.firstName || `Сессия ..${c.sid.slice(-6)}`;
+        const timeStr = c.lastAt ? new Date(c.lastAt).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
+        const preview = c.lastUserMsg || c.firstUserMsg || 'Диалог без текста';
+        const activeClass = activeChatSid === c.sid ? 'active' : '';
+        const badgeHtml = c.hasContact ? `<span class="badge-contact">📞 Контакт</span>` : '';
+        const msgBadge = c.messagesCount ? `<span style="font-size:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1px 6px;">${c.messagesCount}</span>` : '';
+        
+        return `
+          <div class="chat-item ${activeClass}" onclick="openChat('${c.sid}')">
+            <div class="chat-item-head">
+              <span class="chat-item-name">${esc(name)}</span>
+              <span class="chat-item-time">${timeStr}</span>
+            </div>
+            <div class="chat-item-preview">${esc(preview)}</div>
+            <div class="chat-item-meta">
+              ${badgeHtml}
+              ${msgBadge}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterChatsList() {
+      const searchInput = document.getElementById('chatsSearch');
+      if (searchInput) {
+        chatsSearchQuery = searchInput.value;
+        renderChatsList();
+      }
+    }
+
+    async function openChat(sid) {
+      activeChatSid = sid;
+      
+      // На мобилках переключаем контейнер в режим чата
+      const container = document.getElementById('chatsContainer');
+      if (container) container.classList.add('chat-open');
+      
+      // Обновляем активный элемент в списке чатов
+      document.querySelectorAll('.chat-item').forEach(el => {
+        el.classList.remove('active');
+      });
+      renderChatsList();
+
+      const headerEl = document.getElementById('chatHeader');
+      const messagesEl = document.getElementById('chatMessages');
+      const quizEl = document.getElementById('chatQuizSummary');
+
+      if (headerEl) headerEl.style.display = 'flex';
+      if (messagesEl) messagesEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка диалога...</div>`;
+      if (quizEl) quizEl.style.display = 'none';
+
+      try {
+        const r = await fetch(`/api/admin-chats?action=get&sid=${encodeURIComponent(sid)}`, { headers: adminHeaders() });
+        const data = await r.json();
+        if (data && data.ok && data.session) {
+          const s = data.session;
+          const name = s.contact?.name || s.contact?.firstName || 'Посетитель';
+          const tgName = s.contact?.tgUsername || '';
+          
+          const headerTitle = document.getElementById('chatHeaderTitle');
+          if (headerTitle) headerTitle.textContent = name;
+          
+          let sub = `SID: ${s.sid} · сообщений: ${s.messages?.length || 0}`;
+          if (s.contact?.phone) sub += ` · 📞 ${s.contact.phone}`;
+          const headerSubtitle = document.getElementById('chatHeaderSubtitle');
+          if (headerSubtitle) headerSubtitle.textContent = sub;
+
+          // Рендерим кнопки связи
+          const actionsEl = document.getElementById('chatHeaderActions');
+          if (actionsEl) {
+            actionsEl.innerHTML = '';
+            if (s.contact?.phone) {
+              actionsEl.innerHTML += `<a class="btn-confirm" href="tel:${s.contact.phone}" style="padding: 6px 12px; font-size:12px; text-decoration:none; display:inline-block;">📞 Позвонить</a> &nbsp;`;
+            }
+            if (tgName) {
+              const cleanTg = tgName.replace(/^@/, '');
+              actionsEl.innerHTML += `<a class="btn-view-ticket" href="https://t.me/${cleanTg}" target="_blank" style="padding: 6px 12px; font-size:12px; text-decoration:none; display:inline-block;">✈️ TG</a>`;
+            }
+          }
+
+          // Отображение квиза
+          if (s.quizContext && Object.keys(s.quizContext).length > 0) {
+            if (quizEl) quizEl.style.display = 'block';
+            const gridEl = document.getElementById('chatQuizGrid');
+            if (gridEl) {
+              gridEl.innerHTML = '';
+              for (const [k, v] of Object.entries(s.quizContext)) {
+                let label = k;
+                if (k === 'showType') label = '🎭 Шоу';
+                else if (k === 'name') label = '👤 Имя';
+                else if (k === 'phone') label = '📞 Телефон';
+                else if (k === 'guests') label = '👥 Мест/Гостей';
+                else if (k === 'discount') label = '🎫 Скидка';
+                
+                gridEl.innerHTML += `
+                  <div>
+                    <span style="color:var(--dim)">${esc(label)}:</span> 
+                    <strong style="color:var(--text)">${esc(v)}</strong>
+                  </div>
+                `;
+              }
+            }
+          } else {
+            if (quizEl) quizEl.style.display = 'none';
+          }
+
+          // Рендерим сообщения
+          if (messagesEl) {
+            if (!s.messages || s.messages.length === 0) {
+              messagesEl.innerHTML = `<div class="empty-state"><span class="empty-icon">📭</span>Сообщений нет</div>`;
+              return;
+            }
+
+            messagesEl.innerHTML = s.messages.map(m => {
+              const isBot = m.role === 'bot' || m.role === 'assistant';
+              const roleClass = isBot ? 'bot' : 'user';
+              const avatar = isBot ? '🤖' : '👤';
+              const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : '';
+              return `
+                <div class="msg-group ${roleClass}">
+                  <div class="msg-bubble-wrap ${roleClass}">
+                    <div class="msg-avatar ${roleClass}">${avatar}</div>
+                    <div class="msg-bubble">${esc(m.text || m.content || '')}</div>
+                  </div>
+                  <div class="msg-time ${roleClass}">${time}</div>
+                </div>
+              `;
+            }).join('');
+            
+            // Прокручиваем диалог вниз
+            setTimeout(() => { messagesEl.scrollTop = messagesEl.scrollHeight; }, 100);
+          }
+
+        } else {
+          if (messagesEl) messagesEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⚠️</span>Не удалось открыть переписку</div>`;
+        }
+      } catch (e) {
+        if (messagesEl) messagesEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⚠️</span>Ошибка при загрузке сообщений</div>`;
+      }
+    }
+
+    function closeActiveChat() {
+      activeChatSid = null;
+      const container = document.getElementById('chatsContainer');
+      if (container) container.classList.remove('chat-open');
+      renderChatsList();
+    }
+
+    // ── Mobile Menu tools logic ──
+    function renderMobileMenu() {
+      const grid = document.getElementById('mobileMenuGrid');
+      const showNameEl = document.getElementById('mobileMenuShowName');
+      if (!grid || !showNameEl) return;
+
+      const isSecret = currentShow === 'secret';
+      showNameEl.textContent = isSecret ? '«Секрет»' : '«ХУЛИgan»';
+
+      let items = [];
+      if (isSecret) {
+        items = [
+          { icon: '👥', label: 'Пользователи', sec: 'users' },
+          { icon: '⭐', label: 'Отзывы', sec: 'reviews' },
+          { icon: '🎫', label: 'Промокоды', sec: 'promo' },
+          { icon: '🗺', label: 'Схема зала', sec: 'hall' },
+          { icon: '⚙️', label: 'Настройки', sec: 'settings' },
+          { icon: '📣', label: 'Рассылки', sec: 'broadcast' }
+        ];
+      } else {
+        items = [
+          { icon: '👥', label: 'Пользователи', sec: 'hul-users' },
+          { icon: '⭐', label: 'Отзывы', sec: 'hul-reviews' },
+          { icon: '🎫', label: 'Промокоды', sec: 'hul-promo' },
+          { icon: '⚙️', label: 'Настройки', sec: 'hul-settings' },
+          { icon: '📣', label: 'Рассылки', sec: 'broadcast' }
+        ];
+      }
+
+      grid.innerHTML = items.map(it => `
+        <button onclick="showSection('${it.sec}')" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:inherit; cursor:pointer;">
+          <span style="font-size:24px">${it.icon}</span>
+          <span style="font-size:12px; font-weight:600">${it.label}</span>
+        </button>
+      `).join('');
+    }
+
+    // ── Firebase helpers (PROXY) ──
+    async function fbGet(path) {
+      try { const r = await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, { headers: adminHeaders() }); return await r.json(); } catch (e) { return null; }
+    }
+    async function fbPut(path, data) {
+      try {
+        await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, { method: 'PUT', headers: adminHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(data) });
+      } catch (e) { }
+    }
+    async function fbPatch(path, data) {
+      try {
+        await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, { method: 'PATCH', headers: adminHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(data) });
+      } catch (e) { }
+    }
+    async function fbDelete(path) {
+      try { await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, { method: 'DELETE', headers: adminHeaders() }); } catch (e) { }
+    }
+
+    // ── XSS escape ──
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ── Toast ──
+    function toast(msg, dur = 2800) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), dur);
+    }
+    // alias for old call sites
+    function showToast(msg) { toast(msg); }
+
+    // ── Login ──
+    let _loginAttempts = 0;
+    let _loginLockedUntil = 0;
+
+    async function doLogin() {
+      const now = Date.now();
+      if (_loginLockedUntil > now) {
+        const secs = Math.ceil((_loginLockedUntil - now) / 1000);
+        return toast(`🔒 Слишком много попыток. Подождите ${secs} сек.`);
+      }
+      const pwd = document.getElementById('loginPwd').value.trim();
+      if (!pwd) return;
+
+      // Pass password to the proxy API
+      window._adminPass = pwd;
+
+      let cfg = await fbGet('ticket_config');
+
+      // First-time setup: password not yet initialized in Firebase → bootstrap it
+      if (cfg && cfg.error === 'Admin password is not initialized') {
+        toast('⏳ Первый вход — устанавливаю пароль...');
+        try {
+          const r = await fetch('/api/admin-proxy?path=' + encodeURIComponent('ticket_admin/adminPassword'), {
+            method: 'PUT',
+            headers: Object.assign(adminHeaders(), { 'Content-Type': 'application/json' }),
+            body: JSON.stringify(pwd)
+          });
+          if (r.ok) {
+            cfg = await fbGet('ticket_config');
+          } else {
+            cfg = null;
+          }
+        } catch (e) {
+          cfg = null;
+        }
+      }
+
+      // If API proxy responds with error, parsing it gives { error: ... }
+      if (!cfg || cfg.error) {
+        window._adminPass = '';
+        _loginAttempts++;
+        if (_loginAttempts >= 5) {
+          _loginLockedUntil = Date.now() + 30000;
+          _loginAttempts = 0;
+          return toast('🔒 5 неудачных попыток. Вход заблокирован на 30 сек.');
+        }
+        return toast(`❌ Неверный пароль (попытка ${_loginAttempts}/5)`);
+      }
+
+      _loginAttempts = 0;
+      showAdminPanel(cfg);
+    }
+    function logout() {
+      window._adminPass = '';
+      location.reload();
+    }
+
+    // ── Init ──
+    async function initAdmin(cfg) {
+      loadSettings(cfg);
+      await loadDashboard(); // Load dashboard first
+      loadPromos();
+      loadHuliganOrders();
+    }
+
+    function loadSettings(cfg) {
+      if (!cfg) return;
+      if (cfg.show) {
+        document.getElementById('cfgTitle').value = cfg.show.title || '';
+        document.getElementById('cfgDate').value = cfg.show.date || '';
+        document.getElementById('cfgTime').value = cfg.show.time || '';
+        document.getElementById('cfgVenue').value = cfg.show.venue || '';
+        document.getElementById('cfgAddress').value = cfg.show.address || '';
+        document.getElementById('cfgSalesPaused').checked = cfg.show.salesPaused === true;
+      }
+      if (cfg.prices) {
+        document.getElementById('priceVip').value = cfg.prices.vip || 1400;
+        document.getElementById('priceStandart').value = cfg.prices.standart || 1100;
+        document.getElementById('priceEconom').value = cfg.prices.econom || 800;
+      }
+      if (cfg.payment) {
+        document.getElementById('paymentSbp').value = cfg.payment.sbp || '';
+        document.getElementById('paymentCard').value = cfg.payment.card || '';
+        document.getElementById('paymentHolder').value = cfg.payment.cardHolder || '';
+      }
+      renderSalesStateSummary('secret');
+    }
+
+    function renderSalesStateSummary(show) {
+      const isHuligan = show === 'huligan';
+      const checkbox = document.getElementById(isHuligan ? 'hulSalesPaused' : 'cfgSalesPaused');
+      const badge = document.getElementById(isHuligan ? 'huliganSalesStateBadge' : 'secretSalesStateBadge');
+      if (!checkbox || !badge) return;
+      const paused = checkbox.checked === true;
+      badge.style.borderColor = paused ? 'rgba(232,83,72,0.35)' : 'rgba(61,191,110,0.28)';
+      badge.style.background = paused ? 'rgba(232,83,72,0.12)' : 'rgba(61,191,110,0.12)';
+      badge.style.color = paused ? '#ff9f96' : '#97e3b1';
+      badge.innerHTML = paused
+        ? '⛔ Продажи остановлены. Новые брони и новые покупки сейчас недоступны.'
+        : '✅ Продажи активны. Пользователи могут покупать новые билеты.';
+    }
+
+    // ── Show switcher ──
+    function switchShow(show) {
+      currentShow = show;
+      // Update all show tabs (sidebar + mobile)
+      document.querySelectorAll('.show-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.show === show);
+      });
+      // Toggle sidebar navs
+      document.getElementById('navSecret').style.display = show === 'secret' ? '' : 'none';
+      document.getElementById('navHuligan').style.display = show === 'huligan' ? '' : 'none';
+      // Toggle mobile bottom navs
+      if (window.innerWidth <= 600) {
+        const bottomNav = document.getElementById('bottomNav');
+        if (bottomNav) bottomNav.style.display = 'flex';
+      }
+      // Navigate to first section of the selected show
+      if (show === 'secret') showSection('bookings');
+      else showSection('hul-bookings');
+    }
+
+    // ── Sections ──
+    function showSection(sec) {
+      document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.bnav-item').forEach(el => el.classList.remove('active'));
+      const sectionEl = document.getElementById(`sec-${sec}`);
+      if (sectionEl) sectionEl.classList.add('active');
+      document.querySelector(`[data-sec="${sec}"]`)?.classList.add('active');
+      document.querySelector(`[data-bsec="${sec}"]`)?.classList.add('active');
+      
+      // Load data on demand
+      if (sec === 'dashboard') loadDashboard();
+      if (sec === 'chats') loadChatsList();
+      if (sec === 'mobile-menu') renderMobileMenu();
+      if (sec === 'hall') loadAdminHall();
+      if (sec === 'promo') loadPromos();
+      if (sec === 'users') loadUsers();
+      if (sec === 'reviews') loadReviews();
+      if (sec === 'hul-bookings') { loadHuliganOrders(); loadHulManualTypes(); }
+      if (sec === 'hul-users') loadHuliganUsers();
+      if (sec === 'hul-reviews') loadHuliganReviews();
+      if (sec === 'hul-settings') loadHuliganSettings();
+      if (sec === 'hul-promo') loadHuliganPromos();
+    }
+
+    // ── ХУЛИgan: Bookings ──
+    async function loadHuliganOrders() {
+      const list = document.getElementById('huliganOrdersList');
+      if (list) list.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>`;
+
+      const orders = await fbGet('huligan_bookings');
+
+      // Always update badge
+      const pending = orders
+        ? Object.values(orders).filter(o => o.status === 'waiting_admin' || o.status === 'refund_requested').length
+        : 0;
+      const badge = document.getElementById('huliganBadge');
+      if (badge) { badge.style.display = pending > 0 ? 'inline' : 'none'; badge.textContent = pending; }
+
+      if (!list) return;
+
+      if (!orders || orders.error || !Object.keys(orders).length) {
+        if (orders && orders.error) console.error("API error:", orders.error);
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">😈</span>Заказов пока нет</div>`;
+        return;
+      }
+
+      const TYPE_NAMES = { vip: 'VIP', std: 'Стандарт', eco: 'Эконом' };
+      const STATUS_LABEL = {
+        new: 'Не оплачен',
+        waiting_admin: 'Ожидает подтверждения',
+        confirmed: 'Подтверждён',
+        refund_requested: 'Запрос на возврат',
+        refunded: 'Возврат оформлен',
+        cancelled: 'Отменён'
+      };
+      const STATUS_COLOR = {
+        new: '#888',
+        waiting_admin: '#ffa000',
+        confirmed: '#00c864',
+        refund_requested: '#ffb000',
+        refunded: '#7cc8ff',
+        cancelled: '#e85348'
+      };
+
+      const items = Object.entries(orders).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+
+      list.innerHTML = items.map(([id, o]) => {
+        const vkLink = o.vkUserId
+          ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${o.vkUserId}" target="_blank">💬 ВК</a>`
+          : '';
+        const tgLink = o.tgUserId
+          ? `<a class="btn-vk-dm" href="tg://user?id=${o.tgUserId}" target="_blank" style="background:rgba(74,143,217,0.15);border-color:rgba(74,143,217,0.4);color:#4a8fd9">✈️ TG</a>`
+          : o.tgUsername
+            ? `<a class="btn-vk-dm" href="https://t.me/${String(o.tgUsername).replace(/^@/,'')}" target="_blank" style="background:rgba(74,143,217,0.15);border-color:rgba(74,143,217,0.4);color:#4a8fd9">✈️ TG</a>`
+            : '';
+        const contactLine = [
+          o.tgUserId ? `<span style="font-size:12px">TG ID: <code>${o.tgUserId}</code></span>` : '',
+          o.tgUsername ? `<span style="font-size:12px">@${String(o.tgUsername).replace(/^@/,'')}</span>` : '',
+          o.phone ? `<span style="font-size:12px">📞 ${esc(o.phone)}</span>` : ''
+        ].filter(Boolean).join(' &nbsp;·&nbsp; ');
+        const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString('ru-RU') : '—';
+        const paidStr = o.paidAt ? new Date(o.paidAt).toLocaleString('ru-RU') : '—';
+        const reasonText = String(o.refundReason || o.cancelReason || '').trim();
+        const reasonHtml = reasonText
+          ? `<div style="font-size:12px;color:var(--dim);margin-top:8px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px">💬 ${esc(reasonText)}</div>`
+          : '';
+        const confirmBtn = o.status === 'waiting_admin'
+          ? `<button class="btn-confirm" onclick="confirmHuligan('${id}', this)">✅ Подтвердить оплату</button>`
+          : o.status === 'confirmed'
+            ? `<span style="color:#00c864;font-size:13px;font-weight:600">✅ Подтверждён · №${o.ticketNumber || '—'}</span>`
+            : '';
+        const refundBtn = (o.status === 'confirmed' || o.status === 'refund_requested')
+          ? `<button class="btn-cancel" onclick="refundHuligan('${id}')">↩ Оформить возврат</button>`
+          : '';
+        const cancelBtn = (o.status === 'new' || o.status === 'waiting_admin')
+          ? `<button class="btn-cancel" onclick="cancelHuligan('${id}')">❌ Отменить</button>`
+          : '';
+        return `
+      <div class="booking-card" style="border-left:3px solid ${STATUS_COLOR[o.status] || '#444'}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <strong style="font-size:15px">${o.name || '—'}</strong>
+            <span style="margin-left:8px;font-size:12px;color:${STATUS_COLOR[o.status] || '#888'};font-weight:600">${STATUS_LABEL[o.status] || o.status}</span>
+          </div>
+          <div style="display:flex;gap:6px">${vkLink}${tgLink}</div>
+        </div>
+        ${contactLine ? `<div style="margin-bottom:6px;color:var(--dim)">${contactLine}</div>` : ''}
+        <div style="font-size:13px;color:var(--dim);margin-bottom:4px">
+          Тип: <strong style="color:var(--text)">${TYPE_NAMES[o.ticketType] || o.ticketType || '—'}</strong>
+          &nbsp;·&nbsp; Сумма: <strong style="color:var(--text)">${o.finalPrice != null ? o.finalPrice : (o.originalPrice || '—')} ₽</strong>
+          &nbsp;·&nbsp; 🆔 <code style="font-size:12px">${id}</code>
+        </div>
+        <div style="font-size:12px;color:var(--dim);margin-bottom:10px">
+          Создан: ${dateStr}${o.paidAt ? `  ·  Оплачен: ${paidStr}` : ''}
+        </div>
+        ${reasonHtml}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          ${confirmBtn}
+          ${refundBtn}
+          ${cancelBtn}
+          <button class="btn-sm btn-sm-del" onclick="deleteHuliganBooking('${id}')" style="margin-left:auto" title="Удалить заявку полностью">🗑 Удалить</button>
+        </div>
+      </div>`;
+      }).join('');
+    }
+
+    async function confirmHuligan(bookingId, btn) {
+      if (!confirm(`Подтвердить оплату заказа ${bookingId}?`)) return;
+      btn.disabled = true; btn.textContent = 'Отправляем...';
+      try {
+        const r = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ action: 'confirm', bookingId })
+        });
+        const data = await r.json();
+        if (data.ok) {
+          toast(`✅ Подтверждено! Билет: ${data.ticketNumber}`);
+          setTimeout(loadHuliganOrders, 800);
+        } else {
+          toast('Ошибка: ' + (data.error || 'неизвестно'));
+          btn.disabled = false; btn.textContent = '✅ Подтвердить оплату';
+        }
+      } catch (e) {
+        toast('Ошибка сети');
+        btn.disabled = false; btn.textContent = '✅ Подтвердить оплату';
+      }
+    }
+
+    async function cancelHuligan(bookingId) {
+      if (!confirm(`Отменить заказ ${bookingId}?`)) return;
+      try {
+        const r = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ action: 'cancel', bookingId })
+        });
+        const data = await r.json();
+        if (data.ok) {
+          toast('❌ Заказ отменён');
+          loadHuliganOrders();
+        } else {
+          toast('Ошибка: ' + (data.error || 'неизвестно'));
+        }
+      } catch {
+        toast('Ошибка сети');
+      }
+    }
+
+    async function refundHuligan(bookingId) {
+      const reason = prompt(`Причина возврата для ${bookingId} (необязательно):`) || '';
+      if (!confirm(`Оформить возврат по заказу ${bookingId}?`)) return;
+      try {
+        const r = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ action: 'refund', bookingId, reason: reason.trim() })
+        });
+        const data = await r.json();
+        if (data.ok) {
+          toast('↩ Возврат оформлен');
+          loadHuliganOrders();
+        } else {
+          toast('Ошибка: ' + (data.error || 'неизвестно'));
+        }
+      } catch {
+        toast('Ошибка сети');
+      }
+    }
+
+    async function deleteHuliganBooking(bookingId) {
+      if (!confirm(`Удалить заказ ${bookingId} полностью?\n\nЭто действие нельзя отменить.`)) return;
+      await fbDelete(`huligan_bookings/${bookingId}`);
+      toast('🗑 Заказ удалён');
+      loadHuliganOrders();
+    }
+
+    // ── ХУЛИgan: Users ──
+    async function loadHuliganUsers() {
+      const list = document.getElementById('huliganUsersList');
+      list.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>`;
+      const orders = await fbGet('huligan_bookings');
+      if (!orders) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">👥</span>Пользователей пока нет</div>`;
+        return;
+      }
+      const TYPE_NAMES = { vip: 'VIP', std: 'Стандарт', eco: 'Эконом' };
+      // Group by vkUserId or name to avoid duplicates
+      const seen = new Set();
+      const users = [];
+      for (const [id, o] of Object.entries(orders)) {
+        const key = o.vkUserId || (o.name + '_' + (o.phone || ''));
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        users.push({ ...o, bookingId: id });
+      }
+      if (!users.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">👥</span>Пользователей пока нет</div>`;
+        return;
+      }
+      list.innerHTML = users.map(u => {
+        const name = u.vkName || u.name || '—';
+        const vkLink = u.vkUserId ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${u.vkUserId}" target="_blank">💬 Написать</a>` : '';
+        const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ru-RU') : '—';
+        return `
+      <div class="user-card">
+        ${u.vkPhoto ? `<img class="user-avatar" src="${u.vkPhoto}" alt="">` : `<div class="user-avatar" style="display:flex;align-items:center;justify-content:center;font-size:18px">😈</div>`}
+        <div style="flex:1">
+          <div class="user-name">${name}</div>
+          <div class="user-meta">Тип: ${TYPE_NAMES[u.ticketType] || u.ticketType || '—'} · ${dateStr}</div>
+        </div>
+        ${vkLink}
+      </div>`;
+      }).join('');
+    }
+
+    // ── ХУЛИgan: Reviews ──
+    async function loadHuliganReviews() {
+      const list = document.getElementById('huliganReviewsList');
+      list.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>`;
+      const reviews = await fbGet('huligan_reviews');
+      if (!reviews || !Object.keys(reviews).length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">⭐</span>Отзывов пока нет</div>`;
+        return;
+      }
+      const items = Object.entries(reviews).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+      list.innerHTML = items.map(([id, r]) => {
+        const starsStr = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
+        const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
+        const name = r.name || '—';
+        const vkProfileUrl = r.vkUserId ? `https://vk.com/id${r.vkUserId}` : null;
+        const vkReplyBtn = r.vkUserId
+          ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${r.vkUserId}" target="_blank">💬 Ответить</a>`
+          : '';
+        const publishText = [
+          `✨ Отзыв о шоу «ХУЛИГАН GAN»`,
+          ``,
+          starsStr + ` (${r.rating || 5}/5)`,
+          `«${r.text || ''}»`,
+          ``,
+          vkProfileUrl ? `— ${name}, гость шоу 👉 ${vkProfileUrl}` : `— ${name}`,
+          ``,
+          `#ХулиганGAN #KOSTYUKPROJECT #иллюзионист #стендап #18plus`
+        ].join('\n');
+        window._publishTexts['hul_' + id] = publishText;
+        const vkProfileLink = r.vkUserId ? `<a href="https://vk.com/id${r.vkUserId}" target="_blank" style="color:#6ba5e7;text-decoration:none">vk.com/id${r.vkUserId}</a>` : '';
+        const promoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${r.promoCode}</div>` : '';
+        return `
+      <div class="review-card">
+        <div class="review-stars">${starsStr} <span style="font-size:13px;color:var(--dim)">(${r.rating || 5}/5)</span></div>
+        <div class="review-text">«${esc(r.text)}»</div>
+        ${promoInfo}
+        <div class="review-meta" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px">
+          <span>👤 ${esc(name)} · ${dateStr} ${vkProfileLink}</span>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            ${vkReplyBtn}
+            <button class="btn-sm" onclick="copyReview('hul_${id}')" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.35);color:#c9a228;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">📋 Опубликовать</button>
+            <button class="btn-sm" onclick="deleteReview('${id}','${r.bookingId || ''}','huligan')" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
+          </div>
+        </div>
+      </div>`;
+      }).join('');
+    }
+
+    // ── ХУЛИgan: Settings ──
+    async function loadHuliganSettings() {
+      const cfg = await fbGet('huligan_config');
+      if (!cfg) return;
+      if (cfg.show) {
+        document.getElementById('hulCfgTitle').value = cfg.show.title || '';
+        document.getElementById('hulCfgDate').value = cfg.show.date || '';
+        document.getElementById('hulCfgTime').value = cfg.show.time || '';
+        document.getElementById('hulCfgVenue').value = cfg.show.venue || '';
+        document.getElementById('hulCfgAddress').value = cfg.show.address || '';
+        document.getElementById('hulSalesPaused').checked = cfg.show.salesPaused === true;
+      }
+      if (cfg.payment) {
+        document.getElementById('hulPaymentSbp').value = cfg.payment.sbp || '';
+        document.getElementById('hulPaymentCard').value = cfg.payment.card || '';
+        document.getElementById('hulPaymentHolder').value = cfg.payment.cardHolder || '';
+      }
+      renderSalesStateSummary('huligan');
+      await loadHuliganTicketTypes(cfg.ticketTypes);
+    }
+    async function saveHuliganShow() {
+      await fbPatch('huligan_config/show', {
+        title: document.getElementById('hulCfgTitle').value.trim(),
+        date: document.getElementById('hulCfgDate').value.trim(),
+        time: document.getElementById('hulCfgTime').value.trim(),
+        venue: document.getElementById('hulCfgVenue').value.trim(),
+        address: document.getElementById('hulCfgAddress').value.trim(),
+      });
+      toast('💾 Настройки ХУЛИgan сохранены');
+    }
+    async function saveHuliganSalesState() {
+      const paused = document.getElementById('hulSalesPaused').checked === true;
+      await fbPatch('huligan_config/show', { salesPaused: paused });
+      renderSalesStateSummary('huligan');
+      toast(paused ? '⛔ Продажи ХУЛИgan остановлены' : '✅ Продажи ХУЛИgan возобновлены');
+    }
+    // ── ХУЛИgan: dynamic ticket types ──
+    let _hulTicketTypes = {};
+
+    async function loadHuliganTicketTypes(preloaded) {
+      const data = preloaded !== undefined ? preloaded : await fbGet('huligan_config/ticketTypes');
+      _hulTicketTypes = data && typeof data === 'object' ? data : {};
+      renderTicketTypeRows();
+    }
+
+    function renderTicketTypeRows() {
+      const container = document.getElementById('ticketTypesManager');
+      if (!container) return;
+      const entries = Object.entries(_hulTicketTypes)
+        .sort((a, b) => (a[1].order ?? 999) - (b[1].order ?? 999));
+      if (!entries.length) {
+        container.innerHTML = '<div style="color:var(--dim);font-size:13px;padding:8px 0">Типов нет. Нажмите «+ Добавить тип» ниже.</div>';
+        return;
+      }
+      container.innerHTML = entries.map(([id, t]) => `
+        <div style="display:grid;grid-template-columns:44px 1fr auto;gap:8px;margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid ${esc(t.color || '#444')}55;align-items:center">
+          <div style="font-size:26px;text-align:center">${esc(t.icon || '🎟')}</div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:${esc(t.color || '#ccc')}">${esc(t.name || '')}</div>
+            <div style="font-size:12px;color:var(--dim)">${(t.price || 0).toLocaleString('ru-RU')} ₽</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:2px;line-height:1.3">${esc(t.description || '')}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <button onclick="editTicketType('${esc(id)}')" title="Редактировать" style="background:rgba(255,255,255,0.08);border:none;color:#fff;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px">✏️</button>
+            <button onclick="deleteTicketType('${esc(id)}')" title="Удалить" style="background:rgba(220,50,50,0.2);border:none;color:#ff7777;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px">🗑</button>
+          </div>
+        </div>
+        <div id="hul-edit-${esc(id)}" style="display:none;margin:-4px 0 10px 0;padding:12px;background:rgba(255,255,255,0.06);border-radius:10px">
+          <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:start;margin-bottom:8px">
+            <div class="form-group" style="margin-bottom:0"><label>Иконка</label>
+              <input class="inp" id="hedit-icon-${esc(id)}" value="${esc(t.icon || '')}" style="text-align:center;font-size:18px">
+            </div>
+            <div class="form-group" style="margin-bottom:0"><label>Название</label>
+              <input class="inp" id="hedit-name-${esc(id)}" value="${esc(t.name || '')}">
+            </div>
+            <div class="form-group" style="margin-bottom:0"><label>Цена (₽)</label>
+              <input class="inp" id="hedit-price-${esc(id)}" type="number" value="${t.price || 0}">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 110px;gap:8px;margin-bottom:10px;align-items:start">
+            <div class="form-group" style="margin-bottom:0"><label>Описание</label>
+              <textarea class="inp" id="hedit-desc-${esc(id)}" rows="2">${esc(t.description || '')}</textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:0"><label>Цвет</label>
+              <input class="inp" id="hedit-color-${esc(id)}" type="color" value="${esc(t.color || '#c9a228')}" style="height:42px;padding:4px;cursor:pointer">
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-save-settings" onclick="saveTicketType('${esc(id)}')" style="margin-top:0;flex:1">💾 Сохранить</button>
+            <button onclick="document.getElementById('hul-edit-${esc(id)}').style.display='none'" style="flex:none;background:none;border:1px solid rgba(255,255,255,0.15);color:var(--dim);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13px">Отмена</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function editTicketType(id) {
+      document.querySelectorAll('[id^="hul-edit-"]').forEach(el => el.style.display = 'none');
+      const row = document.getElementById(`hul-edit-${id}`);
+      if (row) row.style.display = '';
+    }
+
+    async function saveTicketType(id) {
+      const name = (document.getElementById(`hedit-name-${id}`)?.value || '').trim();
+      if (!name) return toast('Введите название типа');
+      const updated = {
+        ...(_hulTicketTypes[id] || {}),
+        icon: (document.getElementById(`hedit-icon-${id}`)?.value || '').trim() || '🎟',
+        name,
+        price: parseInt(document.getElementById(`hedit-price-${id}`)?.value) || 0,
+        description: (document.getElementById(`hedit-desc-${id}`)?.value || '').trim(),
+        color: document.getElementById(`hedit-color-${id}`)?.value || '#c9a228',
+        active: true
+      };
+      _hulTicketTypes[id] = updated;
+      await fbPut(`huligan_config/ticketTypes/${id}`, updated);
+      renderTicketTypeRows();
+      toast('💾 Тип билета сохранён');
+    }
+
+    async function deleteTicketType(id) {
+      if (!confirm('Удалить этот тип билета?')) return;
+      delete _hulTicketTypes[id];
+      await fbDelete(`huligan_config/ticketTypes/${id}`);
+      renderTicketTypeRows();
+      toast('🗑 Тип удалён');
+    }
+
+    function showAddTicketTypeForm() {
+      document.querySelectorAll('[id^="hul-edit-"]').forEach(el => el.style.display = 'none');
+      document.getElementById('addTicketTypeForm').style.display = '';
+    }
+
+    async function addTicketType() {
+      const name = (document.getElementById('newTypeName')?.value || '').trim();
+      if (!name) return toast('Введите название');
+      const icon = (document.getElementById('newTypeIcon')?.value || '').trim() || '🎟';
+      const price = parseInt(document.getElementById('newTypePrice')?.value) || 0;
+      const desc = (document.getElementById('newTypeDesc')?.value || '').trim();
+      const color = document.getElementById('newTypeColor')?.value || '#c9a228';
+      const order = Object.keys(_hulTicketTypes).length;
+      const id = 't_' + Date.now().toString(36);
+      const newType = { name, icon, price, description: desc, color, order, active: true };
+      _hulTicketTypes[id] = newType;
+      await fbPut(`huligan_config/ticketTypes/${id}`, newType);
+      document.getElementById('newTypeName').value = '';
+      document.getElementById('newTypeIcon').value = '';
+      document.getElementById('newTypePrice').value = '';
+      document.getElementById('newTypeDesc').value = '';
+      document.getElementById('addTicketTypeForm').style.display = 'none';
+      renderTicketTypeRows();
+      toast('✅ Тип билета добавлен');
+    }
+    async function saveHuliganPayment() {
+      await fbPatch('huligan_config/payment', {
+        sbp: document.getElementById('hulPaymentSbp').value.trim(),
+        card: document.getElementById('hulPaymentCard').value.trim(),
+        cardHolder: document.getElementById('hulPaymentHolder').value.trim(),
+      });
+      toast('💾 Реквизиты ХУЛИgan сохранены');
+    }
+
+    // ── ХУЛИgan: Promo codes ──
+    function toggleHuliganPromoUsesCustom() {
+      const sel = document.getElementById('hulNewPromoUsesSelect').value;
+      document.getElementById('hulNewPromoUsesCustom').style.display = sel === 'custom' ? '' : 'none';
+    }
+    function toggleHuliganPromoValue() {
+      const type = document.getElementById('hulNewPromoType').value;
+      document.getElementById('hulPromoValueRow').style.display = type === 'free' ? 'none' : '';
+    }
+    async function createHuliganPromo() {
+      const code = document.getElementById('hulNewPromoCode').value.trim().toUpperCase();
+      if (!code) return toast('Введите код промокода');
+      const type = document.getElementById('hulNewPromoType').value;
+      const value = type === 'free' ? 0 : (parseInt(document.getElementById('hulNewPromoValue').value) || 0);
+      const hulUsesSelVal = document.getElementById('hulNewPromoUsesSelect').value;
+      const uses = hulUsesSelVal === 'custom' ? (parseInt(document.getElementById('hulNewPromoUsesCustom').value) || 1) : parseInt(hulUsesSelVal);
+      const desc = document.getElementById('hulNewPromoDesc').value.trim();
+      const fromVal = document.getElementById('hulNewPromoFrom').value;
+      const untilVal = document.getElementById('hulNewPromoUntil').value;
+      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
+      if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
+      if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
+      await fbPut(`huligan_promo/${code}`, promoData);
+      toast(`🎫 Промокод ${code} создан`);
+      document.getElementById('hulNewPromoCode').value = '';
+      document.getElementById('hulNewPromoDesc').value = '';
+      document.getElementById('hulNewPromoFrom').value = '';
+      document.getElementById('hulNewPromoUntil').value = '';
+      document.getElementById('hulNewPromoUsesSelect').value = '-1';
+      document.getElementById('hulNewPromoUsesCustom').style.display = 'none';
+      loadHuliganPromos();
+    }
+    async function loadHuliganPromos() {
+      const data = await fbGet('huligan_promo') || {};
+      const list = document.getElementById('huliganPromoList');
+      const items = Object.entries(data).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+      if (!items.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">🎫</span>Промокодов пока нет</div>`;
+        return;
+      }
+      const nowTs2 = Date.now();
+      list.innerHTML = items.map(([code, p]) => {
+        const typeLabel = p.type === 'percent' ? `−${p.value}%` : p.type === 'fixed' ? `−${fmt(p.value)} ₽` : 'Бесплатно';
+        const usesLabel = p.usesLeft === -1 ? '∞' : p.usesLeft;
+        const expired = p.validUntil && p.validUntil < nowTs2;
+        const notStarted = p.validFrom && p.validFrom > nowTs2;
+        const dateRange = p.validFrom && p.validUntil
+          ? `📅 ${fmtShortDate(p.validFrom)} — ${fmtShortDate(p.validUntil)}`
+          : p.validFrom ? `📅 с ${fmtShortDate(p.validFrom)}`
+            : p.validUntil ? `📅 до ${fmtShortDate(p.validUntil)}` : '';
+        const statusBadge = expired ? ` <span style="color:#e85348;font-size:11px;font-weight:600">● истёк</span>`
+          : notStarted ? ` <span style="color:#c9a228;font-size:11px;font-weight:600">● не начался</span>` : '';
+        return `
+      <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
+        <div style="flex:1">
+          <div class="promo-code">${code}${statusBadge}</div>
+          <div class="promo-desc">${p.description || typeLabel} · ${usesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+        </div>
+        <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
+                onclick="toggleHuliganPromo('${code}',${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
+        <button class="btn-sm btn-sm-del" onclick="deleteHuliganPromo('${code}')">🗑</button>
+      </div>`;
+      }).join('');
+    }
+    async function toggleHuliganPromo(code, newVal) {
+      await fbPatch(`huligan_promo/${code}`, { active: newVal });
+      toast(newVal ? '✅ Промокод активирован' : '⛔ Промокод деактивирован');
+      loadHuliganPromos();
+    }
+    async function deleteHuliganPromo(code) {
+      await fbDelete(`huligan_promo/${code}`);
+      toast('🗑 Промокод удалён');
+      loadHuliganPromos();
+    }
+
+    // ── Ручное создание билетов ──
+    async function adminCreateSecretTicket() {
+      const name = document.getElementById('manualName').value.trim();
+      if (!name) return toast('Введите имя');
+      const zone = document.getElementById('manualZone').value;
+      const tableId = parseInt(document.getElementById('manualTable').value);
+      const seatIdx = parseInt(document.getElementById('manualSeat').value);
+      if (!tableId || isNaN(seatIdx)) return toast('Введите стол и место');
+      const priceVal = document.getElementById('manualPrice').value;
+      const finalPrice = priceVal !== '' ? Number(priceVal) : undefined;
+      const vkUserId = document.getElementById('manualVkId').value;
+      const tgUserId = document.getElementById('manualTgId').value;
+      const tgUsernameRaw = document.getElementById('manualTgUsername').value.trim().replace(/\s+/g, '');
+      const tgUsername = tgUsernameRaw ? (tgUsernameRaw.startsWith('@') ? tgUsernameRaw : `@${tgUsernameRaw}`) : '';
+      const res = document.getElementById('manualCreateResult');
+      res.style.color = 'var(--dim)'; res.textContent = 'Создаём...';
+      try {
+        const r = await fetch('/api/book', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({
+            action: 'admin_create',
+            name,
+            phone: document.getElementById('manualPhone').value.trim() || '—',
+            seats: [{ tableId, seatIdx, zone }],
+            finalPrice: finalPrice != null ? finalPrice : undefined,
+            vkUserId: vkUserId ? Number(vkUserId) : null,
+            tgUserId: tgUserId ? Number(tgUserId) : null,
+            tgUsername: tgUsername || null,
+            sendNotification: !!(vkUserId || tgUserId || tgUsername)
+          })
+        });
+        const data = await r.json();
+        if (data.ok) {
+          res.style.color = 'var(--green)';
+          const miniUrl = data.bookingId ? `https://vk.com/app54466228_-209268664?tab=tickets&bookingId=${encodeURIComponent(data.bookingId)}#my_tickets/${encodeURIComponent(data.bookingId)}` : '';
+          const warning = data.notificationWarning ? `<br><span style="color:#f5a623">⚠ ${esc(data.notificationWarning)}</span>` : '';
+          res.innerHTML = `✅ Билет создан: <b>${data.bookingId}</b>${miniUrl ? `<br><a href="${miniUrl}" target="_blank" style="color:var(--gold);font-size:12px">📱 Открыть в мини-аппе</a>` : ''}${warning}`;
+          toast('🎟 Билет Секрет создан и выдан!');
+          loadBookings();
+        } else {
+          res.style.color = 'var(--red)'; res.textContent = '❌ ' + (data.error || 'Ошибка');
+        }
+      } catch { res.style.color = 'var(--red)'; res.textContent = '❌ Ошибка сети'; }
+    }
+
+    async function loadHulManualTypes() {
+      const cfg = await fbGet('huligan_config');
+      const types = cfg?.ticketTypes || {};
+      const sel = document.getElementById('hulManualType');
+      if (!sel) return;
+      const sorted = Object.entries(types).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+      sel.innerHTML = sorted.map(([k, t]) => `<option value="${k}">${t.name} — ${t.price} ₽</option>`).join('') || '<option value="">Нет типов</option>';
+    }
+
+    async function adminCreateHuliganTicket() {
+      const name = document.getElementById('hulManualName').value.trim();
+      if (!name) return toast('Введите имя');
+      const ticketType = document.getElementById('hulManualType').value;
+      if (!ticketType) return toast('Выберите тип билета');
+      const priceVal = document.getElementById('hulManualPrice').value;
+      const finalPrice = priceVal !== '' ? Number(priceVal) : undefined;
+      const vkUserId = document.getElementById('hulManualVkId').value;
+      const tgUserId = document.getElementById('hulManualTgId').value;
+      const tgUsernameRaw = document.getElementById('hulManualTgUsername').value.trim().replace(/\s+/g, '');
+      const tgUsername = tgUsernameRaw ? (tgUsernameRaw.startsWith('@') ? tgUsernameRaw : `@${tgUsernameRaw}`) : '';
+      const res = document.getElementById('hulManualCreateResult');
+      res.style.color = 'var(--dim)'; res.textContent = 'Создаём...';
+      try {
+        const r = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({
+            action: 'admin_create_booking',
+            name, ticketType,
+            finalPrice: finalPrice != null ? finalPrice : undefined,
+            vkUserId: vkUserId ? Number(vkUserId) : null,
+            tgUserId: tgUserId ? Number(tgUserId) : null,
+            tgUsername: tgUsername || null,
+            sendNotification: !!(vkUserId || tgUserId || tgUsername)
+          })
+        });
+        const data = await r.json();
+        if (data.ok) {
+          res.style.color = 'var(--green)';
+          const miniLink = data.miniAppUrl ? `<br><a href="${data.miniAppUrl}" target="_blank" style="color:var(--accent);font-size:12px">📱 Открыть в мини-аппе</a>` : '';
+          const warning = data.notificationWarning ? `<br><span style="color:#f5a623">⚠ ${esc(data.notificationWarning)}</span>` : '';
+          res.innerHTML = `✅ Билет создан: <b>${data.bookingId}</b> (№${data.ticketNumber})${miniLink}${warning}`;
+          toast('🎟 Билет ХУЛИgan создан и выдан!');
+          loadHuliganOrders();
+        } else {
+          res.style.color = 'var(--red)'; res.textContent = '❌ ' + (data.error || 'Ошибка');
+        }
+      } catch { res.style.color = 'var(--red)'; res.textContent = '❌ Ошибка сети'; }
+    }
+
+    async function sendBroadcast() {
+      const message = (document.getElementById('broadcastMessage')?.value || '').trim();
+      const useVk = !!document.getElementById('broadcastVk')?.checked;
+      const useTg = !!document.getElementById('broadcastTg')?.checked;
+      const dryRun = !!document.getElementById('broadcastDryRun')?.checked;
+      const resultEl = document.getElementById('broadcastResult');
+      if (!message) return toast('Введите текст рассылки');
+      if (!useVk && !useTg) return toast('Выберите хотя бы один канал');
+      resultEl.style.color = 'var(--dim)';
+      resultEl.textContent = dryRun ? 'Проверяем аудиторию...' : 'Отправляем рассылку...';
+      try {
+        const r = await fetch('/api/broadcast', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({
+            message,
+            channels: { vk: useVk, tg: useTg },
+            dryRun
+          })
+        });
+        const data = await r.json();
+        if (!r.ok || !data?.ok) {
+          resultEl.style.color = 'var(--red)';
+          resultEl.textContent = `❌ ${data?.error || 'Ошибка рассылки'}`;
+          return;
+        }
+        resultEl.style.color = 'var(--green)';
+        resultEl.innerHTML = [
+          dryRun ? '✅ Проверка завершена (без отправки).' : '✅ Рассылка завершена.',
+          `VK: ${data.sent?.vk || 0}/${data.total?.vk || 0} · ошибок: ${data.errors?.vk || 0}`,
+          `TG: ${data.sent?.tg || 0}/${data.total?.tg || 0} · ошибок: ${data.errors?.tg || 0}`
+        ].join('<br>');
+        toast(dryRun ? 'Проверка аудитории выполнена' : 'Рассылка отправлена');
+      } catch {
+        resultEl.style.color = 'var(--red)';
+        resultEl.textContent = '❌ Ошибка сети';
+      }
+    }
+
+    // ── Users (Секрет) ──
+    async function loadUsers() {
+      const list = document.getElementById('usersList');
+      const users = await fbGet('ticket_users');
+      if (!users || !Object.keys(users).length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">👥</span>Пользователей пока нет</div>`;
+        return;
+      }
+      const items = Object.values(users).sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+      list.innerHTML = items.map(u => {
+        const name = u.name || [u.firstName, u.lastName].filter(Boolean).join(' ') || '—';
+        const vkLink = u.vkId ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${u.vkId}" target="_blank">💬 Написать</a>` : '';
+        const dateStr = u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('ru-RU') : '—';
+        return `
+      <div class="user-card">
+        ${u.photo ? `<img class="user-avatar" src="${u.photo}" alt="">` : `<div class="user-avatar" style="display:flex;align-items:center;justify-content:center;font-size:18px">👤</div>`}
+        <div style="flex:1">
+          <div class="user-name">${name}</div>
+          <div class="user-meta">${u.phone || '—'} · Билетов: ${u.totalBookings || 1} · ${dateStr}</div>
+        </div>
+        ${vkLink}
+      </div>`;
+      }).join('');
+    }
+
+    // ── Reviews (Секрет) ──
+    async function loadReviews() {
+      const list = document.getElementById('reviewsList');
+      const reviews = await fbGet('ticket_reviews');
+      if (!reviews || !Object.keys(reviews).length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">⭐</span>Отзывов пока нет</div>`;
+        return;
+      }
+      const items = Object.entries(reviews).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+      list.innerHTML = await Promise.all(items.map(async ([id, r]) => {
+        const booking = await fbGet(`ticket_bookings/${r.bookingId}`);
+        const name = booking?.name || r.bookingId || '—';
+        const starsStr = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
+        const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
+        const vkUserId = booking?.vkUserId;
+        const vkProfileUrl = vkUserId ? `https://vk.com/id${vkUserId}` : null;
+        const vkReplyBtn = vkUserId
+          ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${vkUserId}" target="_blank">💬 Ответить</a>`
+          : '';
+        // Текст для публикации ВКонтакте
+        const publishText = [
+          `✨ Отзыв о Шоу «Секрет»`,
+          ``,
+          starsStr + ` (${r.rating || 5}/5)`,
+          `«${r.text || ''}»`,
+          ``,
+          vkProfileUrl
+            ? `— ${name}, гость шоу 👉 ${vkProfileUrl}`
+            : `— ${name}`,
+          ``,
+          `#ШоуСекрет #KOSTYUKPROJECT #иллюзионист #фокусник #Ярославль`
+        ].join('\n');
+        window._publishTexts[id] = publishText;
+        const secVkProfileLink = vkUserId ? `<a href="https://vk.com/id${vkUserId}" target="_blank" style="color:#6ba5e7;text-decoration:none">vk.com/id${vkUserId}</a>` : '';
+        const secPromoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${r.promoCode}</div>` : '';
+        return `
+      <div class="review-card">
+        <div class="review-stars">${starsStr} <span style="font-size:13px;color:var(--dim)">(${r.rating || 5}/5)</span></div>
+        <div class="review-text">«${esc(r.text)}»</div>
+        ${secPromoInfo}
+        <div class="review-meta" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px">
+          <span>👤 ${esc(name)} · ${dateStr} ${secVkProfileLink}</span>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            ${vkReplyBtn}
+            <button class="btn-sm" onclick="copyReview('${id}')" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.35);color:#c9a228;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">📋 Опубликовать</button>
+            <button class="btn-sm" onclick="deleteReview('${id}','${r.bookingId || ''}','secret')" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
+          </div>
+        </div>
+      </div>`;
+      })).then(arr => arr.join(''));
+    }
+
+    // ── Bookings (Секрет) ──
+    async function loadBookings() {
+      const data = await fbGet('ticket_bookings') || {};
+      if (data.error) {
+        console.error("API Error in ticket_bookings:", data.error);
+        allBookings = {};
+      } else {
+        allBookings = data;
+      }
+      renderBookings();
+      const pending = Object.values(allBookings).filter(b => b.status === 'pending_confirmation' || b.status === 'pending_payment').length;
+      const badge = document.getElementById('pendingBadge');
+      if (pending > 0) { badge.textContent = pending; badge.style.display = ''; }
+      else badge.style.display = 'none';
+    }
+
+    function filterBookings(filter, el) {
+      currentFilter = filter;
+      document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderBookings();
+    }
+
+    function renderBookings() {
+      const list = document.getElementById('bookingList');
+      let entries = Object.entries(allBookings)
+        .map(([id, b]) => ({ id, ...b }))
+        .filter(b => currentFilter === 'all' || b.status === currentFilter)
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      if (!entries.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">📭</span>Заявок нет</div>`;
+        return;
+      }
+      list.innerHTML = entries.map(b => bookingCardHtml(b)).join('');
+    }
+
+    const STATUS_LABELS = {
+      pending_payment: ['pill-pending-pay', '⏳ Ожидает оплаты'],
+      pending_confirmation: ['pill-pending-conf', '💳 Ожидает подтверждения'],
+      confirmed: ['pill-confirmed', '✓ Подтверждён'],
+      refund_requested: ['pill-pending-conf', '↩ Запрос на возврат'],
+      cancelled: ['pill-cancelled', '✗ Отменён'],
+      refunded: ['pill-refunded', '↩ Возврат'],
+    };
+    const ZONE_LABELS = { vip: 'VIP', standart: 'Стандарт', econom: 'Эконом' };
+
+    function bookingCardHtml(b) {
+      const [pillClass, pillText] = STATUS_LABELS[b.status] || ['pill-cancelled', '?'];
+      const seatsHtml = (b.seats || []).map(s =>
+        `<span class="bk-seat-tag">Стол ${s.tableId}, м.${s.seatIdx + 1} (${ZONE_LABELS[s.zone] || s.zone})</span>`
+      ).join('');
+      const promo = b.promoCode ? `<span>Промокод: <b>${esc(b.promoCode)}</b></span>` : '';
+      const createdStr = b.createdAt ? new Date(b.createdAt).toLocaleString('ru-RU') : '—';
+      const safeId = esc(b.id);
+      const vkBtn = b.vkUserId
+        ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${encodeURIComponent(b.vkUserId)}" target="_blank">💬 Написать в ВК</a>`
+        : '';
+      const reasonHtml = (b.cancelReason || b.refundReason)
+        ? `<div style="font-size:12px;color:var(--dim);margin-top:6px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px">💬 ${esc(b.cancelReason || b.refundReason)}</div>`
+        : '';
+      const actions = [];
+      if (b.status === 'pending_confirmation' || b.status === 'pending_payment') {
+        // Показываем кнопку подтверждения для обоих статусов —
+        // pending_payment означает что пользователь нажал «Я оплатил», но статус не обновился на клиенте
+        actions.push(`<button class="btn-confirm" onclick="confirmBooking('${safeId}')">✅ Подтвердить оплату</button>`);
+        actions.push(`<button class="btn-cancel" onclick="cancelBooking('${safeId}')">❌ Отменить</button>`);
+      }
+      if (b.status === 'confirmed') {
+        actions.push(`<a class="btn-view-ticket" href="#" onclick="openSecureTicket('${safeId}');return false;">🎟 Билет</a>`);
+        actions.push(`<button class="btn-cancel" onclick="cancelBooking('${safeId}')">↩ Возврат</button>`);
+      }
+      if (b.status === 'refund_requested') {
+        actions.push(`<button class="btn-cancel" onclick="cancelBooking('${safeId}')">↩ Оформить возврат</button>`);
+      }
+      actions.push(`<button class="btn-sm btn-sm-del" onclick="deleteBooking('${safeId}')" style="margin-left:auto" title="Удалить заявку полностью">🗑 Удалить</button>`);
+      return `
+    <div class="booking-card">
+      <div class="bk-head">
+        <div>
+          <div class="bk-id">${safeId}</div>
+          <div class="bk-name">${esc(b.name) || '—'}</div>
+          <div class="bk-phone">${esc(b.phone) || '—'}</div>
+        </div>
+        <span class="status-pill ${pillClass}">${pillText}</span>
+      </div>
+      <div class="bk-seats">${seatsHtml}</div>
+      <div class="bk-meta">
+        <span>💰 ${fmt(b.discountedTotal || b.total || 0)} ₽</span>
+        ${promo}
+        <span>🕐 ${createdStr}</span>
+        ${vkBtn}
+      </div>
+      ${reasonHtml}
+      ${actions.length ? `<div class="bk-actions">${actions.join('')}</div>` : ''}
+    </div>
+  `;
+    }
+
+    async function openSecureTicket(id) {
+      try {
+        const r = await fetch(`/api/ticket-link?id=${encodeURIComponent(id)}`, { headers: adminHeaders() });
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          toast('Ссылка билета недоступна: ' + (err.error || r.status));
+          return;
+        }
+        const data = await r.json();
+        if (!data?.url) {
+          toast('Ссылка билета недоступна');
+          return;
+        }
+        window.open(data.url, '_blank', 'noopener');
+      } catch {
+        toast('Ошибка получения ссылки билета');
+      }
+    }
+
+    async function confirmBooking(id) {
+      const b = allBookings[id];
+      if (!b) return;
+      const currentVersion = Number(b.ticketLinkVersion || 1);
+      try {
+        const r = await fetch(`/api/admin-proxy?path=${encodeURIComponent(`ticket_bookings/${id}`)}`, {
+          method: 'PATCH',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ status: 'confirmed', confirmedAt: Date.now(), ticketLinkVersion: currentVersion })
+        });
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          toast('Ошибка подтверждения: ' + (err.error || r.status));
+          return;
+        }
+      } catch (e) {
+        toast('Ошибка сети при подтверждении');
+        return;
+      }
+      for (const s of (b.seats || [])) {
+        await fbPut(`ticket_seats/${s.tableId}_${s.seatIdx}`, { status: 'taken', bookingId: id });
+      }
+      try {
+        await fetch('/api/notify', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ bookingId: id, event: 'confirmed' })
+        });
+      } catch (e) { }
+      allBookings[id].status = 'confirmed';
+      allBookings[id].confirmedAt = Date.now();
+      allBookings[id].ticketLinkVersion = currentVersion;
+      toast('✅ Бронь подтверждена! Билет отправлен пользователю.');
+      renderBookings();
+      const pending = Object.values(allBookings).filter(b => b.status === 'pending_confirmation' || b.status === 'pending_payment').length;
+      const badge = document.getElementById('pendingBadge');
+      if (pending > 0) { badge.textContent = pending; badge.style.display = ''; }
+      else badge.style.display = 'none';
+    }
+
+    async function cancelBooking(id) {
+      const b = allBookings[id];
+      if (!b) return;
+      const newStatus = (b.status === 'confirmed' || b.status === 'refund_requested') ? 'refunded' : 'cancelled';
+      const currentVersion = Number(b.ticketLinkVersion || 1);
+      await fbPatch(`ticket_bookings/${id}`, {
+        status: newStatus,
+        ticketLinkVersion: currentVersion + 1,
+        ticketRevokedAt: Date.now()
+      });
+      for (const s of (b.seats || [])) {
+        await fbPut(`ticket_seats/${s.tableId}_${s.seatIdx}`, { status: 'available' });
+      }
+      try {
+        await fetch('/api/notify', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ bookingId: id, event: 'admin_booking_update', status: newStatus })
+        });
+      } catch (e) { }
+      allBookings[id].status = newStatus;
+      allBookings[id].ticketLinkVersion = currentVersion + 1;
+      toast(newStatus === 'refunded' ? '↩ Возврат оформлен' : '✗ Бронь отменена');
+      renderBookings();
+    }
+
+    async function deleteBooking(id) {
+      const b = allBookings[id];
+      if (!b) return;
+      const name = b.name || id;
+      if (!confirm(`Удалить заявку «${name}» полностью?\n\nЭто действие нельзя отменить.`)) return;
+      // Освобождаем места
+      for (const s of (b.seats || [])) {
+        await fbPut(`ticket_seats/${s.tableId}_${s.seatIdx}`, { status: 'available' });
+      }
+      // Удаляем бронь
+      await fbDelete(`ticket_bookings/${id}`);
+      delete allBookings[id];
+      toast('🗑 Заявка удалена');
+      renderBookings();
+      // Обновляем бейдж
+      const pending = Object.values(allBookings).filter(b => b.status === 'pending_confirmation').length;
+      const badge = document.getElementById('pendingBadge');
+      if (pending > 0) { badge.textContent = pending; badge.style.display = ''; }
+      else badge.style.display = 'none';
+    }
+
+    // ── Settings (Секрет) ──
+    async function saveShow() {
+      await fbPatch('ticket_config/show', {
+        title: document.getElementById('cfgTitle').value.trim(),
+        date: document.getElementById('cfgDate').value.trim(),
+        time: document.getElementById('cfgTime').value.trim(),
+        venue: document.getElementById('cfgVenue').value.trim(),
+        address: document.getElementById('cfgAddress').value.trim(),
+      });
+      toast('💾 Настройки шоу сохранены');
+    }
+    async function saveSecretSalesState() {
+      const paused = document.getElementById('cfgSalesPaused').checked === true;
+      await fbPatch('ticket_config/show', { salesPaused: paused });
+      renderSalesStateSummary('secret');
+      toast(paused ? '⛔ Продажи шоу «Секрет» остановлены' : '✅ Продажи шоу «Секрет» возобновлены');
+    }
+    async function savePrices() {
+      await fbPatch('ticket_config/prices', {
+        vip: parseInt(document.getElementById('priceVip').value) || 1400,
+        standart: parseInt(document.getElementById('priceStandart').value) || 1100,
+        econom: parseInt(document.getElementById('priceEconom').value) || 800,
+      });
+      toast('💾 Цены сохранены');
+    }
+    async function savePayment() {
+      await fbPatch('ticket_config/payment', {
+        sbp: document.getElementById('paymentSbp').value.trim(),
+        card: document.getElementById('paymentCard').value.trim(),
+        cardHolder: document.getElementById('paymentHolder').value.trim(),
+      });
+      toast('💾 Реквизиты сохранены');
+    }
+    async function changePassword() {
+      const oldPwd = document.getElementById('oldPwd').value;
+      const p1 = document.getElementById('newPwd').value;
+      const p2 = document.getElementById('newPwd2').value;
+      if (!oldPwd) return toast('Введите текущий пароль');
+      if (!p1) return toast('Введите новый пароль');
+      if (p1 !== p2) return toast('❌ Пароли не совпадают');
+      if (p1.length < 6) return toast('❌ Пароль минимум 6 символов');
+      if (oldPwd !== (window._adminPass || '')) return toast('❌ Текущий пароль неверен');
+      await fbPut('ticket_admin/adminPassword', p1);
+      window._adminPass = p1;
+      toast('🔐 Пароль изменён');
+      document.getElementById('oldPwd').value = '';
+      document.getElementById('newPwd').value = '';
+      document.getElementById('newPwd2').value = '';
+    }
+
+    // ── Promo codes (Секрет) ──
+    function togglePromoUsesCustom() {
+      const sel = document.getElementById('newPromoUsesSelect').value;
+      document.getElementById('newPromoUsesCustom').style.display = sel === 'custom' ? '' : 'none';
+    }
+    function togglePromoValue() {
+      const type = document.getElementById('newPromoType').value;
+      document.getElementById('promoValueRow').style.display = type === 'free' ? 'none' : '';
+    }
+    async function createPromo() {
+      const code = document.getElementById('newPromoCode').value.trim().toUpperCase();
+      if (!code) return toast('Введите код промокода');
+      const type = document.getElementById('newPromoType').value;
+      const value = type === 'free' ? 0 : (parseInt(document.getElementById('newPromoValue').value) || 0);
+      const usesSelVal = document.getElementById('newPromoUsesSelect').value;
+      const uses = usesSelVal === 'custom' ? (parseInt(document.getElementById('newPromoUsesCustom').value) || 1) : parseInt(usesSelVal);
+      const desc = document.getElementById('newPromoDesc').value.trim();
+      const fromVal = document.getElementById('newPromoFrom').value;
+      const untilVal = document.getElementById('newPromoUntil').value;
+      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
+      if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
+      if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
+      await fbPut(`ticket_promo/${code}`, promoData);
+      toast(`🎫 Промокод ${code} создан`);
+      document.getElementById('newPromoCode').value = '';
+      document.getElementById('newPromoDesc').value = '';
+      document.getElementById('newPromoFrom').value = '';
+      document.getElementById('newPromoUntil').value = '';
+      document.getElementById('newPromoUsesSelect').value = '-1';
+      document.getElementById('newPromoUsesCustom').style.display = 'none';
+      loadPromos();
+    }
+    async function loadPromos() {
+      const data = await fbGet('ticket_promo') || {};
+      const list = document.getElementById('promoList');
+      const items = Object.entries(data).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+      if (!items.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">🎫</span>Промокодов пока нет</div>`;
+        return;
+      }
+      const nowTs = Date.now();
+      list.innerHTML = items.map(([code, p]) => {
+        const typeLabel = p.type === 'percent' ? `−${p.value}%` : p.type === 'fixed' ? `−${fmt(p.value)} ₽` : 'Бесплатно';
+        const usesLabel = p.usesLeft === -1 ? '∞' : p.usesLeft;
+        const expired = p.validUntil && p.validUntil < nowTs;
+        const notStarted = p.validFrom && p.validFrom > nowTs;
+        const dateRange = p.validFrom && p.validUntil
+          ? `📅 ${fmtShortDate(p.validFrom)} — ${fmtShortDate(p.validUntil)}`
+          : p.validFrom ? `📅 с ${fmtShortDate(p.validFrom)}`
+            : p.validUntil ? `📅 до ${fmtShortDate(p.validUntil)}` : '';
+        const statusBadge = expired ? ` <span style="color:#e85348;font-size:11px;font-weight:600">● истёк</span>`
+          : notStarted ? ` <span style="color:#c9a228;font-size:11px;font-weight:600">● не начался</span>` : '';
+        return `
+      <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
+        <div style="flex:1">
+          <div class="promo-code">${code}${statusBadge}</div>
+          <div class="promo-desc">${p.description || typeLabel} · ${usesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+        </div>
+        <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
+                onclick="togglePromo('${code}',${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
+        <button class="btn-sm btn-sm-del" onclick="deletePromo('${code}')">🗑</button>
+      </div>`;
+      }).join('');
+    }
+    async function togglePromo(code, newVal) {
+      await fbPatch(`ticket_promo/${code}`, { active: newVal });
+      toast(newVal ? '✅ Промокод активирован' : '⛔ Промокод деактивирован');
+      loadPromos();
+    }
+    async function deletePromo(code) {
+      if (!confirm(`Удалить промокод «${code}»?`)) return;
+      await fbDelete(`ticket_promo/${code}`);
+      toast('🗑 Промокод удалён');
+      loadPromos();
+    }
+
+    // ── Hall mini map (Секрет) ──
+    const TABLES = [
+      { id: 1, cx: 130, cy: 120, zone: 'vip', n: 8, big: true },
+      { id: 2, cx: 252, cy: 114, zone: 'vip', n: 8, big: true },
+      { id: 3, cx: 370, cy: 120, zone: 'vip', n: 8, big: true },
+      { id: 6, cx: 55, cy: 207, zone: 'standart', n: 4, big: false },
+      { id: 4, cx: 168, cy: 205, zone: 'vip', n: 8, big: true },
+      { id: 5, cx: 296, cy: 205, zone: 'vip', n: 8, big: true },
+      { id: 7, cx: 438, cy: 207, zone: 'standart', n: 4, big: false },
+      { id: 8, cx: 100, cy: 289, zone: 'standart', n: 4, big: false },
+      { id: 9, cx: 207, cy: 287, zone: 'standart', n: 4, big: false },
+      { id: 10, cx: 307, cy: 287, zone: 'standart', n: 4, big: false },
+      { id: 11, cx: 408, cy: 293, zone: 'standart', n: 4, big: false },
+      { id: 12, cx: 118, cy: 380, zone: 'standart', n: 4, big: false },
+      { id: 13, cx: 220, cy: 378, zone: 'standart', n: 4, big: false },
+      { id: 14, cx: 320, cy: 378, zone: 'standart', n: 4, big: false },
+      { id: 15, cx: 408, cy: 384, zone: 'standart', n: 4, big: false },
+      { id: 16, cx: 55, cy: 473, zone: 'econom', n: 4, big: false },
+      { id: 17, cx: 140, cy: 473, zone: 'econom', n: 4, big: false },
+      { id: 18, cx: 225, cy: 473, zone: 'econom', n: 4, big: false },
+      { id: 19, cx: 310, cy: 473, zone: 'econom', n: 4, big: false }
+    ];
+    const ZONE_COLORS = { vip: '#e85348', standart: '#3dbf6e', econom: '#4a8fd9' };
+    const NS = 'http://www.w3.org/2000/svg';
+    function svgEl(tag, attrs) {
+      const e = document.createElementNS(NS, tag);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      return e;
+    }
+
+    // Позиции мест — точно как в мини-аппе (index.html)
+    function adminSeatPos(cx, cy, n, big, zone) {
+      const r = big ? 37 : 27;
+      const pts = [];
+      if (n === 8) {
+        // VIP: 8 мест по кругу
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * 2 * Math.PI - Math.PI / 2;
+          pts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
+        }
+      } else if (zone === 'econom') {
+        // Эконом: 2 слева и 2 справа (2×2 сетка)
+        const v = 11;
+        pts.push({ x: cx - r, y: cy - v }); // левый верхний
+        pts.push({ x: cx - r, y: cy + v }); // левый нижний
+        pts.push({ x: cx + r, y: cy - v }); // правый верхний
+        pts.push({ x: cx + r, y: cy + v }); // правый нижний
+      } else {
+        // Стандарт: крест (сверху, справа, снизу, слева)
+        pts.push({ x: cx, y: cy - r });
+        pts.push({ x: cx + r, y: cy });
+        pts.push({ x: cx, y: cy + r });
+        pts.push({ x: cx - r, y: cy });
+      }
+      return pts;
+    }
+
+    async function loadAdminHall() {
+      const g = document.getElementById('adminHall');
+      g.innerHTML = '<text x="245" y="260" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="12" font-family="Inter,sans-serif">Загрузка...</text>';
+
+      const [seatsRaw, bookingsRaw] = await Promise.all([
+        fbGet('ticket_seats'),
+        fbGet('ticket_bookings')
+      ]);
+      const seats = seatsRaw || {};
+      const bookings = bookingsRaw || {};
+      const now = Date.now();
+
+      // Строим карту: ключ места → данные брони
+      const seatInfo = {};
+      for (const [bookingId, bk] of Object.entries(bookings)) {
+        if (!bk.seats) continue;
+        const st = bk.status;
+        if (st !== 'confirmed' && st !== 'pending_confirmation') continue;
+        for (const s of bk.seats) {
+          const k = `${s.tableId}_${s.seatIdx}`;
+          seatInfo[k] = { bookingStatus: st, name: bk.name || '?', bookingId };
+        }
+      }
+
+      g.innerHTML = '';
+      let totalConfirmed = 0, totalPending = 0;
+
+      for (const tbl of TABLES) {
+        const z = ZONE_COLORS[tbl.zone];
+        const tr = tbl.big ? 22 : 14;
+
+        // Все столы: рисуем места с реальным статусом
+        const pts = adminSeatPos(tbl.cx, tbl.cy, tbl.n, tbl.big, tbl.zone);
+        const sr = tbl.big ? 9 : 8;
+
+        for (let si = 0; si < pts.length; si++) {
+          const key = `${tbl.id}_${si}`;
+          const info = seatInfo[key];
+          const rawS = seats[key];
+          const pt = pts[si];
+
+          // Определяем статус
+          let eff;
+          if (info?.bookingStatus === 'confirmed') {
+            eff = 'confirmed'; totalConfirmed++;
+          } else if (info?.bookingStatus === 'pending_confirmation') {
+            eff = 'pending'; totalPending++;
+          } else if (rawS?.status === 'reserved' && rawS.reservedAt && (now - rawS.reservedAt) < 600000) {
+            eff = 'reserved';
+          } else {
+            eff = 'available';
+          }
+
+          const dot = svgEl('circle', { cx: pt.x.toFixed(1), cy: pt.y.toFixed(1), r: sr });
+          if (eff === 'confirmed') {
+            dot.setAttribute('fill', z);
+            dot.setAttribute('stroke', '#ffffff');
+            dot.setAttribute('stroke-width', '1.5');
+            if (info?.name) dot.setAttribute('title', `✓ ${info.name}`);
+          } else if (eff === 'pending') {
+            dot.setAttribute('fill', '#f5a623');
+            dot.setAttribute('stroke', '#ffcc44');
+            dot.setAttribute('stroke-width', '1.5');
+            if (info?.name) dot.setAttribute('title', `⏳ ${info.name}`);
+          } else if (eff === 'reserved') {
+            dot.setAttribute('fill', 'rgba(201,162,39,0.35)');
+            dot.setAttribute('stroke', 'rgba(201,162,39,0.65)');
+            dot.setAttribute('stroke-width', '1');
+          } else {
+            dot.setAttribute('fill', z);
+            dot.setAttribute('opacity', '0.18');
+          }
+          g.appendChild(dot);
+
+          // Инициалы на проданных местах
+          if (info) {
+            const ini = (info.name || '').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+            const t = svgEl('text', {
+              x: pt.x.toFixed(1), y: pt.y.toFixed(1),
+              'text-anchor': 'middle', 'dominant-baseline': 'central',
+              fill: '#fff', 'font-size': tbl.big ? 6 : 5,
+              'font-family': 'Inter,sans-serif', 'font-weight': '700',
+              'pointer-events': 'none'
+            });
+            t.textContent = ini;
+            g.appendChild(t);
+          }
+        }
+
+        // Круг стола
+        const tc = svgEl('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: tr,
+          fill: 'rgba(255,255,255,0.03)', stroke: 'rgba(255,255,255,0.1)', 'stroke-width': 1
+        });
+        g.appendChild(tc);
+        // Номер стола
+        const lbl = svgEl('text', {
+          x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle',
+          'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.35)',
+          'font-size': tbl.big ? 10 : 8, 'font-family': 'Inter,sans-serif'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      }
+
+      // Счётчик
+      const counter = document.getElementById('hallCounter');
+      if (counter) {
+        counter.innerHTML =
+          `<span style="color:#3dbf6e">✓ Продано: <b>${totalConfirmed}</b></span>` +
+          `&emsp;<span style="color:#f5a623">⏳ Ожидают подтверждения: <b>${totalPending}</b></span>`;
+      }
+    }
+
+    function fmt(n) { return Number(n).toLocaleString('ru-RU'); }
+    function fmtShortDate(ts) { return new Date(ts).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }); }
+
+    // ── Copy review for publishing ──
+    window._publishTexts = {};
+    function copyReview(id) {
+      const text = window._publishTexts[id];
+      if (!text) return;
+      navigator.clipboard.writeText(text)
+        .then(() => toast('📋 Скопировано! Вставьте в пост ВКонтакте'))
+        .catch(() => toast('Не удалось скопировать'));
+    }
+
+    // ── Delete review ──
+    async function deleteReview(reviewId, bookingId, show) {
+      if (!confirm('Удалить этот отзыв? Действие необратимо.')) return;
+      try {
+        const r = await fetch('/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'delete_review',
+            bookingId: bookingId || 'none',
+            reviewId, show,
+            adminPassword: window._adminPass
+          })
+        });
+        const data = await r.json();
+        if (data.ok) {
+          toast('✅ Отзыв удалён');
+          if (show === 'huligan') loadHuliganReviews();
+          else loadReviews();
+        } else {
+          toast(data.error || 'Ошибка удаления');
+        }
+      } catch {
+        toast('Ошибка. Попробуйте ещё раз.');
+      }
+    }
+
+    // ── VK Mini App: auto-login for community admins ──
+    async function checkVkRole() {
+      try {
+        const raw = window.location.search.slice(1) || window.location.hash.slice(1);
+        const params = new URLSearchParams(raw);
+        const role = params.get('vk_viewer_group_role');
+        if (role === 'admin' || role === 'editor') return true;
+        if (typeof vkBridge !== 'undefined') await vkBridge.send('VKWebAppInit');
+      } catch (e) { }
+      return false;
+    }
+
+    function showAdminPanel(cfg) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      if (window.innerWidth <= 600) {
+        const bottomNav = document.getElementById('bottomNav');
+        if (bottomNav) bottomNav.style.display = 'flex';
+      }
+      initAdmin(cfg);
+    }
+
+    // ── No password persistence in browser storage ──
+    (async () => {
+      // Всегда требуем новый ввод пароля после перезагрузки страницы.
+      // Это снижает риск кражи пароля из sessionStorage/XSS.
+    })();
+
+    // Auto refresh every 30s for active section
+    setInterval(() => {
+      if (document.getElementById('sec-dashboard').classList.contains('active')) loadDashboard();
+      if (document.getElementById('sec-chats').classList.contains('active')) loadChatsList();
+      if (document.getElementById('sec-bookings').classList.contains('active')) loadBookings();
+      if (document.getElementById('sec-hul-bookings').classList.contains('active')) loadHuliganOrders();
+    }, 30000);
+  </script>
+</body>
+
+</html>
