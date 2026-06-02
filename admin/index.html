@@ -1422,6 +1422,9 @@
         <div class="nav-item" onclick="showSection('chats')" data-sec="chats">
           <span class="nav-icon">💬</span> Диалоги AI
         </div>
+        <div class="nav-item" onclick="showSection('private-config')" data-sec="private-config">
+          <span class="nav-icon">🪄</span> Цены & ИИ
+        </div>
       </nav>
 
       <!-- Секрет nav -->
@@ -1609,6 +1612,340 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Private Config (Цены & ИИ) Section -->
+      <div class="section" id="sec-private-config">
+        <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>🪄 Управление ценами и ИИ Екатерина</span>
+          <button class="btn-primary" onclick="savePrivateConfig()" style="width:auto; padding: 10px 24px; box-shadow: none;">💾 Сохранить всё</button>
+        </div>
+
+        <!-- Вкладки управления -->
+        <div class="filter-tabs" style="margin-bottom: 20px;">
+          <div class="ftab active" onclick="switchConfigTab('shows', this)">🎭 Услуги & Шоу</div>
+          <div class="ftab" onclick="switchConfigTab('travel', this)">🚗 Выезд в регионы</div>
+          <div class="ftab" onclick="switchConfigTab('coef', this)">🎉 Коэффициенты</div>
+          <div class="ftab" onclick="switchConfigTab('ai', this)">🤖 Инструкции ИИ</div>
+        </div>
+
+        <!-- Содержимое вкладок -->
+        <div class="settings-grid" style="max-width: 100%;">
+          
+          <!-- Вкладка 1: Шоу и услуги -->
+          <div class="config-tab-content" id="ctab-shows">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+              
+              <!-- Детские шоу -->
+              <div class="settings-card">
+                <div class="settings-card-title">👶 Детские шоу (для детей 7-13 лет)</div>
+                <div class="form-group">
+                  <label>Детское шоу 30 минут (₽)</label>
+                  <input class="inp" id="pc_kids_30" type="number" placeholder="8000">
+                </div>
+                <div class="form-group">
+                  <label>Детское шоу 40 минут (₽)</label>
+                  <input class="inp" id="pc_kids_40" type="number" placeholder="10000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Индивидуальное детское шоу (₽)</label>
+                  <input class="inp" id="pc_kids_ind" type="number" placeholder="15000">
+                </div>
+              </div>
+
+              <!-- Взрослые шоу -->
+              <div class="settings-card">
+                <div class="settings-card-title">🎭 Взрослые шоу (Стандартные)</div>
+                <div class="form-group">
+                  <label>Взрослое шоу 20 минут (₽)</label>
+                  <input class="inp" id="pc_adult_20" type="number" placeholder="14000">
+                </div>
+                <div class="form-group">
+                  <label>Взрослое шоу 30 минут (₽)</label>
+                  <input class="inp" id="pc_adult_30" type="number" placeholder="20000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Взрослое шоу 40 минут (₽)</label>
+                  <input class="inp" id="pc_adult_40" type="number" placeholder="26000">
+                </div>
+              </div>
+
+              <!-- Индивидуальные шоу -->
+              <div class="settings-card">
+                <div class="settings-card-title">👑 Индивидуальные взрослые шоу</div>
+                <div class="form-group">
+                  <label>Индивидуальное шоу 20 минут (₽)</label>
+                  <input class="inp" id="pc_ind_20" type="number" placeholder="20000">
+                </div>
+                <div class="form-group">
+                  <label>Индивидуальное шоу 30 минут (₽)</label>
+                  <input class="inp" id="pc_ind_30" type="number" placeholder="28000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Индивидуальное шоу 40 минут (₽)</label>
+                  <input class="inp" id="pc_ind_40" type="number" placeholder="36000">
+                </div>
+              </div>
+
+              <!-- Микромагия -->
+              <div class="settings-card">
+                <div class="settings-card-title">🪄 Микромагия (фокусы вблизи)</div>
+                <div class="form-group">
+                  <label>Микромагия 30 минут (₽)</label>
+                  <input class="inp" id="pc_micro_30" type="number" placeholder="10000">
+                </div>
+                <div class="form-group">
+                  <label>Микромагия 1 час (₽)</label>
+                  <input class="inp" id="pc_micro_60" type="number" placeholder="16000">
+                </div>
+                <div class="form-group">
+                  <label>Микромагия 2 часа (₽)</label>
+                  <input class="inp" id="pc_micro_120" type="number" placeholder="24000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Микромагия 3 часа (₽)</label>
+                  <input class="inp" id="pc_micro_180" type="number" placeholder="30000">
+                </div>
+              </div>
+
+              <!-- По событиям -->
+              <div class="settings-card" style="grid-column: span 2;">
+                <div class="settings-card-title">💒 Шоу под конкретные события</div>
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                  <div class="form-group">
+                    <label>Свадьба 20 мин (₽)</label>
+                    <input class="inp" id="pc_wedding_20" type="number" placeholder="20000">
+                  </div>
+                  <div class="form-group">
+                    <label>Свадьба 30 мин (₽)</label>
+                    <input class="inp" id="pc_wedding_30" type="number" placeholder="27000">
+                  </div>
+                  <div class="form-group">
+                    <label>Корпоратив 20 мин (₽)</label>
+                    <input class="inp" id="pc_corp_20" type="number" placeholder="21000">
+                  </div>
+                  <div class="form-group">
+                    <label>Корпоратив 30 мин (₽)</label>
+                    <input class="inp" id="pc_corp_30" type="number" placeholder="28000">
+                  </div>
+                  <div class="form-group">
+                    <label>Юбилей 20 мин (₽)</label>
+                    <input class="inp" id="pc_anniv_20" type="number" placeholder="18000">
+                  </div>
+                  <div class="form-group">
+                    <label>Юбилей 30 мин (₽)</label>
+                    <input class="inp" id="pc_anniv_30" type="number" placeholder="28000">
+                  </div>
+                  <div class="form-group" style="margin-bottom:0">
+                    <label>Выпускной 20 мин (₽)</label>
+                    <input class="inp" id="pc_grad_20" type="number" placeholder="17000">
+                  </div>
+                  <div class="form-group" style="margin-bottom:0">
+                    <label>Выпускной 30 мин (₽)</label>
+                    <input class="inp" id="pc_grad_30" type="number" placeholder="24000">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Вкладка 2: Выезд в регионы -->
+          <div class="config-tab-content" id="ctab-travel" style="display:none">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+              
+              <!-- Ярославская -->
+              <div class="settings-card">
+                <div class="settings-card-title">🚗 Ярославская область</div>
+                <div class="form-group">
+                  <label>Ярославль (₽)</label>
+                  <input class="inp" id="pc_t_yaroslavl" type="number" placeholder="1000">
+                </div>
+                <div class="form-group">
+                  <label>Гаврилов-Ям, Тутаев (₽)</label>
+                  <input class="inp" id="pc_t_tutaev" type="number" placeholder="2000">
+                </div>
+                <div class="form-group">
+                  <label>Ростов, Данилов, Рыбинск (₽)</label>
+                  <input class="inp" id="pc_t_rostov" type="number" placeholder="3000">
+                </div>
+                <div class="form-group">
+                  <label>Любим, Мышкин, Углич, Переславль (₽)</label>
+                  <input class="inp" id="pc_t_uglich" type="number" placeholder="4000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Пошехонье (₽)</label>
+                  <input class="inp" id="pc_t_poshekh" type="number" placeholder="5000">
+                </div>
+              </div>
+
+              <!-- Ивановская -->
+              <div class="settings-card">
+                <div class="settings-card-title">🚗 Ивановская область</div>
+                <div class="form-group">
+                  <label>Иваново, Кохма (₽)</label>
+                  <input class="inp" id="pc_t_ivanovo" type="number" placeholder="2000">
+                </div>
+                <div class="form-group">
+                  <label>Тейково, Фурманов, Шуя, Приволжск (₽)</label>
+                  <input class="inp" id="pc_t_shuya" type="number" placeholder="3000">
+                </div>
+                <div class="form-group">
+                  <label>Вичуга, Родники, Кинешма (₽)</label>
+                  <input class="inp" id="pc_t_kinesh" type="number" placeholder="4000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Южа (₽)</label>
+                  <input class="inp" id="pc_t_yuzha" type="number" placeholder="5000">
+                </div>
+              </div>
+
+              <!-- Костромская -->
+              <div class="settings-card">
+                <div class="settings-card-title">🚗 Костромская область</div>
+                <div class="form-group">
+                  <label>Кострома, Волгореченск, Нерехта (₽)</label>
+                  <input class="inp" id="pc_t_kostroma" type="number" placeholder="3000">
+                </div>
+                <div class="form-group">
+                  <label>Галич (₽)</label>
+                  <input class="inp" id="pc_t_galich" type="number" placeholder="4000">
+                </div>
+                <div class="form-group">
+                  <label>Буй, Мантурово (₽)</label>
+                  <input class="inp" id="pc_t_bui" type="number" placeholder="5000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Шарья (₽)</label>
+                  <input class="inp" id="pc_t_sharya" type="number" placeholder="7000">
+                </div>
+              </div>
+
+              <!-- Владимирская -->
+              <div class="settings-card">
+                <div class="settings-card-title">🚗 Владимирская область</div>
+                <div class="form-group">
+                  <label>Александров (₽)</label>
+                  <input class="inp" id="pc_t_alexandrov" type="number" placeholder="4000">
+                </div>
+                <div class="form-group">
+                  <label>Владимир, Ковров (₽)</label>
+                  <input class="inp" id="pc_t_vladimir" type="number" placeholder="5000">
+                </div>
+                <div class="form-group">
+                  <label>Гусь-Хрустальный (₽)</label>
+                  <input class="inp" id="pc_t_gus" type="number" placeholder="6000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Муром (₽)</label>
+                  <input class="inp" id="pc_t_murom" type="number" placeholder="7000">
+                </div>
+              </div>
+
+              <!-- Вологодская -->
+              <div class="settings-card">
+                <div class="settings-card-title">🚗 Вологодская область</div>
+                <div class="form-group">
+                  <label>Вологда (₽)</label>
+                  <input class="inp" id="pc_t_vologda" type="number" placeholder="5000">
+                </div>
+                <div class="form-group">
+                  <label>Сокол (₽)</label>
+                  <input class="inp" id="pc_t_sokol" type="number" placeholder="5500">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Череповец (₽)</label>
+                  <input class="inp" id="pc_t_cherep" type="number" placeholder="7000">
+                </div>
+              </div>
+
+              <!-- Московская -->
+              <div class="settings-card">
+                <div class="settings-card-title">🚗 Московская область</div>
+                <div class="form-group">
+                  <label>Москва (₽)</label>
+                  <input class="inp" id="pc_t_moscow" type="number" placeholder="6000">
+                </div>
+                <div class="form-group">
+                  <label>Ближнее (Химки, Мытищи, Балашиха) (₽)</label>
+                  <input class="inp" id="pc_t_suburbs" type="number" placeholder="7000">
+                </div>
+                <div class="form-group">
+                  <label>Среднее (Подольск, Домодедово) (₽)</label>
+                  <input class="inp" id="pc_t_suburbs_mid" type="number" placeholder="8000">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Дальнее (Сергиев Посад, Коломна) (₽)</label>
+                  <input class="inp" id="pc_t_suburbs_far" type="number" placeholder="9000">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Вкладка 3: Праздничные коэффициенты -->
+          <div class="config-tab-content" id="ctab-coef" style="display:none">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+              
+              <div class="settings-card" style="grid-column: span 2;">
+                <div class="settings-card-title">🎉 Праздничные коэффициенты (множители цены)</div>
+                <div style="font-size:12px; color:var(--dim); margin-bottom:16px;">Укажите коэффициенты умножения стоимости шоу в определенные праздники. Например, 1.5 означает наценку 50%.</div>
+                
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                  <div class="form-group">
+                    <label>31 декабря и 1 января (коэф.)</label>
+                    <input class="inp" id="pc_c_dec_31" type="number" step="0.1" placeholder="2.0">
+                  </div>
+                  <div class="form-group">
+                    <label>10–30 декабря (коэф.)</label>
+                    <input class="inp" id="pc_c_dec_10_30" type="number" step="0.1" placeholder="1.5">
+                  </div>
+                  <div class="form-group">
+                    <label>2–8 января (коэф.)</label>
+                    <input class="inp" id="pc_c_jan_2_8" type="number" step="0.1" placeholder="1.3">
+                  </div>
+                  <div class="form-group">
+                    <label>4–8 марта (коэф.)</label>
+                    <input class="inp" id="pc_c_mar_4_8" type="number" step="0.1" placeholder="1.3">
+                  </div>
+                  <div class="form-group">
+                    <label>1–3 мая (коэф.)</label>
+                    <input class="inp" id="pc_c_may_1_3" type="number" step="0.1" placeholder="1.2">
+                  </div>
+                  <div class="form-group">
+                    <label>9 мая (коэф.)</label>
+                    <input class="inp" id="pc_c_may_9" type="number" step="0.1" placeholder="1.4">
+                  </div>
+                  <div class="form-group" style="margin-bottom:0">
+                    <label>23 февраля (коэф.)</label>
+                    <input class="inp" id="pc_c_feb_23" type="number" step="0.1" placeholder="1.3">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Вкладка 4: Настройки ИИ Екатерины -->
+          <div class="config-tab-content" id="ctab-ai" style="display:none">
+            <div style="display:grid; grid-template-columns: 1fr; gap: 16px;">
+              
+              <div class="settings-card">
+                <div class="settings-card-title">🤖 Тон и правила общения Екатерины</div>
+                <div class="form-group">
+                  <label>Тон общения (как Екатерина должна отвечать)</label>
+                  <textarea class="inp" id="pc_ai_tone" rows="4" style="resize:vertical;" placeholder="Дружелюбно, на &quot;вы&quot;, уважительно. Без напора и навязывания."></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label>Инструкции & Ограничения</label>
+                  <textarea class="inp" id="pc_ai_rules" rows="6" style="resize:vertical;" placeholder="1. НИКОГДА не выдумывай цены — только из этой базы.&#10;2. Если данных не хватает — спроси то, чего не хватает."></textarea>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -2588,12 +2925,210 @@
         ];
       }
 
+      // Добавим глобальную плитку в конец для обоих шоу!
+      items.push({ icon: '🪄', label: 'Цены & ИИ', sec: 'private-config' });
+
       grid.innerHTML = items.map(it => `
         <button onclick="showSection('${it.sec}')" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:inherit; cursor:pointer;">
           <span style="font-size:24px">${it.icon}</span>
           <span style="font-size:12px; font-weight:600">${it.label}</span>
         </button>
       `).join('');
+    }
+
+    // ── Private Config (Цены & ИИ) logic ──
+    let isPrivateConfigLoaded = false;
+
+    function switchConfigTab(tabId, el) {
+      // Переключаем активный таб
+      document.querySelectorAll('#sec-private-config .ftab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+
+      // Переключаем контент
+      document.querySelectorAll('.config-tab-content').forEach(c => c.style.display = 'none');
+      document.getElementById(`ctab-${tabId}`).style.display = 'block';
+    }
+
+    async function loadPrivateConfig(force = false) {
+      if (isPrivateConfigLoaded && !force) return;
+      
+      const titleEl = document.querySelector('#sec-private-config .section-title span');
+      if (titleEl) titleEl.textContent = '⏳ Загрузка параметров ИИ и цен...';
+
+      const config = await fbGet('bot_private_config');
+
+      if (titleEl) titleEl.textContent = '🪄 Управление ценами и ИИ Екатерина';
+
+      if (!config || config.error) {
+        // Если данных нет в БД, оставляем плейсхолдеры
+        isPrivateConfigLoaded = true;
+        return;
+      }
+
+      // Заполняем шоу и услуги
+      const s = config.shows || {};
+      document.getElementById('pc_kids_30').value = s.kids_30 || '';
+      document.getElementById('pc_kids_40').value = s.kids_40 || '';
+      document.getElementById('pc_kids_ind').value = s.kids_ind || '';
+
+      document.getElementById('pc_adult_20').value = s.adult_20 || '';
+      document.getElementById('pc_adult_30').value = s.adult_30 || '';
+      document.getElementById('pc_adult_40').value = s.adult_40 || '';
+
+      document.getElementById('pc_ind_20').value = s.ind_20 || '';
+      document.getElementById('pc_ind_30').value = s.ind_30 || '';
+      document.getElementById('pc_ind_40').value = s.ind_40 || '';
+
+      document.getElementById('pc_micro_30').value = s.micro_30 || '';
+      document.getElementById('pc_micro_60').value = s.micro_60 || '';
+      document.getElementById('pc_micro_120').value = s.micro_120 || '';
+      document.getElementById('pc_micro_180').value = s.micro_180 || '';
+
+      document.getElementById('pc_wedding_20').value = s.wedding_20 || '';
+      document.getElementById('pc_wedding_30').value = s.wedding_30 || '';
+      document.getElementById('pc_corp_20').value = s.corp_20 || '';
+      document.getElementById('pc_corp_30').value = s.corp_30 || '';
+      document.getElementById('pc_anniv_20').value = s.anniv_20 || '';
+      document.getElementById('pc_anniv_30').value = s.anniv_30 || '';
+      document.getElementById('pc_grad_20').value = s.grad_20 || '';
+      document.getElementById('pc_grad_30').value = s.grad_30 || '';
+
+      // Заполняем выезд
+      const t = config.travel || {};
+      document.getElementById('pc_t_yaroslavl').value = t.yaroslavl || '';
+      document.getElementById('pc_t_tutaev').value = t.tutaev || '';
+      document.getElementById('pc_t_rostov').value = t.rostov || '';
+      document.getElementById('pc_t_uglich').value = t.uglich || '';
+      document.getElementById('pc_t_poshekh').value = t.poshekh || '';
+
+      document.getElementById('pc_t_ivanovo').value = t.ivanovo || '';
+      document.getElementById('pc_t_shuya').value = t.shuya || '';
+      document.getElementById('pc_t_kinesh').value = t.kinesh || '';
+      document.getElementById('pc_t_yuzha').value = t.yuzha || '';
+
+      document.getElementById('pc_t_kostroma').value = t.kostroma || '';
+      document.getElementById('pc_t_galich').value = t.galich || '';
+      document.getElementById('pc_t_bui').value = t.bui || '';
+      document.getElementById('pc_t_sharya').value = t.sharya || '';
+
+      document.getElementById('pc_t_alexandrov').value = t.alexandrov || '';
+      document.getElementById('pc_t_vladimir').value = t.vladimir || '';
+      document.getElementById('pc_t_gus').value = t.gus || '';
+      document.getElementById('pc_t_murom').value = t.murom || '';
+
+      document.getElementById('pc_t_vologda').value = t.vologda || '';
+      document.getElementById('pc_t_sokol').value = t.sokol || '';
+      document.getElementById('pc_t_cherep').value = t.cherep || '';
+
+      document.getElementById('pc_t_moscow').value = t.moscow || '';
+      document.getElementById('pc_t_suburbs').value = t.suburbs || '';
+      document.getElementById('pc_t_suburbs_mid').value = t.suburbs_mid || '';
+      document.getElementById('pc_t_suburbs_far').value = t.suburbs_far || '';
+
+      // Заполняем праздничные коэффициенты
+      const coef = config.coefficients || {};
+      document.getElementById('pc_c_dec_31').value = coef.dec_31 || '';
+      document.getElementById('pc_c_dec_10_30').value = coef.dec_10_30 || '';
+      document.getElementById('pc_c_jan_2_8').value = coef.jan_2_8 || '';
+      document.getElementById('pc_c_mar_4_8').value = coef.mar_4_8 || '';
+      document.getElementById('pc_c_may_1_3').value = coef.may_1_3 || '';
+      document.getElementById('pc_c_may_9').value = coef.may_9 || '';
+      document.getElementById('pc_c_feb_23').value = coef.feb_23 || '';
+
+      // Заполняем настройки ИИ
+      const ai = config.ai_settings || {};
+      document.getElementById('pc_ai_tone').value = ai.tone || '';
+      document.getElementById('pc_ai_rules').value = ai.rules || '';
+
+      isPrivateConfigLoaded = true;
+    }
+
+    async function savePrivateConfig() {
+      const btn = document.querySelector('#sec-private-config .btn-primary');
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ Сохраняем...'; }
+
+      const config = {
+        shows: {
+          kids_30: parseInt(document.getElementById('pc_kids_30').value) || null,
+          kids_40: parseInt(document.getElementById('pc_kids_40').value) || null,
+          kids_ind: parseInt(document.getElementById('pc_kids_ind').value) || null,
+          
+          adult_20: parseInt(document.getElementById('pc_adult_20').value) || null,
+          adult_30: parseInt(document.getElementById('pc_adult_30').value) || null,
+          adult_40: parseInt(document.getElementById('pc_adult_40').value) || null,
+          
+          ind_20: parseInt(document.getElementById('pc_ind_20').value) || null,
+          ind_30: parseInt(document.getElementById('pc_ind_30').value) || null,
+          ind_40: parseInt(document.getElementById('pc_ind_40').value) || null,
+          
+          micro_30: parseInt(document.getElementById('pc_micro_30').value) || null,
+          micro_60: parseInt(document.getElementById('pc_micro_60').value) || null,
+          micro_120: parseInt(document.getElementById('pc_micro_120').value) || null,
+          micro_180: parseInt(document.getElementById('pc_micro_180').value) || null,
+          
+          wedding_20: parseInt(document.getElementById('pc_wedding_20').value) || null,
+          wedding_30: parseInt(document.getElementById('pc_wedding_30').value) || null,
+          corp_20: parseInt(document.getElementById('pc_corp_20').value) || null,
+          corp_30: parseInt(document.getElementById('pc_corp_30').value) || null,
+          anniv_20: parseInt(document.getElementById('pc_anniv_20').value) || null,
+          anniv_30: parseInt(document.getElementById('pc_anniv_30').value) || null,
+          grad_20: parseInt(document.getElementById('pc_grad_20').value) || null,
+          grad_30: parseInt(document.getElementById('pc_grad_30').value) || null
+        },
+        travel: {
+          yaroslavl: parseInt(document.getElementById('pc_t_yaroslavl').value) || null,
+          tutaev: parseInt(document.getElementById('pc_t_tutaev').value) || null,
+          rostov: parseInt(document.getElementById('pc_t_rostov').value) || null,
+          uglich: parseInt(document.getElementById('pc_t_uglich').value) || null,
+          poshekh: parseInt(document.getElementById('pc_t_poshekh').value) || null,
+          
+          ivanovo: parseInt(document.getElementById('pc_t_ivanovo').value) || null,
+          shuya: parseInt(document.getElementById('pc_t_shuya').value) || null,
+          kinesh: parseInt(document.getElementById('pc_t_kinesh').value) || null,
+          yuzha: parseInt(document.getElementById('pc_t_yuzha').value) || null,
+          
+          kostroma: parseInt(document.getElementById('pc_t_kostroma').value) || null,
+          galich: parseInt(document.getElementById('pc_t_galich').value) || null,
+          bui: parseInt(document.getElementById('pc_t_bui').value) || null,
+          sharya: parseInt(document.getElementById('pc_t_sharya').value) || null,
+          
+          alexandrov: parseInt(document.getElementById('pc_t_alexandrov').value) || null,
+          vladimir: parseInt(document.getElementById('pc_t_vladimir').value) || null,
+          gus: parseInt(document.getElementById('pc_t_gus').value) || null,
+          murom: parseInt(document.getElementById('pc_t_murom').value) || null,
+          
+          vologda: parseInt(document.getElementById('pc_t_vologda').value) || null,
+          sokol: parseInt(document.getElementById('pc_t_sokol').value) || null,
+          cherep: parseInt(document.getElementById('pc_t_cherep').value) || null,
+          
+          moscow: parseInt(document.getElementById('pc_t_moscow').value) || null,
+          suburbs: parseInt(document.getElementById('pc_t_suburbs').value) || null,
+          suburbs_mid: parseInt(document.getElementById('pc_t_suburbs_mid').value) || null,
+          suburbs_far: parseInt(document.getElementById('pc_t_suburbs_far').value) || null
+        },
+        coefficients: {
+          dec_31: parseFloat(document.getElementById('pc_c_dec_31').value) || null,
+          dec_10_30: parseFloat(document.getElementById('pc_c_dec_10_30').value) || null,
+          jan_2_8: parseFloat(document.getElementById('pc_c_jan_2_8').value) || null,
+          mar_4_8: parseFloat(document.getElementById('pc_c_mar_4_8').value) || null,
+          may_1_3: parseFloat(document.getElementById('pc_c_may_1_3').value) || null,
+          may_9: parseFloat(document.getElementById('pc_c_may_9').value) || null,
+          feb_23: parseFloat(document.getElementById('pc_c_feb_23').value) || null
+        },
+        ai_settings: {
+          tone: document.getElementById('pc_ai_tone').value.trim() || null,
+          rules: document.getElementById('pc_ai_rules').value.trim() || null
+        }
+      };
+
+      try {
+        await fbPut('bot_private_config', config);
+        toast('✅ Все цены и параметры ИИ успешно сохранены!');
+      } catch (e) {
+        toast('❌ Ошибка сохранения данных');
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '💾 Сохранить всё'; }
+      }
     }
 
     // ── Firebase helpers (PROXY) ──
@@ -2774,6 +3309,7 @@
       if (sec === 'hul-reviews') loadHuliganReviews();
       if (sec === 'hul-settings') loadHuliganSettings();
       if (sec === 'hul-promo') loadHuliganPromos();
+      if (sec === 'private-config') loadPrivateConfig();
     }
 
     // ── ХУЛИgan: Bookings ──
