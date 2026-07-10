@@ -1,5 +1,5 @@
 // Простой офлайн-кэш шелла
-const CACHE_NAME = 'kostyuk-ecosystem-v7';
+const CACHE_NAME = 'kostyuk-ecosystem-v8';
 const ASSETS = [
   '/',
   '/index.html',
@@ -11,7 +11,11 @@ const ASSETS = [
   '/vendor/swiper/swiper-bundle.min.css',
   '/vendor/swiper/swiper-bundle.min.js',
   '/events/',
+  '/events/events.css',
+  '/events/events.js',
   '/school/',
+  '/school/school.css',
+  '/school/school.js',
   '/concerts/'
 ];
 

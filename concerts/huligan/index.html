@@ -126,12 +126,15 @@
       width: 100%;
       margin-bottom: 36px;
       position: relative;
-      animation: shake 7s ease-in-out infinite;
+      animation: huliganEntrance 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, shake 6s ease-in-out infinite 1.8s alternate;
+    }
+    @keyframes huliganEntrance {
+      0% { opacity: 0; transform: translateY(30px) scale(0.92) rotate(-1.5deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
     }
     @keyframes shake {
-      0%, 100% { transform: rotate(0deg); }
-      25%      { transform: rotate(-1deg); }
-      75%      { transform: rotate(1deg); }
+      0%, 100% { transform: rotate(-1.2deg) scale(0.99); }
+      50%      { transform: rotate(1.2deg) scale(1.01); }
     }
     .poster {
       width: 100%;
@@ -623,8 +626,8 @@
 
   <main>
     <section class="hero">
-      <div class="poster-wrap reveal">
-        <img class="poster" src="/concerts/images/huligan.jpg" alt="Афиша ХУЛИgan" />
+      <div class="poster-wrap">
+        <img loading="lazy" class="poster" src="/concerts/images/huligan.jpg" alt="Афиша ХУЛИgan" />
       </div>
       <div class="eyebrow reveal d-1">Магический стендап</div>
       <h1 class="title reveal d-1">ХУЛИ<span class="gan">gan</span></h1>
@@ -759,27 +762,6 @@
     </div>
   </div>
 
-  <nav id="kpBottomNav" aria-label="Kostyuk Project">
-    <div class="kp-tab-wrap">
-      <a class="kp-tab" href="/events/">
-        <img class="kp-tab-icon" src="/icons/magician.png" alt="" />
-        <span>Частные события</span>
-      </a>
-    </div>
-    <div class="kp-tab-wrap">
-      <a class="kp-tab" href="/school/">
-        <img class="kp-tab-icon" src="/icons/wand.png" alt="" />
-        <span>Школа фокусов</span>
-      </a>
-    </div>
-    <div class="kp-tab-wrap">
-      <a class="kp-tab active" href="/concerts/">
-        <img class="kp-tab-icon" src="/icons/smoke.png" alt="" />
-        <span>Авторские шоу</span>
-      </a>
-    </div>
-  </nav>
-
   <script>
     (function() {
       var embers = document.getElementById('embers');
@@ -911,38 +893,6 @@
     </svg>
   </a>
   <style>
-    .tg-float {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 60px;
-      height: 60px;
-      background: #24A1DE;
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 15px rgba(36, 161, 222, 0.4);
-      z-index: 99999;
-      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
-    }
-    .tg-float:hover {
-      transform: scale(1.1) translateY(-2px);
-      box-shadow: 0 6px 20px rgba(36, 161, 222, 0.6);
-    }
-    @media (max-width: 600px) {
-      .tg-float {
-        bottom: 24px;
-        right: 16px;
-        width: 50px;
-        height: 50px;
-      }
-      .tg-float svg {
-        width: 24px;
-        height: 24px;
-      }
-    }
   </style>
 
 </body>

@@ -723,3 +723,249 @@ body {
     width: min(calc(100% - 18px), 520px) !important;
   }
 }
+
+/* ==========================================================================
+   CONSOLIDATED BRAND STYLES (PORTAL, SWITCHER, FLOATING BUTTON)
+   ========================================================================== */
+
+    #kostyukPortal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, #0b0a18 0%, #000 75%);
+      transition: opacity 0.5s ease;
+      overflow: hidden;
+    }
+    #kostyukPortal.active {
+      opacity: 1;
+      pointer-events: all;
+      animation: kpZoom 1.8s cubic-bezier(0.5,0,0.3,1) forwards;
+    }
+    @keyframes kpZoom {
+      0%   { transform: scale(1); filter: blur(0); }
+      70%  { transform: scale(1.05); }
+      100% { transform: scale(1.25); filter: blur(2px); }
+    }
+    .kp-ring-outer, .kp-ring-inner {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(0.2);
+    }
+    .kp-ring-outer {
+      width: 460px; height: 460px;
+      margin: -230px 0 0 -230px;
+      border: 1px solid rgba(201,168,76,0.55);
+      box-shadow: 0 0 60px rgba(201,168,76,0.25), inset 0 0 60px rgba(201,168,76,0.18);
+    }
+    .kp-ring-inner {
+      width: 280px; height: 280px;
+      margin: -140px 0 0 -140px;
+      border: 1px dashed rgba(201,168,76,0.75);
+      box-shadow: 0 0 40px rgba(201,168,76,0.3);
+    }
+    #kostyukPortal.active .kp-ring-outer { animation: kpRingOut 1.8s cubic-bezier(0.22,1,0.36,1) forwards; }
+    #kostyukPortal.active .kp-ring-inner { animation: kpRingIn 1.8s cubic-bezier(0.22,1,0.36,1) forwards 0.15s; }
+    @keyframes kpRingOut {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.2) rotate(0deg);   border-width: 3px; }
+      40%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(4) rotate(120deg);   border-width: 0.5px; }
+    }
+    @keyframes kpRingIn {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.15) rotate(0deg); }
+      35%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(3)    rotate(-180deg); }
+    }
+    .kp-core {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 14px; height: 14px;
+      margin: -7px 0 0 -7px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff5d6, #cba128 40%, transparent 80%);
+      box-shadow: 0 0 30px rgba(255,245,214,0.9), 0 0 80px rgba(201,168,76,0.7), 0 0 160px rgba(201,168,76,0.4);
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-core { animation: kpCore 1.8s ease-out forwards; }
+    @keyframes kpCore {
+      0%   { opacity: 0; transform: scale(0); }
+      15%  { opacity: 1; transform: scale(1); }
+      55%  { opacity: 1; transform: scale(3.5); box-shadow: 0 0 80px #fff5d6, 0 0 160px rgba(201,168,76,1), 0 0 240px rgba(201,168,76,0.6); }
+      100% { opacity: 0; transform: scale(18); }
+    }
+    .kp-rays {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 4px; height: 4px;
+      margin: -2px 0 0 -2px;
+      opacity: 0;
+    }
+    .kp-ray {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 2px; height: 0;
+      transform-origin: top center;
+      background: linear-gradient(180deg, rgba(201,168,76,0.9), transparent 80%);
+      box-shadow: 0 0 14px rgba(201,168,76,0.7);
+    }
+    .kp-ray:nth-child(1){transform:translateX(-50%) rotate(0deg)}
+    .kp-ray:nth-child(2){transform:translateX(-50%) rotate(45deg)}
+    .kp-ray:nth-child(3){transform:translateX(-50%) rotate(90deg)}
+    .kp-ray:nth-child(4){transform:translateX(-50%) rotate(135deg)}
+    .kp-ray:nth-child(5){transform:translateX(-50%) rotate(180deg)}
+    .kp-ray:nth-child(6){transform:translateX(-50%) rotate(225deg)}
+    .kp-ray:nth-child(7){transform:translateX(-50%) rotate(270deg)}
+    .kp-ray:nth-child(8){transform:translateX(-50%) rotate(315deg)}
+    #kostyukPortal.active .kp-rays { animation: kpRaysFade 1.8s ease-out forwards 0.2s; }
+    #kostyukPortal.active .kp-ray  { animation: kpRayGrow 1.6s ease-out forwards 0.2s; }
+    @keyframes kpRaysFade { 0%{opacity:0} 30%{opacity:1} 100%{opacity:0.3} }
+    @keyframes kpRayGrow  { 0%{height:0} 100%{height:60vh} }
+    .kp-star {
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: #fff5d6;
+      box-shadow: 0 0 4px #fff5d6;
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-star { animation: kpStar 1.8s ease-out forwards; }
+    @keyframes kpStar {
+      0%   { opacity: 0; transform: scale(0); }
+      50%  { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.3); }
+    }
+    .kp-name {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) translateY(120px);
+      font-family: 'Cinzel', serif;
+      font-size: clamp(22px, 4.5vw, 44px);
+      color: #cba128;
+      letter-spacing: 0.45em;
+      white-space: nowrap;
+      text-shadow: 0 0 24px rgba(201,168,76,0.6), 0 0 60px rgba(201,168,76,0.3);
+      display: flex;
+    }
+    .kp-name span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      filter: blur(6px);
+    }
+    #kostyukPortal.active .kp-name span { animation: kpLetter 0.6s ease-out forwards; }
+    @keyframes kpLetter {
+      0%   { opacity: 0; transform: translateY(20px); filter: blur(6px); }
+      60%  { opacity: 1; transform: translateY(0);    filter: blur(0); }
+      100% { opacity: 0; transform: translateY(-8px); filter: blur(2px); }
+    }
+    .kp-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-vignette { animation: kpVig 1.8s ease-out forwards; }
+    @keyframes kpVig { 0%{opacity:0} 100%{opacity:1} }
+
+    /* Project Switcher premium styling like the hub cards */
+    .project-switcher__list a {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-height: 250px !important;
+      text-align: left;
+    }
+    .project-switcher__list a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.35;
+      filter: saturate(0.75) contrast(1.03);
+      transition: opacity 0.4s ease, transform 0.6s ease;
+    }
+    .project-switcher__list a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.08) 0%, rgba(5,5,5,0.16) 38%, rgba(7,7,7,0.94) 78%, #070707 100%);
+    }
+    .project-switcher__list a:hover::before {
+      opacity: 0.65;
+      transform: scale(1.03);
+    }
+    .project-switcher__list .switcher-item--shows::before {
+      background-image: url('../images/direction-shows.png');
+      background-position: 50% 44%;
+    }
+    .project-switcher__list .switcher-item--events::before {
+      background-image: url('../images/direction-events.png');
+      background-position: 50% 43%;
+    }
+    .project-switcher__list .switcher-item--school::before {
+      background-image: url('../images/direction-school.png');
+      background-position: 50% 42%;
+    }
+    
+    /* Current navigation state style */
+    .project-switcher__list a.is-current {
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 20px rgba(203, 161, 40, 0.25) !important;
+    }
+    .project-switcher__list a.is-current::before {
+      opacity: 0.5;
+    }
+    .project-switcher__list .switcher-badge {
+      align-self: flex-start;
+      margin-bottom: auto;
+      padding: 4px 8px;
+      border: 1px solid rgba(203, 161, 40, 0.3);
+      border-radius: 20px;
+      color: var(--gold2);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .project-switcher__list .switcher-index {
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+
+      background: #24A1DE;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(36, 161, 222, 0.4);
+      z-index: 99999;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    }
+    .tg-float:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(36, 161, 222, 0.6);
+    }
+    @media (max-width: 600px) {
+      .tg-float {
+        bottom: 85px; /* Offset to clear mobile bottom navigation bar */
+        right: 16px;
+        width: 50px;
+        height: 50px;
+      }
+      .tg-float svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  </style>
+
+</body>
+</html>
+
