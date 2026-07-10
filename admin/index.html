@@ -8,7 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
-  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js" defer></script>
   <style>
     *,
     *::before,
@@ -2889,19 +2889,25 @@
       const now = new Date();
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-      // Загружаем данные броней (если ещё не загружены)
-      if (!Object.keys(allBookings).length) {
-        const secBookings = await fbGet('ticket_bookings') || {};
-        if (!secBookings.error) allBookings = secBookings;
-      }
-      if (!Object.keys(allHuliganOrders).length) {
-        const hulBookings = await fbGet('huligan_bookings') || {};
-        if (!hulBookings.error) allHuliganOrders = hulBookings;
-      }
-      if (!Object.keys(allMatveyBookings).length) {
-        const matBookings = await fbGet('matvey_bookings') || {};
-        if (!matBookings.error) allMatveyBookings = matBookings;
-      }
+      // Параллельно запускаем все асинхронные запросы (кэшируя Firebase-запросы)
+      let secPromise = Object.keys(allBookings).length ? Promise.resolve(allBookings) : fbGet('ticket_bookings');
+      let hulPromise = Object.keys(allHuliganOrders).length ? Promise.resolve(allHuliganOrders) : fbGet('huligan_bookings');
+      let matPromise = Object.keys(allMatveyBookings).length ? Promise.resolve(allMatveyBookings) : fbGet('matvey_bookings');
+      
+      let statsPromise = fetch(`/api/admin-chats?action=stats`, { headers: adminHeaders() }).then(r => r.json()).catch(() => null);
+      let listPromise = fetch(`/api/admin-chats?action=list&limit=15`, { headers: adminHeaders() }).then(r => r.json()).catch(() => null);
+
+      const [secRes, hulRes, matRes, statsRes, listRes] = await Promise.all([
+        secPromise,
+        hulPromise,
+        matPromise,
+        statsPromise,
+        listPromise
+      ]);
+
+      if (secRes && !secRes.error) allBookings = secRes;
+      if (hulRes && !hulRes.error) allHuliganOrders = hulRes;
+      if (matRes && !matRes.error) allMatveyBookings = matRes;
 
       // Выручка и билеты за сегодня
       let revenueToday = 0;
@@ -2985,37 +2991,27 @@
         pendingEl.style.color = 'var(--green)';
       }
 
-      // Загружаем статистику чатов с сервера
-      try {
-        const r = await fetch(`/api/admin-chats?action=stats`, { headers: adminHeaders() });
-        const chatsStats = await r.json();
-        if (chatsStats && chatsStats.ok && chatsStats.stats) {
-          activeChatsEl.textContent = chatsStats.stats.recentChecked || 0;
-        } else {
-          activeChatsEl.textContent = '0';
-        }
-      } catch (e) {
+      // Заполняем статистику чатов
+      if (statsRes && statsRes.ok && statsRes.stats) {
+        activeChatsEl.textContent = statsRes.stats.recentChecked || 0;
+      } else {
         activeChatsEl.textContent = '—';
       }
 
-      // Добавим события из чата в таймлайн (если они сегодняшние)
-      try {
-        const cr = await fetch(`/api/admin-chats?action=list&limit=15`, { headers: adminHeaders() });
-        const chatListRes = await cr.json();
-        if (chatListRes && chatListRes.ok && chatListRes.sessions) {
-          for (const s of chatListRes.sessions) {
-            if (s.lastAt >= todayStart) {
-              const name = s.contact?.name || s.contact?.firstName || 'Посетитель';
-              const text = s.lastUserMsg || s.firstUserMsg || 'Начал диалог';
-              events.push({
-                type: 'blue',
-                time: s.lastAt,
-                content: `AI-Ассистент: переписка с <strong>${esc(name)}</strong> (сообщений: ${s.messagesCount}) <span style="opacity:0.6;font-size:11px;">"${esc(text)}"</span>`
-              });
-            }
+      // Заполняем события из чата в таймлайн
+      if (listRes && listRes.ok && listRes.sessions) {
+        for (const s of listRes.sessions) {
+          if (s.lastAt >= todayStart) {
+            const name = s.contact?.name || s.contact?.firstName || 'Посетитель';
+            const text = s.lastUserMsg || s.firstUserMsg || 'Начал диалог';
+            events.push({
+              type: 'blue',
+              time: s.lastAt,
+              content: `AI-Ассистент: переписка с <strong>${esc(name)}</strong> (сообщений: ${s.messagesCount}) <span style="opacity:0.6;font-size:11px;">"${esc(text)}"</span>`
+            });
           }
         }
-      } catch (e) {}
+      }
 
       // Сортируем таймлайн по времени
       events.sort((a, b) => b.time - a.time);
