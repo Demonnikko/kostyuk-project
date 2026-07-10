@@ -2605,6 +2605,13 @@
                 </select>
               </div>
               <div class="form-group" style="margin-bottom:0">
+                <label>Стол № / Место №</label>
+                <div style="display:flex;gap:6px">
+                  <input class="inp" id="hulManualTable" type="number" min="1" max="50" placeholder="1" style="width:50%">
+                  <input class="inp" id="hulManualSeat" type="number" min="0" max="20" placeholder="0" style="width:50%">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
                 <label>Цена (₽, пусто = стандартная)</label>
                 <input class="inp" id="hulManualPrice" type="number" min="0" placeholder="">
               </div>
@@ -4626,6 +4633,10 @@
       if (!ticketType) return toast('Выберите тип билета');
       const priceVal = document.getElementById('hulManualPrice').value;
       const finalPrice = priceVal !== '' ? Number(priceVal) : undefined;
+      
+      const tableVal = document.getElementById('hulManualTable').value;
+      const seatVal = document.getElementById('hulManualSeat').value;
+
       const vkUserId = document.getElementById('hulManualVkId').value;
       const tgUserId = document.getElementById('hulManualTgId').value;
       const tgUsernameRaw = document.getElementById('hulManualTgUsername').value.trim().replace(/\s+/g, '');
@@ -4648,6 +4659,14 @@
         });
         const data = await r.json();
         if (data.ok) {
+          // If seat specified, save it to the booking and block it in huligan_seats
+          if (tableVal !== '' && seatVal !== '') {
+            const seatKey = `${tableVal}_${seatVal}`;
+            const seatsPayload = [{ table: Number(tableVal), seatNum: Number(seatVal), key: seatKey, price: finalPrice || 0 }];
+            await fbPatch(`huligan_bookings/${data.bookingId}`, { seats: seatsPayload });
+            await fbPut(`huligan_seats/${seatKey}`, { status: 'taken', bookingId: data.bookingId });
+          }
+
           res.style.color = 'var(--green)';
           const miniLink = data.miniAppUrl ? `<br><a href="${data.miniAppUrl}" target="_blank" style="color:var(--accent);font-size:12px">📱 Открыть в мини-аппе</a>` : '';
           const warning = data.notificationWarning ? `<br><span style="color:#f5a623">⚠ ${esc(data.notificationWarning)}</span>` : '';
