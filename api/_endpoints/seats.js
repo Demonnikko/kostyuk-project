@@ -38,6 +38,11 @@ async function isSecretSalesPaused() {
   return Boolean(showCfg && showCfg.salesPaused === true);
 }
 
+async function isHuliganSalesPaused() {
+  const showCfg = await fbGet('huligan_config/show');
+  return Boolean(showCfg && showCfg.salesPaused === true);
+}
+
 export default async (req, res) => {
   const corsTargetMethod = String(req.headers?.['access-control-request-method'] || req.method || '').toUpperCase();
   const isPublicRead = corsTargetMethod === 'GET';
@@ -133,7 +138,9 @@ export default async (req, res) => {
     }
 
     // По умолчанию — все места
-    const seats = await fbGet('ticket_seats') || {};
+    const showParam = req.query?.show || 'secret';
+    const dbPath = showParam === 'huligan' ? 'huligan_seats' : 'ticket_seats';
+    const seats = await fbGet(dbPath) || {};
     return res.status(200).json(seats);
   }
 
@@ -145,7 +152,10 @@ export default async (req, res) => {
       try { body = JSON.parse(body); } catch { }
     }
 
-    const { action, seats, tempBookingId } = body || {};
+    const { action, seats, tempBookingId, show = 'secret' } = body || {};
+    const dbPath = show === 'huligan' ? 'huligan_seats' : 'ticket_seats';
+    const isPaused = show === 'huligan' ? await isHuliganSalesPaused() : await isSecretSalesPaused();
+
     const trustedTgUserId = Number(getTrustedTelegramUserId(body?.tgInitData) || 0);
     const vkUserId = Number(body?.vkUserId || 0);
     const hasTgAuth = Number.isFinite(trustedTgUserId) && trustedTgUserId > 0;
@@ -161,15 +171,15 @@ export default async (req, res) => {
     }
 
     if (action === 'reserve' && seatList.length && tempBookingId) {
-      if (await isSecretSalesPaused()) {
-        return res.status(409).json({ error: 'Продажи на шоу «Секрет» временно остановлены' });
+      if (isPaused) {
+        return res.status(409).json({ error: 'Продажи на это шоу временно остановлены' });
       }
       if (!isValidTempBookingId(tempBookingId)) return res.status(400).json({ error: 'Only TEMP bookings allowed' });
       const now = Date.now();
 
       const conflicts = [];
       for (const s of seatList) {
-        const cur = await fbGet(`ticket_seats/${s.key}`);
+        const cur = await fbGet(`${dbPath}/${s.key}`);
         const status = String(cur?.status || '');
         const curBookingId = String(cur?.bookingId || '');
         const reservedAt = Number(cur?.reservedAt || 0);
@@ -181,7 +191,7 @@ export default async (req, res) => {
       if (conflicts.length) return res.status(409).json({ error: 'Seats already taken', seats: conflicts });
 
       await Promise.all(seatList.map(s =>
-        fbPut(`ticket_seats/${s.key}`, {
+        fbPut(`${dbPath}/${s.key}`, {
           status: 'reserved',
           bookingId: tempBookingId,
           reservedAt: now,
@@ -197,7 +207,7 @@ export default async (req, res) => {
       let released = 0;
 
       for (const s of seatList) {
-        const path = `ticket_seats/${s.key}`;
+        const path = `${dbPath}/${s.key}`;
         const cur = await fbGet(path);
         if (!cur) continue;
         if (String(cur.status || '') !== 'reserved') continue;

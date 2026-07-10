@@ -22,9 +22,16 @@ const ALLOWED_PATH_PREFIXES = [
   'huligan_config',
   'huligan_promo',
   'huligan_reviews',
+  'huligan_seats',
   'bot_private_config',
   'private_orders',
   'bot_users',
+  'matvey_bookings',
+  'matvey_seats',
+  'matvey_config',
+  'matvey_promo',
+  'matvey_reviews',
+  'matvey_users',
 ];
 
 function isPathAllowed(path) {

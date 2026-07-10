@@ -5,29 +5,29 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kostyuk.ru/concerts/huligan/" />
-  <meta property="og:title" content="Магический стендап ХУЛИgan | Дмитрий Костюк" />
-  <meta property="og:description" content="Мы вас предупредили — 16+. Интерактивное иллюзионное стендап шоу без цензуры в Ярославле." />
+  <meta property="og:title" content="Шоу Секрет | Иллюзионный моноспектакль" />
+  <meta property="og:description" content="Один артист. Один секрет. Потрясающие фокусы и глубокая история, которая вдохновляет." />
   <meta property="og:image" content="https://kostyuk.ru/concerts/images/huligan.jpg" />
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://kostyuk.ru/concerts/huligan/" />
-  <meta property="twitter:title" content="Магический стендап ХУЛИgan | Дмитрий Костюк" />
-  <meta property="twitter:description" content="Мы вас предупредили — 16+. Интерактивное иллюзионное стендап шоу без цензуры в Ярославле." />
+  <meta property="twitter:title" content="Шоу Секрет | Иллюзионный моноспектакль" />
+  <meta property="twitter:description" content="Один артист. Один секрет. Потрясающие фокусы и глубокая история, которая вдохновляет." />
   <meta property="twitter:image" content="https://kostyuk.ru/concerts/images/huligan.jpg" />
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Билеты на шоу «ХУЛИgan» | Магический стендап — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
-  <meta name="description" content="Купить билеты на шоу «ХУЛИgan» — взрывной магический стендап иллюзиониста Дмитрия Костюка. 1 час 20 минут юмора (16+) и фокусов в Ярославле, Иваново, Костроме, Владимире, Вологде." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Билеты на иллюзионное шоу «Секрет» | Дмитрий Костюк — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
+  <meta name="description" content="Купить билеты на шоу «Секрет» Дмитрия Костюка — захватывающая театральная исповедь с масштабными иллюзиями в Ярославле, Иваново, Костроме, Владимире, Вологде." />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/vendor/fonts/fonts.css" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Event",
-    "name": "Шоу «ХУЛИgan» — Магический стендап Дмитрия Костюка",
-    "description": "Юмористическое интерактивное иллюзионное шоу для взрослой аудитории от иллюзиониста Дмитрия Костюка.",
+    "name": "Иллюзионное шоу «Секрет» Дмитрия Костюка",
+    "description": "Театрально-иллюзионный моноспектакль фокусника Дмитрия Костюка.",
     "url": "https://kostyuk.ru/concerts/huligan/",
     "performer": {
       "@type": "Person",
@@ -35,19 +35,24 @@
     }
   }
   </script>
+  <link rel="stylesheet" href="/ecosystem.css?v=4" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg: #080503;
-      --bg2: #14080a;
-      --fire: #FF6B00;
-      --fire-bright: #FFE566;
-      --fire-deep: #FF3D00;
-      --fire-coal: #A81800;
-      --brick: #6B1F0E;
-      --text: #fff5eb;
-      --muted: rgba(255, 245, 235, 0.6);
-      --border: rgba(255, 110, 0, 0.32);
+      --bg: #060616;
+      --bg2: #0e0c24;
+      --gold: #c9a228;
+      --gold2: #e8c540;
+      --gold3: #fff0c2;
+      --text: #f0e6d0;
+      --muted: rgba(240, 230, 208, 0.6);
+      --border: rgba(201, 162, 39, 0.24);
+      --vip: #e85348;
+      --vip-rgb: 232,83,72;
+      --std: #3dbf6e;
+      --std-rgb: 61,191,110;
+      --eco: #4a8fd9;
+      --eco-rgb: 74,143,217;
     }
     html, body {
       background: var(--bg);
@@ -57,7 +62,51 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
+    /* Brick texture overlay */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image:
+        repeating-linear-gradient(0deg, transparent 0 40px, rgba(255, 110, 0, 0.3) 40px 41px),
+        repeating-linear-gradient(90deg, transparent 0 80px, rgba(255, 110, 0, 0.3) 80px 81px);
+      pointer-events: none;
+    }
     a { color: inherit; text-decoration: none; }
+
+    /* ==== ФОНОВЫЙ КОСМОС + ЗОЛОТЫЕ ЧАСТИЦЫ ==== */
+    .cosmos {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(201, 162, 39, 0.18) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(20, 18, 70, 0.4) 0%, transparent 50%);
+    }
+    .cosmos::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background-image:
+        radial-gradient(2px 2px at 12% 22%, #fff 50%, transparent 100%),
+        radial-gradient(1px 1px at 38% 67%, rgba(232,197,64,0.9) 50%, transparent 100%),
+        radial-gradient(1px 1px at 72% 14%, #fff 50%, transparent 100%),
+        radial-gradient(2px 2px at 88% 84%, rgba(232,197,64,0.9) 50%, transparent 100%),
+        radial-gradient(1px 1px at 24% 88%, #fff 50%, transparent 100%),
+        radial-gradient(2px 2px at 58% 32%, rgba(232,197,64,0.7) 50%, transparent 100%),
+        radial-gradient(1px 1px at 12% 51%, #fff 50%, transparent 100%);
+      background-repeat: repeat;
+      background-size: 600px 600px;
+      animation: twinkle 5s linear infinite;
+      opacity: 0.5;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50%      { opacity: 0.7; }
+    }
 
     /* Floating fire embers */
     .embers {
@@ -71,10 +120,10 @@
       position: absolute;
       width: 4px;
       height: 4px;
-      background: var(--fire);
+      background: var(--gold);
       border-radius: 50%;
       filter: blur(0.5px);
-      box-shadow: 0 0 8px var(--fire), 0 0 18px rgba(255, 60, 0, 0.7);
+      box-shadow: 0 0 8px var(--gold), 0 0 18px rgba(255, 60, 0, 0.7);
       opacity: 0.7;
       animation: rise linear infinite;
     }
@@ -83,6 +132,22 @@
       10%  { opacity: 0.8; }
       90%  { opacity: 0.6; }
       100% { transform: translateY(-10vh) translateX(40px) scale(0.4); opacity: 0; }
+    }
+    /* Original placeholder */
+    .q-mark {
+      position: fixed;
+      font-family: 'Cinzel', serif;
+      color: rgba(201, 162, 39, 0.06);
+      animation: qFloat ease-in-out infinite;
+      user-select: none;
+      line-height: 1;
+      z-index: 0;
+      pointer-events: none;
+      font-weight: 700;
+    }
+    @keyframes qFloat {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50%      { transform: translateY(-22px) rotate(4deg); }
     }
 
     .back-btn {
@@ -95,7 +160,7 @@
       gap: 8px;
       padding: 10px 16px 10px 14px;
       border-radius: 999px;
-      background: rgba(20, 8, 4, 0.85);
+      background: rgba(14, 12, 36, 0.85);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border);
       color: var(--text);
@@ -104,12 +169,12 @@
       cursor: pointer;
       transition: background 0.25s ease, transform 0.25s ease;
     }
-    .back-btn:hover { background: rgba(255, 110, 0, 0.18); transform: translateX(-3px); }
+    .back-btn:hover { background: rgba(201, 162, 39, 0.15); transform: translateX(-3px); }
     .back-btn::before { content: '‹'; font-size: 18px; line-height: 1; }
 
     main { position: relative; z-index: 2; }
 
-    /* ========= HERO ========= */
+    /* ====== HERO ====== */
     .hero {
       min-height: 100vh;
       padding: 80px 20px 120px;
@@ -118,87 +183,147 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      background:
-        radial-gradient(circle at 50% 60%, rgba(255, 60, 0, 0.18) 0%, transparent 55%),
-        var(--bg);
       position: relative;
     }
-    /* Brick texture overlay */
     .hero::before {
       content: '';
       position: absolute;
-      inset: 0;
-      opacity: 0.04;
-      background-image:
-        repeating-linear-gradient(0deg, transparent 0 40px, rgba(255, 110, 0, 0.3) 40px 41px),
-        repeating-linear-gradient(90deg, transparent 0 80px, rgba(255, 110, 0, 0.3) 80px 81px);
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(201, 162, 39, 0.45) 0%, rgba(201, 162, 39, 0.12) 40%, transparent 70%);
+      filter: blur(40px);
+      z-index: -1;
+      animation: heroGlow 8s ease-in-out infinite alternate, secretGlowStart 3.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
       pointer-events: none;
+    }
+    @keyframes secretGlowStart {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.6); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+    @keyframes heroGlow {
+      from { transform: translateX(-50%) scale(1); opacity: 0.6; }
+      to   { transform: translateX(-50%) scale(1.15); opacity: 1; }
+    }
+    /* 3D Параллакс для афиши */
+    .hero {
+      perspective: 1000px;
+      /* Дорогая винтажная текстура обоев в темноте */
+      background-image:
+        repeating-linear-gradient(45deg, rgba(201, 162, 39, 0.01) 0px, rgba(201, 162, 39, 0.01) 2px, transparent 2px, transparent 10px),
+        repeating-linear-gradient(-45deg, rgba(201, 162, 39, 0.01) 0px, rgba(201, 162, 39, 0.01) 2px, transparent 2px, transparent 10px),
+        linear-gradient(to bottom, #04040e, #070717);
+    }
+    .poster-wrap {
+      transform-style: preserve-3d;
+      transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1);
+      will-change: transform;
+    }
+    .poster {
+      transform: translateZ(50px);
+      transition: box-shadow 0.3s ease;
+    }
+    /* Интерактивный оверлей темноты с дырой от фонарика */
+    .flashlight-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background: radial-gradient(
+        circle 200px at var(--flashlight-x, 50%) var(--flashlight-y, 45%),
+        rgba(6, 6, 22, 0) 0%,
+        rgba(6, 6, 22, 0.5) 45%,
+        rgba(6, 6, 22, 0.98) 85%,
+        #060616 100%
+      );
+      pointer-events: none;
+    }
+    /* Вспомогательный золотой отблеск фонарика на элементах */
+    .flashlight-glow {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      background: radial-gradient(
+        circle 320px at var(--flashlight-x, 50%) var(--flashlight-y, 45%),
+        rgba(201, 162, 39, 0.15) 0%,
+        transparent 80%
+      );
+      pointer-events: none;
+    }
+    h1.title {
+      animation: secretTitleReveal 2.8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+      z-index: 11;
+      position: relative;
+    }
+    .eyebrow, .subtitle, .meta, .buy-cta {
+      z-index: 11;
+      position: relative;
+    }
+    @keyframes secretTitleReveal {
+      0% { transform: scale(0.92) translateZ(50px); filter: blur(4px); letter-spacing: 0.02em; }
+      100% { transform: scale(1) translateZ(0); filter: blur(0); letter-spacing: 0.04em; }
     }
 
     .poster-wrap {
-      max-width: 380px;
+      max-width: 360px;
       width: 100%;
       margin-bottom: 36px;
       position: relative;
-      animation: huliganEntrance 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, shake 6s ease-in-out infinite 1.8s alternate;
+      animation: floatPoster 7s ease-in-out infinite alternate;
     }
-    @keyframes huliganEntrance {
-      0% { opacity: 0; transform: translateY(30px) scale(0.92) rotate(-1.5deg); }
-      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
-    }
-    @keyframes shake {
-      0%, 100% { transform: rotate(-1.2deg) scale(0.99); }
-      50%      { transform: rotate(1.2deg) scale(1.01); }
+    @keyframes floatPoster {
+      from { transform: translateY(0) rotate(-0.3deg); }
+      to   { transform: translateY(-10px) rotate(0.3deg); }
     }
     .poster {
       width: 100%;
       height: auto;
-      border-radius: 12px;
+      border-radius: 16px;
       box-shadow:
-        0 30px 80px rgba(0,0,0,0.8),
-        0 0 80px rgba(255, 60, 0, 0.35);
+        0 30px 80px rgba(0,0,0,0.75),
+        0 0 80px rgba(201, 162, 39, 0.3);
       display: block;
     }
 
     .eyebrow {
-      display: inline-block;
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      letter-spacing: 0.32em;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(201, 162, 39, 0.08);
+      border: 1px solid var(--border);
+      font-size: 10.5px;
+      letter-spacing: 0.42em;
       text-transform: uppercase;
-      color: var(--fire);
+      color: var(--gold2);
       margin-bottom: 14px;
-      transform: skewX(-6deg);
+      font-weight: 600;
     }
     h1.title {
       font-family: 'Cinzel', serif;
-      font-size: clamp(56px, 13vw, 130px);
-      font-weight: 400;
-      letter-spacing: 0.01em;
-      line-height: 0.9;
-      background: linear-gradient(180deg, #FFE566 0%, #FF9000 42%, #FF3D00 82%, #A81800 100%);
+      font-size: clamp(50px, 13vw, 110px);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      line-height: 0.95;
+      background: linear-gradient(135deg, #fff 0%, var(--gold3) 50%, var(--gold) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       margin-bottom: 14px;
-      text-shadow: 0 0 60px rgba(255, 60, 0, 0.35);
-      transform: skewX(-4deg);
-    }
-    h1.title .gan {
-      background: linear-gradient(180deg, #fff 0%, #FFE566 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      text-shadow: 0 0 60px rgba(201, 162, 39, 0.3);
     }
     .subtitle {
       font-family: 'Cinzel', serif;
-      font-size: clamp(16px, 2.8vw, 22px);
-      letter-spacing: 0.18em;
+      font-style: normal;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--fire-bright);
+      font-size: clamp(13px, 2vw, 16px);
+      color: var(--gold3);
       max-width: 540px;
-      margin-bottom: 32px;
-      transform: skewX(-3deg);
+      margin-bottom: 30px;
+      font-weight: 500;
     }
     .meta {
       display: flex;
@@ -208,65 +333,184 @@
       margin-bottom: 36px;
     }
     .meta__item {
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      letter-spacing: 0.18em;
+      font-size: 11px;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--fire-bright);
+      color: rgba(240, 230, 208, 0.85);
       padding: 7px 16px;
       border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(255, 60, 0, 0.08);
+      background: rgba(201, 162, 39, 0.06);
     }
+    .meta__item strong { color: var(--gold2); font-weight: 700; }
 
     .buy-cta {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 18px 38px;
-      border-radius: 8px;
-      background: linear-gradient(180deg, #FF9000 0%, #FF3D00 60%, #A81800 100%);
-      color: #fff;
-      font-family: 'Cinzel', serif;
-      font-size: 18px;
-      font-weight: 400;
-      letter-spacing: 0.18em;
+      padding: 16px 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #FFE566 0%, #FF9000 100%);
+      color: #1a1500;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      box-shadow: 0 12px 36px rgba(255, 60, 0, 0.55), inset 0 1px 0 rgba(255,255,255,0.25);
+      box-shadow: 0 14px 40px rgba(201, 162, 39, 0.55), 0 0 0 1px rgba(255,255,255,0.15) inset;
       cursor: pointer;
-      border: 1px solid rgba(255, 144, 0, 0.6);
+      border: none;
       transition: transform 0.25s ease, box-shadow 0.25s ease;
-      position: relative;
-      transform: skewX(-4deg);
     }
     .buy-cta:hover {
-      transform: skewX(-4deg) translateY(-2px);
-      box-shadow: 0 16px 44px rgba(255, 60, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 18px 50px rgba(201, 162, 39, 0.7), 0 0 0 1px rgba(255,255,255,0.2) inset;
     }
 
-    /* === МОДАЛКА БРОНИ === */
+    /* ====== SECTIONS ====== */
+    .section {
+      padding: 90px 20px;
+      max-width: 880px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .section__eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 14px;
+      display: block;
+    }
+    .section__title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(30px, 5vw, 48px);
+      font-weight: 900;
+      margin-bottom: 28px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 0%, var(--gold3) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.04em;
+    }
+    .section__text {
+      font-size: 16px;
+      line-height: 1.75;
+      color: rgba(240, 230, 208, 0.85);
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .section__quote {
+      font-family: 'Cinzel', serif;
+      font-style: normal;
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--gold3);
+      max-width: 680px;
+      margin: 50px auto;
+      padding: 30px;
+      position: relative;
+      line-height: 1.4;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .section__quote::before, .section__quote::after {
+      content: '"';
+      font-family: 'Cinzel', serif;
+      font-size: 80px;
+      line-height: 1;
+      color: rgba(201, 162, 39, 0.3);
+      position: absolute;
+    }
+    .section__quote::before { left: 0; top: -10px; }
+    .section__quote::after { right: 0; bottom: -50px; }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 40px;
+    }
+    .feature {
+      padding: 26px 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(40, 30, 100, 0.25) 0%, rgba(20, 8, 4, 0.45) 100%);
+      text-align: left;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .feature:hover {
+      border-color: rgba(232, 197, 64, 0.5);
+      transform: translateY(-4px);
+    }
+    .feature__num {
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--gold2);
+      margin-bottom: 8px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+    .feature__title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .feature__desc {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .footer-cta {
+      padding: 80px 20px 160px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(201, 162, 39, 0.15) 0%, transparent 60%),
+        transparent;
+    }
+    .footer-cta__title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+      letter-spacing: 0.06em;
+    }
+    .footer-cta__sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ===================== МОДАЛКА БРОНИ ===================== */
     .modal {
       position: fixed;
       inset: 0;
       z-index: 9800;
       background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       display: none;
       align-items: flex-start;
       justify-content: center;
-      padding: 40px 16px 100px;
+      padding: 30px 12px 30px;
       overflow-y: auto;
     }
     .modal.show { display: flex; }
     .modal__box {
       width: 100%;
-      max-width: 520px;
-      background: linear-gradient(180deg, #14080a 0%, #0c0503 100%);
-      border-radius: 16px;
+      max-width: 620px;
+      background: linear-gradient(180deg, var(--bg2) 0%, #07061a 100%);
+      border-radius: 24px;
       border: 1px solid var(--border);
-      padding: 32px 24px 28px;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.85), 0 0 80px rgba(255, 60, 0, 0.25);
+      padding: 28px 22px 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.85), 0 0 80px rgba(201, 162, 39, 0.2);
       position: relative;
+      margin-bottom: 100px;
     }
     .modal__close {
       position: absolute;
@@ -281,83 +525,292 @@
       font-size: 18px;
       cursor: pointer;
       line-height: 1;
+      z-index: 2;
     }
-    .modal__close:hover { background: rgba(255, 110, 0, 0.25); }
+    .modal__close:hover { background: rgba(201, 162, 39, 0.18); }
     .modal__title {
       font-family: 'Cinzel', serif;
-      font-size: 30px;
-      font-weight: 400;
+      font-size: 26px;
+      font-weight: 900;
       text-align: center;
-      margin-bottom: 6px;
-      letter-spacing: 0.04em;
-      background: linear-gradient(180deg, #FFE566 0%, #FF9000 100%);
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, #fff 0%, var(--gold3) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      transform: skewX(-3deg);
+      letter-spacing: 0.04em;
     }
     .modal__sub {
       text-align: center;
       color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 24px;
+      font-size: 12.5px;
+      margin-bottom: 22px;
+      letter-spacing: 0.04em;
     }
 
-    /* Карточка билета (общий вход) */
-    .ticket-card {
-      background: linear-gradient(180deg, rgba(60, 20, 5, 0.45) 0%, rgba(20, 8, 4, 0.45) 100%);
+    /* Шаги */
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .step {
+      width: 30px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.3s ease;
+    }
+    .step.active { background: var(--gold2); box-shadow: 0 0 10px rgba(232, 197, 64, 0.5); }
+    .step.done { background: rgba(232, 197, 64, 0.5); }
+
+    /* Дата шоу — выбор */
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .date-card {
+      padding: 16px 14px;
+      border-radius: 14px;
+      background: rgba(120, 30, 10, 0.22);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 22px 20px;
-      margin-bottom: 22px;
+      cursor: pointer;
+      transition: all 0.25s ease;
       text-align: center;
     }
-    .ticket-card__type {
+    .date-card:hover { border-color: var(--gold2); background: rgba(232, 197, 64, 0.08); }
+    .date-card.selected {
+      background: linear-gradient(135deg, rgba(232, 197, 64, 0.2) 0%, rgba(201, 162, 39, 0.15) 100%);
+      border-color: var(--gold2);
+      box-shadow: 0 0 0 1px var(--gold2), 0 8px 24px rgba(201, 162, 39, 0.25);
+    }
+    .date-card__day {
       font-family: 'Cinzel', serif;
-      font-size: 22px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      background: linear-gradient(180deg, #fff 0%, #FFE566 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 6px;
-      transform: skewX(-2deg);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--gold3);
+      line-height: 1;
     }
-    .ticket-card__desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
-    .ticket-card__price {
-      font-family: 'Cinzel', serif;
-      font-size: 14px;
-      color: var(--fire);
-      letter-spacing: 0.18em;
-      opacity: 0.7;
-    }
-
-    /* Поля формы */
-    .field {
-      display: block;
-      margin-bottom: 14px;
-    }
-    .field__label {
-      display: block;
-      font-family: 'Cinzel', serif;
+    .date-card__month {
       font-size: 11px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--fire);
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .date-card__time {
+      font-size: 12px;
+      color: var(--gold2);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .date-card__venue {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Сцена */
+    .stage-label {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      padding: 14px 0;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .stage-label::before, .stage-label::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 25%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold2), transparent);
+    }
+    .stage-label::before { left: 5%; }
+    .stage-label::after { right: 5%; }
+
+    /* SVG зал */
+    .hall-wrap {
+      background: linear-gradient(180deg, rgba(120, 30, 10, 0.22) 0%, rgba(20, 8, 4, 0.45) 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 10px 16px;
+      margin-bottom: 18px;
+    }
+    .hall-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 480px;
+    }
+    /* Эффект свечения для сцены сверху */
+    .stage-glow {
+      fill: url(#stageGradient);
+    }
+
+    /* Места */
+    .seat {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .seat:hover {
+      filter: brightness(1.3);
+    }
+    .seat.taken {
+      cursor: not-allowed;
+      filter: grayscale(0.7) opacity(0.4);
+    }
+    .seat.selected {
+      filter: brightness(1.6) drop-shadow(0 0 4px currentColor);
+    }
+    .seat-ring {
+      fill: none;
+      stroke: var(--gold3);
+      stroke-width: 2;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .seat.selected + .seat-ring {
+      opacity: 1;
+      animation: ringPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%, 100% { stroke-opacity: 0.6; }
+      50%      { stroke-opacity: 1; }
+    }
+
+    /* Легенда */
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 12px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .ldot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Корзина выбранных мест */
+    .cart {
+      background: linear-gradient(180deg, rgba(120, 30, 10, 0.25) 0%, rgba(40, 10, 5, 0.15) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      min-height: 56px;
+    }
+    .cart__empty {
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--muted);
+      padding: 8px 0;
+    }
+    .cart__list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cart__chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 110, 0, 0.15);
+      border: 1px solid rgba(255, 110, 0, 0.45);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold3);
+    }
+    .cart__chip .x {
+      font-size: 15px;
+      line-height: 1;
+      opacity: 0.7;
+      cursor: pointer;
+    }
+    .cart__chip .x:hover { opacity: 1; }
+    .cart__total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .cart__total-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .cart__total-val {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--gold2);
+    }
+
+    /* Кнопки навигации */
+    .modal__nav {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn-secondary, .btn-primary {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+    .btn-primary {
+      background: linear-gradient(135deg, #FFE566 0%, #FF9000 100%);
+      color: #1a1500;
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* Поля формы */
+    .field { display: block; margin-bottom: 14px; }
+    .field__label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold2);
       margin-bottom: 6px;
     }
-    .field__input,
-    .field__textarea {
+    .field__input, .field__textarea {
       width: 100%;
       padding: 12px 14px;
-      border-radius: 8px;
-      background: rgba(0,0,0,0.45);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.4);
       border: 1px solid var(--border);
       color: var(--text);
       font-family: inherit;
@@ -366,219 +819,43 @@
       -webkit-appearance: none;
       appearance: none;
     }
-    .field__input:focus,
-    .field__textarea:focus {
+    .field__input:focus, .field__textarea:focus {
       outline: none;
-      border-color: var(--fire);
-      background: rgba(0,0,0,0.65);
+      border-color: var(--gold2);
+      background: rgba(0,0,0,0.6);
     }
     .field__textarea { resize: vertical; min-height: 70px; }
 
-    /* Счётчик билетов */
-    .qty-row {
+    /* Summary в форме */
+    .summary {
+      background: rgba(232, 197, 64, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .summary__row {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      padding: 12px 0;
+      justify-content: space-between;
+      margin-bottom: 4px;
     }
-    .qty-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #FF9000 0%, #FF3D00 100%);
-      color: #fff;
-      border: none;
-      font-size: 22px;
-      font-weight: 700;
-      cursor: pointer;
-      line-height: 1;
-    }
-    .qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .qty-val {
-      font-family: 'Cinzel', serif;
-      font-size: 32px;
-      color: #fff;
-      min-width: 44px;
-      text-align: center;
-    }
+    .summary__row:last-child { margin-bottom: 0; }
+    .summary__row span:first-child { color: var(--muted); }
+    .summary__row span:last-child { color: var(--gold3); font-weight: 600; }
 
-    .modal__submit {
-      width: 100%;
-      padding: 18px;
-      border-radius: 10px;
-      background: linear-gradient(180deg, #FF9000 0%, #FF3D00 60%, #A81800 100%);
-      color: #fff;
-      font-family: 'Cinzel', serif;
-      font-size: 18px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      border: 1px solid rgba(255, 144, 0, 0.6);
-      cursor: pointer;
-      margin-top: 10px;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-      transform: skewX(-2deg);
-    }
-    .modal__submit:hover { transform: skewX(-2deg) translateY(-1px); }
-    .modal__submit:disabled { opacity: 0.5; cursor: not-allowed; transform: skewX(-2deg); }
-
-    .modal__success {
-      text-align: center;
-      padding: 24px 8px;
-    }
-    .modal__success-icon {
-      font-size: 64px;
-      margin-bottom: 14px;
-    }
+    .modal__success { text-align: center; padding: 30px 8px; }
+    .modal__success-icon { font-size: 64px; margin-bottom: 14px; }
     .modal__success h3 {
       font-family: 'Cinzel', serif;
-      font-size: 28px;
-      letter-spacing: 0.06em;
+      font-size: 24px;
       margin-bottom: 8px;
-      color: var(--fire-bright);
-      transform: skewX(-3deg);
-    }
-    .modal__success p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    /* Stamp "только 40 мест" */
-    .stamp {
-      display: inline-block;
-      font-family: 'Cinzel', serif;
-      font-size: 14px;
-      letter-spacing: 0.18em;
-      color: #FFE566;
-      border: 2px dashed rgba(255, 200, 0, 0.55);
-      padding: 8px 18px;
-      border-radius: 6px;
-      transform: rotate(-4deg) skewX(-3deg);
-      margin-top: 18px;
-    }
-
-    /* ========= SECTIONS ========= */
-    .section {
-      padding: 80px 20px;
-      max-width: 880px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .section__eyebrow {
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      letter-spacing: 0.42em;
-      text-transform: uppercase;
-      color: var(--fire);
-      margin-bottom: 14px;
-      display: block;
-    }
-    .section__title {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(32px, 5.5vw, 56px);
-      font-weight: 400;
-      margin-bottom: 28px;
-      line-height: 1;
-      letter-spacing: 0.02em;
-      background: linear-gradient(180deg, #fff 0%, #FFE566 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      transform: skewX(-2deg);
-    }
-    .section__text {
-      font-size: 16px;
-      line-height: 1.7;
-      color: rgba(255, 245, 235, 0.85);
-      margin-bottom: 18px;
-      text-align: left;
-    }
-    .section__text strong { color: var(--fire-bright); font-weight: 700; }
-    .section__quote {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(20px, 3vw, 28px);
+      color: var(--gold2);
       letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--fire-bright);
-      max-width: 720px;
-      margin: 50px auto;
-      padding: 30px;
-      border-left: 4px solid var(--fire);
-      border-right: 4px solid var(--fire);
-      background: linear-gradient(90deg, rgba(255, 60, 0, 0.05) 0%, transparent 50%, rgba(255, 60, 0, 0.05) 100%);
-      transform: skewX(-2deg);
-      line-height: 1.3;
     }
+    .modal__success p { color: var(--muted); font-size: 14px; line-height: 1.5; }
 
-    /* Triggers grid */
-    .triggers {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 36px;
-    }
-    .trigger {
-      padding: 22px 18px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: linear-gradient(180deg, rgba(60, 20, 5, 0.45) 0%, rgba(20, 8, 4, 0.45) 100%);
-      text-align: left;
-      position: relative;
-      transform: skewX(-2deg);
-    }
-    .trigger__check {
-      width: 28px; height: 28px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, var(--fire) 0%, var(--fire-deep) 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .trigger__title {
-      font-family: 'Cinzel', serif;
-      font-size: 18px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-    .trigger__desc {
-      font-size: 13.5px;
-      line-height: 1.5;
-      color: var(--muted);
-    }
-
-    /* Footer CTA */
-    .footer-cta {
-      padding: 80px 20px 160px;
-      text-align: center;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255, 60, 0, 0.15) 0%, transparent 60%),
-        transparent;
-    }
-    .footer-cta__title {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(28px, 4.5vw, 42px);
-      font-weight: 400;
-      margin-bottom: 14px;
-      color: #fff;
-      letter-spacing: 0.02em;
-      transform: skewX(-2deg);
-    }
-    .footer-cta__sub {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 30px;
-      max-width: 460px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Bottom nav */
+    /* === Bottom nav === */
     #kpBottomNav {
       position: fixed;
       left: 50%;
@@ -588,14 +865,13 @@
       display: flex;
       gap: 4px;
       padding: 6px;
-      background: rgba(20, 8, 4, 0.92);
+      background: rgba(14, 12, 36, 0.92);
       backdrop-filter: blur(18px);
       border: 1px solid var(--border);
       border-radius: 999px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
       width: min(94vw, 440px);
       justify-content: space-between;
-      font-family: inherit;
     }
     .kp-tab {
       flex: 1;
@@ -606,7 +882,7 @@
       gap: 2px;
       padding: 8px 6px;
       border-radius: 999px;
-      color: #d8c7b6;
+      color: #c9c9d4;
       cursor: pointer;
       background: transparent;
       border: none;
@@ -620,127 +896,343 @@
       margin-bottom: 2px;
       filter: grayscale(0.5) opacity(0.7) brightness(1.15);
     }
-    .kp-tab:hover { color: var(--fire-bright); }
+    .kp-tab:hover { color: var(--gold2); }
     .kp-tab:hover .kp-tab-icon { filter: none; }
     .kp-tab.active {
-      color: #1a0a02;
+      color: #1a1500;
       background: linear-gradient(135deg, #FFE566 0%, #FF9000 100%);
     }
     .kp-tab.active .kp-tab-icon { filter: none; }
     .kp-tab-wrap { flex: 1; display: flex; }
 
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2,0.8,0.2,1); }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s ease, transform 1s cubic-bezier(0.2,0.8,0.2,1); }
     .reveal.in { opacity: 1; transform: translateY(0); }
-    .d-1 { transition-delay: 0.15s; } .d-2 { transition-delay: 0.3s; } .d-3 { transition-delay: 0.45s; } .d-4 { transition-delay: 0.6s; }
+    .d-1 { transition-delay: 0.15s; }
+    .d-2 { transition-delay: 0.3s; }
+    .d-3 { transition-delay: 0.45s; }
+    .d-4 { transition-delay: 0.6s; }
+
+    /* Видеоотзывы */
+    .video-review-container {
+      max-width: 720px;
+      margin: 40px auto 0;
+      width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(201, 162, 39, 0.15);
+      background: var(--bg2);
+      position: relative;
+      aspect-ratio: 16 / 9;
+      /* Фикс скругления углов для iframe в некоторых браузерах */
+      transform: translateZ(0);
+      will-change: transform;
+    }
+    .video-review-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Нижняя виньетка — кинематографическое затемнение (скрывает плашку VK) */
+    .video-corner-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      pointer-events: none;
+      z-index: 9;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      background: linear-gradient(
+        to top,
+        rgba(5, 3, 18, 0.97) 0%,
+        rgba(5, 3, 18, 0.7) 45%,
+        transparent 100%
+      );
+    }
+
+    /* Плашка возрастного ограничения поверх виньетки */
+    .video-age-badge {
+      position: absolute;
+      bottom: 13px;
+      right: 13px;
+      z-index: 11;
+      pointer-events: none;
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: rgba(201, 162, 39, 0.9);
+      line-height: 1;
+    }
+
+    /* Промо-видео */
+    .promo-video-container {
+      max-width: 720px;
+      margin: 40px auto 0;
+      width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 60px rgba(201, 162, 39, 0.12);
+      background: var(--bg2);
+      position: relative;
+      aspect-ratio: 16 / 9;
+      transform: translateZ(0);
+    }
+    .promo-video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .modal__box { padding: 24px 16px 20px; }
+      .stage-label { font-size: 12px; letter-spacing: 0.24em; }
+      .hall-wrap { padding: 10px 6px 12px; }
+    }
+
+    /* Индивидуальная касса: «Секрет» — холодная тайна, золото, дым и знак вопроса */
+    .modal.show {
+      background:
+        radial-gradient(circle at 50% 8%, rgba(201, 162, 39, 0.16), transparent 34%),
+        radial-gradient(circle at 82% 20%, rgba(53, 90, 130, 0.22), transparent 38%),
+        rgba(0, 0, 0, 0.9);
+    }
+    .modal__box {
+      background:
+        radial-gradient(circle at 50% -8%, rgba(255, 236, 175, 0.15), transparent 34%),
+        radial-gradient(circle at 86% 18%, rgba(44, 68, 116, 0.25), transparent 42%),
+        linear-gradient(180deg, rgba(10, 12, 30, 0.98) 0%, rgba(5, 5, 14, 0.99) 100%);
+      border-color: rgba(201, 162, 39, 0.42);
+      box-shadow:
+        0 32px 90px rgba(0, 0, 0, 0.9),
+        0 0 90px rgba(201, 162, 39, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .modal__box::before {
+      content: '?';
+      position: absolute;
+      right: 28px;
+      top: 18px;
+      z-index: 0;
+      font-family: 'Cinzel', serif;
+      font-size: 112px;
+      line-height: 1;
+      color: rgba(201, 162, 39, 0.055);
+      pointer-events: none;
+    }
+    .modal__box > * { position: relative; z-index: 1; }
+    .hall-wrap {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(201, 162, 39, 0.11), transparent 38%),
+        linear-gradient(180deg, rgba(16, 18, 38, 0.78), rgba(6, 6, 17, 0.9));
+      border-color: rgba(201, 162, 39, 0.32);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.45), 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #fff1bd 0%, #d8b646 46%, #7a5418 100%);
+      color: #080814;
+      box-shadow: 0 12px 34px rgba(201, 162, 39, 0.24);
+    }
+    .cart__chip {
+      background: rgba(201, 162, 39, 0.1);
+      border-color: rgba(201, 162, 39, 0.3);
+    }
   </style>
 </head>
 <body>
-  <div class="embers" id="embers"></div>
+  <div class="cosmos"></div>
   <a class="back-btn" href="/concerts">К афише</a>
 
   <main>
-    <section class="hero">
-      <div class="poster-wrap">
-        <img loading="lazy" class="poster" src="/concerts/images/huligan.jpg" alt="Афиша ХУЛИgan" />
+    <section class="hero" id="secretHero">
+      <div class="flashlight-overlay"></div>
+      <div class="flashlight-glow"></div>
+      <div class="poster-wrap reveal" id="secretPoster">
+        <img loading="lazy" class="poster" src="/concerts/images/huligan.jpg" alt="Афиша Шоу Секрет" />
       </div>
-      <div class="eyebrow reveal d-1">Магический стендап</div>
-      <h1 class="title reveal d-1">ХУЛИ<span class="gan">gan</span></h1>
-      <div class="subtitle reveal d-2">Мы вас предупредили — 16+</div>
+      <div class="eyebrow reveal d-1">Иллюзионное шоу</div>
+      <h1 class="title reveal d-1">ХУЛИ<span style="color:#FFE566">gan</span></h1>
+      <div class="subtitle reveal d-2">Шоу, которое вдохновляет</div>
 
       <div class="meta reveal d-3">
-        <span class="meta__item">16+</span>
-        <span class="meta__item">1 час 20 мин</span>
-        <span class="meta__item">Только 40 мест</span>
+        <span class="meta__item"><strong>12+</strong></span>
+        <span class="meta__item">2 часа</span>
+        <span class="meta__item">Один артист</span>
       </div>
 
-      <button class="buy-cta reveal d-4" onclick="openHuliganModal()">Купить билет</button>
+      <button class="buy-cta reveal d-4" onclick="openBookingModal()">Купить билет</button>
     </section>
 
     <section class="section">
-      <span class="section__eyebrow">Что это вообще такое</span>
-      <h2 class="section__title">Магия + стендап = ХУЛИgan</h2>
+      <span class="section__eyebrow">О шоу</span>
+      <h2 class="section__title">Один артист. Один секрет.</h2>
       <p class="section__text">
-        Это не просто показ трюков. Это <strong>дерзкий коктейль из взрослого юмора (16+) и профессиональной иллюзии</strong>.
-        Ломка стереотипов, общение без цензуры и смех до слёз — пока мозг пытается понять «Как он это сделал?!»
+        «Секрет» — это не цирк и не просто шоу. Это исповедь с иллюзиями. Каждый номер — шаг,
+        каждый шаг — признание. Уникальные фокусы, выстроенный сюжет, свет, музыка. Смех. Удивление. Мысль.
+        Всё на одной сцене.
       </p>
       <p class="section__text">
-        <strong>Магия с вашими вещами</strong> (вернём всё, но не точно). Никаких «выйдите на сцену и улыбнитесь» —
-        ты часть шоу с момента, как сел в кресло.
+        Зритель уходит не просто с впечатлением «как это сделано» — он уходит с вопросом к самому себе.
+        Шоу о становлении личности через образ иллюзиониста, который не боится показать своё настоящее лицо.
       </p>
 
       <div class="section__quote">
-        «Как он это сделал?!» — задаст себе каждый. Но никто не получит ответа.
+        Трюки, которые невозможно объяснить. Монологи, от которых мурашки.
       </div>
     </section>
 
     <section class="section">
-      <span class="section__eyebrow">Чего ждать</span>
-      <h2 class="section__title">Что будет на шоу</h2>
+      <span class="section__eyebrow">Зрители</span>
+      <h2 class="section__title">Что говорят о шоу</h2>
+      <div class="video-review-container">
+        <iframe loading="lazy" src="https://vkvideo.ru/video_ext.php?oid=-209268664&id=456239121&hd=2&autoplay=0"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
+                allowfullscreen></iframe>
+        <div class="video-corner-overlay"></div>
+        <span class="video-age-badge">12+</span>
+      </div>
+    </section>
 
-      <div class="triggers">
-        <div class="trigger">
-          <div class="trigger__check">✓</div>
-          <div class="trigger__title">Юмор без цензуры</div>
-          <div class="trigger__desc">Жёсткие шутки, неудобные темы, разговор как с другом за кружкой.</div>
+    <section class="section">
+      <span class="section__eyebrow">Атмосфера</span>
+      <h2 class="section__title">Промо-ролик шоу</h2>
+      <div class="promo-video-container">
+        <iframe loading="lazy" src="https://vkvideo.ru/video_ext.php?oid=-209268664&id=456239120&hd=2&autoplay=0"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
+                allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <section class="section">
+      <span class="section__eyebrow">Что внутри</span>
+      <h2 class="section__title">Из чего состоит шоу</h2>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature__num">01</div>
+          <div class="feature__title">Уникальные иллюзии</div>
+          <div class="feature__desc">Авторские трюки, которые не показывают другие артисты.</div>
         </div>
-        <div class="trigger">
-          <div class="trigger__check">✓</div>
-          <div class="trigger__title">Магия с твоими вещами</div>
-          <div class="trigger__desc">Кошелёк, часы, телефон — всё попадает в шоу. И всё возвращается. Обычно.</div>
+        <div class="feature">
+          <div class="feature__num">02</div>
+          <div class="feature__title">Сквозной сюжет</div>
+          <div class="feature__desc">Это не набор номеров — это история с началом и развязкой.</div>
         </div>
-        <div class="trigger">
-          <div class="trigger__check">✓</div>
-          <div class="trigger__title">Только 40 мест</div>
-          <div class="trigger__desc">Никакой стадионной дистанции. Ты рядом с артистом.</div>
+        <div class="feature">
+          <div class="feature__num">03</div>
+          <div class="feature__title">Свет и музыка</div>
+          <div class="feature__desc">Сценическое оформление профессионального уровня.</div>
         </div>
-        <div class="trigger">
-          <div class="trigger__check">✓</div>
-          <div class="trigger__title">Сломанный мозг</div>
-          <div class="trigger__desc">Гарантировано. Иначе вернём деньги (но не точно).</div>
+        <div class="feature">
+          <div class="feature__num">04</div>
+          <div class="feature__title">Монологи</div>
+          <div class="feature__desc">Тексты, которые остаются с вами после финала.</div>
         </div>
       </div>
     </section>
 
     <section class="footer-cta">
-      <div class="footer-cta__title">40 мест — мало. Бери сейчас.</div>
-      <div class="footer-cta__sub">Билеты разлетаются быстро. Оставь бронь — менеджер свяжется.</div>
-      <button class="buy-cta" onclick="openHuliganModal()">Купить билет</button>
+      <div class="footer-cta__title">Готовы стать частью шоу?</div>
+      <div class="footer-cta__sub">Выберите дату, столик и оставьте бронь — мы свяжемся с вами.</div>
+      <button class="buy-cta" onclick="openBookingModal()">Купить билет</button>
     </section>
   </main>
 
-  <!-- ============== МОДАЛКА БРОНИ ============== -->
+  <!-- =============== МОДАЛКА БРОНИ =============== -->
   <div class="modal" id="bookingModal" role="dialog" aria-modal="true">
     <div class="modal__box">
-      <button class="modal__close" onclick="closeHuliganModal()" aria-label="Закрыть">×</button>
+      <button class="modal__close" onclick="closeBookingModal()" aria-label="Закрыть">×</button>
 
-      <div id="bookingForm">
-        <div class="modal__title">ХУЛИGAN</div>
-        <div class="modal__sub">Магический стендап · 16+</div>
+      <!-- ШАГ 1: ВЫБОР ДАТЫ -->
+      <div id="step1">
+        <div class="modal__title">Выберите дату</div>
+        <div class="modal__sub">АРТ-ПЛОЩАДКА «ЛАМПА» · ЯРОСЛАВЛЬ</div>
 
-        <div class="ticket-card">
-          <div class="ticket-card__type">Общий вход</div>
-          <div class="ticket-card__desc">
-            40 мест на шоу. Без рассадки — садись где удобно.<br>Главное — успеть купить.
+        <div class="steps">
+          <div class="step active"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+
+        <div class="date-grid" id="dateGrid">
+          <!-- даты заполняются JS -->
+        </div>
+
+        <div class="modal__nav">
+          <button class="btn-primary" id="step1Next" onclick="goToStep(2)" disabled>Выбрать места</button>
+        </div>
+      </div>
+
+      <!-- ШАГ 2: ВЫБОР МЕСТ -->
+      <div id="step2" style="display:none">
+        <div class="modal__title">Выберите место</div>
+        <div class="modal__sub" id="step2Date">—</div>
+
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step active"></div>
+          <div class="step"></div>
+        </div>
+
+        <div class="hall-wrap">
+          <svg class="hall-svg" id="hallSvg" viewBox="0 0 580 410" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="stageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(255,214,152,0.32)"/>
+                <stop offset="55%" stop-color="rgba(184,144,255,0.16)"/>
+                <stop offset="100%" stop-color="rgba(184,144,255,0)"/>
+              </linearGradient>
+            </defs>
+            <g id="hallG"></g>
+          </svg>
+          <div class="legend">
+            <span><span class="ldot" style="background:var(--vip);box-shadow:0 0 6px var(--vip)"></span>VIP</span>
+            <span><span class="ldot" style="background:var(--std);box-shadow:0 0 6px var(--std)"></span>Стандарт</span>
+            <span><span class="ldot" style="background:var(--eco);box-shadow:0 0 6px var(--eco)"></span>Эконом</span>
+            <span><span class="ldot" style="background:#ff4f64;box-shadow:0 0 6px #ff4f64"></span>Диваны</span>
+            <span><span class="ldot" style="background:#ff9f43;box-shadow:0 0 6px #ff9f43"></span>Зона Лампа</span>
           </div>
-          <div class="ticket-card__price">Скоро цены</div>
+        </div>
+
+        <div class="cart" id="cartBox">
+          <div class="cart__empty" id="cartEmpty">Тапните по месту, чтобы выбрать</div>
+          <div class="cart__list" id="cartList" style="display:none"></div>
+        </div>
+
+        <div class="modal__nav">
+          <button class="btn-secondary" onclick="goToStep(1)">Назад</button>
+          <button class="btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Оформить бронь</button>
+        </div>
+      </div>
+
+      <!-- ШАГ 3: ФОРМА -->
+      <div id="step3" style="display:none">
+        <div class="modal__title">Контактные данные</div>
+        <div class="modal__sub">Менеджер свяжется для подтверждения</div>
+
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step done"></div>
+          <div class="step active"></div>
+        </div>
+
+        <div class="summary" id="summaryBox">
+          <!-- заполняется JS -->
         </div>
 
         <form id="bookingFormEl" onsubmit="return submitHuliganBooking(event)">
-          <label class="field">
-            <span class="field__label">Желаемая дата</span>
-            <input class="field__input" type="text" name="eventDate" placeholder="например: 31 января 2026" />
-          </label>
-
-          <div class="field">
-            <span class="field__label">Сколько билетов</span>
-            <div class="qty-row">
-              <button type="button" class="qty-btn" id="qtyMinus" onclick="changeQty(-1)">−</button>
-              <span class="qty-val" id="qtyVal">2</span>
-              <button type="button" class="qty-btn" id="qtyPlus" onclick="changeQty(1)">+</button>
-            </div>
-            <input type="hidden" name="ticketCount" id="ticketCount" value="2" />
-          </div>
-
           <label class="field">
             <span class="field__label">Ваше имя *</span>
             <input class="field__input" type="text" name="name" required placeholder="Как к вам обращаться" />
@@ -761,32 +1253,46 @@
             <textarea class="field__textarea" name="comment" placeholder="Пожелания, вопросы"></textarea>
           </label>
 
-          <button class="modal__submit" type="submit" id="bookingSubmit">Забронировать</button>
+          <div class="modal__nav">
+            <button type="button" class="btn-secondary" onclick="goToStep(2)">Назад</button>
+            <button class="btn-primary" type="submit" id="bookingSubmit">Забронировать</button>
+          </div>
         </form>
       </div>
 
+      <!-- УСПЕХ -->
       <div id="bookingSuccess" style="display:none">
         <div class="modal__success">
-          <div class="modal__success-icon">🔥</div>
-          <h3>Принято!</h3>
-          <p>Менеджер Екатерина свяжется с вами,<br>чтобы подтвердить дату и оплату.</p>
-          <button class="modal__submit" onclick="closeHuliganModal()" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Огонь</button>
+          <div class="modal__success-icon">✨</div>
+          <h3>Заявка принята</h3>
+          <p>Менеджер Екатерина свяжется с вами,<br>чтобы подтвердить дату и места.</p>
+          <button class="btn-primary" onclick="closeBookingModal()" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
         </div>
       </div>
     </div>
   </div>
 
+  <section class="kp-ecosystem-promo" aria-label="Другие проекты Дмитрия Костюка">
+    <div class="kp-ecosystem-promo__head"><div><small>Ещё в KOSTYUK PROJECT</small><h2>Магия может стать частью вашей истории</h2></div><p>Билеты на авторское шоу — главное здесь. Для личного праздника или обучения ребёнка выберите соседнее направление.</p></div>
+    <div class="kp-ecosystem-promo__grid">
+      <a class="kp-promo-card" href="/events/"><span class="kp-promo-card__label">Частные события</span><h3>Пригласите Дмитрия на ваш праздник</h3><p>Персональное выступление для свадьбы, юбилея, корпоратива или семейного вечера.</p><span class="kp-promo-card__action">Выбрать выступление <i>↗</i></span></a>
+      <a class="kp-promo-card" href="/school/"><span class="kp-promo-card__label">Дети 7–13 лет</span><h3>Первая школа фокусов в Ярославле</h3><p>Уверенность, речь и артистизм ребёнка через искусство иллюзии.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
+    </div>
+  </section>
+
   <script>
+    // Плавающие знаки вопроса
     (function() {
-      var embers = document.getElementById('embers');
-      for (var i = 0; i < 40; i++) {
-        var e = document.createElement('div');
-        e.className = 'ember';
-        e.style.left = Math.random() * 100 + 'vw';
-        e.style.animationDuration = (8 + Math.random() * 12) + 's';
-        e.style.animationDelay = (Math.random() * 12) + 's';
-        e.style.transform = 'scale(' + (0.5 + Math.random() * 1.5) + ')';
-        embers.appendChild(e);
+      for (var i = 0; i < 7; i++) {
+        var q = document.createElement('div');
+        q.className = 'q-mark';
+        q.textContent = '?';
+        q.style.left = Math.random() * 100 + 'vw';
+        q.style.top = Math.random() * 200 + 'vh';
+        q.style.fontSize = (60 + Math.random() * 160) + 'px';
+        q.style.animationDuration = (9 + Math.random() * 12) + 's';
+        q.style.animationDelay = (Math.random() * 4) + 's';
+        document.body.appendChild(q);
       }
     })();
 
@@ -798,55 +1304,722 @@
     var obs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('in'); });
     }, { threshold: 0.15 });
-    document.querySelectorAll('.section__title, .section__text, .trigger, .footer-cta__title, .footer-cta__sub').forEach(function(el) {
+    document.querySelectorAll('.section__title, .section__text, .feature, .footer-cta__title, .footer-cta__sub').forEach(function(el) {
       el.classList.add('reveal');
       obs.observe(el);
     });
 
-    // ============== МОДАЛКА ==============
-    var bookingModal = document.getElementById('bookingModal');
+    // =============== ДАННЫЕ ЗАЛА ===============
+    var ZONES = {
+      vip:      { color: '#e85348', rgb: '232,83,72',  label: 'VIP',      price: 2500 },
+      standart: { color: '#3dbf6e', rgb: '61,191,110', label: 'Стандарт', price: 1500 },
+      econom:   { color: '#4a8fd9', rgb: '74,143,217', label: 'Эконом',   price: 900  },
+      sofa:     { color: '#ff4f64', rgb: '255,79,100',  label: 'Диваны',   price: 4000 },
+      lampa:    { color: '#ff9f43', rgb: '255,159,67',  label: 'Зона Лампа', price: 2500 }
+    };
 
-    function openHuliganModal() {
+    var DEMO_TAKEN = new Set([
+      't1_3', 't1_8',
+      't2_11', 't2_14',
+      't3_19', 't3_22',
+      't4_26', 't6_35', 't7_44', 't8_51',
+      't11_62', 't13_70', 't15_78',
+      't16_82', 't18_90'
+    ]);
+
+    var liveSeats = {};
+    async function loadLiveSeats() {
+      try {
+        var r = await fetch('/api/seats?show=huligan');
+        var data = await r.json();
+        liveSeats = data || {};
+        renderHall();
+      } catch (e) {
+        console.error('Error loading live seats:', e);
+      }
+    }
+
+    var SEATS = [];
+
+    // --- 1. Столы кружки на 8 мест (Столы 1, 2, 3, 6, 7) ---
+    var tables8 = [
+      { id: 1, cx: 195, cy: 115, zone: 'vip' },
+      { id: 2, cx: 290, cy: 100, zone: 'vip' },
+      { id: 3, cx: 385, cy: 115, zone: 'vip' },
+      { id: 6, cx: 225, cy: 190, zone: 'vip' },
+      { id: 7, cx: 355, cy: 190, zone: 'vip' }
+    ];
+
+    var table8SeatStarts = { 1: 1, 2: 9, 3: 17, 6: 33, 7: 41 };
+
+    tables8.forEach(function(tbl) {
+      var startIdx = table8SeatStarts[tbl.id];
+      var r = 29; 
+      for (var i = 0; i < 8; i++) {
+        var a = (i / 8) * 2 * Math.PI - Math.PI / 2;
+        var sx = tbl.cx + Math.cos(a) * r;
+        var sy = tbl.cy + Math.sin(a) * r;
+        var seatNum = startIdx + i;
+        SEATS.push({
+          key: 't' + tbl.id + '_' + seatNum,
+          x: sx,
+          y: sy,
+          zone: tbl.zone,
+          table: tbl.id,
+          seatIdx: seatNum,
+          seatNum: seatNum,
+          type: 'round8',
+          tableCx: tbl.cx,
+          tableCy: tbl.cy
+        });
+      }
+    });
+
+    // --- 2. Столы кружки на 4 места (Столы 4, 5, 8, 9, 10, 11, 12, 13, 14, 15) ---
+    var tables4 = [
+      { id: 4,  cx: 145, cy: 170, zone: 'vip' },
+      { id: 8,  cx: 435, cy: 170, zone: 'vip' },
+      { id: 5,  cx: 150, cy: 250, zone: 'standart' },
+      { id: 9,  cx: 245, cy: 260, zone: 'standart' },
+      { id: 10, cx: 335, cy: 260, zone: 'standart' },
+      { id: 11, cx: 140, cy: 320, zone: 'standart' },
+      { id: 12, cx: 215, cy: 320, zone: 'standart' },
+      { id: 13, cx: 290, cy: 320, zone: 'standart' },
+      { id: 14, cx: 365, cy: 320, zone: 'standart' },
+      { id: 15, cx: 440, cy: 320, zone: 'standart' }
+    ];
+
+    var table4SeatStarts = {
+      4: 25, 5: 29, 8: 49, 9: 53, 10: 57,
+      11: 61, 12: 65, 13: 69, 14: 73, 15: 77
+    };
+
+    tables4.forEach(function(tbl) {
+      var startIdx = table4SeatStarts[tbl.id];
+      var r = 18; 
+      var offsets = [
+        { dx: 0, dy: -r },
+        { dx: r, dy: 0 },
+        { dx: 0, dy: r },
+        { dx: -r, dy: 0 }
+      ];
+      offsets.forEach(function(off, i) {
+        var seatNum = startIdx + i;
+        SEATS.push({
+          key: 't' + tbl.id + '_' + seatNum,
+          x: tbl.cx + off.dx,
+          y: tbl.cy + off.dy,
+          zone: tbl.zone,
+          table: tbl.id,
+          seatIdx: seatNum,
+          seatNum: seatNum,
+          type: 'round4',
+          tableCx: tbl.cx,
+          tableCy: tbl.cy
+        });
+      });
+    });
+
+    // --- 3. Прямоугольные столики 16, 17, 18, 19 ---
+    var tablesRect = [
+      { id: 16, cx: 55,  cy: 362, zone: 'econom' },
+      { id: 17, cx: 115, cy: 362, zone: 'econom' },
+      { id: 18, cx: 175, cy: 362, zone: 'econom' },
+      { id: 19, cx: 235, cy: 362, zone: 'econom' }
+    ];
+
+    var tableRectStarts = { 16: 81, 17: 85, 18: 89, 19: 93 };
+
+    tablesRect.forEach(function(tbl) {
+      var startIdx = tableRectStarts[tbl.id];
+      var chairs = [
+        { dx: 12, dy: -9,  s: 0 },
+        { dx: 12, dy: 9,   s: 1 },
+        { dx: -12, dy: 9,  s: 2 },
+        { dx: -12, dy: -9, s: 3 }
+      ];
+      chairs.forEach(function(ch) {
+        var seatNum = startIdx + ch.s;
+        SEATS.push({
+          key: 't' + tbl.id + '_' + seatNum,
+          x: tbl.cx + ch.dx,
+          y: tbl.cy + ch.dy,
+          zone: tbl.zone,
+          table: tbl.id,
+          seatIdx: seatNum,
+          seatNum: seatNum,
+          type: 'rect',
+          tableCx: tbl.cx,
+          tableCy: tbl.cy
+        });
+      });
+    });
+
+    // --- 4. Стулья у левого дивана (1-5) ---
+    var leftSofaChairs = [
+      { x: 95,  y: 215, s: 1 },
+      { x: 72,  y: 185, s: 2 },
+      { x: 72,  y: 155, s: 3 },
+      { x: 72,  y: 125, s: 4 },
+      { x: 72,  y: 95,  s: 5 }
+    ];
+    leftSofaChairs.forEach(function(ch) {
+      SEATS.push({
+        key: 'dl_' + ch.s,
+        x: ch.x,
+        y: ch.y,
+        zone: 'standart',
+        table: 'Диван L',
+        seatIdx: ch.s,
+        seatNum: ch.s
+      });
+    });
+
+    // --- 5. Стулья у правого дивана (6-10) ---
+    var rightSofaChairs = [
+      { x: 513, y: 185, s: 6 },
+      { x: 513, y: 155, s: 7 },
+      { x: 513, y: 125, s: 8 },
+      { x: 513, y: 95,  s: 9 },
+      { x: 475, y: 65,  s: 10 }
+    ];
+    rightSofaChairs.forEach(function(ch) {
+      SEATS.push({
+        key: 'dr_' + ch.s,
+        x: ch.x,
+        y: ch.y,
+        zone: 'standart',
+        table: 'Диван R',
+        seatIdx: ch.s,
+        seatNum: ch.s
+      });
+    });
+
+    // --- 6. Диваны и Лампа ---
+    SEATS.push({
+      key: 'dl_0',
+      zone: 'sofa',
+      table: 'Левый',
+      seatIdx: 'целиком',
+      label: 'Левый диван (целиком)'
+    });
+    SEATS.push({
+      key: 'dr_0',
+      zone: 'sofa',
+      table: 'Правый',
+      seatIdx: 'целиком',
+      label: 'Правый диван (целиком)'
+    });
+    SEATS.push({
+      key: 'lampa',
+      zone: 'lampa',
+      table: 'Лампа',
+      seatIdx: 'Зона',
+      label: 'Зона Лампа'
+    });
+
+    // === Состояние брони ===
+    var booking = {
+      step: 1,
+      date: null,
+      selected: []
+    };
+
+    // === Даты шоу (демо) ===
+    
+    // === Даты шоу (демо) ===
+    var SHOWS = [
+      { date: '16 октября 2026', day: 16, month: 'ОКТ', time: '20:00', venue: 'ЛАМПА · Ярославль' },
+      { date: '13 ноября 2026',  day: 13, month: 'НОЯ', time: '19:30', venue: 'КВАРТАЛ · Кострома' },
+      { date: '18 декабря 2026', day: 18, month: 'ДЕК', time: '20:00', venue: 'СКЛАД · Иваново' }
+    ];
+
+
+    function renderDates() {
+      var grid = document.getElementById('dateGrid');
+      grid.innerHTML = '';
+      SHOWS.forEach(function(s, idx) {
+        var card = document.createElement('div');
+        card.className = 'date-card';
+        if (booking.date && booking.date.date === s.date) card.classList.add('selected');
+        card.innerHTML =
+          '<div class="date-card__day">' + s.day + '</div>' +
+          '<div class="date-card__month">' + s.month + '</div>' +
+          '<div class="date-card__time">' + s.time + '</div>' +
+          '<div class="date-card__venue">' + s.venue + '</div>';
+        card.onclick = function() {
+          booking.date = s;
+          document.getElementById('step1Next').disabled = false;
+          renderDates();
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    // === Отрисовка зала ===
+    var NS = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs) {
+      var n = document.createElementNS(NS, tag);
+      for (var k in attrs) n.setAttribute(k, attrs[k]);
+      return n;
+    }
+
+    function renderHall() {
+      var g = document.getElementById('hallG');
+      if (!g) return;
+      g.innerHTML = '';
+
+      // 1. Отрисовка внешней рамки зала (золотая линия с вырезом под сцену)
+      var borderPath = el('path', {
+        d: 'M 15 15 L 160 15 Q 170 15 170 25 L 170 50 Q 170 60 180 60 L 400 60 Q 410 60 410 50 L 410 25 Q 410 15 420 15 L 565 15 Q 570 15 570 20 L 570 390 Q 570 395 565 395 L 15 395 Q 10 395 10 390 L 10 20 Q 10 15 15 15 Z',
+        fill: 'none',
+        stroke: 'rgba(201, 162, 39, 0.45)',
+        'stroke-width': 2
+      });
+      g.appendChild(borderPath);
+
+      // Сцена
+      var stageRect = el('rect', {
+        x: 180, y: 18, width: 220, height: 35, rx: 8,
+        fill: 'none',
+        stroke: 'rgba(201, 162, 39, 0.25)',
+        'stroke-width': 1
+      });
+      g.appendChild(stageRect);
+
+      var stageRectInner = el('rect', {
+        x: 184, y: 22, width: 212, height: 27, rx: 6,
+        fill: 'none',
+        stroke: 'rgba(201, 162, 39, 0.55)',
+        'stroke-width': 1.2
+      });
+      g.appendChild(stageRectInner);
+
+      var stageText = el('text', {
+        x: 290, y: 35,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '12',
+        'font-weight': '600',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255, 236, 190, 0.95)',
+        'letter-spacing': '2'
+      });
+      stageText.textContent = 'СЦЕНА';
+      g.appendChild(stageText);
+
+      // 2. Декоративные квадраты по бокам
+      // Левые квадраты
+      g.appendChild(el('rect', { x: 82, y: 107, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+      g.appendChild(el('rect', { x: 82, y: 137, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+      // Правые квадраты
+      g.appendChild(el('rect', { x: 484, y: 107, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+      g.appendChild(el('rect', { x: 484, y: 137, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+
+      // 3. Диваны
+      // Left Sofa
+      var isSofaLeftSelected = booking.selected.some(function(x){return x.key==='dl_0';});
+      var isSofaLeftTaken = DEMO_TAKEN.has('dl_0') || (liveSeats['dl_0'] && (liveSeats['dl_0'].status === 'taken' || liveSeats['dl_0'].status === 'reserved'));
+      var leftSofaFill = isSofaLeftSelected ? '#fff' : (isSofaLeftTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
+      var leftSofaStroke = isSofaLeftSelected ? ZONES.sofa.color : (isSofaLeftTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
+      
+      var leftSofa = el('path', {
+        d: 'M 30 100 L 50 100 Q 55 100 55 105 L 55 185 Q 55 190 60 190 L 85 190 Q 90 190 90 195 L 90 215 Q 90 220 85 220 L 30 220 Q 25 220 25 215 L 25 105 Q 25 100 30 100',
+        fill: leftSofaFill,
+        stroke: leftSofaStroke,
+        'stroke-width': isSofaLeftSelected ? 2 : 1,
+        style: isSofaLeftTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+      });
+      if (!isSofaLeftTaken) {
+        leftSofa.addEventListener('click', function(){ toggleSeat('dl_0', 'sofa', 'Левый диван (целиком)', 'Левый', 'целиком'); });
+      }
+      g.appendChild(leftSofa);
+      
+      // Text "ДИВАНЫ" inside Left Sofa
+      var leftSofaText = el('text', {
+        x: 40,
+        y: 120,
+        'text-anchor': 'middle',
+        'font-size': '11',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: isSofaLeftSelected ? '#14082e' : (isSofaLeftTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
+        var tspan = el('tspan', { x: 40, dy: i === 0 ? 0 : 14 });
+        tspan.textContent = char;
+        leftSofaText.appendChild(tspan);
+      });
+      g.appendChild(leftSofaText);
+
+      // Right Sofa
+      var isSofaRightSelected = booking.selected.some(function(x){return x.key==='dr_0';});
+      var isSofaRightTaken = DEMO_TAKEN.has('dr_0') || (liveSeats['dr_0'] && (liveSeats['dr_0'].status === 'taken' || liveSeats['dr_0'].status === 'reserved'));
+      var rightSofaFill = isSofaRightSelected ? '#fff' : (isSofaRightTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
+      var rightSofaStroke = isSofaRightSelected ? ZONES.sofa.color : (isSofaRightTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
+      
+      var rightSofa = el('path', {
+        d: 'M 495 50 L 555 50 Q 560 50 560 55 L 560 145 Q 560 150 555 150 L 535 150 Q 530 150 530 145 L 530 85 Q 530 80 525 80 L 495 80 Q 490 80 490 75 L 490 55 Q 490 50 495 50',
+        fill: rightSofaFill,
+        stroke: rightSofaStroke,
+        'stroke-width': isSofaRightSelected ? 2 : 1,
+        style: isSofaRightTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+      });
+      if (!isSofaRightTaken) {
+        rightSofa.addEventListener('click', function(){ toggleSeat('dr_0', 'sofa', 'Правый диван (целиком)', 'Правый', 'целиком'); });
+      }
+      g.appendChild(rightSofa);
+      
+      // Text "ДИВАНЫ" inside Right Sofa
+      var rightSofaText = el('text', {
+        x: 545,
+        y: 65,
+        'text-anchor': 'middle',
+        'font-size': '11',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: isSofaRightSelected ? '#14082e' : (isSofaRightTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
+        var tspan = el('tspan', { x: 545, dy: i === 0 ? 0 : 14 });
+        tspan.textContent = char;
+        rightSofaText.appendChild(tspan);
+      });
+      g.appendChild(rightSofaText);
+
+      // 4. Лампа
+      var isLampaSelected = booking.selected.some(function(x){return x.key==='lampa';});
+      var isLampaTaken = DEMO_TAKEN.has('lampa') || (liveSeats['lampa'] && (liveSeats['lampa'].status === 'taken' || liveSeats['lampa'].status === 'reserved'));
+      var lampaFill = isLampaSelected ? '#fff' : (isLampaTaken ? 'rgba(255,255,255,0.06)' : '#ffc97a');
+      var lampaStroke = isLampaSelected ? ZONES.lampa.color : (isLampaTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
+      
+      var lampa = el('circle', {
+        cx: 535, cy: 190, r: 20,
+        fill: lampaFill,
+        stroke: lampaStroke,
+        'stroke-width': isLampaSelected ? 2 : 0.8,
+        style: isLampaTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+      });
+      if (!isLampaTaken) {
+        lampa.addEventListener('click', function(){ toggleSeat('lampa', 'lampa', 'Зона Лампа', 'Лампа', 'Зона'); });
+      }
+      g.appendChild(lampa);
+      
+      var lampaText = el('text', {
+        x: 535, y: 190,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '7',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: isLampaSelected ? '#14082e' : (isLampaTaken ? 'rgba(255,255,255,0.2)' : '#0a0420'),
+        'pointer-events': 'none'
+      });
+      lampaText.textContent = 'ЛАМПА';
+      g.appendChild(lampaText);
+
+      // 5. Бар
+      var bar = el('path', {
+        d: 'M 535 290 L 555 290 Q 560 290 560 295 L 560 375 Q 560 380 555 380 L 425 380 Q 420 380 420 375 L 420 355 Q 420 350 425 350 L 525 350 Q 530 350 530 345 L 530 295 Q 530 290 535 290 Z',
+        fill: 'rgba(60,60,75,0.85)',
+        stroke: 'rgba(255,255,255,0.22)',
+        'stroke-width': 1
+      });
+      g.appendChild(bar);
+      
+      var barText = el('text', {
+        x: 490, y: 365,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '14',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.7)',
+        'pointer-events': 'none'
+      });
+      barText.textContent = 'БАР';
+      g.appendChild(barText);
+
+      // 6. Отрисовка столов (Круглые столы на 8 и 4 мест)
+      // Столы на 8 мест
+      tables8.forEach(function(tbl) {
+        var z = ZONES[tbl.zone];
+        var circle = el('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: 20,
+          fill: 'rgba(' + z.rgb + ', 0.10)',
+          stroke: 'rgba(' + z.rgb + ', 0.45)',
+          'stroke-width': 1.3
+        });
+        g.appendChild(circle);
+
+        var lbl = el('text', {
+          x: tbl.cx, y: tbl.cy,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': '11',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: 'rgba(' + z.rgb + ', 0.85)'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      });
+
+      // Столы на 4 места (круглые)
+      tables4.forEach(function(tbl) {
+        var z = ZONES[tbl.zone];
+        var circle = el('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: 12,
+          fill: 'rgba(' + z.rgb + ', 0.10)',
+          stroke: 'rgba(' + z.rgb + ', 0.45)',
+          'stroke-width': 1.1
+        });
+        g.appendChild(circle);
+
+        var lbl = el('text', {
+          x: tbl.cx, y: tbl.cy,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': '9',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: 'rgba(' + z.rgb + ', 0.85)'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      });
+
+      // Столики прямоугольные (16-19)
+      tablesRect.forEach(function(tbl) {
+        var z = ZONES[tbl.zone];
+        var rect = el('rect', {
+          x: tbl.cx - 9, y: tbl.cy - 15,
+          width: 18, height: 30, rx: 4,
+          fill: 'rgba(' + z.rgb + ', 0.08)',
+          stroke: 'rgba(' + z.rgb + ', 0.35)',
+          'stroke-width': 1
+        });
+        g.appendChild(rect);
+
+        var lbl = el('text', {
+          x: tbl.cx, y: tbl.cy,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': '10',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: 'rgba(' + z.rgb + ', 0.8)'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      });
+
+      // 7. Отрисовка стульев (кружков)
+      SEATS.forEach(function(seat) {
+        // Пропускаем диваны и лампу, они отрисованы отдельно выше
+        if (seat.key === 'dl_0' || seat.key === 'dr_0' || seat.key === 'lampa') return;
+
+        var z = ZONES[seat.zone];
+        var isTaken = DEMO_TAKEN.has(seat.key) || (liveSeats[seat.key] && (liveSeats[seat.key].status === 'taken' || liveSeats[seat.key].status === 'reserved'));
+        var isSelected = booking.selected.some(function(x) { return x.key === seat.key; });
+
+        var sr = 7.5; // по умолчанию
+        if (seat.type === 'round4' || seat.type === 'rect') {
+          sr = 6.5; // поменьше
+        }
+
+        var fill = isSelected ? '#fff' : (isTaken ? 'rgba(255,255,255,0.06)' : 'rgba(' + z.rgb + ',0.88)');
+        var stroke = isSelected ? z.color : (isTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
+
+        var c = el('circle', {
+          cx: seat.x.toFixed(1),
+          cy: seat.y.toFixed(1),
+          r: sr,
+          fill: fill,
+          stroke: stroke,
+          'stroke-width': isSelected ? 2 : 0.8,
+          style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        });
+        c.classList.add('seat');
+        if (isTaken) c.classList.add('taken');
+        if (isSelected) c.classList.add('selected');
+
+        if (!isTaken) {
+          c.addEventListener('click', function() {
+            var label = 'Стол ' + seat.table + ', место ' + seat.seatNum;
+            if (seat.table === 'Диван L') {
+              label = 'У левого дивана, место ' + seat.seatNum;
+            } else if (seat.table === 'Диван R') {
+              label = 'У правого дивана, место ' + seat.seatNum;
+            }
+            toggleSeat(seat.key, seat.zone, label, seat.table, seat.seatNum);
+          });
+        }
+        g.appendChild(c);
+
+        if (isSelected) {
+          g.appendChild(el('circle', {
+            cx: seat.x.toFixed(1),
+            cy: seat.y.toFixed(1),
+            r: sr + 3,
+            fill: 'none',
+            stroke: z.color,
+            'stroke-width': '1.2',
+            'stroke-opacity': '0.55'
+          }));
+        }
+
+        // Цифра внутри кружка
+        if (seat.seatNum) {
+          var fontSize = (seat.type === 'round4' || seat.type === 'rect') ? 7 : 8.5;
+          var numText = el('text', {
+            x: seat.x.toFixed(1),
+            y: seat.y.toFixed(1),
+            'text-anchor': 'middle',
+            'dominant-baseline': 'central',
+            'font-size': fontSize,
+            'font-weight': '800',
+            'font-family': 'Inter, sans-serif',
+            fill: isSelected ? '#14082e' : (isTaken ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.85)'),
+            'pointer-events': 'none'
+          });
+          numText.textContent = seat.seatNum;
+          g.appendChild(numText);
+        }
+      });
+    }
+
+    function toggleSeat(key, zone, label, table, seatIdx) {
+      var idx = booking.selected.findIndex(function(x) { return x.key === key; });
+      if (idx >= 0) {
+        booking.selected.splice(idx, 1);
+      } else {
+        if (booking.selected.length >= 10) {
+          alert('Можно выбрать максимум 10 мест за одну бронь.');
+          return;
+        }
+        booking.selected.push({
+          key: key,
+          table: table,
+          zone: zone,
+          seatIdx: seatIdx,
+          price: ZONES[zone].price,
+          label: label
+        });
+      }
+      renderHall();
+      renderCart();
+    }
+
+    function renderCart() {
+      var list = document.getElementById('cartList');
+      var empty = document.getElementById('cartEmpty');
+      var nextBtn = document.getElementById('step2Next');
+      if (booking.selected.length === 0) {
+        list.style.display = 'none';
+        empty.style.display = '';
+        nextBtn.disabled = true;
+        // удаляем total
+        var oldTotal = document.querySelector('.cart__total');
+        if (oldTotal) oldTotal.remove();
+        return;
+      }
+      empty.style.display = 'none';
+      list.style.display = 'flex';
+      list.innerHTML = '';
+      var total = 0;
+      booking.selected.forEach(function(s, idx) {
+        var chip = document.createElement('div');
+        chip.className = 'cart__chip';
+        chip.innerHTML = s.label + ' · стол ' + s.table + ' / м. ' + s.seatIdx + ' <span class="x" data-idx="' + idx + '">×</span>';
+        chip.querySelector('.x').onclick = function(e) {
+          e.stopPropagation();
+          booking.selected.splice(idx, 1);
+          renderHall();
+          renderCart();
+        };
+        list.appendChild(chip);
+        total += s.price;
+      });
+
+      // total строчка
+      var existing = document.querySelector('.cart__total');
+      if (existing) existing.remove();
+      var totalEl = document.createElement('div');
+      totalEl.className = 'cart__total';
+      totalEl.innerHTML =
+        '<span class="cart__total-label">Итого</span>' +
+        '<span class="cart__total-val">' + total.toLocaleString('ru-RU') + ' ₽</span>';
+      document.getElementById('cartBox').appendChild(totalEl);
+
+      nextBtn.disabled = false;
+    }
+
+    function renderSummary() {
+      var box = document.getElementById('summaryBox');
+      var total = booking.selected.reduce(function(acc, s) { return acc + s.price; }, 0);
+      var html = '';
+      if (booking.date) html += '<div class="summary__row"><span>Дата</span><span>' + booking.date.date + ' · ' + booking.date.time + '</span></div>';
+      html += '<div class="summary__row"><span>Билетов</span><span>' + booking.selected.length + ' шт</span></div>';
+      html += '<div class="summary__row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span style="color:var(--gold2);text-transform:uppercase;font-size:11px;letter-spacing:0.16em">Итого</span><span style="font-family:Cinzel,serif;font-size:18px;font-weight:900;color:var(--gold2)">' + total.toLocaleString('ru-RU') + ' ₽</span></div>';
+      box.innerHTML = html;
+    }
+
+    // === Шаги ===
+    function goToStep(n) {
+      ['step1','step2','step3','bookingSuccess'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      booking.step = n;
+      if (n === 1) {
+        document.getElementById('step1').style.display = '';
+        renderDates();
+      } else if (n === 2) {
+        document.getElementById('step2').style.display = '';
+        document.getElementById('step2Date').textContent = booking.date ? booking.date.date + ' · ' + booking.date.time + ' · ' + booking.date.venue : '';
+        loadLiveSeats();
+        renderHall();
+        renderCart();
+      } else if (n === 3) {
+        document.getElementById('step3').style.display = '';
+        renderSummary();
+      }
+    }
+    window.goToStep = goToStep;
+
+    // === Открытие/закрытие модалки ===
+    var bookingModal = document.getElementById('bookingModal');
+    function openBookingModal() {
       bookingModal.classList.add('show');
       document.body.style.overflow = 'hidden';
+      goToStep(1);
     }
-    function closeHuliganModal() {
+    function closeBookingModal() {
       bookingModal.classList.remove('show');
       document.body.style.overflow = '';
       setTimeout(function() {
-        document.getElementById('bookingForm').style.display = '';
-        document.getElementById('bookingSuccess').style.display = 'none';
+        booking.date = null;
+        booking.selected = [];
         var f = document.getElementById('bookingFormEl');
         if (f) f.reset();
-        setQty(2);
+        goToStep(1);
+        document.getElementById('step1Next').disabled = true;
       }, 300);
     }
-    window.openHuliganModal = openHuliganModal;
-    window.closeHuliganModal = closeHuliganModal;
+    window.openBookingModal = openBookingModal;
+    window.closeBookingModal = closeBookingModal;
 
     bookingModal.addEventListener('click', function(e) {
-      if (e.target === bookingModal) closeHuliganModal();
+      if (e.target === bookingModal) closeBookingModal();
     });
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && bookingModal.classList.contains('show')) closeHuliganModal();
+      if (e.key === 'Escape' && bookingModal.classList.contains('show')) closeBookingModal();
     });
 
-    // ============== СЧЁТЧИК БИЛЕТОВ ==============
-    function setQty(val) {
-      val = Math.max(1, Math.min(10, val));
-      document.getElementById('qtyVal').textContent = val;
-      document.getElementById('ticketCount').value = val;
-      document.getElementById('qtyMinus').disabled = val <= 1;
-      document.getElementById('qtyPlus').disabled = val >= 10;
-    }
-    function changeQty(delta) {
-      var cur = parseInt(document.getElementById('ticketCount').value, 10) || 1;
-      setQty(cur + delta);
-    }
-    window.changeQty = changeQty;
-    setQty(2);
-
-    // ============== ОТПРАВКА ==============
+    // === Отправка ===
     function getSource() {
       try {
         if (window.vkBridge || /VKBridge/i.test(navigator.userAgent)) return 'vk';
@@ -865,9 +2038,10 @@
       var data = new FormData(form);
       var payload = {
         show: 'huligan',
-        eventDate: data.get('eventDate') || '',
-        ticketType: 'Общий вход',
-        ticketCount: parseInt(data.get('ticketCount'), 10) || 1,
+        eventDate: booking.date ? booking.date.date + ' ' + booking.date.time : '',
+        seats: booking.selected.map(function(s) {
+          return { table: s.table, zone: ZONES[s.zone].label, seatNum: s.seatIdx, price: s.price };
+        }),
         name: data.get('name') || '',
         phone: data.get('phone') || '',
         telegram: data.get('telegram') || '',
@@ -883,10 +2057,10 @@
         });
         var json = await r.json();
         if (json && json.ok) {
-          document.getElementById('bookingForm').style.display = 'none';
+          ['step1','step2','step3'].forEach(function(id) { document.getElementById(id).style.display = 'none'; });
           document.getElementById('bookingSuccess').style.display = 'block';
         } else {
-          alert('Не удалось отправить заявку. Попробуйте позже или напишите Екатерине.');
+          alert('Не удалось отправить заявку. Попробуйте позже.');
           btn.disabled = false;
           btn.textContent = 'Забронировать';
         }
@@ -898,6 +2072,73 @@
       return false;
     }
     window.submitHuliganBooking = submitHuliganBooking;
+
+    // Скрипт интерактивного фонарика и 3D-параллакса для шоу СЕКРЕТ
+    (function() {
+      const hero = document.getElementById('secretHero');
+      const poster = document.getElementById('secretPoster');
+      if (!hero || !poster) return;
+
+      // Текущие и целевые координаты мыши
+      let currentX = window.innerWidth / 2;
+      let currentY = window.innerHeight * 0.45;
+      let targetX = currentX;
+      let targetY = currentY;
+
+      // Сила амортизации (lerp фактор): 0.1 - очень плавно, 1.0 - мгновенно
+      const ease = 0.08;
+
+      window.addEventListener('mousemove', function(e) {
+        targetX = e.clientX;
+        targetY = e.clientY;
+      });
+
+      window.addEventListener('touchmove', function(e) {
+        if (e.touches && e.touches[0]) {
+          targetX = e.touches[0].clientX;
+          targetY = e.touches[0].clientY;
+        }
+      });
+
+      // При старте фонарик плавно выезжает из центра к мышке
+      function animateFlashlight() {
+        // Линейная интерполяция для координат
+        currentX += (targetX - currentX) * ease;
+        currentY += (targetY - currentY) * ease;
+
+        const rect = hero.getBoundingClientRect();
+        const px = ((currentX - rect.left) / rect.width) * 100;
+        const py = ((currentY - rect.top) / rect.height) * 100;
+
+        hero.style.setProperty('--flashlight-x', px + '%');
+        hero.style.setProperty('--flashlight-y', py + '%');
+
+        // Вычисляем наклон 3D карточки
+        const posterRect = poster.getBoundingClientRect();
+        const pCenterX = posterRect.left + posterRect.width / 2;
+        const pCenterY = posterRect.top + posterRect.height / 2;
+
+        // Чем дальше мышка от центра карточки, тем сильнее наклон
+        const tiltX = (currentY - pCenterY) / 15;
+        const tiltY = -(currentX - pCenterX) / 15;
+
+        const limit = 16;
+        const boundedTiltX = Math.max(-limit, Math.min(limit, tiltX));
+        const boundedTiltY = Math.max(-limit, Math.min(limit, tiltY));
+
+        poster.style.transform = `rotateX(${boundedTiltX}deg) rotateY(${boundedTiltY}deg) scale(1.04)`;
+
+        requestAnimationFrame(animateFlashlight);
+      }
+
+      animateFlashlight();
+
+      // Сброс при выходе за пределы
+      window.addEventListener('mouseleave', function() {
+        targetX = window.innerWidth / 2;
+        targetY = window.innerHeight * 0.45;
+      });
+    })();
   </script>
 
   <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->

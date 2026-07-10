@@ -1412,6 +1412,7 @@
       <div class="show-switcher">
         <div class="show-tab active" data-show="secret" onclick="switchShow('secret')">🎭 Секрет</div>
         <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')">😈 ХУЛИgan</div>
+        <div class="show-tab" data-show="matvey" onclick="switchShow('matvey')">🧸 Матвей</div>
       </div>
 
       <!-- Глобальный nav -->
@@ -1459,6 +1460,9 @@
           <span class="nav-icon">📋</span> Заявки
           <span class="nav-badge" id="huliganBadge" style="display:none">0</span>
         </div>
+        <div class="nav-item" onclick="showSection('hul-hall')" data-sec="hul-hall">
+          <span class="nav-icon">🗺</span> Схема зала
+        </div>
         <div class="nav-item" onclick="showSection('hul-users')" data-sec="hul-users">
           <span class="nav-icon">👥</span> Пользователи
         </div>
@@ -1473,6 +1477,20 @@
         </div>
         <div class="nav-item" onclick="showSection('broadcast')" data-sec="broadcast">
           <span class="nav-icon">📣</span> Рассылки
+        </div>
+      </nav>
+
+      <!-- Матвей nav -->
+      <nav class="sidebar-nav" id="navMatvey" style="display:none">
+        <div class="nav-item" onclick="showSection('mat-bookings')" data-sec="mat-bookings">
+          <span class="nav-icon">📋</span> Заявки
+          <span class="nav-badge" id="matveyBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-item" onclick="showSection('mat-settings')" data-sec="mat-settings">
+          <span class="nav-icon">⚙️</span> Настройки
+        </div>
+        <div class="nav-item" onclick="showSection('mat-hall')" data-sec="mat-hall">
+          <span class="nav-icon">🗺</span> Схема зала
         </div>
       </nav>
 
@@ -2382,6 +2400,159 @@
         <button class="btn-save-settings" onclick="loadAdminHall()">🔄 Обновить</button>
       </div>
 
+      <!-- Bookings (Матвей) -->
+      <div class="section" id="sec-mat-bookings">
+        <div class="section-title">📋 Заявки — Шоу «Спасти Матвея»</div>
+        <div class="filter-tabs">
+          <div class="ftab active" onclick="filterMatveyBookings('all',this)">Все</div>
+          <div class="ftab" onclick="filterMatveyBookings('pending_payment',this)">Ожидают оплаты</div>
+          <div class="ftab" onclick="filterMatveyBookings('pending_confirmation',this)">Ждут подтверждения</div>
+          <div class="ftab" onclick="filterMatveyBookings('confirmed',this)">Подтверждённые</div>
+          <div class="ftab" onclick="filterMatveyBookings('cancelled',this)">Отменённые</div>
+        </div>
+        <div class="booking-list" id="matveyBookingList">
+          <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка заявок...</div>
+        </div>
+      </div>
+
+      <!-- Settings (Матвей) -->
+      <div class="section" id="sec-mat-settings">
+        <div class="section-title">⚙️ Настройки — Шоу «Спасти Матвея»</div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="settings-card-title">🎭 Шоу</div>
+            <div class="form-group">
+              <label>Название</label>
+              <input class="inp" id="cfgMatTitle" placeholder="Спасти Матвея">
+            </div>
+            <div class="form-group">
+              <label>Дата</label>
+              <input class="inp" id="cfgMatDate" placeholder="18 октября 2026">
+            </div>
+            <div class="form-group">
+              <label>Время</label>
+              <input class="inp" id="cfgMatTime" placeholder="18:00">
+            </div>
+            <div class="form-group">
+              <label>Площадка</label>
+              <input class="inp" id="cfgMatVenue" placeholder="ЛАМПА · Ярославль">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Адрес</label>
+              <input class="inp" id="cfgMatAddress" placeholder="Ярославль, ул. Нахимсона, 21">
+            </div>
+            <button class="btn-save-settings" onclick="saveMatveyShow()">💾 Сохранить</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">⛔ Продажи билетов</div>
+            <div id="matveySalesStateBadge" style="margin-bottom:14px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-size:13px;color:var(--dim)">
+              Статус продаж загружается...
+            </div>
+            <label style="display:flex;gap:10px;align-items:flex-start;line-height:1.5;font-size:13px;color:var(--text);margin-bottom:10px">
+              <input type="checkbox" id="cfgMatSalesPaused" onchange="renderSalesStateSummary('matvey')"
+                style="margin-top:2px;accent-color:#e85348;transform:scale(1.12);flex-shrink:0">
+              <span>Остановить новые продажи билетов на шоу «Спасти Матвея»</span>
+            </label>
+            <button class="btn-save-settings" onclick="saveMatveySalesState()">⛔ Сохранить статус продаж</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">💰 Цены</div>
+            <div class="form-group">
+              <label>Ряд 1-4 (₽)</label>
+              <input class="inp" id="priceMatFront" type="number" placeholder="1000">
+            </div>
+            <div class="form-group">
+              <label>Ряд 5-7 (₽)</label>
+              <input class="inp" id="priceMatBack" type="number" placeholder="800">
+            </div>
+            <div class="form-group">
+              <label>Столик (₽)</label>
+              <input class="inp" id="priceMatTable" type="number" placeholder="1000">
+            </div>
+            <div class="form-group">
+              <label>Диван (₽)</label>
+              <input class="inp" id="priceMatSofa" type="number" placeholder="4000">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Комната Лампа (₽)</label>
+              <input class="inp" id="priceMatLampa" type="number" placeholder="2500">
+            </div>
+            <button class="btn-save-settings" onclick="saveMatveyPrices()">💾 Сохранить</button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title">💳 Реквизиты для оплаты</div>
+            <div class="form-group">
+              <label>СБП — номер телефона</label>
+              <input class="inp" id="paymentMatSbp" placeholder="+7 (909) 276-33-86">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Карта банка</label>
+              <input class="inp" id="paymentMatCard" placeholder="0000 0000 0000 0000">
+            </div>
+            <div class="form-group" style="margin-top:10px;margin-bottom:0">
+              <label>ФИО получателя</label>
+              <input class="inp" id="paymentMatHolder" placeholder="Екатерина К.">
+            </div>
+            <button class="btn-save-settings" onclick="saveMatveyPayment()">💾 Сохранить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seating Chart (ХУЛИgan) -->
+      <div class="section" id="sec-hul-hall">
+        <div class="section-title">🗺 Схема зала — Шоу «ХУЛИgan»</div>
+        <div style="margin-bottom:12px;font-size:13px;color:var(--dim)">
+          Кликните по месту, чтобы вручную изменить его статус (сбросить бронь или заблокировать).
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;">
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;opacity:0.25;margin-right:4px"></span>VIP — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;opacity:0.25;margin-right:4px"></span>Стандарт — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;opacity:0.25;margin-right:4px"></span>Эконом — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;border:1.5px solid #fff;margin-right:4px"></span>✓ Продан</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;border:1.5px solid #ffcc44;margin-right:4px"></span>⏳ Ожидает</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgba(201,162,39,0.35);margin-right:4px"></span>🕐 Временная бронь</span>
+        </div>
+        <div id="huliganHallCounter" style="margin-bottom:12px;font-size:13px;font-weight:600"></div>
+        <div class="hall-mini" style="max-width:580px">
+          <svg id="adminHuliganHallSvg" viewBox="0 0 580 410" xmlns="http://www.w3.org/2000/svg" style="background:#0d0d12;border-radius:16px;border:1px solid var(--border)">
+            <!-- Сцена -->
+            <path d="M 180 5 L 400 5 Q 408 5 408 12 L 408 30 Q 408 37 400 37 L 180 37 Q 172 37 172 30 L 172 12 Q 172 5 180 5 Z" fill="rgba(201,162,39,0.08)" stroke="rgba(201,162,39,0.45)" stroke-width="1.5" />
+            <text x="290" y="21" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-size="11" fill="rgba(201,162,39,0.5)" font-weight="600" letter-spacing="5">С Ц Е Н А</text>
+            <g id="adminHuliganHall"></g>
+          </svg>
+        </div>
+        <button class="btn-save-settings" onclick="loadAdminHuliganHall()">🔄 Обновить</button>
+      </div>
+
+      <!-- Seating Chart (Матвей) -->
+      <div class="section" id="sec-mat-hall">
+        <div class="section-title">🗺 Схема зала — Шоу «Спасти Матвея»</div>
+        <div style="margin-bottom:12px;font-size:13px;color:var(--dim)">
+          Кликните по месту, чтобы вручную изменить его статус (сбросить бронь или заблокировать).
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;">
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8c50dc;opacity:0.25;margin-right:4px"></span>Ряд 1-4 — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;opacity:0.25;margin-right:4px"></span>Ряд 5-7 — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e8c540;opacity:0.25;margin-right:4px"></span>Столы — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;border:1.5px solid #fff;margin-right:4px"></span>✓ Продан</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;border:1.5px solid #ffcc44;margin-right:4px"></span>⏳ Ожидает</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgba(201,162,39,0.35);margin-right:4px"></span>🕐 Временная бронь</span>
+        </div>
+        <div id="matveyHallCounter" style="margin-bottom:12px;font-size:13px;font-weight:600"></div>
+        <div class="hall-mini" style="max-width:580px">
+          <svg id="adminMatveyHallSvg" viewBox="0 0 580 410" xmlns="http://www.w3.org/2000/svg" style="background:#0d0d12;border-radius:16px;border:1px solid var(--border)">
+            <!-- Сцена -->
+            <path d="M 180 5 L 400 5 Q 408 5 408 12 L 408 30 Q 408 37 400 37 L 180 37 Q 172 37 172 30 L 172 12 Q 172 5 180 5 Z" fill="rgba(201,162,39,0.08)" stroke="rgba(201,162,39,0.45)" stroke-width="1.5" />
+            <text x="290" y="21" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-size="11" fill="rgba(201,162,39,0.5)" font-weight="600" letter-spacing="5">С Ц Е Н А</text>
+            <g id="adminMatveyHall"></g>
+          </svg>
+        </div>
+        <button class="btn-save-settings" onclick="loadAdminMatveyHall()">🔄 Обновить</button>
+      </div>
+
       <!-- Broadcasts -->
       <div class="section" id="sec-broadcast">
         <div class="section-title">📣 Рассылки — VK + Telegram</div>
@@ -2720,6 +2891,10 @@
         const hulBookings = await fbGet('huligan_bookings') || {};
         if (!hulBookings.error) allHuliganOrders = hulBookings;
       }
+      if (!Object.keys(allMatveyBookings).length) {
+        const matBookings = await fbGet('matvey_bookings') || {};
+        if (!matBookings.error) allMatveyBookings = matBookings;
+      }
 
       // Выручка и билеты за сегодня
       let revenueToday = 0;
@@ -2767,6 +2942,28 @@
             type: isConfirmed ? 'green' : isPending ? 'gold' : 'red',
             time: o.createdAt,
             content: `Шоу <strong>«ХУЛИgan»</strong>: билет для <b>${esc(o.name)}</b> на сумму <b>${o.finalPrice != null ? o.finalPrice : (o.originalPrice || 0)} ₽</b> (${isConfirmed ? 'подтвержден' : isPending ? 'ждет подтверждения' : 'создан'})`
+          });
+        }
+      }
+
+      // Обрабатываем "Матвей" bookings
+      for (const [id, o] of Object.entries(allMatveyBookings)) {
+        if (!o) continue;
+        const isConfirmed = o.status === 'confirmed';
+        const isPending = o.status === 'pending_confirmation' || o.status === 'pending_payment';
+        const isToday = o.createdAt >= todayStart;
+
+        if (isPending) pendingConfirmationCount++;
+
+        if (isToday) {
+          if (isConfirmed) {
+            revenueToday += Number(o.totalPrice || o.total || 0);
+            ticketsToday += Array.isArray(o.seats) ? o.seats.length : 1;
+          }
+          events.push({
+            type: isConfirmed ? 'green' : isPending ? 'gold' : 'red',
+            time: o.createdAt,
+            content: `Шоу <strong>«Спасти Матвея»</strong>: заказ от <b>${esc(o.name)}</b> на сумму <b>${o.totalPrice || o.total || 0} ₽</b> (${isConfirmed ? 'оплачен' : isPending ? 'ожидает оплаты' : 'отменен'})`
           });
         }
       }
@@ -3796,6 +3993,7 @@
       // Toggle sidebar navs
       document.getElementById('navSecret').style.display = show === 'secret' ? '' : 'none';
       document.getElementById('navHuligan').style.display = show === 'huligan' ? '' : 'none';
+      document.getElementById('navMatvey').style.display = show === 'matvey' ? '' : 'none';
       // Toggle mobile bottom navs
       if (window.innerWidth <= 600) {
         const bottomNav = document.getElementById('bottomNav');
@@ -3803,7 +4001,8 @@
       }
       // Navigate to first section of the selected show
       if (show === 'secret') showSection('bookings');
-      else showSection('hul-bookings');
+      else if (show === 'huligan') showSection('hul-bookings');
+      else if (show === 'matvey') showSection('mat-bookings');
     }
 
     // ── Sections ──
@@ -3829,7 +4028,11 @@
       if (sec === 'hul-reviews') loadHuliganReviews();
       if (sec === 'hul-settings') loadHuliganSettings();
       if (sec === 'hul-promo') loadHuliganPromos();
+      if (sec === 'hul-hall') loadAdminHuliganHall();
       if (sec === 'private-config') loadPrivateConfig();
+      if (sec === 'mat-bookings') loadMatveyOrders();
+      if (sec === 'mat-settings') loadMatveySettings();
+      if (sec === 'mat-hall') loadAdminMatveyHall();
     }
 
     // ── ХУЛИgan: Bookings ──
@@ -3838,6 +4041,7 @@
       if (list) list.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>`;
 
       const orders = await fbGet('huligan_bookings');
+      window.allHuliganBookings = orders || {};
 
       // Always update badge
       const pending = orders
@@ -3945,6 +4149,14 @@
         });
         const data = await r.json();
         if (data.ok) {
+          // Lock seats in Firebase
+          const b = window.allHuliganBookings[bookingId];
+          if (b && Array.isArray(b.seats)) {
+            for (const s of b.seats) {
+              const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
+              await fbPut(`huligan_seats/${k}`, { status: 'taken', bookingId });
+            }
+          }
           toast(`✅ Подтверждено! Билет: ${data.ticketNumber}`);
           setTimeout(loadHuliganOrders, 800);
         } else {
@@ -3967,6 +4179,14 @@
         });
         const data = await r.json();
         if (data.ok) {
+          // Unlock seats in Firebase
+          const b = window.allHuliganBookings[bookingId];
+          if (b && Array.isArray(b.seats)) {
+            for (const s of b.seats) {
+              const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
+              await fbDelete(`huligan_seats/${k}`);
+            }
+          }
           toast('❌ Заказ отменён');
           loadHuliganOrders();
         } else {
@@ -3988,6 +4208,14 @@
         });
         const data = await r.json();
         if (data.ok) {
+          // Unlock seats in Firebase
+          const b = window.allHuliganBookings[bookingId];
+          if (b && Array.isArray(b.seats)) {
+            for (const s of b.seats) {
+              const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
+              await fbDelete(`huligan_seats/${k}`);
+            }
+          }
           toast('↩ Возврат оформлен');
           loadHuliganOrders();
         } else {
@@ -4000,6 +4228,14 @@
 
     async function deleteHuliganBooking(bookingId) {
       if (!confirm(`Удалить заказ ${bookingId} полностью?\n\nЭто действие нельзя отменить.`)) return;
+      // Unlock seats in Firebase
+      const b = window.allHuliganBookings[bookingId];
+      if (b && Array.isArray(b.seats)) {
+        for (const s of b.seats) {
+          const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
+          await fbDelete(`huligan_seats/${k}`);
+        }
+      }
       await fbDelete(`huligan_bookings/${bookingId}`);
       toast('🗑 Заказ удалён');
       loadHuliganOrders();
@@ -4817,6 +5053,452 @@
       const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
       if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
       if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
+      
+      // ── No password persistence in browser storage ──
+    (async () => {
+      // Всегда требуем новый ввод пароля после перезагрузки страницы.
+      // Это снижает риск кражи пароля из sessionStorage/XSS.
+    })();
+
+    // ── Interactive Seating Override ──
+    async function manageSeatStatus(key, show) {
+      const type = show === 'secret' ? 'ticket_seats' : 'matvey_seats';
+      const promptText = `Управление местом ${key}. Введите действие:\n1. Сделать свободным\n2. Заблокировать (пометить занятым)`;
+      const choice = prompt(promptText, "1");
+      if (!choice) return;
+      if (choice === "1") {
+        if (!confirm(`Вы действительно хотите освободить место ${key}?`)) return;
+        await fbDelete(`${type}/${key}`);
+        toast(`✅ Место ${key} теперь свободно`);
+      } else if (choice === "2") {
+        if (!confirm(`Вы действительно хотите вручную заблокировать место ${key}?`)) return;
+        await fbPut(`${type}/${key}`, { status: 'taken', bookingId: 'ADMIN-BLOCKED', reservedAt: Date.now() });
+        toast(`🔒 Место ${key} заблокировано`);
+      }
+      if (show === 'secret') loadAdminHall(); else loadAdminMatveyHall();
+    }
+
+    // ── Спасти Матвея: Bookings ──
+    window.allMatveyBookings = {};
+    window.currentMatveyFilter = 'all';
+
+    async function loadMatveyOrders() {
+      const list = document.getElementById('matveyBookingList');
+      if (list) list.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>`;
+
+      const orders = await fbGet('matvey_bookings') || {};
+      window.allMatveyBookings = orders;
+
+      // Update badge
+      const pending = Object.values(orders).filter(o => o.status === 'pending_confirmation' || o.status === 'pending_payment').length;
+      const badge = document.getElementById('matveyBadge');
+      if (badge) { badge.style.display = pending > 0 ? 'inline' : 'none'; badge.textContent = pending; }
+
+      renderMatveyBookings();
+    }
+
+    function filterMatveyBookings(filterName, el) {
+      window.currentMatveyFilter = filterName;
+      document.querySelectorAll('#sec-mat-bookings .ftab').forEach(t => t.classList.remove('active'));
+      if (el) el.classList.add('active');
+      renderMatveyBookings();
+    }
+
+    function renderMatveyBookings() {
+      const list = document.getElementById('matveyBookingList');
+      if (!list) return;
+
+      const filter = window.currentMatveyFilter;
+      const orders = window.allMatveyBookings || {};
+      const items = Object.entries(orders)
+        .filter(([id, o]) => {
+          if (filter === 'all') return true;
+          return o.status === filter;
+        })
+        .sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+
+      if (!items.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">📂</span>Нет заявок в этой категории</div>`;
+        return;
+      }
+
+      const STATUS_LABEL = {
+        pending_payment: '💳 Ожидает оплаты',
+        pending_confirmation: '⏳ Ждет подтверждения',
+        confirmed: '✓ Подтверждён',
+        cancelled: '❌ Отменён'
+      };
+
+      const STATUS_COLOR = {
+        pending_payment: '#ffb000',
+        pending_confirmation: '#f5a623',
+        confirmed: '#00c864',
+        cancelled: '#e85348'
+      };
+
+      list.innerHTML = items.map(([id, o]) => {
+        const contactLine = [
+          o.telegram ? `✈️ TG: <b>${esc(o.telegram)}</b>` : '',
+          o.phone ? `📞 <b>${esc(o.phone)}</b>` : ''
+        ].filter(Boolean).join(' &nbsp;·&nbsp; ');
+        
+        const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString('ru-RU') : '—';
+        const confirmBtn = (o.status === 'pending_confirmation' || o.status === 'pending_payment')
+          ? `<button class="btn-confirm" onclick="confirmMatvey('${id}')">✅ Подтвердить оплату</button>`
+          : '';
+        const cancelBtn = (o.status !== 'cancelled')
+          ? `<button class="btn-cancel" onclick="cancelMatvey('${id}')">❌ Отменить заказ</button>`
+          : '';
+
+        return `
+          <div class="booking-card" style="border-left:3px solid ${STATUS_COLOR[o.status] || '#444'}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+              <div>
+                <strong style="font-size:15px">${esc(o.name || '—')}</strong>
+                <span style="margin-left:8px;font-size:12px;color:${STATUS_COLOR[o.status] || '#888'};font-weight:600">${STATUS_LABEL[o.status] || o.status}</span>
+              </div>
+              <div style="font-size:11px;color:var(--dim)">${dateStr}</div>
+            </div>
+            ${contactLine ? `<div style="margin-bottom:6px;color:var(--dim)">${contactLine}</div>` : ''}
+            <div style="font-size:13px;color:var(--dim);margin-bottom:4px">
+              Места: <strong style="color:var(--text)">${esc(Array.isArray(o.seats) ? o.seats.map(s => s.label).join(', ') : o.seats || '—')}</strong>
+              &nbsp;·&nbsp; Сумма: <strong style="color:var(--text)">${o.totalPrice || o.total || '—'} ₽</strong>
+            </div>
+            ${o.comment ? `<div style="font-size:12px;color:var(--dim);margin-top:6px">💬 ${esc(o.comment)}</div>` : ''}
+            <div style="margin-top:10px;display:flex;gap:8px">${confirmBtn}${cancelBtn}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function confirmMatvey(id) {
+      if (!confirm(`Подтвердить оплату для заказа ${id}?`)) return;
+      const b = window.allMatveyBookings[id];
+      if (!b) return;
+
+      await fbPatch(`matvey_bookings/${id}`, { status: 'confirmed', confirmedAt: Date.now() });
+
+      const seatList = Array.isArray(b.seats) ? b.seats : [];
+      for (const s of seatList) {
+        if (s.key) {
+          await fbPut(`matvey_seats/${s.key}`, { status: 'taken', bookingId: id });
+        }
+      }
+
+      toast('✅ Оплата подтверждена!');
+      loadMatveyOrders();
+    }
+
+    async function cancelMatvey(id) {
+      if (!confirm(`Отменить заказ ${id}? Все забронированные места будут освобождены.`)) return;
+      const b = window.allMatveyBookings[id];
+      if (!b) return;
+
+      await fbPatch(`matvey_bookings/${id}`, { status: 'cancelled' });
+
+      const seatList = Array.isArray(b.seats) ? b.seats : [];
+      for (const s of seatList) {
+        if (s.key) {
+          await fbDelete(`matvey_seats/${s.key}`);
+        }
+      }
+
+      toast('❌ Заказ отменен');
+      loadMatveyOrders();
+    }
+
+    // ── Спасти Матвея: Settings ──
+    async function loadMatveySettings() {
+      const cfg = await fbGet('matvey_config') || {};
+      const show = cfg.show || {};
+      const prices = cfg.prices || {};
+      const payment = cfg.payment || {};
+
+      document.getElementById('cfgMatTitle').value = show.title || 'Спасти Матвея';
+      document.getElementById('cfgMatDate').value = show.date || '18 октября 2026';
+      document.getElementById('cfgMatTime').value = show.time || '18:00';
+      document.getElementById('cfgMatVenue').value = show.venue || 'ЛАМПА · Ярославль';
+      document.getElementById('cfgMatAddress').value = show.address || 'Ярославль, ул. Нахимсона, 21';
+
+      const paused = show.salesPaused === true;
+      document.getElementById('cfgMatSalesPaused').checked = paused;
+      
+      const badge = document.getElementById('matveySalesStateBadge');
+      if (badge) {
+        badge.innerHTML = paused 
+          ? `<span style="color:#e85348;font-weight:600">⛔ Продажи остановлены</span>`
+          : `<span style="color:#00c864;font-weight:600">✅ Продажи открыты</span>`;
+      }
+
+      document.getElementById('priceMatFront').value = prices.front || 1000;
+      document.getElementById('priceMatBack').value = prices.back || 800;
+      document.getElementById('priceMatTable').value = prices.table || 1000;
+      document.getElementById('priceMatSofa').value = prices.sofa || 4000;
+      document.getElementById('priceMatLampa').value = prices.lampa || 2500;
+
+      document.getElementById('paymentMatSbp').value = payment.sbp || '+7 (909) 276-33-86';
+      document.getElementById('paymentMatCard').value = payment.card || '';
+      document.getElementById('paymentMatHolder').value = payment.cardHolder || 'Екатерина К.';
+    }
+
+    async function saveMatveyShow() {
+      await fbPatch('matvey_config/show', {
+        title: document.getElementById('cfgMatTitle').value.trim(),
+        date: document.getElementById('cfgMatDate').value.trim(),
+        time: document.getElementById('cfgMatTime').value.trim(),
+        venue: document.getElementById('cfgMatVenue').value.trim(),
+        address: document.getElementById('cfgMatAddress').value.trim(),
+      });
+      toast('💾 Настройки сохранены');
+    }
+
+    async function saveMatveySalesState() {
+      const paused = document.getElementById('cfgMatSalesPaused').checked === true;
+      await fbPatch('matvey_config/show', { salesPaused: paused });
+      const badge = document.getElementById('matveySalesStateBadge');
+      if (badge) {
+        badge.innerHTML = paused 
+          ? `<span style="color:#e85348;font-weight:600">⛔ Продажи остановлены</span>`
+          : `<span style="color:#00c864;font-weight:600">✅ Продажи открыты</span>`;
+      }
+      toast(paused ? '⛔ Продажи остановлены' : '✅ Продажи запущены');
+    }
+
+    async function saveMatveyPrices() {
+      await fbPatch('matvey_config/prices', {
+        front: parseInt(document.getElementById('priceMatFront').value) || 1000,
+        back: parseInt(document.getElementById('priceMatBack').value) || 800,
+        table: parseInt(document.getElementById('priceMatTable').value) || 1000,
+        sofa: parseInt(document.getElementById('priceMatSofa').value) || 4000,
+        lampa: parseInt(document.getElementById('priceMatLampa').value) || 2500,
+      });
+      toast('💾 Цены обновлены');
+    }
+
+    async function saveMatveyPayment() {
+      await fbPatch('matvey_config/payment', {
+        sbp: document.getElementById('paymentMatSbp').value.trim(),
+        card: document.getElementById('paymentMatCard').value.trim(),
+        cardHolder: document.getElementById('paymentMatHolder').value.trim(),
+      });
+      toast('💾 Реквизиты сохранены');
+    }
+
+    // ── Спасти Матвея: Seating Chart ──
+    const MATVEY_ZONES = {
+      row_front: { color: '#8c50dc', label: 'Ряды 1-4' },
+      row_back: { color: '#3dbf6e', label: 'Ряды 5-7' },
+      table: { color: '#e8c540', label: 'Столик' },
+      sofa: { color: '#ff7ebb', label: 'Диван' },
+      lampa: { color: '#ff9f43', label: 'Зона Лампа' }
+    };
+
+    async function loadAdminMatveyHall() {
+      const g = document.getElementById('adminMatveyHall');
+      if (!g) return;
+      g.innerHTML = '<text x="290" y="210" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="12" font-family="Inter,sans-serif">Загрузка...</text>';
+
+      const [seatsRaw, bookingsRaw] = await Promise.all([
+        fbGet('matvey_seats'),
+        fbGet('matvey_bookings')
+      ]);
+
+      const seats = seatsRaw || {};
+      const bookings = bookingsRaw || {};
+      const now = Date.now();
+
+      // Map: key -> booking info
+      const seatInfo = {};
+      for (const [bookingId, bk] of Object.entries(bookings)) {
+        if (!bk.seats) continue;
+        const st = bk.status;
+        if (st !== 'confirmed' && st !== 'pending_confirmation' && st !== 'pending_payment') continue;
+        const mappedStatus = st === 'confirmed' ? 'confirmed' : 'pending';
+        
+        const bSeats = Array.isArray(bk.seats) ? bk.seats : [];
+        for (const s of bSeats) {
+          if (s.key) seatInfo[s.key] = { bookingStatus: mappedStatus, name: bk.name || '?', bookingId };
+        }
+      }
+
+      g.innerHTML = '';
+      let totalConfirmed = 0, totalPending = 0;
+
+      // 1. Draw SVG rows 1-7 and tables 1-4
+      const MATVEY_LAYOUT_SEATS = [];
+      // Front Rows 1-4
+      for(let r=1;r<=4;r++) {
+        let ry = 110 + (r-1)*22;
+        for(let s=1;s<=5;s++) {
+          MATVEY_LAYOUT_SEATS.push({ key: `r${r}_${s}`, x: 194 + (s-1)*18, y: ry, zone: 'row_front', label: `Ряд ${r}, место ${s}`, r: 7 });
+          MATVEY_LAYOUT_SEATS.push({ key: `r${r}_${s+5}`, x: 314 + (s-1)*18, y: ry, zone: 'row_front', label: `Ряд ${r}, место ${s+5}`, r: 7 });
+        }
+      }
+      // Back Rows 5-7
+      for(let r=5;r<=7;r++) {
+        let ry = 198 + (r-5)*22;
+        for(let s=1;s<=6;s++) {
+          MATVEY_LAYOUT_SEATS.push({ key: `r${r}_${s}`, x: 176 + (s-1)*18, y: ry, zone: 'row_back', label: `Ряд ${r}, место ${s}`, r: 7 });
+          MATVEY_LAYOUT_SEATS.push({ key: `r${r}_${s+6}`, x: 314 + (s-1)*18, y: ry, zone: 'row_back', label: `Ряд ${r}, место ${s+6}`, r: 7 });
+        }
+      }
+      // Table Chairs
+      const tabX = [55, 115, 175, 235], tabY = 330;
+      tabX.forEach((tx, ti) => {
+        let tableNum = ti + 1;
+        
+        const rect = svgEl('rect', { x: tx-9, y: tabY-15, width: 18, height: 30, rx: 4, fill: 'rgba(232,197,64,0.05)', stroke: 'rgba(232,197,64,0.2)', 'stroke-width': 1 });
+        g.appendChild(rect);
+        const lbl = svgEl('text', { x: tx, y: tabY, 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': '9', 'font-weight': '700', 'font-family': 'Inter,sans-serif', fill: 'rgba(232,197,64,0.5)' });
+        lbl.textContent = tableNum;
+        g.appendChild(lbl);
+
+        let chairs = [{dx:12, dy:-9, s:1}, {dx:12, dy:9, s:2}, {dx:-12, dy:9, s:3}, {dx:-12, dy:-9, s:4}];
+        chairs.forEach(b => {
+          MATVEY_LAYOUT_SEATS.push({ key: `t${tableNum}_${b.s}`, x: tx + b.dx, y: tabY + b.dy, zone: 'table', label: `Столик ${tableNum}, место ${b.s}`, r: 5.5 });
+        });
+      });
+
+      for (const seat of MATVEY_LAYOUT_SEATS) {
+        const key = seat.key;
+        const info = seatInfo[key];
+        const rawS = seats[key];
+        
+        let eff;
+        if (info?.bookingStatus === 'confirmed') { eff = 'confirmed'; totalConfirmed++; }
+        else if (info?.bookingStatus === 'pending') { eff = 'pending'; totalPending++; }
+        else if (rawS?.status === 'reserved' && rawS.reservedAt && (now - rawS.reservedAt) < 600000) eff = 'reserved';
+        else eff = 'available';
+
+        const color = MATVEY_ZONES[seat.zone].color;
+        const dot = svgEl('circle', { cx: seat.x, cy: seat.y, r: seat.r });
+        
+        if (eff === 'confirmed') {
+          dot.setAttribute('fill', color);
+          dot.setAttribute('stroke', '#ffffff');
+          dot.setAttribute('stroke-width', '1.5');
+        } else if (eff === 'pending') {
+          dot.setAttribute('fill', '#f5a623');
+          dot.setAttribute('stroke', '#ffcc44');
+          dot.setAttribute('stroke-width', '1.5');
+        } else if (eff === 'reserved') {
+          dot.setAttribute('fill', 'rgba(201,162,39,0.3)');
+          dot.setAttribute('stroke', 'rgba(201,162,39,0.6)');
+          dot.setAttribute('stroke-width', '1');
+        } else {
+          dot.setAttribute('fill', color);
+          dot.setAttribute('opacity', '0.22');
+        }
+
+        dot.style.cursor = 'pointer';
+        dot.addEventListener('click', () => manageSeatStatus(key, 'matvey'));
+        g.appendChild(dot);
+
+        if (info) {
+          const ini = (info.name || '').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+          const t = svgEl('text', { x: seat.x, y: seat.y, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#fff', 'font-size': seat.r > 6 ? 6 : 5, 'font-family': 'Inter,sans-serif', 'font-weight': '700', 'pointer-events': 'none' });
+          t.textContent = ini;
+          g.appendChild(t);
+        }
+      }
+
+      // 2. Draw Left Sofa
+      const infoL = seatInfo['dl_1'];
+      const rawL = seats['dl_1'];
+      let effL;
+      if (infoL?.bookingStatus === 'confirmed') { effL = 'confirmed'; totalConfirmed++; }
+      else if (infoL?.bookingStatus === 'pending') { effL = 'pending'; totalPending++; }
+      else if (rawL?.status === 'reserved' && rawL.reservedAt && (now - rawL.reservedAt) < 600000) effL = 'reserved';
+      else effL = 'available';
+
+      const leftSofa = svgEl('path', {
+        d: 'M 30 100 L 50 100 Q 55 100 55 105 L 55 185 Q 55 190 60 190 L 85 190 Q 90 190 90 195 L 90 215 Q 90 220 85 220 L 30 220 Q 25 220 25 215 L 25 105 Q 25 100 30 100',
+        fill: effL === 'confirmed' ? '#ff7ebb' : (effL === 'pending' ? '#f5a623' : (effL === 'reserved' ? 'rgba(203,161,53,0.3)' : 'rgba(60,60,75,0.4)')),
+        stroke: effL === 'confirmed' ? '#fff' : (effL === 'pending' ? '#ffcc44' : 'rgba(255,255,255,0.15)'),
+        'stroke-width': effL !== 'available' ? 1.5 : 1
+      });
+      leftSofa.style.cursor = 'pointer';
+      leftSofa.addEventListener('click', () => manageSeatStatus('dl_1', 'matvey'));
+      g.appendChild(leftSofa);
+
+      const leftText = svgEl('text', { x: 40, y: 160, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: effL !== 'available' ? '#fff' : 'rgba(255,255,255,0.4)', 'font-size': 9, 'font-weight': '700', 'font-family': 'Inter,sans-serif', 'pointer-events': 'none' });
+      leftText.textContent = infoL ? (infoL.name || 'ДИВАН') : 'ДИВАН Л';
+      g.appendChild(leftText);
+
+      // 3. Draw Right Sofa
+      const infoR = seatInfo['dr_1'];
+      const rawR = seats['dr_1'];
+      let effR;
+      if (infoR?.bookingStatus === 'confirmed') { effR = 'confirmed'; totalConfirmed++; }
+      else if (infoR?.bookingStatus === 'pending') { effR = 'pending'; totalPending++; }
+      else if (rawR?.status === 'reserved' && rawR.reservedAt && (now - rawR.reservedAt) < 600000) effR = 'reserved';
+      else effR = 'available';
+
+      const rightSofa = svgEl('path', {
+        d: 'M 495 50 L 555 50 Q 560 50 560 55 L 560 145 Q 560 150 555 150 L 535 150 Q 530 150 530 145 L 530 85 Q 530 80 525 80 L 495 80 Q 490 80 490 75 L 490 55 Q 490 50 495 50',
+        fill: effR === 'confirmed' ? '#ff7ebb' : (effR === 'pending' ? '#f5a623' : (effR === 'reserved' ? 'rgba(203,161,53,0.3)' : 'rgba(60,60,75,0.4)')),
+        stroke: effR === 'confirmed' ? '#fff' : (effR === 'pending' ? '#ffcc44' : 'rgba(255,255,255,0.15)'),
+        'stroke-width': effR !== 'available' ? 1.5 : 1
+      });
+      rightSofa.style.cursor = 'pointer';
+      rightSofa.addEventListener('click', () => manageSeatStatus('dr_1', 'matvey'));
+      g.appendChild(rightSofa);
+
+      const rightText = svgEl('text', { x: 525, y: 100, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: effR !== 'available' ? '#fff' : 'rgba(255,255,255,0.4)', 'font-size': 9, 'font-weight': '700', 'font-family': 'Inter,sans-serif', 'pointer-events': 'none' });
+      rightText.textContent = infoR ? (infoR.name || 'ДИВАН') : 'ДИВАН П';
+      g.appendChild(rightText);
+
+      // 4. Draw Lampa Room
+      const infoLmp = seatInfo['lampa'];
+      const rawLmp = seats['lampa'];
+      let effLmp;
+      if (infoLmp?.bookingStatus === 'confirmed') { effLmp = 'confirmed'; totalConfirmed++; }
+      else if (infoLmp?.bookingStatus === 'pending') { effLmp = 'pending'; totalPending++; }
+      else if (rawLmp?.status === 'reserved' && rawLmp.reservedAt && (now - rawLmp.reservedAt) < 600000) effLmp = 'reserved';
+      else effLmp = 'available';
+
+      const lampa = svgEl('circle', {
+        cx: 535, cy: 190, r: 20,
+        fill: effLmp === 'confirmed' ? '#ff9f43' : (effLmp === 'pending' ? '#f5a623' : (effLmp === 'reserved' ? 'rgba(203,161,53,0.3)' : 'rgba(232,197,64,0.12)')),
+        stroke: effLmp === 'confirmed' ? '#fff' : (effLmp === 'pending' ? '#ffcc44' : 'rgba(232,197,64,0.35)'),
+        'stroke-width': 1
+      });
+      lampa.style.cursor = 'pointer';
+      lampa.addEventListener('click', () => manageSeatStatus('lampa', 'matvey'));
+      g.appendChild(lampa);
+
+      const lampaText = svgEl('text', { x: 535, y: 190, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: effLmp !== 'available' ? '#fff' : 'rgba(255,255,255,0.5)', 'font-size': 6.5, 'font-weight': '700', 'font-family': 'Inter,sans-serif', 'pointer-events': 'none' });
+      lampaText.textContent = infoLmp ? (infoLmp.name || 'ЛАМПА') : 'ЛАМПА';
+      g.appendChild(lampaText);
+
+      // Draw aisle row labels
+      const aisleX = 290;
+      for(let r=1;r<=4;r++){
+        const lbl = svgEl('text',{x:aisleX,y:110+(r-1)*22,'text-anchor':'middle','dominant-baseline':'central','font-size':7.5,'font-weight':'700','font-family':'Inter,sans-serif',fill:'rgba(255,255,255,0.12)','pointer-events':'none'});
+        lbl.textContent=r; g.appendChild(lbl);
+      }
+      for(let r=5;r<=7;r++){
+        const lbl = svgEl('text',{x:aisleX,y:198+(r-5)*22,'text-anchor':'middle','dominant-baseline':'central','font-size':7.5,'font-weight':'700','font-family':'Inter,sans-serif',fill:'rgba(255,255,255,0.12)','pointer-events':'none'});
+        lbl.textContent=r; g.appendChild(lbl);
+      }
+
+      // Counter
+      const counter = document.getElementById('matveyHallCounter');
+      if (counter) {
+        counter.innerHTML =
+          `<span style="color:#3dbf6e">✓ Продано: <b>${totalConfirmed}</b></span>` +
+          `&emsp;<span style="color:#f5a623">⏳ Ожидают подтверждения: <b>${totalPending}</b></span>`;
+      }
+    }
+
+    // Auto refresh every 30s for active section
+    setInterval(() => {
+      if (document.getElementById('sec-dashboard').classList.contains('active')) loadDashboard();
+      if (document.getElementById('sec-chats').classList.contains('active')) loadChatsList();
+      if (document.getElementById('sec-bookings').classList.contains('active')) loadBookings();
+      if (document.getElementById('sec-hul-bookings').classList.contains('active')) loadHuliganOrders();
+      if (document.getElementById('sec-mat-bookings').classList.contains('active')) loadMatveyOrders();
+    }, 30000);
       await fbPut(`ticket_promo/${code}`, promoData);
       toast(`🎫 Промокод ${code} создан`);
       document.getElementById('newPromoCode').value = '';
@@ -5000,6 +5682,8 @@
             dot.setAttribute('fill', z);
             dot.setAttribute('opacity', '0.18');
           }
+          dot.style.cursor = 'pointer';
+          dot.addEventListener('click', () => manageSeatStatus(key, 'secret'));
           g.appendChild(dot);
 
           // Инициалы на проданных местах
@@ -5035,6 +5719,119 @@
 
       // Счётчик
       const counter = document.getElementById('hallCounter');
+      if (counter) {
+        counter.innerHTML =
+          `<span style="color:#3dbf6e">✓ Продано: <b>${totalConfirmed}</b></span>` +
+          `&emsp;<span style="color:#f5a623">⏳ Ожидают подтверждения: <b>${totalPending}</b></span>`;
+      }
+    }
+
+    async function loadAdminHuliganHall() {
+      const g = document.getElementById('adminHuliganHall');
+      if (!g) return;
+      g.innerHTML = '<text x="245" y="260" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="12" font-family="Inter,sans-serif">Загрузка...</text>';
+
+      const [seatsRaw, bookingsRaw] = await Promise.all([
+        fbGet('huligan_seats'),
+        fbGet('huligan_bookings')
+      ]);
+      const seats = seatsRaw || {};
+      const bookings = bookingsRaw || {};
+      const now = Date.now();
+
+      // Строим карту: ключ места → данные брони
+      const seatInfo = {};
+      for (const [bookingId, bk] of Object.entries(bookings)) {
+        if (!bk.seats) continue;
+        const st = bk.status;
+        if (st !== 'confirmed' && st !== 'pending_confirmation' && st !== 'waiting_admin') continue;
+        const mappedStatus = st === 'confirmed' ? 'confirmed' : 'pending_confirmation';
+        for (const s of bk.seats) {
+          const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
+          seatInfo[k] = { bookingStatus: mappedStatus, name: bk.name || '?', bookingId };
+        }
+      }
+
+      g.innerHTML = '';
+      let totalConfirmed = 0, totalPending = 0;
+
+      for (const tbl of TABLES) {
+        const z = ZONE_COLORS[tbl.zone];
+        const tr = tbl.big ? 22 : 14;
+
+        const pts = adminSeatPos(tbl.cx, tbl.cy, tbl.n, tbl.big, tbl.zone);
+        const sr = tbl.big ? 9 : 8;
+
+        for (let si = 0; si < pts.length; si++) {
+          const key = `${tbl.id}_${si}`;
+          const info = seatInfo[key];
+          const rawS = seats[key];
+          const pt = pts[si];
+
+          let eff;
+          if (info?.bookingStatus === 'confirmed') {
+            eff = 'confirmed'; totalConfirmed++;
+          } else if (info?.bookingStatus === 'pending_confirmation') {
+            eff = 'pending'; totalPending++;
+          } else if (rawS?.status === 'reserved' && rawS.reservedAt && (now - rawS.reservedAt) < 600000) {
+            eff = 'reserved';
+          } else {
+            eff = 'available';
+          }
+
+          const dot = svgEl('circle', { cx: pt.x.toFixed(1), cy: pt.y.toFixed(1), r: sr });
+          if (eff === 'confirmed') {
+            dot.setAttribute('fill', z);
+            dot.setAttribute('stroke', '#ffffff');
+            dot.setAttribute('stroke-width', '1.5');
+            if (info?.name) dot.setAttribute('title', `✓ ${info.name}`);
+          } else if (eff === 'pending') {
+            dot.setAttribute('fill', '#f5a623');
+            dot.setAttribute('stroke', '#ffcc44');
+            dot.setAttribute('stroke-width', '1.5');
+            if (info?.name) dot.setAttribute('title', `⏳ ${info.name}`);
+          } else if (eff === 'reserved') {
+            dot.setAttribute('fill', 'rgba(201,162,39,0.35)');
+            dot.setAttribute('stroke', 'rgba(201,162,39,0.65)');
+            dot.setAttribute('stroke-width', '1');
+          } else {
+            dot.setAttribute('fill', z);
+            dot.setAttribute('opacity', '0.18');
+          }
+          dot.style.cursor = 'pointer';
+          dot.addEventListener('click', () => manageSeatStatus(key, 'huligan'));
+          g.appendChild(dot);
+
+          if (info) {
+            const ini = (info.name || '').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+            const t = svgEl('text', {
+              x: pt.x.toFixed(1), y: pt.y.toFixed(1),
+              'text-anchor': 'middle', 'dominant-baseline': 'central',
+              fill: '#fff', 'font-size': tbl.big ? 6 : 5,
+              'font-family': 'Inter,sans-serif', 'font-weight': '700',
+              'pointer-events': 'none'
+            });
+            t.textContent = ini;
+            g.appendChild(t);
+          }
+        }
+
+        const tc = svgEl('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: tr,
+          fill: 'rgba(255,255,255,0.03)', stroke: 'rgba(255,255,255,0.1)', 'stroke-width': 1
+        });
+        g.appendChild(tc);
+
+        const lbl = svgEl('text', {
+          x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle',
+          'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.35)',
+          'font-size': tbl.big ? 10 : 8, 'font-family': 'Inter,sans-serif'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      }
+
+      const counter = document.getElementById('huliganHallCounter');
       if (counter) {
         counter.innerHTML =
           `<span style="color:#3dbf6e">✓ Продано: <b>${totalConfirmed}</b></span>` +
