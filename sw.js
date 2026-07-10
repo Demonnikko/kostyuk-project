@@ -1,5 +1,5 @@
 // Простой офлайн-кэш шелла
-const CACHE_NAME = 'kostyuk-ecosystem-v6';
+const CACHE_NAME = 'kostyuk-ecosystem-v7';
 const ASSETS = [
   '/',
   '/index.html',
@@ -39,8 +39,10 @@ self.addEventListener('fetch', (e) => {
   // статика — cache-first
   e.respondWith(
     caches.match(e.request).then(res => res || fetch(e.request).then(resp => {
-      const copy = resp.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(e.request, copy)).catch(()=>{});
+      if (resp && resp.status === 200) {
+        const copy = resp.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, copy)).catch(()=>{});
+      }
       return resp;
     }).catch(()=> res))
   );
