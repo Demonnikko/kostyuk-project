@@ -7,7 +7,7 @@ import crypto from 'crypto';
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
-import {  issueTicketLink  } from '../../shared/ticketAccess';
+import {  issueTicketLink  } from '../../shared/ticketAccess.js';
 
 // Русские месяцы для парсинга даты из Firebase
 const RU_MONTHS = {

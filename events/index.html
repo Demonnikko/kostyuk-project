@@ -1,0 +1,4246 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Иллюзионист на свадьбу, корпоратив | Дмитрий Костюк — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
+  <meta name="description"
+    content="Заказать иллюзиониста Дмитрия Костюка на свадьбу, корпоратив, юбилей, частное мероприятие в Ярославле, Иваново, Костроме, Владимире, Вологде. Премиальные шоу фокусов и микромагия.">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <script src="https://cdn.jsdelivr.net/npm/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="../vendor/fonts/fonts.css">
+  <link rel="preload" as="image" href="../images/портрет.jpg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Иллюзионист Дмитрий Костюк — Частные события",
+    "image": "https://kostyuk.ru/images/портрет.jpg",
+    "description": "Организация иллюзионных шоу и микромагии на частных событиях, свадьбах, корпоративах, юбилеях в Ярославле, Иваново, Костроме, Владимире, Вологде.",
+    "url": "https://kostyuk.ru/events/",
+    "priceRange": "$$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Ярославль",
+      "addressCountry": "RU"
+    },
+    "areaServed": [
+      { "@type": "AdministrativeArea", "name": "Ярославль" },
+      { "@type": "AdministrativeArea", "name": "Иваново" },
+      { "@type": "AdministrativeArea", "name": "Кострома" },
+      { "@type": "AdministrativeArea", "name": "Владимир" },
+      { "@type": "AdministrativeArea", "name": "Вологда" }
+    ]
+  }
+  </script>
+  <style>
+    /* ===== VARIABLES & RESET ===== */
+    :root {
+      --bg: #000;
+      --text: #eee;
+      --gold: #CBA135;
+      --gold2: #E7C776;
+      --gold3: #f5e6b8;
+      --panel: rgba(12, 12, 18, .75);
+      --card: rgba(18, 19, 26, .92);
+      --r: 14px;
+      --ff-head: 'Cinzel', serif;
+      --ff-text: 'Inter', sans-serif;
+      --fs-body: clamp(15px, 2.8vw, 16px);
+      --fs-btn: clamp(15px, 2.8vw, 16px);
+      --fs-h1: clamp(30px, 9vw, 64px);
+      --fs-h2: clamp(22px, 5vw, 34px);
+      --fs-h3: clamp(17px, 3.6vw, 20px)
+    }
+
+    * {
+      margin: 0;
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    body {
+      font: 400 var(--fs-body) var(--ff-text);
+      color: var(--text);
+      background: #000;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block
+    }
+
+    button {
+      font-family: var(--ff-text)
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+
+    /* ===== PRELOADER ===== */
+    .preloader {
+      display: none !important
+    }
+
+    .preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none
+    }
+
+    .preloader__spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(203, 161, 53, .15);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite
+    }
+
+    .preloader__text {
+      font: 700 clamp(18px, 5vw, 24px) var(--ff-head);
+      color: var(--gold);
+      letter-spacing: .1em;
+      opacity: 0;
+      animation: fadeUp .8s ease .3s forwards
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+    }
+
+    /* ===== SCROLL PROGRESS ===== */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2), var(--gold3));
+      z-index: 9998;
+      width: 0%;
+      border-radius: 0 2px 2px 0;
+      box-shadow: 0 0 8px rgba(203, 161, 53, .4)
+    }
+
+    /* ===== NOISE OVERLAY ===== */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9997;
+      pointer-events: none;
+      opacity: .035;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px
+    }
+
+    /* ===== SCROLL REVEAL ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .8s ease, transform .8s ease
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .reveal-d1 {
+      transition-delay: .1s
+    }
+
+    .reveal-d2 {
+      transition-delay: .2s
+    }
+
+    .reveal-d3 {
+      transition-delay: .3s
+    }
+
+    .reveal-d4 {
+      transition-delay: .35s
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: .9rem 1.4rem;
+      border-radius: var(--r);
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+      color: #fff;
+      font: 600 var(--fs-btn) var(--ff-text);
+      cursor: pointer;
+      transition: all .25s ease;
+      line-height: 1;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px)
+    }
+
+    .btn:active {
+      transform: scale(.96)
+    }
+
+    .btn--primary {
+      border: none;
+      color: #111;
+      background: linear-gradient(135deg, var(--gold), var(--gold2), var(--gold3));
+      box-shadow: 0 6px 24px rgba(203, 161, 53, .35), inset 0 1px 0 rgba(255, 255, 255, .3);
+      font-weight: 700;
+      letter-spacing: .02em
+    }
+
+    .btn--primary:active,
+    .btn--primary:hover {
+      /* Ghost/Brand Icon Style on Interaction */
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+      transform: scale(.98);
+    }
+
+    .btn--outline {
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      background: transparent
+    }
+
+    .btn--outline:active {
+      background: rgba(203, 161, 53, .1)
+    }
+
+    /* ===== PARTICLES ===== */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .5
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      text-align: center;
+      gap: .7rem;
+      padding: 0 16px 28px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .hero__bg {
+      position: absolute;
+      inset: 0;
+      z-index: -2
+    }
+
+    .hero__bg video,
+    .hero__bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      /* Fix face cropping */
+    }
+
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, .45) 55%, #000 88%), linear-gradient(90deg, rgba(0, 0, 0, .4) 0%, transparent 25%, transparent 75%, rgba(0, 0, 0, .4) 100%)
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      animation: heroIn 1.2s ease-out both
+    }
+
+    @keyframes heroIn {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .title {
+      color: var(--gold);
+      font: 900 var(--fs-h1) var(--ff-head);
+      letter-spacing: .06em;
+      position: relative;
+      display: inline-block;
+      isolation: isolate;
+      text-shadow: 0 2px 26px rgba(203, 161, 53, .34), 0 0 1px rgba(255, 235, 183, .85);
+      animation: titleBreath 5.6s ease-in-out infinite
+    }
+
+    .title::before,
+    .title::after {
+      content: attr(data-txt);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0
+    }
+
+    .title::before {
+      color: #7fd6ff;
+      transform: translate(0);
+      text-shadow: -1px 0 rgba(127, 214, 255, .55);
+    }
+
+    .title::after {
+      color: #ff7fa9;
+      transform: translate(0);
+      text-shadow: 1px 0 rgba(255, 127, 169, .55)
+    }
+
+    .title.is-glitching::before {
+      opacity: .75;
+      animation: titleGlitchBlue .34s steps(2, end)
+    }
+
+    .title.is-glitching::after {
+      opacity: .7;
+      animation: titleGlitchPink .34s steps(2, end)
+    }
+
+    @keyframes titleBreath {
+      0%,
+      100% {
+        text-shadow: 0 2px 24px rgba(203, 161, 53, .28), 0 0 1px rgba(255, 235, 183, .8)
+      }
+
+      50% {
+        text-shadow: 0 4px 34px rgba(203, 161, 53, .45), 0 0 2px rgba(255, 235, 183, .95)
+      }
+    }
+
+    @keyframes titleGlitchBlue {
+      0% {
+        transform: translate(0, 0);
+        clip-path: inset(0 0 0 0)
+      }
+
+      25% {
+        transform: translate(-3px, -1px);
+        clip-path: inset(12% 0 56% 0)
+      }
+
+      50% {
+        transform: translate(2px, 1px);
+        clip-path: inset(68% 0 7% 0)
+      }
+
+      75% {
+        transform: translate(-2px, 0);
+        clip-path: inset(35% 0 32% 0)
+      }
+
+      100% {
+        transform: translate(0, 0);
+        clip-path: inset(0 0 0 0)
+      }
+    }
+
+    @keyframes titleGlitchPink {
+      0% {
+        transform: translate(0, 0);
+        clip-path: inset(0 0 0 0)
+      }
+
+      20% {
+        transform: translate(3px, 0);
+        clip-path: inset(63% 0 9% 0)
+      }
+
+      45% {
+        transform: translate(-2px, -1px);
+        clip-path: inset(10% 0 66% 0)
+      }
+
+      70% {
+        transform: translate(2px, 1px);
+        clip-path: inset(42% 0 31% 0)
+      }
+
+      100% {
+        transform: translate(0, 0);
+        clip-path: inset(0 0 0 0)
+      }
+    }
+
+    .subtitle {
+      font: 700 clamp(16px, 4vw, 26px) var(--ff-head);
+      color: var(--gold2);
+      letter-spacing: .16em;
+      opacity: .9
+    }
+
+    .hero-cta {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      margin-top: .5rem
+    }
+
+    .hero-cta .btn--primary {
+      width: min(92vw, 420px);
+      padding: 1rem 1.5rem;
+      font-size: clamp(16px, 3.2vw, 18px)
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .4rem .8rem;
+      margin-top: .6rem;
+      text-align: center
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .1rem
+    }
+
+    .metric__num {
+      color: var(--gold2);
+      font: 700 clamp(22px, 6vw, 32px) var(--ff-head);
+      line-height: 1
+    }
+
+    .metric__label {
+      font-size: .75rem;
+      color: rgba(255, 255, 255, .6);
+      letter-spacing: .03em
+    }
+
+    .scroll-hint {
+      margin-top: .8rem;
+      animation: bounce 2s ease-in-out infinite;
+      opacity: .4;
+      font-size: 1.3rem
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(8px)
+      }
+    }
+
+    /* ===== WAVE DIVIDERS ===== */
+    .wave {
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      margin: -1px 0;
+      position: relative;
+      z-index: 1
+    }
+
+    .wave svg {
+      display: block;
+      width: 100%;
+      height: clamp(28px, 5vw, 48px)
+    }
+
+    .wave--flip svg {
+      transform: scaleY(-1)
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 16px
+    }
+
+    .sectionTitle {
+      font: 900 var(--fs-h2) var(--ff-head);
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 1.2rem;
+      letter-spacing: .03em
+    }
+
+    /* ===== BRANDS ===== */
+    .brands {
+      padding: 1.5rem 0;
+      overflow: hidden;
+      position: relative
+    }
+
+    .brands::before,
+    .brands::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40px;
+      z-index: 2
+    }
+
+    .brands::before {
+      left: 0;
+      background: linear-gradient(90deg, #000, transparent)
+    }
+
+    .brands::after {
+      right: 0;
+      background: linear-gradient(-90deg, #000, transparent)
+    }
+
+    .brands__label {
+      text-align: center;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: .88rem;
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      margin-bottom: 1.2rem;
+      opacity: 0.95;
+    }
+
+    .brands__track {
+      display: flex;
+      width: max-content;
+      will-change: transform;
+      animation: marquee var(--brands-duration, 20s) linear infinite;
+    }
+
+    .brand-set {
+      display: flex;
+      gap: 3.5rem;
+      padding-right: 3.5rem;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    .brand-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: #9fb0d0;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-logo {
+      height: 52px;
+      width: auto;
+      max-width: 130px;
+      padding: 6px 12px;
+      filter: invert(1) grayscale(1) brightness(1.5) contrast(1.1);
+      mix-blend-mode: screen;
+      opacity: 0.72;
+      display: block;
+      object-fit: contain;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, filter 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+    .brand-logo:hover {
+      opacity: 1;
+      filter: none;
+      transform: scale(1.08);
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(203, 161, 40, 0.3);
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(calc(-1 * var(--brands-shift, 50%)));
+      }
+    }
+
+    /* ===== PACK CARDS ===== */
+    .packGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .packGrid {
+        grid-template-columns: 1fr;
+        max-width: 380px;
+      }
+    }
+
+    @keyframes premiumGlow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 15px rgba(203, 161, 53, 0.05);
+        border-color: rgba(255, 255, 255, 0.07);
+        transform: translateY(0);
+      }
+
+      50% {
+        box-shadow: 0 10px 30px rgba(203, 161, 53, 0.2);
+        border-color: rgba(203, 161, 53, 0.3);
+        transform: translateY(-4px);
+      }
+    }
+
+    .pack {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 18px;
+      padding: 1.8rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+      transition: all .35s ease;
+      animation: premiumGlow 6s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pack:nth-child(even) {
+      animation-delay: -3s;
+    }
+
+    .pack::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 18px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(203, 161, 53, .35), transparent 60%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s;
+    }
+
+    .pack:hover {
+      animation-play-state: paused;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.7);
+      transform: translateY(-4px) scale(1.02);
+    }
+
+    .pack:hover::before {
+      opacity: 1;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), transparent 60%);
+    }
+
+    .pack__icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto .75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0;
+      line-height: 0;
+      flex: 0 0 auto;
+    }
+
+    .icon-svg,
+    .icon-nav,
+    .icon-mt,
+    .fab-icon {
+      display: block;
+      object-fit: contain;
+      filter: invert(1) grayscale(1) brightness(2) contrast(1.2);
+      opacity: 0.92;
+      mix-blend-mode: screen;
+    }
+
+    .icon-svg {
+      width: 56px;
+      height: 56px;
+      max-width: 56px;
+      max-height: 56px;
+    }
+
+    .icon-nav {
+      width: 24px;
+      height: 24px;
+      filter: invert(0.5) grayscale(1);
+      opacity: 0.6;
+    }
+
+    .icon-mt {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 5px;
+    }
+
+    .fab-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    .pack__badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #111;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: .04em
+    }
+
+    .pack h3 {
+      font: 900 var(--fs-h3) var(--ff-head);
+      color: var(--gold2);
+      letter-spacing: .03em
+    }
+
+    .pack .from {
+      opacity: .75;
+      margin: .35rem 0 .5rem;
+      font-size: .95rem
+    }
+
+    .pack ul {
+      text-align: left;
+      margin: .3rem 0 1rem;
+      padding-left: 1.2rem;
+      line-height: 1.55;
+      font-size: .92rem;
+      opacity: .8
+    }
+
+    .pack ul li::marker {
+      color: var(--gold)
+    }
+
+    .pack .btn {
+      width: 100%
+    }
+
+    .packGrid--formats {
+      max-width: 860px;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .packGrid--formats .pack {
+      padding: 1.2rem 1rem;
+      border-radius: 14px;
+      min-height: 0;
+    }
+
+    .packGrid--formats .pack__badge {
+      top: 10px;
+      right: 10px;
+    }
+
+    .packGrid--formats .pack h3 {
+      font-size: clamp(16px, 2.1vw, 19px);
+    }
+
+    .packGrid--formats .pack .from {
+      margin: .2rem 0 .35rem;
+      font-size: .88rem;
+    }
+
+    .packGrid--formats .pack ul {
+      margin: .2rem 0 .75rem;
+      font-size: .86rem;
+      line-height: 1.45;
+    }
+
+    .packGrid--formats .pack .btn {
+      margin-top: auto;
+      padding: .72rem 1rem;
+      font-size: 14px;
+    }
+
+    /* ===== HOW IT WORKS ===== */
+    .process {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 32px
+    }
+
+    .process::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold), rgba(203, 161, 53, .1))
+    }
+
+    .process__step {
+      position: relative;
+      padding: .8rem 0
+    }
+
+    .process__dot {
+      position: absolute;
+      left: -25px;
+      top: 1rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(203, 161, 53, .4)
+    }
+
+    .process__num {
+      font: 700 .7rem var(--ff-text);
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .2rem
+    }
+
+    .process__title {
+      font: 700 1rem var(--ff-text);
+      color: #fff;
+      margin-bottom: .15rem
+    }
+
+    .process__desc {
+      font-size: .88rem;
+      color: #888;
+      line-height: 1.5
+    }
+
+    /* ===== VIDEO ===== */
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .5)
+    }
+
+    .video-wrap iframe,
+    .video-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: cover
+    }
+
+    #showreelVideo {
+      object-position: center 22%;
+      background: #000;
+    }
+
+    /* ===== ABOUT ===== */
+    .about-text {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.75;
+      font-size: 1rem;
+      color: #aaa
+    }
+
+    .about-text strong {
+      color: var(--gold2)
+    }
+
+    /* ===== SINGLE REVIEW ===== */
+    .single-review {
+      max-width: 760px;
+      margin: 0 auto;
+      border-radius: 16px;
+      border: 1px solid rgba(203, 161, 53, .22);
+      background: linear-gradient(180deg, rgba(18, 19, 26, .95), rgba(12, 12, 18, .92));
+      padding: 1.2rem 1.1rem;
+      box-shadow: 0 14px 45px rgba(0, 0, 0, .45);
+      text-align: left;
+    }
+
+    .single-review__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: .9rem;
+    }
+
+    .single-review__avatarLink {
+      display: inline-flex;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(203, 161, 53, .55);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .35);
+      flex-shrink: 0;
+    }
+
+    .single-review__avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .single-review__profile {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .single-review__vkTag {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      color: #9cb5d8;
+      font-size: .72rem;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, .03);
+    }
+
+    .single-review__authorLink {
+      color: var(--gold2);
+      font-weight: 700;
+      letter-spacing: .01em;
+      font-size: 1rem;
+      text-decoration: none;
+    }
+
+    .single-review__authorLink:hover {
+      text-decoration: underline;
+    }
+
+    .single-review__text {
+      color: #f0f0f0;
+      font-size: clamp(16px, 2.4vw, 20px);
+      line-height: 1.45;
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+
+    .swiper-reviews {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2px 0;
+    }
+
+    .swiper-reviews .swiper-slide {
+      height: auto;
+    }
+
+    .reviews-nav {
+      max-width: 760px;
+      margin: 12px auto 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .reviews-nav__btn {
+      min-width: 124px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(203, 161, 53, .55);
+      background: rgba(12, 12, 18, .75);
+      color: var(--gold2);
+      font: 600 14px var(--ff-text);
+      letter-spacing: .02em;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, color .2s ease, background .2s ease;
+    }
+
+    .reviews-nav__btn:hover {
+      border-color: var(--gold2);
+      color: #fff;
+      background: rgba(203, 161, 53, .16);
+    }
+
+    .reviews-nav__btn:active {
+      transform: translateY(1px) scale(.98);
+    }
+
+    /* ===== GALLERY ===== */
+    .gallery {
+      columns: 2;
+      column-gap: 8px
+    }
+
+    .gallery img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, .05);
+      cursor: pointer;
+      transition: transform .25s, opacity .25s;
+      break-inside: avoid
+    }
+
+    .gallery img:active {
+      transform: scale(.97);
+      opacity: .85
+    }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .94);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px)
+    }
+
+    .lightbox.open {
+      display: flex
+    }
+
+    .lightbox__img {
+      max-width: 94vw;
+      max-height: 85dvh;
+      border-radius: 10px;
+      object-fit: contain;
+      z-index: 2
+    }
+
+    .lightbox__close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 3;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .12);
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center
+    }
+
+    .lightbox__nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08);
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center
+    }
+
+    .lightbox__nav--prev {
+      left: 8px
+    }
+
+    .lightbox__nav--next {
+      right: 8px
+    }
+
+    /* ===== FLOATING BUTTON ===== */
+    .fab {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      z-index: 99;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      border: none;
+      color: #111;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 24px rgba(203, 161, 53, .4);
+      transition: transform .25s, box-shadow .25s;
+      display: grid;
+      place-items: center
+    }
+
+    .fab:active {
+      transform: scale(.92)
+    }
+
+    .fab::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      opacity: 0;
+      animation: fabPulse 2.5s ease-in-out infinite
+    }
+
+    @keyframes fabPulse {
+
+      0%,
+      100% {
+        opacity: 0;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(1.15)
+      }
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      display: none;
+      place-items: center;
+      padding: 16px
+    }
+
+    .modal.open {
+      display: grid
+    }
+
+    .modal__bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px)
+    }
+
+    .modal__panel {
+      position: relative;
+      width: min(94vw, 440px);
+      border-radius: 20px;
+      background: rgba(14, 15, 20, .97);
+      border: 1px solid rgba(203, 161, 53, .15);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+      padding: 1.5rem 1.2rem;
+      max-height: 88dvh;
+      overflow-y: auto
+    }
+
+    .modal__panel h2 {
+      font: 900 var(--fs-h2) var(--ff-head);
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 1rem
+    }
+
+    .modal__close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .06);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      z-index: 5
+    }
+
+    .form-group {
+      margin-bottom: .75rem
+    }
+
+    .form-group label {
+      display: block;
+      font-size: .82rem;
+      color: #888;
+      margin-bottom: .25rem;
+      font-weight: 500
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: .75rem 1rem;
+      border-radius: var(--r);
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px solid rgba(255, 255, 255, .08);
+      color: #fff;
+      font: 400 var(--fs-body) var(--ff-text);
+      transition: border-color .3s
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(203, 161, 53, .12)
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 60px
+    }
+
+    .form-group select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center
+    }
+
+    #bookingSuccess {
+      display: none;
+      text-align: center;
+      padding: 2rem .5rem
+    }
+
+    #bookingSuccess .success-icon {
+      font-size: 3.5rem;
+      margin-bottom: .8rem;
+      animation: popIn .5s ease
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 1.2rem 16px 24px;
+      text-align: center
+    }
+
+    .copy {
+      color: #444;
+      font-size: .75rem
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media(min-width:768px) {
+      .packGrid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px
+      }
+
+      .packGrid--formats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .gallery {
+        columns: 3
+      }
+
+      .hero {
+        padding-bottom: 48px
+      }
+
+      .metrics {
+        grid-template-columns: repeat(4, 1fr)
+      }
+    }
+
+    @media(min-width:1024px) {
+      .gallery {
+        columns: 4
+      }
+    }
+
+    @media (max-width: 900px) {
+      .packGrid--formats {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+      }
+    }
+
+
+    /* ===== MAGIC SCHOOL BLOCK ===== */
+    .magic-school {
+      text-align: center;
+    }
+    .magic-school__card {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 2.2rem 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+    }
+    .magic-school__logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.2rem;
+    }
+    .magic-school__logo img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(203, 161, 40, 0.3);
+    }
+    .magic-school__logo span {
+      font: 600 14px var(--ff-head);
+      color: var(--gold);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .magic-school__title {
+      font: 700 clamp(20px, 4.5vw, 28px) var(--ff-head);
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+      line-height: 1.25;
+    }
+    .magic-school__subtitle {
+      font-size: 0.95rem;
+      color: #bbb;
+      line-height: 1.55;
+      margin: 0 auto 1.8rem;
+      max-width: 460px;
+    }
+    .magic-school__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 30px;
+      background: transparent;
+      border: 1px solid rgba(203, 161, 40, 0.4);
+      color: var(--gold);
+      font: 600 14px var(--ff-head);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .magic-school__cta:hover {
+      background: rgba(203, 161, 40, 0.08);
+      border-color: rgba(203, 161, 40, 0.7);
+      transform: translateY(-1px);
+    }
+
+    /* ===== KOSTYUK PORTAL OVERLAY ===== */
+    #kostyukPortal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(ellipse at center, #0b0a18 0%, #000 75%);
+      transition: opacity 0.5s ease;
+      overflow: hidden;
+    }
+    #kostyukPortal.active {
+      opacity: 1;
+      pointer-events: all;
+      animation: kpZoom 1.8s cubic-bezier(0.5,0,0.3,1) forwards;
+    }
+    @keyframes kpZoom {
+      0%   { transform: scale(1); filter: blur(0); }
+      70%  { transform: scale(1.05); }
+      100% { transform: scale(1.25); filter: blur(2px); }
+    }
+    .kp-ring-outer, .kp-ring-inner {
+      position: absolute;
+      top: 50%; left: 50%;
+      border-radius: 50%;
+      opacity: 0;
+      transform: translate(-50%,-50%) scale(0.2);
+    }
+    .kp-ring-outer {
+      width: 460px; height: 460px;
+      margin: -230px 0 0 -230px;
+      border: 1px solid rgba(203,161,40,0.55);
+      box-shadow: 0 0 60px rgba(203,161,40,0.25), inset 0 0 60px rgba(203,161,40,0.18);
+    }
+    .kp-ring-inner {
+      width: 280px; height: 280px;
+      margin: -140px 0 0 -140px;
+      border: 1px dashed rgba(231,199,118,0.75);
+      box-shadow: 0 0 40px rgba(231,199,118,0.3);
+    }
+    #kostyukPortal.active .kp-ring-outer { animation: kpRingOut 1.8s cubic-bezier(0.22,1,0.36,1) forwards; }
+    #kostyukPortal.active .kp-ring-inner { animation: kpRingIn 1.8s cubic-bezier(0.22,1,0.36,1) forwards 0.15s; }
+    @keyframes kpRingOut {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.2) rotate(0deg);  border-width: 3px; }
+      40%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(4) rotate(120deg);  border-width: 0.5px; }
+    }
+    @keyframes kpRingIn {
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.15) rotate(0deg); }
+      35%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(3) rotate(-180deg); }
+    }
+    .kp-core {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 14px; height: 14px;
+      margin: -7px 0 0 -7px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff8d6, #cba128 40%, transparent 80%);
+      box-shadow: 0 0 30px rgba(255,248,214,0.9), 0 0 80px rgba(203,161,40,0.7), 0 0 160px rgba(203,161,40,0.4);
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-core { animation: kpCore 1.8s ease-out forwards; }
+    @keyframes kpCore {
+      0%   { opacity: 0; transform: scale(0); }
+      15%  { opacity: 1; transform: scale(1); }
+      55%  { opacity: 1; transform: scale(3.5); box-shadow: 0 0 80px #fff8d6, 0 0 160px rgba(203,161,40,1), 0 0 240px rgba(203,161,40,0.6); }
+      100% { opacity: 0; transform: scale(18); }
+    }
+    .kp-rays {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 4px; height: 4px;
+      margin: -2px 0 0 -2px;
+      opacity: 0;
+    }
+    .kp-ray {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 2px; height: 0;
+      transform-origin: top center;
+      background: linear-gradient(180deg, rgba(231,199,118,0.9), transparent 80%);
+      box-shadow: 0 0 14px rgba(203,161,40,0.7);
+    }
+    .kp-ray:nth-child(1){transform:translateX(-50%) rotate(0deg)}
+    .kp-ray:nth-child(2){transform:translateX(-50%) rotate(45deg)}
+    .kp-ray:nth-child(3){transform:translateX(-50%) rotate(90deg)}
+    .kp-ray:nth-child(4){transform:translateX(-50%) rotate(135deg)}
+    .kp-ray:nth-child(5){transform:translateX(-50%) rotate(180deg)}
+    .kp-ray:nth-child(6){transform:translateX(-50%) rotate(225deg)}
+    .kp-ray:nth-child(7){transform:translateX(-50%) rotate(270deg)}
+    .kp-ray:nth-child(8){transform:translateX(-50%) rotate(315deg)}
+    #kostyukPortal.active .kp-rays { animation: kpRaysFade 1.8s ease-out forwards 0.2s; }
+    #kostyukPortal.active .kp-ray  { animation: kpRayGrow 1.6s ease-out forwards 0.2s; }
+    @keyframes kpRaysFade { 0%{opacity:0} 30%{opacity:1} 100%{opacity:0.3} }
+    @keyframes kpRayGrow  { 0%{height:0} 100%{height:60vh} }
+    .kp-star {
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: #fff8d6;
+      box-shadow: 0 0 4px #fff8d6;
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-star { animation: kpStar 1.8s ease-out forwards; }
+    @keyframes kpStar {
+      0%   { opacity: 0; transform: scale(0); }
+      50%  { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.3); }
+    }
+    .kp-name {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) translateY(120px);
+      font-family: var(--ff-head, "Cormorant Garamond", serif);
+      font-size: clamp(22px, 4.5vw, 44px);
+      color: var(--gold, #cba128);
+      letter-spacing: 0.45em;
+      white-space: nowrap;
+      text-shadow: 0 0 24px rgba(203,161,40,0.6), 0 0 60px rgba(203,161,40,0.3);
+      display: flex;
+      gap: 0;
+    }
+    .kp-name span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      filter: blur(6px);
+    }
+    #kostyukPortal.active .kp-name span { animation: kpLetter 0.6s ease-out forwards; }
+    @keyframes kpLetter {
+      0%   { opacity: 0; transform: translateY(20px); filter: blur(6px); }
+      60%  { opacity: 1; transform: translateY(0);    filter: blur(0); }
+      100% { opacity: 0; transform: translateY(-8px); filter: blur(2px); }
+    }
+    .kp-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+      opacity: 0;
+    }
+    #kostyukPortal.active .kp-vignette { animation: kpVig 1.8s ease-out forwards; }
+    @keyframes kpVig { 0%{opacity:0} 100%{opacity:1} }
+    .magic-school__badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Modify pack cards button */
+    .pack .btn {
+      margin-top: 15px;
+    }
+
+
+
+    /* ===== PREMIUM DRUM CAROUSEL ===== */
+    .concerts-section {
+      padding: 4rem 0 3rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .swiper-concerts {
+      width: 100%;
+      padding-top: 20px;
+      padding-bottom: 40px;
+    }
+
+    .swiper-concerts .swiper-slide {
+      background-position: center;
+      background-size: cover;
+      width: 280px;
+      height: 400px;
+      border-radius: 16px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #080816;
+      display: flex;
+      /* Centering fallback */
+      justify-content: center;
+      align-items: center;
+    }
+
+    .swiper-concerts .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .swiper-concerts .swiper-slide-shadow-left,
+    .swiper-concerts .swiper-slide-shadow-right {
+      background-image: none !important;
+      /* Adjust swiper shadow */
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(2px);
+    }
+
+    .concert-info-container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 0 20px;
+      min-height: 140px;
+    }
+
+    .concert-info-box {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .concert-info-box.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cinfo-title {
+      font: 800 clamp(24px, 6vw, 32px) var(--ff-head);
+      color: var(--gold);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .cinfo-desc {
+      font-size: 0.95rem;
+      color: #ccc;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: var(--gold) !important;
+      background: rgba(0, 0, 0, 0.5);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(4px);
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+      font-size: 18px !important;
+    }
+
+    /* Photo Gallery Swiper */
+    .swiper-gallery {
+      width: 100%;
+      padding-bottom: 50px;
+      overflow: hidden;
+    }
+
+    .swiper-gallery .swiper-slide {
+      --w: clamp(220px, 60vw, 320px);
+      width: var(--w);
+      aspect-ratio: 62/88;
+      opacity: 0.5;
+      transform: scale(0.9);
+      transition: .4s;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.05);
+      /* placeholder background while loading */
+    }
+
+    .swiper-gallery .swiper-slide-active {
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 15px 40px rgba(203, 161, 40, 0.3);
+    }
+
+    .swiper-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      /* Ensures photo is not cropped */
+      border-radius: 12px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      max-width: 95vw;
+      max-height: 85vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: #fff;
+      font-size: 40px;
+      cursor: pointer;
+      line-height: 1;
+      text-shadow: 0 0 10px #000;
+    }
+
+    /* Project Switcher premium styling like the hub cards */
+    .project-switcher__list a {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-height: 250px !important;
+      text-align: left;
+    }
+    .project-switcher__list a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.35;
+      filter: saturate(0.75) contrast(1.03);
+      transition: opacity 0.4s ease, transform 0.6s ease;
+    }
+    .project-switcher__list a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.08) 0%, rgba(5,5,5,0.16) 38%, rgba(7,7,7,0.94) 78%, #070707 100%);
+    }
+    .project-switcher__list a:hover::before {
+      opacity: 0.65;
+      transform: scale(1.03);
+    }
+    .project-switcher__list .switcher-item--shows::before {
+      background-image: url('../images/direction-shows.png');
+      background-position: 50% 44%;
+    }
+    .project-switcher__list .switcher-item--events::before {
+      background-image: url('../images/direction-events.png');
+      background-position: 50% 43%;
+    }
+    .project-switcher__list .switcher-item--school::before {
+      background-image: url('../images/direction-school.png');
+      background-position: 50% 42%;
+    }
+    
+    /* Current navigation state style */
+    .project-switcher__list a.is-current {
+      border-color: var(--kp-gold) !important;
+      box-shadow: 0 0 20px rgba(214, 172, 69, 0.25) !important;
+    }
+    .project-switcher__list a.is-current::before {
+      opacity: 0.5;
+    }
+    .project-switcher__list .switcher-badge {
+      align-self: flex-start;
+      margin-bottom: auto;
+      padding: 4px 8px;
+      border: 1px solid rgba(214,172,69,0.3);
+      border-radius: 20px;
+      color: var(--kp-gold);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .project-switcher__list .switcher-index {
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+    .project-switcher__list b {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.09);
+      color: var(--kp-muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .project-switcher__list a.is-current b {
+      color: var(--kp-gold);
+    }
+    @media(max-width:900px) {
+      .project-switcher__list a {
+        min-height: 140px !important;
+      }
+      .project-switcher__list .switcher-index {
+        margin-bottom: 4px;
+      }
+      .project-switcher__list b {
+        margin-top: 8px;
+        padding-top: 6px;
+      }
+    }
+
+    /* End Custom CSS */
+  </style>
+  <link rel="stylesheet" href="../vendor/swiper/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="../ecosystem.css?v=5" />
+</head>
+
+<body>
+
+  <header class="brand-bar" aria-label="Kostyuk Project">
+    <a class="brand-bar__identity" href="#top" aria-label="Kostyuk Project — на главную">
+      <img src="../images/kostyuk-project-logo.jpg" alt="" width="48" height="48">
+      <span><strong>BY KOSTYUK PROJECT</strong><small>ЧАСТНЫЕ СОБЫТИЯ</small></span>
+    </a>
+    <nav class="brand-bar__nav" aria-label="Направления проекта">
+      <a href="#video">Шоурил</a>
+      <a class="is-current" href="#formats">Форматы</a>
+      <a href="#reviews">Отзывы</a>
+    </nav>
+    <button class="brand-bar__cta" type="button" onclick="toggleProjectSwitcher(true)" aria-haspopup="dialog">Все проекты</button>
+  </header>
+
+  <div class="project-switcher" id="projectSwitcher" aria-hidden="true">
+    <button class="project-switcher__backdrop" type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть меню"></button>
+    <section class="project-switcher__panel" role="dialog" aria-modal="true" aria-labelledby="projectSwitcherTitle">
+      <div class="project-switcher__head">
+        <div><span>KOSTYUK PROJECT</span><h2 id="projectSwitcherTitle">Выберите направление</h2></div>
+        <button type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть">×</button>
+      </div>
+      <div class="project-switcher__list">
+        <a class="switcher-item--shows" href="../concerts/index.html">
+          <span class="switcher-index">01</span>
+          <strong>Авторские шоу</strong>
+          <span>Афиша · билеты · гастроли</span>
+          <b>Смотреть афишу <i>↗</i></b>
+        </a>
+        <a class="switcher-item--events is-current" href="#top" onclick="toggleProjectSwitcher(false)">
+          <span class="switcher-index">02</span>
+          <div class="switcher-badge">Вы здесь</div>
+          <strong style="margin-top: 10px;">Частые события</strong>
+          <span>Свадьбы · корпоративы · праздники</span>
+          <b>Активно <i>✓</i></b>
+        </a>
+        <a class="switcher-item--school" href="../school/index.html">
+          <span class="switcher-index">03</span>
+          <strong>Школа фокусов</strong>
+          <span>Обучение детей 7–13 лет</span>
+          <b>Подробнее <i>↗</i></b>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== PRELOADER ===== -->
+  <div class="preloader hidden" id="preloader" aria-hidden="true"></div>
+
+  <!-- ===== SCROLL PROGRESS ===== -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- ===== PARTICLES ===== -->
+  <canvas id="particles"></canvas>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="top">
+    <div class="hero__bg">
+      <video class="hero__video" id="heroVideo" autoplay muted loop playsinline preload="metadata" poster="../images/портрет.jpg" aria-hidden="true">
+        <source src="../video/promo-hero.mp4" type="video/mp4">
+        <source src="../video/промо.mov" type="video/quicktime">
+      </video>
+      <img class="hero__fallback" src="../images/портрет.jpg" alt="" id="heroImg" aria-hidden="true">
+    </div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">KOSTYUK PROJECT представляет</p>
+      <h1 class="title" data-txt="Дмитрий Костюк">Дмитрий&nbsp;Костюк</h1>
+      <p class="subtitle">Иллюзионист · режиссёр впечатлений · автор шоу</p>
+      <p class="hero__promise">Создаю события и спектакли, после которых гости ещё долго спрашивают: «Как это возможно?»</p>
+      <div class="metrics">
+        <div class="metric"><span class="metric__num" id="cClients">1000+</span><span class="metric__label">клиентов</span>
+        </div>
+        <div class="metric"><span class="metric__num" id="cYears">10</span><span class="metric__label">лет на
+            сцене</span></div>
+        <div class="metric"><span class="metric__num" id="cCities">50</span><span class="metric__label">городов</span>
+        </div>
+        <div class="metric"><span class="metric__num" id="cRating">4.9</span><span class="metric__label">рейтинг <span
+              style="background:#fc3;color:#000;padding:1px 3px;border-radius:3px;font-weight:700">Яндекс</span></span>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <button class="btn btn--primary" type="button" onclick="routeToBotForPrivate()">Рассчитать выступление</button>
+      </div>
+      <a class="scroll-hint" href="#video" aria-label="Перейти к шоурилу">Смотреть шоурил <span>↓</span></a>
+    </div>
+  </section>
+
+  <!-- wave -->
+  <div class="wave"><svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path fill="#000" d="M0,20 C360,45 1080,-5 1440,20 L1440,0 L0,0 Z" />
+    </svg></div>
+
+  <!-- ===== VIDEO ===== -->
+  <section class="section reveal" id="video">
+    <h2 class="sectionTitle">Шоурил</h2>
+    <div class="video-wrap">
+      <video id="showreelVideo" controls playsinline preload="metadata" poster="../images/портрет.jpg">
+        <source src="../video/промо.mov">
+      </video>
+    </div>
+  </section>
+
+  <!-- wave -->
+  <div class="wave wave--flip"><svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path fill="#000" d="M0,20 C360,45 1080,-5 1440,20 L1440,40 L0,40 Z" />
+    </svg></div>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section reveal" id="about">
+    <h2 class="sectionTitle">Обо мне</h2>
+    <div class="about-text">
+      <p>Меня зовут <strong>Дмитрий Костюк</strong> — я профессиональный иллюзионист с многолетним опытом. Создаю
+        <strong>иллюзионные шоу</strong>, в которых каждый зритель становится соучастником волшебства.
+      </p>
+      <br>
+      <p>Работал с крупнейшими компаниями России, выступал на сотнях частных мероприятий. Каждое шоу —
+        <strong>уникальная история</strong>, созданная специально для вашего события.
+      </p>
+    </div>
+
+    <!-- Strong Facts -->
+    <div class="about-facts packGrid" style="margin-top: 40px; text-align: left;">
+      <article class="pack reveal reveal-d4"
+        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(203,161,40,0.2); padding: 24px;">
+        <h3 style="color:var(--gold); margin-bottom: 10px; font-size: 18px;">10 лет опыта</h3>
+        <p style="color: #aaa; font-size: 14px; line-height: 1.5;">Педагог по образованию. Объездил с гастролями всю
+          страну. Член Российской Ассоциации Иллюзионистов.</p>
+      </article>
+      <article class="pack reveal reveal-d5"
+        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(203,161,40,0.2); padding: 24px;">
+        <h3 style="color:var(--gold); margin-bottom: 10px; font-size: 18px;">ТВ-шоу «Школа волшебства»</h3>
+        <p style="color: #aaa; font-size: 14px; line-height: 1.5;">Создатель и ведущий детского магического шоу на
+          «Первом Ярославском» телеканале.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== BRANDS ===== -->
+  <section class="brands reveal">
+    <p class="brands__label">Нам доверяют</p>
+    <div class="brands__track" id="brandsTrack">
+      <!-- Original Set -->
+      <div class="brand-set">
+        <div class="brand-item"><img src="../images/brands/gazprom.svg?v=2" alt="Газпром" class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/magnit.svg?v=2"  alt="Магнит"  class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/dixy.svg?v=2"    alt="Дикси"   class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/danone.svg?v=2"  alt="Danone"  class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/yarpivo.webp?v=2" alt="Ярпиво"  class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/rosneft.svg?v=2" alt="Роснефть" class="brand-logo" loading="lazy"></div>
+      </div>
+
+      <!-- Duplicate Set for Seamless Loop -->
+      <div class="brand-set">
+        <div class="brand-item"><img src="../images/brands/gazprom.svg?v=2" alt="Газпром" class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/magnit.svg?v=2"  alt="Магнит"  class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/dixy.svg?v=2"    alt="Дикси"   class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/danone.svg?v=2"  alt="Danone"  class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/yarpivo.webp?v=2" alt="Ярпиво"  class="brand-logo" loading="lazy"></div>
+        <div class="brand-item"><img src="../images/brands/rosneft.svg?v=2" alt="Роснефть" class="brand-logo" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- wave -->
+  <div class="wave wave--flip"><svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path fill="#000" d="M0,20 C480,45 960,-5 1440,20 L1440,40 L0,40 Z" />
+    </svg></div>
+
+  <!-- ===== FORMATS ===== -->
+  <section class="section" id="formats">
+    <h2 class="sectionTitle reveal">Форматы выступления</h2>
+    <div class="packGrid packGrid--formats">
+      <article class="pack reveal reveal-d1">
+        <div class="pack__icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="duotone-svg-icon">
+            <style>
+              .wand {
+                transform-origin: 32px 14px;
+                animation: waveWand 3s ease-in-out infinite;
+              }
+              .spark {
+                transform-origin: center;
+                animation: sparkle 2s ease-in-out infinite;
+              }
+              .spark-1 { animation-delay: 0s; }
+              .spark-2 { animation-delay: 0.5s; }
+              .spark-3 { animation-delay: 1s; }
+              @keyframes waveWand {
+                0%, 100% { transform: rotate(0deg); }
+                50% { transform: rotate(-15deg); }
+              }
+              @keyframes sparkle {
+                0%, 100% { transform: scale(0.6); opacity: 0.3; }
+                50% { transform: scale(1.2); opacity: 1; }
+              }
+            </style>
+            <path d="M12 36C12 36 10 36 10 38C10 40 14 41 24 41C34 41 38 40 38 38C38 36 36 36 36 36L34 22H14L12 36Z" stroke="#ece8e0" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.8"/>
+            <path d="M14 30H34" stroke="#ece8e0" stroke-width="2" stroke-opacity="0.5"/>
+            <path d="M6 38C6 38 10 38 24 38C38 38 42 38 42 38" stroke="#ece8e0" stroke-width="2.5" stroke-linecap="round"/>
+            <g class="wand">
+              <path d="M38 6L22 22" stroke="#b5b1a9" stroke-width="3" stroke-linecap="round"/>
+              <path d="M38 6L34 10" stroke="#CBA135" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <path class="spark spark-1" d="M18 10L19 13L22 14L19 15L18 18L17 15L14 14L17 13L18 10Z" fill="#E7C776"/>
+            <path class="spark spark-2" d="M30 18L30.5 19.5L32 20L30.5 20.5L30 22L29.5 20.5L28 20L29.5 19.5L30 18Z" fill="#CBA135"/>
+            <path class="spark spark-3" d="M10 24L10.5 25.5L12 26L10.5 26.5L10 28L9.5 26.5L8 26L9.5 25.5L10 24Z" fill="#f5e6b8"/>
+          </svg>
+        </div>
+        <div class="pack__badge">Популярное</div>
+        <h3>Шоу-программа</h3>
+        <div class="from">от 18&nbsp;500&nbsp;₽</div>
+        <ul>
+          <li>20–40 минут</li>
+          <li>Персонализация под событие</li>
+          <li>Интерактив со зрителями</li>
+        </ul>
+        <button class="btn btn--primary" onclick="routeToBotForPrivate()">Узнать стоимость</button>
+      </article>
+      <article class="pack reveal reveal-d2">
+        <div class="pack__icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="duotone-svg-icon">
+            <style>
+              .card-left {
+                transform-origin: 24px 38px;
+                animation: floatCardLeft 4s ease-in-out infinite;
+              }
+              .card-center {
+                transform-origin: 24px 38px;
+                animation: floatCardCenter 4s ease-in-out infinite;
+              }
+              .card-right {
+                transform-origin: 24px 38px;
+                animation: floatCardRight 4s ease-in-out infinite;
+              }
+              .magic-glow {
+                transform-origin: center;
+                animation: rotateGlow 6s linear infinite;
+              }
+              @keyframes floatCardLeft {
+                0%, 100% { transform: translateY(0) rotate(-18deg); }
+                50% { transform: translateY(-4px) rotate(-15deg); }
+              }
+              @keyframes floatCardCenter {
+                0%, 100% { transform: translateY(0) rotate(0deg); }
+                50% { transform: translateY(-6px) rotate(2deg); }
+              }
+              @keyframes floatCardRight {
+                0%, 100% { transform: translateY(0) rotate(18deg); }
+                50% { transform: translateY(-4px) rotate(15deg); }
+              }
+              @keyframes rotateGlow {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+              }
+            </style>
+            <g class="magic-glow">
+              <circle cx="10" cy="14" r="1.5" fill="#E7C776"/>
+              <circle cx="38" cy="16" r="1.5" fill="#CBA135"/>
+              <circle cx="14" cy="32" r="1" fill="#f5e6b8"/>
+              <circle cx="34" cy="34" r="1" fill="#E7C776"/>
+            </g>
+            <path d="M12 18C16 12 32 12 36 18" stroke="#E7C776" stroke-width="1.5" stroke-dasharray="3 3" stroke-opacity="0.7"/>
+            <g class="card-left">
+              <rect x="8" y="14" width="16" height="24" rx="2" fill="#0d121c" stroke="#ece8e0" stroke-width="2" stroke-opacity="0.8"/>
+              <path d="M16 26L14 28L16 30L18 28L16 26Z" fill="#CBA135"/>
+            </g>
+            <g class="card-right">
+              <rect x="24" y="14" width="16" height="24" rx="2" fill="#0d121c" stroke="#ece8e0" stroke-width="2" stroke-opacity="0.8"/>
+              <path d="M32 26L30 28L32 30L34 28L32 26Z" fill="#CBA135"/>
+            </g>
+            <g class="card-center">
+              <rect x="16" y="10" width="16" height="24" rx="2" fill="#0d121c" stroke="#ece8e0" stroke-width="2"/>
+              <path d="M24 18L21 22L24 26L27 22L24 18Z" fill="#E7C776"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Микромагия</h3>
+        <div class="from">от 13&nbsp;000&nbsp;₽</div>
+        <ul>
+          <li>30–180 минут, welcome-зоны</li>
+          <li>Фокусы в руках гостей</li>
+          <li>Идеально для банкетов</li>
+        </ul>
+        <button class="btn btn--primary" onclick="routeToBotForPrivate()">Узнать стоимость</button>
+      </article>
+      <article class="pack reveal reveal-d3">
+        <div class="pack__icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="duotone-svg-icon">
+            <style>
+              .star-pulse {
+                transform-origin: 24px 23px;
+                animation: pulseStar 2.5s ease-in-out infinite;
+              }
+              .light-beam {
+                animation: waveLight 5s ease-in-out infinite;
+              }
+              @keyframes pulseStar {
+                0%, 100% { transform: scale(0.85); filter: drop-shadow(0 0 2px rgba(231,199,118,0.4)); }
+                50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(231,199,118,0.85)); }
+              }
+              @keyframes waveLight {
+                0%, 100% { opacity: 0.15; }
+                50% { opacity: 0.35; }
+              }
+            </style>
+            <polygon class="light-beam" points="24,6 40,42 8,42" fill="url(#lightGrad)"/>
+            <path d="M6 6H42V42" stroke="#ece8e0" stroke-width="2" stroke-opacity="0.3"/>
+            <path d="M6 6C14 6 12 42 6 42" stroke="#ece8e0" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.8"/>
+            <path d="M10 6C16 6 14 42 10 42" stroke="#ece8e0" stroke-width="1.5" stroke-opacity="0.5"/>
+            <path d="M42 6C34 6 36 42 42 42" stroke="#ece8e0" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.8"/>
+            <path d="M38 6C32 6 34 42 38 42" stroke="#ece8e0" stroke-width="1.5" stroke-opacity="0.5"/>
+            <line x1="4" y1="42" x2="44" y2="42" stroke="#ece8e0" stroke-width="2.5" stroke-linecap="round"/>
+            <g class="star-pulse">
+              <path d="M24 10L28 18L37 19.5L30.5 25.5L32.5 34.5L24 30L15.5 34.5L17.5 25.5L11 19.5L20 18L24 10Z" fill="#E7C776"/>
+              <circle cx="24" cy="23" r="3" fill="#000"/>
+              <circle cx="24" cy="23" r="1.5" fill="#f5e6b8"/>
+            </g>
+            <defs>
+              <linearGradient id="lightGrad" x1="24" y1="6" x2="24" y2="42" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#E7C776" stop-opacity="0.8"/>
+                <stop offset="100%" stop-color="#CBA135" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h3>Концерт</h3>
+        <div class="from">от 150&nbsp;000&nbsp;₽</div>
+        <ul>
+          <li>1–2 часа, атмосферный спектакль</li>
+          <li>Сценическое оформление</li>
+          <li>Для больших залов</li>
+        </ul>
+        <button class="btn btn--primary" onclick="routeToBotForPrivate()">Узнать стоимость</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== GUARANTEES / TRUST ===== -->
+  <section class="section reveal" style="padding-top: 40px; padding-bottom: 40px;">
+    <h2 class="sectionTitle">Безопасность сделки</h2>
+    <div class="packGrid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+      <article class="pack" style="border-radius: var(--r); padding: 24px; min-height: auto; text-align: left; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 32px; color: var(--gold2);">📄</div>
+        <h3 style="font-family: var(--ff-head); font-size: 18px; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Официальный договор</h3>
+        <p style="font-size: 13.5px; color: var(--text); opacity: 0.75; line-height: 1.5; margin: 0;">Работа в рамках закона, предоставление закрывающих документов. Оплата по безналичному расчету (ИП Костюк Д. В., +6%).</p>
+      </article>
+      <article class="pack" style="border-radius: var(--r); padding: 24px; min-height: auto; text-align: left; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 32px; color: var(--gold2);">⏱</div>
+        <h3 style="font-family: var(--ff-head); font-size: 18px; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">100% Пунктуальность</h3>
+        <p style="font-size: 13.5px; color: var(--text); opacity: 0.75; line-height: 1.5; margin: 0;">Прибытие на место выступления за 30 минут – 1 час до начала программы для подготовки реквизита.</p>
+      </article>
+      <article class="pack" style="border-radius: var(--r); padding: 24px; min-height: auto; text-align: left; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 32px; color: var(--gold2);">🔄</div>
+        <h3 style="font-family: var(--ff-head); font-size: 18px; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Гибкий тайминг</h3>
+        <p style="font-size: 13.5px; color: var(--text); opacity: 0.75; line-height: 1.5; margin: 0;">В случае сдвига тайминга на мероприятии шоу обязательно состоится — время выступления подстраивается под вас.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="section" id="howItWorks">
+    <h2 class="sectionTitle reveal">Как это работает</h2>
+    <div class="process">
+      <div class="process__step reveal reveal-d1">
+        <div class="process__dot"></div>
+        <div class="process__num">Шаг 1</div>
+        <div class="process__title">Оставьте заявку</div>
+        <div class="process__desc">Нажмите «Узнать стоимость» и пройдите короткий квиз — это займёт 30 секунд</div>
+      </div>
+      <div class="process__step reveal reveal-d2">
+        <div class="process__dot"></div>
+        <div class="process__num">Шаг 2</div>
+        <div class="process__title">Обсуждаем детали</div>
+        <div class="process__desc">Свяжусь с вами в ВКонтакте для уточнения формата и пожеланий</div>
+      </div>
+      <div class="process__step reveal reveal-d3">
+        <div class="process__dot"></div>
+        <div class="process__num">Шаг 3</div>
+        <div class="process__title">Готовлю шоу</div>
+        <div class="process__desc">Создаю магию для вас</div>
+      </div>
+      <div class="process__step reveal reveal-d4">
+        <div class="process__dot"></div>
+        <div class="process__num">Шаг 4</div>
+        <div class="process__title">Магия на событии</div>
+        <div class="process__desc">Незабываемое шоу, эмоции гостей и воспоминания на всю жизнь</div>
+      </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="section reveal" id="eventsFaq" style="padding-top: 40px; padding-bottom: 40px;">
+    <h2 class="sectionTitle">Ответы на вопросы</h2>
+    <div class="faq-container" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; padding: 0 16px;">
+      <!-- Item 1 -->
+      <div class="faq-item" style="border: 1px solid var(--border); border-radius: var(--r); background: var(--card); overflow: hidden; transition: border-color 0.3s ease;">
+        <button class="faq-toggle" onclick="toggleFaq(this)" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: transparent; border: none; outline: none; cursor: pointer; text-align: left; font-family: var(--ff-head); font-size: clamp(14px, 3vw, 16px); color: #fff; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+          <span>В каких городах вы выступаете?</span>
+          <span class="faq-icon" style="font-size: 20px; color: var(--gold2); transition: transform 0.3s ease; display: inline-block;">+</span>
+        </button>
+        <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px;">
+          <p style="font-size: 14px; color: var(--text); opacity: 0.8; line-height: 1.6; padding-bottom: 20px; margin: 0;">
+            Моя основная база находится в Ярославле, но я регулярно выступаю по всей Центральной России: в Иваново, Костроме, Владимире, Вологде, а также выезжаю в Москву и Московскую область. Вся логистика и проезд рассчитываются автоматически при бронировании.
+          </p>
+        </div>
+      </div>
+      <!-- Item 2 -->
+      <div class="faq-item" style="border: 1px solid var(--border); border-radius: var(--r); background: var(--card); overflow: hidden; transition: border-color 0.3s ease;">
+        <button class="faq-toggle" onclick="toggleFaq(this)" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: transparent; border: none; outline: none; cursor: pointer; text-align: left; font-family: var(--ff-head); font-size: clamp(14px, 3vw, 16px); color: #fff; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+          <span>Сколько времени требуется на подготовку перед началом?</span>
+          <span class="faq-icon" style="font-size: 20px; color: var(--gold2); transition: transform 0.3s ease; display: inline-block;">+</span>
+        </button>
+        <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px;">
+          <p style="font-size: 14px; color: var(--text); opacity: 0.8; line-height: 1.6; padding-bottom: 20px; margin: 0;">
+            Обычно я приезжаю на площадку за 30 минут – 1 час до начала выступления. Этого времени достаточно, чтобы подготовить реквизит и переодеться.
+          </p>
+        </div>
+      </div>
+      <!-- Item 3 -->
+      <div class="faq-item" style="border: 1px solid var(--border); border-radius: var(--r); background: var(--card); overflow: hidden; transition: border-color 0.3s ease;">
+        <button class="faq-toggle" onclick="toggleFaq(this)" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: transparent; border: none; outline: none; cursor: pointer; text-align: left; font-family: var(--ff-head); font-size: clamp(14px, 3vw, 16px); color: #fff; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+          <span>Нужна ли сцена и специальное оборудование?</span>
+          <span class="faq-icon" style="font-size: 20px; color: var(--gold2); transition: transform 0.3s ease; display: inline-block;">+</span>
+        </button>
+        <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px;">
+          <p style="font-size: 14px; color: var(--text); opacity: 0.8; line-height: 1.6; padding-bottom: 20px; margin: 0;">
+            Для большинства форматов (шоу-программа и микромагия) сцена не обязательна — достаточно небольшой свободной площадки. Всё необходимое сценическое оборудование я беру на себя.
+          </p>
+        </div>
+      </div>
+      <!-- Item 4 -->
+      <div class="faq-item" style="border: 1px solid var(--border); border-radius: var(--r); background: var(--card); overflow: hidden; transition: border-color 0.3s ease;">
+        <button class="faq-toggle" onclick="toggleFaq(this)" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: transparent; border: none; outline: none; cursor: pointer; text-align: left; font-family: var(--ff-head); font-size: clamp(14px, 3vw, 16px); color: #fff; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+          <span>Как происходит оплата и бронирование даты?</span>
+          <span class="faq-icon" style="font-size: 20px; color: var(--gold2); transition: transform 0.3s ease; display: inline-block;">+</span>
+        </button>
+        <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px;">
+          <p style="font-size: 14px; color: var(--text); opacity: 0.8; line-height: 1.6; padding-bottom: 20px; margin: 0;">
+            Бронирование даты происходит после согласования всех деталей и внесения предоплаты 50%. Оставшаяся сумма оплачивается по факту мероприятия в любой удобной для вас форме. Мы можем заключить договор (официально как ИП, при безналичном расчете +6%).
+          </p>
+        </div>
+      </div>
+      <!-- Item 5 -->
+      <div class="faq-item" style="border: 1px solid var(--border); border-radius: var(--r); background: var(--card); overflow: hidden; transition: border-color 0.3s ease;">
+        <button class="faq-toggle" onclick="toggleFaq(this)" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: transparent; border: none; outline: none; cursor: pointer; text-align: left; font-family: var(--ff-head); font-size: clamp(14px, 3vw, 16px); color: #fff; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+          <span>Каковы условия возврата средств при отмене мероприятия?</span>
+          <span class="faq-icon" style="font-size: 20px; color: var(--gold2); transition: transform 0.3s ease; display: inline-block;">+</span>
+        </button>
+        <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px;">
+          <p style="font-size: 14px; color: var(--text); opacity: 0.8; line-height: 1.6; padding-bottom: 20px; margin: 0;">
+            Согласно ст. 32 Закона РФ «О защите прав потребителей» и ст. 782 ГК РФ, вы вправе отказаться от услуг в любое время. При отмене мероприятия по вашей инициативе предоплата возвращается за вычетом фактически понесенных исполнителем расходов (например, закупка индивидуального реквизита, невозвратная бронь билетов или разработка кастомного сценария).
+          </p>
+        </div>
+      </div>
+      <!-- Item 5 -->
+      <div class="faq-item" style="border: 1px solid var(--border); border-radius: var(--r); background: var(--card); overflow: hidden; transition: border-color 0.3s ease;">
+        <button class="faq-toggle" onclick="toggleFaq(this)" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: transparent; border: none; outline: none; cursor: pointer; text-align: left; font-family: var(--ff-head); font-size: clamp(14px, 3vw, 16px); color: #fff; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+          <span>Что делать, если тайминг мероприятия сдвинется?</span>
+          <span class="faq-icon" style="font-size: 20px; color: var(--gold2); transition: transform 0.3s ease; display: inline-block;">+</span>
+        </button>
+        <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px;">
+          <p style="font-size: 14px; color: var(--text); opacity: 0.8; line-height: 1.6; padding-bottom: 20px; margin: 0;">
+            В праздничный вечер задержки тайминга — обычное дело. Я всегда закладываю резерв времени, чтобы подстроиться под изменения в программе и выступить в оптимальный для вас момент.
+          </p>
+        </div>
+      </div>
+      <!-- Item 6 -->
+      <div class="faq-item" style="border: 1px solid var(--border); border-radius: var(--r); background: var(--card); overflow: hidden; transition: border-color 0.3s ease;">
+        <button class="faq-toggle" onclick="toggleFaq(this)" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: transparent; border: none; outline: none; cursor: pointer; text-align: left; font-family: var(--ff-head); font-size: clamp(14px, 3vw, 16px); color: #fff; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+          <span>Можно ли адаптировать фокусы под наше событие?</span>
+          <span class="faq-icon" style="font-size: 20px; color: var(--gold2); transition: transform 0.3s ease; display: inline-block;">+</span>
+        </button>
+        <div class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1); padding: 0 24px;">
+          <p style="font-size: 14px; color: var(--text); opacity: 0.8; line-height: 1.6; padding-bottom: 20px; margin: 0;">
+            Да, конечно. Я могу сделать фокусы конкретно для вашего события — персонально адаптировать интерактивы с ключевыми лицами или внедрить важные для вас детали.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    function toggleFaq(btn) {
+      var item = btn.parentElement;
+      var content = item.querySelector('.faq-content');
+      var icon = item.querySelector('.faq-icon');
+      var isOpen = item.classList.contains('active');
+
+      document.querySelectorAll('.faq-item.active').forEach(function(el) {
+        if (el !== item) {
+          el.classList.remove('active');
+          el.querySelector('.faq-content').style.maxHeight = '0';
+          el.querySelector('.faq-icon').style.transform = 'rotate(0deg)';
+          el.style.borderColor = 'var(--border)';
+        }
+      });
+
+      if (isOpen) {
+        item.classList.remove('active');
+        content.style.maxHeight = '0';
+        icon.style.transform = 'rotate(0deg)';
+        item.style.borderColor = 'var(--border)';
+      } else {
+        item.classList.add('active');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.style.transform = 'rotate(45deg)';
+        item.style.borderColor = 'var(--gold2)';
+      }
+    }
+  </script>
+
+  <section class="decision-cta reveal" aria-labelledby="decisionTitle">
+    <p class="section-kicker">Следующий шаг</p>
+    <h2 id="decisionTitle">Подберём формат под ваше событие</h2>
+    <p>Ответьте на несколько вопросов — я предложу подходящую программу и предварительную стоимость.</p>
+    <button class="btn btn--primary" type="button" onclick="routeToBotForPrivate()">Рассчитать выступление</button>
+    <small>Короткий квиз · без обязательств</small>
+  </section>
+
+  <!-- wave -->
+  <div class="wave wave--flip"><svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path fill="#000" d="M0,20 C480,45 960,-5 1440,20 L1440,40 L0,40 Z" />
+    </svg></div>
+
+  <!-- ===== REVIEW ===== -->
+  <section class="section reveal" id="reviews">
+    <h2 class="sectionTitle">Отзывы клиентов</h2>
+    <div class="swiper swiper-reviews reveal reveal-d1">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <article class="single-review">
+            <div class="single-review__header">
+              <a class="single-review__avatarLink" href="https://vk.com/id69894050"
+                onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id69894050')">
+                <img class="single-review__avatar" src="../images/reviews/stas-rostovskiy.jpg" alt="Стас Ростовский">
+              </a>
+              <div class="single-review__profile">
+                <span class="single-review__vkTag">ВКонтакте</span>
+                <a class="single-review__authorLink" href="https://vk.com/id69894050"
+                  onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id69894050')">Стас Ростовский</a>
+              </div>
+            </div>
+            <p class="single-review__text">Спасибо За праздник для дочери, дети были в восторге, родители с удовольствием принимали участие</p>
+          </article>
+        </div>
+        <div class="swiper-slide">
+          <article class="single-review">
+            <div class="single-review__header">
+              <a class="single-review__avatarLink" href="https://vk.com/dubinetsaleksandr"
+                onclick="event.preventDefault(); routeToMiniApp('https://vk.com/dubinetsaleksandr')">
+                <img class="single-review__avatar" src="../images/reviews/aleksandr-dubinets.jpg" alt="Александр Дубинец">
+              </a>
+              <div class="single-review__profile">
+                <span class="single-review__vkTag">ВКонтакте</span>
+                <a class="single-review__authorLink" href="https://vk.com/dubinetsaleksandr"
+                  onclick="event.preventDefault(); routeToMiniApp('https://vk.com/dubinetsaleksandr')">Александр Дубинец</a>
+              </div>
+            </div>
+            <p class="single-review__text">Знаю Дмитрия давно, он является моим другом. Но не смотря на это, хотелось бы абстрагироваться от этого и написать, что он со всей ответственностью и серьезностью подходит к делу, которым занимается, погружаясь в него с головой. Обладая театральными качествами и выраженной харизмой, с уверенностью могу сказать, что он украсит любой праздник своим присутствием, будь то ведущий, фокусник или певец!</p>
+          </article>
+        </div>
+        <div class="swiper-slide">
+          <article class="single-review">
+            <div class="single-review__header">
+              <a class="single-review__avatarLink" href="https://vk.com/id71692360"
+                onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id71692360')">
+                <img class="single-review__avatar" src="../images/reviews/katerina-bakhmitskaya.jpg" alt="Катерина Бахмицкая">
+              </a>
+              <div class="single-review__profile">
+                <span class="single-review__vkTag">ВКонтакте</span>
+                <a class="single-review__authorLink" href="https://vk.com/id71692360"
+                  onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id71692360')">Катерина Бахмицкая</a>
+              </div>
+            </div>
+            <p class="single-review__text">Я работаю ведущей на корпоративных мероприятиях и решила сделать гостям сюрприз — пригласила Дмитрия. Сюрприз удался: гости были в восторге, программа насыщенная, удивительная и волшебная. Огромное спасибо Дмитрию за такое необыкновенное украшение праздника. Ростов ждёт в гости такого яркого специалиста и мастера своего дела.</p>
+          </article>
+        </div>
+        <div class="swiper-slide">
+          <article class="single-review">
+            <div class="single-review__header">
+              <a class="single-review__avatarLink" href="https://vk.com/id22481300"
+                onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id22481300')">
+                <img class="single-review__avatar" src="../images/reviews/sergey-muravyev.jpg" alt="Сергей Муравьев">
+              </a>
+              <div class="single-review__profile">
+                <span class="single-review__vkTag">ВКонтакте</span>
+                <a class="single-review__authorLink" href="https://vk.com/id22481300"
+                  onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id22481300')">Сергей Муравьев</a>
+              </div>
+            </div>
+            <p class="single-review__text">Заказывали Дмитрия в кинотеатр Киномир в Ростове. Детям очень понравилось, все фокусы необычные. У нас такого не увидишь в городе. Все были в восторге</p>
+          </article>
+        </div>
+        <div class="swiper-slide">
+          <article class="single-review">
+            <div class="single-review__header">
+              <a class="single-review__avatarLink" href="https://vk.com/pasha.putilov"
+                onclick="event.preventDefault(); routeToMiniApp('https://vk.com/pasha.putilov')">
+                <img class="single-review__avatar" src="../images/reviews/pasha-putilov.jpg" alt="Паша Путилов">
+              </a>
+              <div class="single-review__profile">
+                <span class="single-review__vkTag">ВКонтакте</span>
+                <a class="single-review__authorLink" href="https://vk.com/pasha.putilov"
+                  onclick="event.preventDefault(); routeToMiniApp('https://vk.com/pasha.putilov')">Паша Путилов</a>
+              </div>
+            </div>
+            <p class="single-review__text">Увидел фокусы, которые показывал Дмитрий в Инстаграмме и решил ради интереса пригласить на праздник, необычная программа, интересное шоу, не думал что мне понравится 😊👍</p>
+          </article>
+        </div>
+        <div class="swiper-slide">
+          <article class="single-review">
+            <div class="single-review__header">
+              <a class="single-review__avatarLink" href="https://vk.com/id400718232"
+                onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id400718232')">
+                <img class="single-review__avatar" src="../images/reviews/firuza-anisimova.jpg" alt="Фируза Анисимова">
+              </a>
+              <div class="single-review__profile">
+                <span class="single-review__vkTag">ВКонтакте</span>
+                <a class="single-review__authorLink" href="https://vk.com/id400718232"
+                  onclick="event.preventDefault(); routeToMiniApp('https://vk.com/id400718232')">Фируза Анисимова</a>
+              </div>
+            </div>
+            <p class="single-review__text">Скажу Вам честно.На выступлениях Дмитрия невозможно сидеть с закрытым ртом, от восторга, у зрителей и конечно же у меня улыбка не сходит с лица , дети и взрослые всегда уходят с хорошим настроением и массой приятных впечатлений.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+    <div class="reviews-nav reveal reveal-d2">
+      <button class="reviews-nav__btn reviews-nav__prev" type="button">← Назад</button>
+      <button class="reviews-nav__btn reviews-nav__next" type="button">Вперёд →</button>
+    </div>
+  </section>
+
+  <!-- wave -->
+  <div class="wave wave--flip"><svg viewBox="0 0 1440 40" preserveAspectRatio="none">
+      <path fill="#000" d="M0,20 C480,45 960,-5 1440,20 L1440,40 L0,40 Z" />
+    </svg></div>
+
+  <!-- ===== CONCERTS CAROUSEL ===== -->
+  <section class="section concerts-section" id="concerts">
+    <p class="section-kicker reveal" style="text-align:center">Другой формат встречи</p>
+    <h2 class="sectionTitle reveal">Авторские шоу</h2>
+
+    <div class="swiper swiper-concerts reveal reveal-d1">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <!-- SECRET -->
+          <img src="../images/afisha/secret.jpg" alt="СЕКРЕТ" onerror="this.src='../images/портрет.jpg'">
+        </div>
+        <div class="swiper-slide">
+          <!-- HULIGAN -->
+          <img src="../images/afisha/huligan.jpg" alt="ХУЛИГАН" onerror="this.src='../images/портрет.jpg'">
+        </div>
+        <div class="swiper-slide">
+          <!-- MATVEY -->
+          <img src="../images/afisha/matvey.jpg" alt="СПАСТИ МАТВЕЯ" onerror="this.src='../images/портрет.jpg'">
+        </div>
+      </div>
+
+      <!-- Optional arrows -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+
+    <div class="concert-info-container reveal reveal-d2">
+      <div id="cInfo0" class="concert-info-box active">
+        <h3 class="cinfo-title">СЕКРЕТ</h3>
+        <p class="cinfo-desc">Иллюзионный спектакль, стирающий грань между реальностью и вымыслом. Эмоции, которые вы
+          никогда не испытывали.</p>
+      </div>
+      <div id="cInfo1" class="concert-info-box">
+        <h3 class="cinfo-title">ХУЛИГАН</h3>
+        <p class="cinfo-desc">Дерзкое и откровенное шоу. Магия с характером, где правила созданы для того, чтобы их
+          нарушать.</p>
+      </div>
+      <div id="cInfo2" class="concert-info-box">
+        <h3 class="cinfo-title">СПАСТИ МАТВЕЯ</h3>
+        <p class="cinfo-desc">Интерактивный триллер. Непредсказуемый сюжет, где зрители влияют на ход событий.</p>
+        <span class="magic-school__badge" style="color:var(--gold); border-color:var(--gold); opacity:0.8;">Скоро
+          премьера</span>
+      </div>
+    </div>
+    <div class="concerts-main-link reveal">
+      <a class="btn btn--outline" href="../concerts/index.html">Перейти к афише и спектаклям</a>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY ===== -->
+  <section class="section reveal" id="gallerySection">
+    <h2 class="sectionTitle">Галерея</h2>
+    <div class="swiper swiper-gallery">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/portrait-2206.jpg"
+            alt="Фото с мероприятия"
+            onerror="this.onerror=null;this.src='../photos/_p8x0i6xxpsxg99ra7qnh_40.png'">
+        </div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-01.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-02.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-03.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../photos/_p8x0i6xxpsxg99ra7qnh_40.png"
+            onerror="this.onerror=null;this.src='../images/gallery/event-04.webp'"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-04.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-05.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-06.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-07.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-08.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-09.webp"
+            alt="Фото с мероприятия"></div>
+        <div class="swiper-slide" onclick="openLightbox(this)"><img src="../images/gallery/event-10.webp"
+            alt="Фото с мероприятия"></div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <section class="kp-ecosystem-promo" aria-labelledby="eventsMoreTitle">
+    <div class="kp-ecosystem-promo__head">
+      <div><small>Ещё в KOSTYUK PROJECT</small><h2 id="eventsMoreTitle">Магия продолжается за пределами вашего события</h2></div>
+      <p>Частное выступление — ваш главный выбор здесь. А если хочется увидеть большой сценический мир или открыть магию ребёнку, рядом есть ещё два авторских направления.</p>
+    </div>
+    <div class="kp-ecosystem-promo__grid">
+      <a class="kp-promo-card" href="../concerts/index.html"><span class="kp-promo-card__label">Афиша и билеты</span><h3>Авторские иллюзионные шоу</h3><p>Большие сценические истории Дмитрия Костюка — со своей драматургией, атмосферой и невозможным финалом.</p><span class="kp-promo-card__action">Посмотреть афишу <i>↗</i></span></a>
+      <a class="kp-promo-card" href="../school/index.html"><span class="kp-promo-card__label">Дети 7–13 лет · Ярославль</span><h3>Первая школа фокусов в Ярославле</h3><p>Уверенность, речь и артистизм ребёнка через настоящее искусство иллюзии.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
+    </div>
+  </section>
+
+  <footer>
+    <nav class="footer-projects" aria-label="Направления Kostyuk Project">
+      <span>KOSTYUK PROJECT</span>
+      <a href="#formats">Частные события</a>
+      <a href="../concerts/index.html">Авторские шоу</a>
+      <a href="../school/index.html">Школа фокусов</a>
+    </nav>
+    <div style="color: #666; font-size: 13px; text-align: center; margin: 20px auto 10px; max-width: 600px; line-height: 1.5; font-family: 'Inter', sans-serif;">
+      Выступления иллюзиониста Дмитрия Костюка проходят по всей Центральной России: в Ярославле, Иваново, Костроме, Владимире, Вологде и соседних областях.
+    </div>
+    <div class="copy">&copy; 2026 &middot; Дмитрий Костюк &middot; Иллюзионист</div>
+    <div class="footer-spacer" aria-hidden="true"></div>
+  </footer>
+
+  <!-- ===== KOSTYUK PROJECT — НИЖНЕЕ МЕНЮ ===== -->
+  <style>
+    .footer-spacer { height: 80px; }
+    #kpBottomNav {
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      z-index: 9500;
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      background: rgba(14, 14, 26, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(203, 161, 40, 0.32);
+      border-radius: 999px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+      width: min(94vw, 440px);
+      justify-content: space-between;
+    }
+    .kp-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 8px 6px;
+      border-radius: 999px;
+      color: #c9c9d4;
+      text-decoration: none;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 11px;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      transition: color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .kp-tab .kp-tab-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      line-height: 1;
+      margin-bottom: 2px;
+      filter: grayscale(0.5) opacity(0.7) brightness(1.15);
+      transition: filter 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+      user-select: none;
+    }
+    .kp-tab:hover { color: #e7c776; }
+    .kp-tab:hover .kp-tab-icon { filter: none; transform: translateY(-1px); }
+    .kp-tab.active {
+      color: #0e0e1a;
+      background: linear-gradient(135deg, #e7c776 0%, #cba128 100%);
+      box-shadow: 0 4px 14px rgba(203, 161, 40, 0.45);
+    }
+    .kp-tab.active .kp-tab-icon { filter: none; }
+    .kp-tab.disabled {
+      color: #6a6a78;
+      cursor: not-allowed;
+    }
+    .kp-tab.disabled .kp-tab-icon { filter: grayscale(1) opacity(0.4); }
+    .kp-tab .kp-soon {
+      position: absolute;
+      top: 2px;
+      right: 8px;
+      font-size: 8px;
+      color: #cba128;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .kp-tab-wrap { position: relative; flex: 1; display: flex; }
+
+    /* Toast «Скоро» */
+    #kpToast {
+      position: fixed;
+      left: 50%;
+      bottom: 110px;
+      transform: translateX(-50%) translateY(10px);
+      z-index: 9600;
+      background: rgba(14, 14, 26, 0.95);
+      border: 1px solid rgba(203, 161, 40, 0.4);
+      color: #e7c776;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      backdrop-filter: blur(12px);
+    }
+    #kpToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 380px) {
+      .kp-tab { font-size: 10px; padding: 7px 4px; }
+      .kp-tab .kp-tab-icon { width: 20px; height: 20px; }
+    }
+    @media (min-width: 900px) {
+      #kpBottomNav { bottom: 22px; width: 460px; }
+      .kp-tab { padding: 10px 8px; font-size: 12px; }
+      .kp-tab .kp-tab-icon { width: 24px; height: 24px; }
+    }
+  </style>
+
+  <nav id="kpBottomNav" class="kp-bottom-nav" role="navigation" aria-label="Проекты Дмитрия Костюка">
+    <div class="kp-tab-wrap">
+      <a class="kp-tab active" href="index.html" aria-current="page">
+        <img class="kp-tab-icon" src="../icons/magician.png" alt="" />
+        <span>Частные события</span>
+      </a>
+    </div>
+    <div class="kp-tab-wrap">
+      <a class="kp-tab" id="kpTabSchool" href="../school/index.html">
+        <img class="kp-tab-icon" src="../icons/wand.png" alt="" />
+        <span>Школа фокусов</span>
+      </a>
+    </div>
+    <div class="kp-tab-wrap">
+      <a class="kp-tab" href="../concerts/index.html">
+        <img class="kp-tab-icon" src="../icons/smoke.png" alt="" />
+        <span>Авторские шоу</span>
+      </a>
+    </div>
+  </nav>
+
+  <div id="kpToast" role="status" aria-live="polite">Раздел «Концерты» скоро откроется</div>
+
+  <script>
+    function kpGoToSchool(e) {
+      if (e) e.preventDefault();
+      var url = '../school/index.html';
+      var portal = document.getElementById('kostyukPortal');
+      if (portal) {
+        portal.classList.add('active');
+        setTimeout(function(){ window.location.href = url; }, 1750);
+      } else {
+        window.location.href = url;
+      }
+      return false;
+    }
+    function kpShowSoon() {
+      var t = document.getElementById('kpToast');
+      if (!t) return;
+      t.classList.add('show');
+      clearTimeout(window.__kpToastTimer);
+      window.__kpToastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+    }
+  </script>
+
+
+  <!-- ===== QUIZ MODAL ===== -->
+  <div id="quizOverlay"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;overflow-y:auto;padding:20px;box-sizing:border-box;">
+    <div
+      style="max-width:480px;margin:40px auto;background:#0e0e1a;border-radius:20px;border:1px solid rgba(203,161,40,0.3);padding:32px 24px;position:relative;">
+      <button onclick="closeQuiz()"
+        style="position:absolute;top:16px;right:16px;background:none;border:none;color:#aaa;font-size:24px;cursor:pointer;line-height:1;">✕</button>
+
+      <div id="quizContent"></div>
+    </div>
+  </div>
+
+
+  <!-- ===== AI ASSISTANT MODAL ===== -->
+  <style>
+    #assistantTyping .td {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #cba128;
+      opacity: 0.4;
+      animation: tdBlink 1.2s ease-in-out infinite;
+    }
+    #assistantTyping .td:nth-child(2) { animation-delay: 0.18s; }
+    #assistantTyping .td:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes tdBlink {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30%           { opacity: 1;   transform: translateY(-2px); }
+    }
+  </style>
+  <div id="assistantOverlay"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9500;overflow:hidden;padding:20px;box-sizing:border-box;">
+    <div id="assistantPanel"
+      style="max-width:500px;height:calc(100vh - 40px);max-height:680px;margin:0 auto;background:#0e0e1a;border-radius:20px;border:1px solid rgba(203,161,40,0.3);position:relative;display:flex;flex-direction:column;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid rgba(203,161,40,0.15);background:rgba(203,161,40,0.05);">
+        <div style="position:relative;width:42px;height:42px;flex-shrink:0;">
+          <img src="../images/katerina.jpg" alt="Екатерина" style="width:42px;height:42px;border-radius:50%;object-fit:cover;object-position:50% 25%;border:1.5px solid rgba(203,161,40,0.5);box-shadow:0 0 14px rgba(203,161,40,0.25);">
+          <span style="position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;background:#3ddc84;border:2px solid #0e0e1a;border-radius:50%;"></span>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="color:#cba128;font-size:15px;font-weight:600;font-family:var(--ff-head,serif);">Екатерина</div>
+          <div style="color:#7fc999;font-size:12px;">онлайн · менеджер Дмитрия</div>
+        </div>
+        <button onclick="closeAssistant()"
+          style="background:none;border:none;color:#aaa;font-size:22px;cursor:pointer;padding:0 4px;line-height:1;">✕</button>
+      </div>
+      <div id="assistantMessages"
+        style="flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px;"></div>
+      <div style="padding:12px 16px;border-top:1px solid rgba(203,161,40,0.15);">
+        <form id="assistantForm" onsubmit="return sendAssistantMessage(event)" style="display:flex;gap:8px;">
+          <input id="assistantInput" type="text" autocomplete="off"
+            placeholder="Задайте вопрос..."
+            style="flex:1;min-width:0;background:rgba(255,255,255,0.04);border:1px solid rgba(203,161,40,0.2);color:#fff;padding:11px 14px;border-radius:22px;font-size:16px;font-family:inherit;outline:none;">
+          <button type="submit" id="assistantSend"
+            style="background:linear-gradient(135deg,#cba128,#9b7820);border:none;color:#000;font-weight:600;padding:0 18px;border-radius:22px;cursor:pointer;font-size:16px;white-space:nowrap;">Отправить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LIGHTBOX ===== -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="lbClose">✕</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lbPrev">‹</button>
+    <button class="lightbox__nav lightbox__nav--next" id="lbNext">›</button>
+    <img class="lightbox__img" id="lbImg" alt="">
+  </div>
+
+  <script>
+    /* ===== PLATFORM BRIDGE INIT ===== */
+    window.APP_PLATFORM = {
+      isVK: false,
+      vkInited: false,
+      isTelegram: false
+    };
+
+    (function initPlatformBridge() {
+      try {
+        if (window.vkBridge && typeof window.vkBridge.send === 'function') {
+          APP_PLATFORM.isVK = true;
+          if (typeof window.vkBridge.subscribe === 'function') {
+            window.vkBridge.subscribe(function () { });
+          }
+          window.vkBridge.send('VKWebAppInit')
+            .then(function () {
+              APP_PLATFORM.vkInited = true;
+            })
+            .catch(function (error) {
+              console.error('VKWebAppInit failed:', error);
+            });
+        }
+      } catch (e) {
+        console.error('VK bridge bootstrap error:', e);
+      }
+    })();
+
+    function expandTelegramWebApp() {
+      try {
+        if (!window.Telegram || !window.Telegram.WebApp) return;
+        APP_PLATFORM.isTelegram = true;
+        var tg = window.Telegram.WebApp;
+        if (typeof tg.ready === 'function') tg.ready();
+        if (typeof tg.expand === 'function') tg.expand();
+        if (typeof tg.requestFullscreen === 'function' && typeof tg.isVersionAtLeast === 'function' && tg.isVersionAtLeast('8.0')) {
+          try { tg.requestFullscreen(); } catch (e) { }
+        }
+      } catch (e) { }
+    }
+    expandTelegramWebApp();
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) expandTelegramWebApp();
+    });
+    function haptic() { }
+
+    /* ===== PRELOADER & EFFECTS ===== */
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        document.getElementById('preloader').classList.add('hidden');
+        initTitleGlitch(document.querySelector('.title'));
+      }, 800);
+
+      // 3D Tilt Effect on Packs
+      var tiltElements = document.querySelectorAll('.pack, .concert-info-box');
+      tiltElements.forEach(function (el) {
+        el.addEventListener('mousemove', function (e) {
+          var rect = el.getBoundingClientRect();
+          var x = e.clientX - rect.left;
+          var y = e.clientY - rect.top;
+          var centerX = rect.width / 2;
+          var centerY = rect.height / 2;
+          var rotateX = ((y - centerY) / centerY) * -10;
+          var rotateY = ((x - centerX) / centerX) * 10;
+          el.style.transform = 'perspective(1000px) scale3d(1.02, 1.02, 1.02) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
+          el.style.transition = 'none';
+        });
+        el.addEventListener('mouseleave', function () {
+          el.style.transform = '';
+          el.style.transition = 'transform 0.5s ease';
+        });
+      });
+    });
+
+    /* ===== HERO TITLE GLITCH ===== */
+    function initTitleGlitch(element) {
+      if (!element) return;
+      var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+
+      var text = element.getAttribute('data-txt') || element.textContent.replace(/\s+/g, ' ').trim();
+      if (text) element.setAttribute('data-txt', text);
+
+      function pulse() {
+        element.classList.add('is-glitching');
+        setTimeout(function () {
+          element.classList.remove('is-glitching');
+        }, 340);
+
+        var next = 2500 + Math.random() * 4200;
+        setTimeout(pulse, next);
+      }
+
+      setTimeout(pulse, 1200);
+    }
+
+    /* ===== SCROLL PROGRESS BAR ===== */
+    var progressBar = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', function () {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0) progressBar.style.width = (window.scrollY / max * 100) + '%';
+    }, { passive: true });
+
+    function isElementNearViewport(el, offset) {
+      if (!el) return false;
+      var rect = el.getBoundingClientRect();
+      var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      var safeOffset = typeof offset === 'number' ? offset : 40;
+      return rect.top <= viewportHeight - safeOffset && rect.bottom >= 0;
+    }
+
+    /* ===== SCROLL REVEAL ===== */
+    var revealNodes = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+    function revealEligibleNodes() {
+      revealNodes.forEach(function (el) {
+        if (el.classList.contains('visible')) return;
+        if (isElementNearViewport(el, 30)) el.classList.add('visible');
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      var revealObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target) }
+        });
+      }, { threshold: .12, rootMargin: '0px 0px -30px 0px' });
+      revealNodes.forEach(function (el) { revealObs.observe(el) });
+      revealEligibleNodes();
+      window.addEventListener('scroll', revealEligibleNodes, { passive: true });
+      window.addEventListener('resize', revealEligibleNodes);
+      window.addEventListener('load', revealEligibleNodes);
+      setTimeout(revealEligibleNodes, 700);
+    } else {
+      revealNodes.forEach(function (el) { el.classList.add('visible') });
+    }
+
+    /* ===== PARTICLES ===== */
+    (function () {
+      var c = document.getElementById('particles'), ctx = c.getContext('2d'), w, h, ps = [];
+      function resize() { w = c.width = innerWidth; h = c.height = innerHeight }
+      resize(); addEventListener('resize', resize);
+      function P() { this.reset() }
+      P.prototype.reset = function () { this.x = Math.random() * w; this.y = Math.random() * h; this.s = Math.random() * 2 + .5; this.a = Math.random() * .4 + .1; this.vy = -(Math.random() * .3 + .1); this.vx = (Math.random() - .5) * .2; this.life = Math.random() * 200 + 100; this.t = 0 };
+      P.prototype.update = function () { this.x += this.vx; this.y += this.vy; this.t++; if (this.t > this.life || this.y < 0) this.reset() };
+      P.prototype.draw = function () { var fade = 1 - this.t / this.life; ctx.globalAlpha = this.a * fade; ctx.fillStyle = '#E7C776'; ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2); ctx.fill() };
+      for (var i = 0; i < 35; i++)ps.push(new P());
+      function loop() { ctx.clearRect(0, 0, w, h); ps.forEach(function (p) { p.update(); p.draw() }); requestAnimationFrame(loop) }
+      loop();
+    })();
+
+    /* ===== GALLERY LIGHTBOX ===== */
+    (function () {
+      var lb = document.getElementById('lightbox'), img = document.getElementById('lbImg');
+      var imgs = [].slice.call(document.querySelectorAll('#gallerySection .swiper-slide img')), ci = 0;
+      if (!lb || !img) return;
+
+      function openByIndex(i) {
+        if (!imgs.length) return;
+        ci = (i + imgs.length) % imgs.length;
+        img.src = imgs[ci].src;
+        lb.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        haptic('light');
+      }
+
+      function closeLb() {
+        lb.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      imgs.forEach(function (im, i) {
+        im.addEventListener('click', function (e) {
+          e.stopPropagation();
+          openByIndex(i);
+        });
+      });
+      document.getElementById('lbClose').addEventListener('click', closeLb);
+      document.getElementById('lbPrev').addEventListener('click', function () { openByIndex(ci - 1); });
+      document.getElementById('lbNext').addEventListener('click', function () { openByIndex(ci + 1); });
+      lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+      var tx;
+      lb.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX }, { passive: true });
+      lb.addEventListener('touchend', function (e) { var d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) { d < 0 ? openByIndex(ci + 1) : openByIndex(ci - 1) } }, { passive: true });
+    })();
+
+    /* ===== HERO IMG FALLBACK ===== */
+    var hi = document.getElementById('heroImg');
+    if (hi) hi.addEventListener('error', function () { hi.style.display = 'none' });
+    var hv = document.getElementById('heroVideo');
+    if (hv && hi) {
+      var showHeroFallback = function () { hi.style.opacity = '1'; };
+      var hideHeroFallback = function () { hi.style.opacity = '0'; };
+      hv.addEventListener('loadeddata', hideHeroFallback);
+      hv.addEventListener('canplay', hideHeroFallback);
+      hv.addEventListener('error', showHeroFallback);
+      hv.play && hv.play().catch(showHeroFallback);
+    }
+
+    // Inject CSS for new icons
+    var css = document.createElement('style');
+    css.innerHTML = `
+      /* Match Brand Logo Style: Transparent "White Plate" look for EVERY ICON on site */
+      .icon-svg, .icon-nav, .icon-mt, .fab-icon { 
+        width: 48px; height: 48px; object-fit: contain; 
+        filter: invert(1) grayscale(1) brightness(2) contrast(1.2);
+        opacity: 0.9;
+        mix-blend-mode: screen; 
+      }
+      .icon-nav { width: 24px; height: 24px; filter: invert(0.5) grayscale(1); opacity: 0.6; }
+      .icon-mt { width: 32px; height: 32px; margin:0 auto 5px; } /* Reset stroke */
+      .fab-icon { width: 32px; height: 32px; }
+    `;
+    document.head.appendChild(css);
+  </script>
+
+
+  <script src="../vendor/swiper/swiper-bundle.min.js"></script>
+  <script>
+    var VK_PERSONAL_ID = 196783025;
+    var VK_COMMUNITY_ID = 209268664;
+    var TG_CONTACT_URL = 'https://t.me/Dmitrokko';
+    var VK_PERSONAL_CHAT_URL = 'https://vk.com/im?sel=' + VK_PERSONAL_ID;
+    var VK_CONTACT_URL = VK_PERSONAL_CHAT_URL;
+    var MAGIC_PRIZES = [
+      {
+        id: 0,
+        type: 'discount',
+        percent: 5,
+        userLabel: 'Скидка 5% на первое шоу',
+        adminLabel: 'Скидка 5% на первое шоу'
+      },
+      {
+        id: 1,
+        type: 'bonus',
+        userLabel: 'Секретный бонус к заказу',
+        adminLabel: 'Секретный бонус к заказу'
+      },
+      {
+        id: 2,
+        type: 'surprise',
+        userLabel: 'Сюрприз на мероприятии',
+        adminLabel: 'Сюрприз на мероприятии'
+      }
+    ];
+
+    function getTelegramViewer() {
+      try {
+        var tgUser = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe
+          ? window.Telegram.WebApp.initDataUnsafe.user
+          : null;
+        if (!tgUser) return null;
+        return {
+          id: tgUser.id || '',
+          username: tgUser.username || '',
+          name: [tgUser.first_name || '', tgUser.last_name || ''].join(' ').trim()
+        };
+      } catch (e) {
+        return null;
+      }
+    }
+
+    var site76MetricsState = {
+      counterId: '',
+      app: 'site76',
+      ready: false
+    };
+    var SITE76_FALLBACK_COUNTER_ID = '107696179';
+
+    function initYandexMetrika(counterId, appName) {
+      var normalizedId = String(counterId || '').trim();
+      if (!normalizedId) return;
+      if (site76MetricsState.ready && site76MetricsState.counterId === normalizedId) return;
+
+      site76MetricsState.counterId = normalizedId;
+      site76MetricsState.app = appName || 'site76';
+
+      function boot() {
+        if (typeof window.ym !== 'function' || site76MetricsState.ready) return;
+        window.ym(Number(site76MetricsState.counterId), 'init', {
+          clickmap: true,
+          trackLinks: true,
+          accurateTrackBounce: true,
+          webvisor: true,
+          trackHash: true
+        });
+        site76MetricsState.ready = true;
+        trackYandexGoal('miniapp_open', { app: site76MetricsState.app });
+      }
+
+      if (typeof window.ym === 'function') {
+        boot();
+        return;
+      }
+
+      if (!document.querySelector('script[data-ym-loader="site76"]')) {
+        var tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://mc.yandex.ru/metrika/tag.js';
+        tag.dataset.ymLoader = 'site76';
+        document.head.appendChild(tag);
+      }
+
+      var attempts = 0;
+      var timer = setInterval(function () {
+        attempts += 1;
+        if (typeof window.ym === 'function') {
+          clearInterval(timer);
+          boot();
+        } else if (attempts > 60) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    function trackYandexGoal(goalName, params) {
+      if (!site76MetricsState.ready || !site76MetricsState.counterId || typeof window.ym !== 'function') return;
+      try {
+        window.ym(Number(site76MetricsState.counterId), 'reachGoal', goalName, params || {});
+      } catch (e) { }
+    }
+
+    setTimeout(function () {
+      if (!site76MetricsState.ready) initYandexMetrika(SITE76_FALLBACK_COUNTER_ID, 'site76');
+    }, 2500);
+
+    var site76MagicPrizeMemory = null;
+
+    function saveMagicPrize(prize) {
+      site76MagicPrizeMemory = prize || null;
+      try {
+        if (!prize) {
+          localStorage.removeItem('site76_magic_prize');
+          sessionStorage.removeItem('site76_magic_prize');
+          return;
+        }
+        var serialized = JSON.stringify(prize);
+        localStorage.setItem('site76_magic_prize', serialized);
+        sessionStorage.setItem('site76_magic_prize', serialized);
+      } catch (e) {
+        try {
+          if (!prize) sessionStorage.removeItem('site76_magic_prize');
+          else sessionStorage.setItem('site76_magic_prize', JSON.stringify(prize));
+        } catch (err) { }
+      }
+    }
+
+    function getMagicPrize() {
+      try {
+        var raw = null;
+        try {
+          raw = localStorage.getItem('site76_magic_prize');
+        } catch (e) { }
+        if (!raw) {
+          try {
+            raw = sessionStorage.getItem('site76_magic_prize');
+          } catch (e) { }
+        }
+        if (!raw && site76MagicPrizeMemory) raw = JSON.stringify(site76MagicPrizeMemory);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        var prizeId = typeof parsed.id === 'number' ? parsed.id : parseInt(parsed.id, 10);
+        if (isNaN(prizeId)) return null;
+        var basePrize = MAGIC_PRIZES.find(function (item) { return item.id === prizeId; });
+        if (!basePrize) return null;
+        return {
+          id: basePrize.id,
+          type: basePrize.type,
+          percent: basePrize.percent || 0,
+          userLabel: basePrize.userLabel,
+          adminLabel: basePrize.adminLabel,
+          capturedAt: parsed.capturedAt || '',
+          source: 'magic-game'
+        };
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function buildVkPersonalChatUrl(message) {
+      var url = VK_PERSONAL_CHAT_URL;
+      if (message) url += '&message=' + encodeURIComponent(message);
+      return url;
+    }
+
+    function buildQuizContactMessage(summary) {
+      if (!summary) return '';
+      var lines = [
+        'Здравствуйте, Дмитрий.',
+        'Я прошел(а) квиз на сайте и хочу обсудить бронирование.',
+        'Заявка: ' + summary.leadId,
+        'Дата: ' + summary.date,
+        'Город: ' + summary.location,
+        'Формат: ' + summary.service + ' — ' + summary.duration
+      ];
+      if (summary.guestsLabel) lines.push('Гости: ' + summary.guestsLabel);
+      if (summary.hostLabel) lines.push('Ведущий: ' + summary.hostLabel);
+      if (summary.magicPrizeLabel) lines.push('Бонус из игры: ' + summary.magicPrizeLabel);
+      if (summary.priceText) lines.push('Расчет: ' + summary.priceText);
+      return lines.join('\n');
+    }
+
+    function buildQuizLeadPayload(summary, meta) {
+      meta = meta || {};
+      var viewer = getTelegramViewer();
+      return {
+        kind: meta.kind || 'quiz_completed',
+        leadId: summary.leadId,
+        channel: meta.channel || '',
+        note: meta.note || '',
+        source: 'site76_quiz',
+        viewer: viewer,
+        magic: summary.magicPrize || null,
+        order: {
+          area: qState.oblast || '',
+          city: qState.city || '',
+          date: summary.date,
+          guests: summary.guestsLabel || '',
+          audience: qState.audience || '',
+          service: summary.service,
+          duration: summary.duration,
+          host: summary.hostLabel || '',
+          wishes: qState.welcomeWishes || '',
+          price: summary.priceText || 'Нужно рассчитать вручную',
+          discount: summary.magicPrizeLabel || '',
+          deposit: summary.depositText || '',
+          holidayMultiplier: summary.holidayText || ''
+        }
+      };
+    }
+
+    async function sendQuizLead(summary, meta) {
+      meta = meta || {};
+      if (!summary || !summary.leadId) return;
+      trackYandexGoal('quiz_lead_sent', { channel: meta.channel || 'unknown', app: 'site76' });
+
+      qState.sentLeadEvents = qState.sentLeadEvents || {};
+      var eventKey = [summary.leadId, meta.kind || 'quiz_completed', meta.channel || 'none'].join(':');
+      if (qState.sentLeadEvents[eventKey]) return;
+      qState.sentLeadEvents[eventKey] = 'pending';
+
+      try {
+        var response = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          body: JSON.stringify(buildQuizLeadPayload(summary, meta)),
+          keepalive: true
+        });
+
+        if (!response.ok) throw new Error('Lead API returned ' + response.status);
+        var data = await response.json().catch(function () { return { ok: false }; });
+        if (!data || !data.ok) throw new Error('Lead API returned invalid payload');
+        qState.sentLeadEvents[eventKey] = 'done';
+      } catch (error) {
+        console.error('Quiz lead send failed:', error);
+        delete qState.sentLeadEvents[eventKey];
+      }
+    }
+
+    function handleQuizBookingChannel(channel) {
+      var summary = qState.lastQuizResult;
+      trackYandexGoal(channel === 'telegram' ? 'quiz_contact_vk_personal' : 'quiz_contact_vk', { app: 'site76' });
+      if (summary) {
+        sendQuizLead(summary, {
+          kind: 'quiz_contact_click',
+          channel: channel,
+          note: channel === 'vk'
+            ? 'Клиент нажал кнопку бронирования через VK.'
+            : 'Клиент нажал кнопку связи через личный VK.'
+        });
+      }
+
+      closeQuiz();
+      if (channel === 'vk') {
+        routeToMiniApp(buildVkPersonalChatUrl(summary ? summary.contactMessage : ''));
+        return;
+      }
+      routeToMiniApp(buildVkPersonalChatUrl(summary ? summary.contactMessage : ''));
+    }
+
+    // ===== CONCERTS CAROUSEL INIT =====
+    var concertsSwiper = new Swiper('.swiper-concerts', {
+      effect: 'coverflow', // Drum/3D effect
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: 'auto',
+      loop: false,
+      initialSlide: 0,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+      coverflowEffect: {
+        rotate: 40,
+        stretch: 0,
+        depth: 250,
+        modifier: 1,
+        slideShadows: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      on: {
+        slideChange: function () {
+          var idx = this.activeIndex;
+          var infos = document.querySelectorAll('.concert-info-box');
+          infos.forEach(function (el, i) {
+            if (i === idx) {
+              el.classList.add('active');
+            } else {
+              el.classList.remove('active');
+            }
+          });
+          if (window.haptic) haptic('light');
+        }
+      }
+    });
+
+    // ===== REVIEWS CAROUSEL INIT =====
+    var reviewsNode = document.querySelector('.swiper-reviews');
+    if (reviewsNode) {
+      new Swiper('.swiper-reviews', {
+        loop: true,
+        slidesPerView: 1,
+        spaceBetween: 10,
+        speed: 520,
+        autoHeight: true,
+        allowTouchMove: true,
+        navigation: {
+          nextEl: '.reviews-nav__next',
+          prevEl: '.reviews-nav__prev'
+        }
+      });
+    }
+
+    // ===== ROUTING =====
+    function routeToMiniApp(url) {
+      var targetUrl = String(url || '').trim();
+      if (!targetUrl) return;
+
+      try {
+        if (window.Telegram && window.Telegram.WebApp) {
+          if ((/^https:\/\/t\.me\//i.test(targetUrl) || /^tg:\/\//i.test(targetUrl)) && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
+            window.Telegram.WebApp.openTelegramLink(targetUrl);
+            return;
+          }
+          if (/^https?:\/\//i.test(targetUrl) && typeof window.Telegram.WebApp.openLink === 'function') {
+            window.Telegram.WebApp.openLink(targetUrl);
+            return;
+          }
+        }
+      } catch (e) { }
+
+      if (window.vkBridge && typeof vkBridge.send === 'function') {
+        vkBridge.send('VKWebAppOpenURL', { url: targetUrl })
+          .catch(function () {
+            vkBridge.send('VKWebAppOpenUrl', { url: targetUrl })
+              .catch(function () { window.open(targetUrl, '_blank', 'noopener'); });
+          });
+        return;
+      }
+
+      window.open(targetUrl, '_blank', 'noopener');
+    }
+
+    // ===== INLINE QUIZ & DYNAMIC CALCULATOR =====
+    var dynCfg = null;
+    var CALC_SERVICES = {
+      'Детское шоу': { '30 минут': 8000, '40 минут': 10000, 'Индивидуальное': 15000 },
+      'Стандартная шоу-программа': { '20 минут': 14000, '30 минут': 20000, '40 минут': 26000 },
+      'Индивидуальное шоу': { '20 минут': 20000, '30 минут': 28000, '40 минут': 36000 },
+      'Взрослое шоу': { '20 минут': 14000, '30 минут': 20000, '40 минут': 26000 },
+      'Микромагия': { '30 минут': 10000, '1 час': 16000, '2 часа': 24000, '3 часа': 30000 },
+      'Свадьба': { '20 минут': 20000, '30 минут': 27000 },
+      'Корпоратив': { '20 минут': 21000, '30 минут': 28000 },
+      'Юбилей': { '20 минут': 18000, '30 минут': 28000 },
+      'Выпускной': { '20 минут': 17000, '30 минут': 24000 }
+    };
+    var CALC_TRAVEL = {
+      'Ярославская': { 'Ярославль': 1000, 'Гаврилов-Ям': 2000, 'Тутаев': 2000, 'Ростов': 3000, 'Данилов': 3000, 'Рыбинск': 3000, 'Любим': 4000, 'Мышкин': 4000, 'Углич': 4000, 'Переславль': 4000, 'Пошехонье': 5000 },
+      'Ивановская': { 'Иваново': 2000, 'Кохма': 2000, 'Тейково': 3000, 'Фурманов': 3000, 'Шуя': 3000, 'Приволжск': 3000, 'Вичуга': 4000, 'Родники': 4000, 'Кинешма': 4000, 'Южа': 5000 },
+      'Костромская': { 'Кострома': 3000, 'Волгореченск': 3000, 'Нерехта': 3000, 'Галич': 4000, 'Буй': 5000, 'Мантурово': 5000, 'Шарья': 7000 },
+      'Владимирская': { 'Александров': 4000, 'Владимир': 5000, 'Ковров': 5000, 'Гусь-Хрустальный': 6000, 'Муром': 7000 },
+      'Вологодская': { 'Вологда': 5000, 'Сокол': 5500, 'Череповец': 7000 },
+      'Московская': { 'Москва': 6000, 'Химки': 7000, 'Мытищи': 7000, 'Люберцы': 7000, 'Красногорск': 7000, 'Королёв': 7000, 'Одинцово': 7000, 'Балашиха': 7000, 'Реутов': 7000, 'Подольск': 8000, 'Видное': 8000, 'Пушкино': 8000, 'Щёлково': 8000, 'Домодедово': 8000, 'Зеленоград': 8000, 'Сергиев Посад': 9000, 'Коломна': 9000 }
+    };
+    var CALC_HOLIDAYS = { '12-31': 2, '01-01': 2, '05-09': 1.4, '02-23': 1.3 };
+    var CALC_HOLIDAY_RANGES = [
+      { sm: 12, sd: 10, em: 12, ed: 30, k: 1.5 },
+      { sm: 1, sd: 2, em: 1, ed: 8, k: 1.3 },
+      { sm: 5, sd: 1, em: 5, ed: 3, k: 1.2 },
+      { sm: 5, sd: 4, em: 5, ed: 8, k: 1.3 },
+      { sm: 3, sd: 6, em: 3, ed: 8, k: 1.3 }
+    ];
+
+    function getCfgServices() { return (dynCfg && dynCfg.services) || CALC_SERVICES; }
+    function getCfgTravel() { return (dynCfg && dynCfg.travel) || CALC_TRAVEL; }
+    function getCfgHolidays() { return (dynCfg && dynCfg.holidays) || CALC_HOLIDAYS; }
+    function getCfgRanges() { return (dynCfg && dynCfg.holidayRanges) || CALC_HOLIDAY_RANGES; }
+    function getCfgDeposit() { return (dynCfg && dynCfg.deposit) || 50; }
+
+    function getTravelCost(oblast, city) {
+      var t = getCfgTravel();
+      var reg = t[oblast];
+      if (!reg) return 0;
+      if (reg.cities) return reg.cities[city] || 0;
+      return reg[city] || 0;
+    }
+
+    function getAvailableRegions() {
+      return Object.keys(getCfgTravel() || {});
+    }
+
+    function getAvailableCities(oblast) {
+      var reg = (getCfgTravel() || {})[oblast];
+      if (!reg) return [];
+      return Object.keys(reg.cities || reg || {});
+    }
+
+    function getHolidayMultiplier(month, day) {
+      if (!month || !day) return 1;
+      var key = String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      var keyLegacy = key.replace('-', '_');
+      var hols = getCfgHolidays();
+      if (hols[key]) return hols[key];
+      if (hols[keyLegacy]) return hols[keyLegacy];
+      var y = new Date().getFullYear();
+      var dateTs = new Date(y, month - 1, day).getTime();
+      var ranges = getCfgRanges();
+      for (var i = 0; i < ranges.length; i++) {
+        var r = ranges[i];
+        var startTs = new Date(y, r.sm - 1, r.sd).getTime();
+        var endTs = new Date(y, r.em - 1, r.ed).getTime();
+        if (endTs < startTs) {
+          if (dateTs >= startTs || dateTs <= endTs) return r.k;
+        } else {
+          if (dateTs >= startTs && dateTs <= endTs) return r.k;
+        }
+      }
+      return 1;
+    }
+
+    function rub(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽'; }
+
+    // Fetch dynamic config on load
+    window.addEventListener('load', function () {
+      fetch('/api/prices')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.services) dynCfg = data;
+          if (data && data.metrics && data.metrics.yandexCounterId) {
+            initYandexMetrika(data.metrics.yandexCounterId, 'site76');
+          }
+        })
+        .catch(err => {
+          console.error('Using fallback prices.', err);
+          if (!site76MetricsState.ready) initYandexMetrika(SITE76_FALLBACK_COUNTER_ID, 'site76');
+        });
+    });
+
+    // Quiz State
+    var qState = {
+      step: '', // start, month, day, time, oblast, city, audience, guests, vedushchy, category, indiv_sub, welcome_wishes, duration
+      month: 0, day: 0, time: '',
+      oblast: '', city: '',
+      audience: '', guests: '', vedushchy: '',
+      category: '', indivEvent: '', welcomeWishes: '',
+      serviceType: '', duration: '',
+      history: [], // stack of steps to go back
+      lastQuizResult: null,
+      sentLeadEvents: {}
+    };
+
+    var uiTitle = '';
+    var uiButtons = []; // {label, color, val}
+    var uiInput = null; // {placeholder}
+
+    function pushState(newStep) {
+      qState.history.push(qState.step);
+      qState.step = newStep;
+      renderActiveStep();
+    }
+    function popState() {
+      if (qState.history.length === 0) return;
+      qState.step = qState.history.pop();
+      renderActiveStep();
+    }
+
+    function renderActiveStep() {
+      uiButtons = []; uiInput = null; uiTitle = '';
+      var s = qState.step;
+
+      if (s === 'start') {
+        uiTitle = 'Чтобы узнать стоимость, вам нужно будет ответить на несколько вопросов.\nЭто займет не более минуты. Готовы?';
+        uiButtons = [{ label: 'Далее →', val: 'start', color: 'primary' }];
+      }
+      else if (s === 'month') {
+        uiTitle = 'В каком месяце будет праздник?';
+        var mNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        mNames.forEach((n, i) => uiButtons.push({ label: n, val: i + 1 }));
+      }
+      else if (s === 'day') {
+        uiTitle = 'Месяц: ' + ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'][qState.month - 1] + '\nВыберите число:';
+        var days31 = [1, 3, 5, 7, 8, 10, 12];
+        var maxDay = qState.month === 2 ? 29 : days31.includes(qState.month) ? 31 : 30;
+        for (var i = 1; i <= maxDay; i++) uiButtons.push({ label: i.toString(), val: i });
+      }
+      else if (s === 'time') {
+        uiTitle = 'Напишите примерное время начала\n(например: 18:00, вечером)';
+        uiInput = { placeholder: 'Введите время...' };
+        uiButtons = [{ label: '🕒 Пока не знаю', val: 'Не указано', color: 'secondary' }];
+      }
+      else if (s === 'oblast') {
+        uiTitle = 'Шаг 2 из 3: Локация\nВыберите область:';
+        getAvailableRegions().forEach(ob => uiButtons.push({ label: ob, val: ob }));
+      }
+      else if (s === 'city') {
+        uiTitle = 'Область: ' + qState.oblast + '\nВыберите город:';
+        var cities = getAvailableCities(qState.oblast);
+        cities.forEach(c => uiButtons.push({ label: c, val: c }));
+      }
+      else if (s === 'audience') {
+        uiTitle = 'Шаг 3 из 3: Формат\nДля кого шоу?';
+        uiButtons = [
+          { label: '👶 Для детей', val: 'детское', color: 'primary' },
+          { label: '🎭 Для взрослых', val: 'взрослые', color: 'primary' }
+        ];
+      }
+      else if (s === 'guests') {
+        uiTitle = 'Сколько примерно будет гостей?';
+        uiButtons = [
+          { label: '👤 До 30 человек', val: 'мало' },
+          { label: '👥 Больше 30 человек', val: 'много' }
+        ];
+      }
+      else if (s === 'vedushchy') {
+        uiTitle = 'Будет ли на мероприятии ведущий?';
+        uiButtons = [
+          { label: '✅ Есть ведущий', val: 'Да' },
+          { label: '❌ Нет ведущего', val: 'Нет' }
+        ];
+      }
+      else if (s === 'category') {
+        uiTitle = 'Выберите формат шоу:';
+        uiButtons = [
+          { label: '🎭 Стандартная шоу-программа', val: 'Стандартная шоу-программа' },
+          { label: '🎪 Индивидуальное шоу', val: 'Индивидуальное шоу' },
+          { label: '🪄 Фокусы на встречу гостей / Фуршет', val: 'Микромагия' }
+        ];
+      }
+      else if (s === 'indiv_sub') {
+        uiTitle = '🎪 Индивидуальное шоу\nКакое у вас событие?';
+        uiButtons = [
+          { label: '🎓 Выпускной', val: 'Выпускной' },
+          { label: '💍 Свадьба', val: 'Свадьба' },
+          { label: '🏢 Корпоратив', val: 'Корпоратив' },
+          { label: '🎂 Юбилей', val: 'Юбилей' }
+        ];
+      }
+      else if (s === 'welcome_wishes') {
+        uiTitle = '🪄 Микромагия / Фуршет\nЧто вы хотите видеть? Опишите в свободной форме:';
+        uiInput = { placeholder: 'Пожелания к формату...' };
+      }
+      else if (s === 'duration') {
+        if (qState.serviceType === 'Детское шоу') {
+          uiTitle = '👶 Для детей\nВыберите длительность:';
+          uiButtons = [{ label: '30 минут', val: '30 минут' }, { label: '40 минут', val: '40 минут' }, { label: 'Индивидуальное (шоу + МК)', val: 'Индивидуальное' }];
+        } else if (qState.serviceType === 'Стандартная шоу-программа' || qState.serviceType === 'Индивидуальное шоу') {
+          uiTitle = qState.serviceType + '\nВыберите длительность:';
+          uiButtons = [{ label: '20 минут', val: '20 минут' }, { label: '30 минут', val: '30 минут' }, { label: '40 минут', val: '40 минут' }];
+        } else if (qState.serviceType === 'Микромагия_мало') {
+          uiTitle = '🪄 Микромагия (До 30 чел)\nФокусы на расстоянии вытянутой руки.\nВыберите длительность:';
+          uiButtons = [{ label: '30 минут', val: '30 минут' }, { label: '1 час', val: '1 час' }];
+        } else if (qState.serviceType === 'Микромагия_много') {
+          uiTitle = '🪄 Микромагия (Фуршет)\nВыберите длительность:';
+          uiButtons = [{ label: '30 минут', val: '30 минут' }, { label: '1 час', val: '1 час' }, { label: '2 часа', val: '2 часа' }, { label: '3 часа', val: '3 часа' }];
+        }
+      }
+
+      drawQuizHTML();
+    }
+
+    function drawQuizHTML() {
+      var html = '';
+      var progress = 0;
+      if (['start', 'month', 'day', 'time'].includes(qState.step)) progress = 33;
+      if (['oblast', 'city'].includes(qState.step)) progress = 66;
+      if (['audience', 'guests', 'vedushchy', 'category', 'indiv_sub', 'welcome_wishes', 'duration'].includes(qState.step)) progress = 95;
+
+      html += '<div style="margin-bottom:24px;">'
+        + '<div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;">'
+        + '<div style="height:4px;background:#CBA135;border-radius:2px;width:' + progress + '%;transition:.3s;"></div>'
+        + '</div></div>';
+
+      var titleParts = uiTitle.split('\n');
+      html += '<h3 style="font-family:var(--ff-head);color:#fff;font-size:20px;margin-bottom:8px;">' + titleParts[0] + '</h3>';
+      if (titleParts[1]) html += '<p style="color:#aaa;font-size:15px;margin-bottom:20px;line-height:1.4;">' + titleParts[1] + '</p><br>';
+
+      if (uiInput) {
+        html += '<input id="qDynInput" type="text" placeholder="' + uiInput.placeholder + '" style="width:100%;background:#12121f;color:#eee;border:1px solid rgba(203,161,40,0.4);border-radius:10px;padding:14px 16px;font-size:16px;outline:none;box-sizing:border-box;margin-bottom:20px;" onkeydown="if(event.key===\'Enter\')handleDynInput()">';
+        html += '<button onclick="handleDynInput()" class="btn btn--primary" style="width:100%;">Далее →</button>';
+      }
+
+      if (uiButtons.length > 0) {
+        html += '<div style="display:flex;flex-wrap:wrap;gap:10px;">';
+        uiButtons.forEach(b => {
+          var bg = b.color === 'primary' ? 'linear-gradient(135deg,var(--gold),var(--gold2))' : 'rgba(203,161,40,0.1)';
+          var color = b.color === 'primary' ? '#111' : '#eee';
+          var hoverBg = b.color === 'primary' ? bg : 'rgba(203,161,40,0.25)';
+          var flex = ['day', 'month', 'duration', 'indiv_sub'].includes(qState.step) ? 'flex: 1 1 calc(33% - 10px); min-width:80px; text-align:center;' : 'width:100%; text-align:left;';
+          if (qState.step === 'month' || qState.step === 'duration' || qState.step === 'indiv_sub') flex = 'flex: 1 1 calc(50% - 10px); min-width:120px; text-align:center;';
+          if (qState.step === 'start') flex = 'width:100%; text-align:center;';
+
+          html += '<button onclick="handleDynClick(\'' + String(b.val) + '\')" style="background:' + bg + ';border:1px solid rgba(203,161,40,0.35);color:' + color + ';border-radius:10px;padding:14px 16px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;' + flex + '" onmouseover="this.style.background=\'' + hoverBg + '\'" onmouseout="this.style.background=\'' + bg + '\'">' + b.label + '</button>';
+        });
+        html += '</div>';
+      }
+
+      var activeMagicPrize = getMagicPrize();
+      if (qState.step === 'start' && activeMagicPrize) {
+        html += '<div style="margin-top:14px;margin-bottom:16px;padding:12px 14px;border-radius:12px;background:rgba(143,210,160,0.08);border:1px solid rgba(143,210,160,0.25);color:#cfe8d4;font-size:14px;line-height:1.45;">🎁 Активный бонус из игры: <b style="color:#8fd2a0;">' + activeMagicPrize.userLabel + '</b></div>';
+      }
+
+      if (qState.history.length > 0) {
+        html += '<button onclick="routeToMiniApp(\'' + VK_CONTACT_URL + '\')" style="margin-top:20px;width:100%;text-align:center;background:none;border:1px dashed rgba(255,255,255,0.2);color:#ccc;padding:12px;border-radius:8px;font-size:14px;cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor=\'var(--gold)\';this.style.color=\'#fff\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.2)\';this.style.color=\'#ccc\'">💬 Написать лично</button>';
+        html += '<div style="text-align:center;"><button onclick="popState()" style="margin-top:12px;background:none;border:none;color:#888;font-size:14px;cursor:pointer;padding:8px 0;">← Назад</button></div>';
+      } else if (qState.step === 'start') {
+        html += '<button onclick="routeToMiniApp(\'' + VK_CONTACT_URL + '\')" style="margin-top:20px;width:100%;text-align:center;background:none;border:1px dashed rgba(255,255,255,0.2);color:#ccc;padding:12px;border-radius:8px;font-size:14px;cursor:pointer;transition:.2s;" onmouseover="this.style.borderColor=\'var(--gold)\';this.style.color=\'#fff\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.2)\';this.style.color=\'#ccc\'">💬 Или написать лично</button>';
+      }
+
+      document.getElementById('quizContent').innerHTML = html;
+      var inp = document.getElementById('qDynInput');
+      if (inp) { inp.focus(); }
+    }
+
+    function handleDynClick(val) {
+      if (qState.step === 'start') { pushState('month'); return; }
+      if (qState.step === 'month') { qState.month = parseInt(val); pushState('day'); return; }
+      if (qState.step === 'day') { qState.day = parseInt(val); pushState('time'); return; }
+      if (qState.step === 'time') { qState.time = val; pushState('oblast'); return; }
+      if (qState.step === 'oblast') { qState.oblast = val; pushState('city'); return; }
+      if (qState.step === 'city') { qState.city = val; pushState('audience'); return; }
+
+      if (qState.step === 'audience') {
+        qState.audience = val;
+        if (val === 'детское') { qState.serviceType = 'Детское шоу'; pushState('duration'); }
+        else { pushState('guests'); }
+        return;
+      }
+      if (qState.step === 'guests') {
+        qState.guests = val;
+        if (val === 'мало') { qState.serviceType = 'Микромагия_мало'; pushState('duration'); }
+        else { pushState('vedushchy'); }
+        return;
+      }
+      if (qState.step === 'vedushchy') { qState.vedushchy = val; pushState('category'); return; }
+      if (qState.step === 'category') {
+        qState.category = val;
+        if (val === 'Индивидуальное шоу') { pushState('indiv_sub'); }
+        else if (val === 'Микромагия') { qState.serviceType = 'Микромагия_много'; pushState('welcome_wishes'); }
+        else { qState.serviceType = 'Стандартная шоу-программа'; pushState('duration'); }
+        return;
+      }
+      if (qState.step === 'indiv_sub') {
+        qState.indivEvent = val; qState.serviceType = 'Индивидуальное шоу'; pushState('duration'); return;
+      }
+      if (qState.step === 'duration') {
+        qState.duration = val;
+        finishDynQuiz();
+        return;
+      }
+    }
+
+    function handleDynInput() {
+      var val = (document.getElementById('qDynInput') || {}).value || '';
+      if (qState.step === 'time') { qState.time = val || 'Не указано'; pushState('oblast'); return; }
+      if (qState.step === 'welcome_wishes') { qState.welcomeWishes = val || 'Нет'; pushState('duration'); return; }
+    }
+
+    function calcFinalPrice() {
+      // Logic from vkbot.js calcPrice
+      var mappedType = qState.serviceType;
+      var mappedDur = qState.duration;
+      if (mappedType === 'Микромагия_мало' || mappedType === 'Микромагия_много') mappedType = 'Микромагия';
+      if (mappedType === 'Стандартная шоу-программа') mappedType = 'Взрослое шоу';
+      if (mappedType === 'Индивидуальное шоу') mappedType = qState.indivEvent || 'Выпускной';
+
+      var svcEntry = (getCfgServices()[mappedType] || {})[mappedDur];
+      var serviceBase = typeof svcEntry === 'object' ? (svcEntry.price || 0) : (svcEntry || 0);
+      if (!serviceBase) return null;
+
+      var travelCost = getTravelCost(qState.oblast, qState.city);
+      var mult = getHolidayMultiplier(qState.month, qState.day);
+      var originalTotal = Math.round((serviceBase + travelCost) * mult);
+      var magicPrize = getMagicPrize();
+      var discountAmount = 0;
+      if (magicPrize && magicPrize.type === 'discount' && magicPrize.percent > 0) {
+        discountAmount = Math.round(originalTotal * (magicPrize.percent / 100));
+      }
+      var total = Math.max(originalTotal - discountAmount, 0);
+      var depositPct = getCfgDeposit() / 100;
+      var deposit = Math.round(total * depositPct);
+
+      return {
+        total: total,
+        originalTotal: originalTotal,
+        discountAmount: discountAmount,
+        deposit: deposit,
+        travel: travelCost,
+        mult: mult,
+        magicPrize: magicPrize
+      };
+    }
+
+    function finishDynQuiz() {
+      trackYandexGoal('quiz_completed', { app: 'site76' });
+      var dateStr = qState.day + '.' + qState.month + ' / ' + qState.time;
+      var locStr = qState.oblast + ', ' + qState.city;
+      var typeStr = (qState.serviceType === 'Микромагия_мало' || qState.serviceType === 'Микромагия_много') ? 'Микромагия' : qState.serviceType;
+      if (qState.indivEvent) typeStr += ' (' + qState.indivEvent + ')';
+
+      var price = calcFinalPrice();
+      var magicPrize = getMagicPrize();
+      var guestsLabel = qState.guests ? (qState.guests === 'мало' ? 'До 30' : 'Больше 30') : '';
+      var leadId = 'QZ-' + Date.now().toString().slice(-8);
+      var priceText = price ? rub(price.total) : '';
+      var depositText = price ? rub(price.deposit) : '';
+      var holidayText = price && price.mult > 1 ? price.mult + 'x' : '';
+
+      var msg = '🎩 Расчёт с сайта\n\n'
+        + '📅 Дата: ' + dateStr + '\n📍 Город: ' + locStr + '\n'
+        + '🎪 Формат: ' + typeStr + ' — ' + qState.duration + '\n';
+
+      if (qState.guests) msg += '👥 Гости: ' + guestsLabel + '\n';
+      if (qState.vedushchy) msg += '🎤 Ведущий: ' + qState.vedushchy + '\n';
+      if (qState.welcomeWishes) msg += '✨ Пожелания: ' + qState.welcomeWishes + '\n';
+      if (magicPrize) msg += '🎁 Бонус из игры: ' + magicPrize.userLabel + '\n';
+      if (qState.serviceType === 'Детское шоу') msg += '\n📌 Каждый ребенок сверх 10 = +1 000 руб.\n';
+
+      var html = '<div style="text-align:center;">';
+      html += '<div style="font-size:48px;margin-bottom:10px;">✅</div>';
+
+      if (price) {
+        msg += '\n💰 Расчёт:\nИтого: ' + rub(price.total) + '\nПредоплата: ' + rub(price.deposit);
+        html += '<h3 style="font-family:var(--ff-head);color:var(--gold);font-size:24px;margin-bottom:20px;">Ваш предварительный расчет</h3>';
+        html += '<div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(203,161,40,0.3);padding:16px;border-radius:12px;margin-bottom:24px;">';
+        if (price.discountAmount > 0) {
+          html += '<p style="color:#777;font-size:14px;margin-bottom:6px;text-decoration:line-through;">Без бонуса: ' + rub(price.originalTotal) + '</p>';
+        }
+        html += '<p style="color:#eee;font-size:16px;margin-bottom:8px;">Итоговая стоимость: <b style="color:var(--gold);font-size:20px;">' + rub(price.total) + '</b></p>';
+        html += '<p style="color:#aaa;font-size:14px;">Размер предоплаты: ' + rub(price.deposit) + '</p>';
+        if (price.magicPrize) {
+          html += '<p style="color:#8fd2a0;font-size:13px;margin-top:8px;">Активирован бонус: ' + price.magicPrize.userLabel + '</p>';
+        }
+        if (price.mult > 1) html += '<p style="color:#e96;font-size:12px;margin-top:6px;">*Учтена праздничная наценка ' + price.mult + 'x</p>';
+        html += '<p style="color:#88a;font-size:13px;margin-top:2px;">*Это сумма под ключ</p>';
+        html += '</div>';
+        html += '<p style="color:#ccc;font-size:14px;margin-bottom:24px;line-height:1.5;">Теперь вы можете сразу написать Дмитрию в личку ВКонтакте. Контекст квиза и бонус из игры автоматически отправятся в уведомление, чтобы разговор начался уже по делу.</p>';
+        html += '<button onclick="handleQuizBookingChannel(\'vk\')" class="btn btn--primary" style="width:100%;margin-bottom:12px;font-size:17px;">Забронировать в VK</button>';
+        html += '<button onclick="handleQuizBookingChannel(\'telegram\')" class="btn" style="width:100%;margin-bottom:12px;font-size:17px;">Написать лично в VK</button>';
+      } else {
+        html += '<h3 style="font-family:var(--ff-head);color:var(--gold);font-size:24px;margin-bottom:20px;">Заявка сформирована</h3>';
+        html += '<p style="color:#ccc;font-size:14px;margin-bottom:24px;line-height:1.5;">К сожалению, точную стоимость рассчитать автоматически не удалось. Но контекст уже сохранён: Дмитрий увидит ответы квиза и сможет быстро дать точную стоимость в удобном вам канале.</p>';
+        html += '<button onclick="handleQuizBookingChannel(\'vk\')" class="btn btn--primary" style="width:100%;margin-bottom:12px;font-size:17px;">Написать в VK</button>';
+        html += '<button onclick="handleQuizBookingChannel(\'telegram\')" class="btn" style="width:100%;margin-bottom:12px;font-size:17px;">Написать лично в VK</button>';
+      }
+
+      html += '<div style="display:flex;justify-content:center;gap:20px;">';
+      html += '<button onclick="popState()" style="background:none;border:none;color:#888;font-size:14px;cursor:pointer;">← Назад</button>';
+      html += '<button onclick="closeQuiz()" style="background:none;border:none;color:#888;font-size:14px;cursor:pointer;">Закрыть</button>';
+      html += '</div>';
+      html += '</div>';
+
+      qState.lastQuizResult = {
+        leadId: leadId,
+        date: dateStr,
+        location: locStr,
+        service: typeStr,
+        duration: qState.duration,
+        guestsLabel: guestsLabel,
+        hostLabel: qState.vedushchy || '',
+        wishes: qState.welcomeWishes || '',
+        priceText: priceText,
+        depositText: depositText,
+        holidayText: holidayText,
+        magicPrize: magicPrize,
+        magicPrizeLabel: magicPrize ? magicPrize.userLabel : '',
+        contactMessage: '',
+        rawMessage: msg
+      };
+      qState.lastQuizResult.contactMessage = buildQuizContactMessage(qState.lastQuizResult);
+
+      document.getElementById('quizContent').innerHTML = html;
+      sendQuizLead(qState.lastQuizResult, { kind: 'quiz_completed', note: 'Клиент завершил квиз и увидел итоговый экран.' });
+    }
+
+    function openQuiz() {
+      qState = {
+        step: 'start',
+        month: 0,
+        day: 0,
+        time: '',
+        oblast: '',
+        city: '',
+        audience: '',
+        guests: '',
+        vedushchy: '',
+        category: '',
+        indivEvent: '',
+        welcomeWishes: '',
+        serviceType: '',
+        duration: '',
+        history: [],
+        lastQuizResult: null,
+        sentLeadEvents: {}
+      };
+      document.getElementById('quizOverlay').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      renderActiveStep();
+    }
+    function closeQuiz() {
+      document.getElementById('quizOverlay').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function quizSendToVK(msg) {
+      closeQuiz();
+      routeToMiniApp(buildVkPersonalChatUrl(msg));
+    }
+    function routeToBotForPrivate() { openAssistant(); }
+
+    // ===== AI ASSISTANT =====
+    var assistantMessages = []; // history { role, content }
+    var assistantBusy = false;
+
+    function openAssistant() {
+      var ov = document.getElementById('assistantOverlay');
+      ov.style.display = 'block';
+
+      // Первое приветствие — два сообщения с эффектом "печатает"
+      if (assistantMessages.length === 0) {
+        var greeting1 = 'Здравствуйте! Меня зовут Екатерина 🤝';
+        var greeting2 = 'Я менеджер Дмитрия Костюка. Расскажите про ваше мероприятие — посчитаю точную стоимость.';
+
+        // показываем "печатает" сразу
+        addAssistantTyping();
+
+        setTimeout(function () {
+          removeAssistantTyping();
+          assistantMessages.push({ role: 'assistant', content: greeting1 });
+          streamAssistantReply(greeting1).then(function () {
+            // короткая пауза → опять "печатает" → второе сообщение
+            setTimeout(function () {
+              addAssistantTyping();
+              setTimeout(function () {
+                removeAssistantTyping();
+                assistantMessages.push({ role: 'assistant', content: greeting2 });
+                streamAssistantReply(greeting2);
+              }, 900);
+            }, 350);
+          });
+        }, 700);
+      }
+
+      setTimeout(function () {
+        var input = document.getElementById('assistantInput');
+        if (input) input.focus();
+      }, 150);
+    }
+
+    function closeAssistant() {
+      document.getElementById('assistantOverlay').style.display = 'none';
+    }
+
+    function addAssistantBubble(role, text) {
+      var box = document.getElementById('assistantMessages');
+      if (!box) return;
+      var bubble = document.createElement('div');
+      var isUser = role === 'user';
+      bubble.style.cssText = [
+        'max-width: 85%',
+        'padding: 10px 14px',
+        'border-radius: 16px',
+        'font-size: 14px',
+        'line-height: 1.45',
+        'white-space: pre-wrap',
+        'word-wrap: break-word',
+        isUser
+          ? 'align-self: flex-end; background: rgba(203,161,40,0.18); color: #fff; border: 1px solid rgba(203,161,40,0.25)'
+          : 'align-self: flex-start; background: rgba(255,255,255,0.05); color: #eee; border: 1px solid rgba(255,255,255,0.06)'
+      ].join(';');
+      bubble.textContent = text;
+      box.appendChild(bubble);
+      box.scrollTop = box.scrollHeight;
+      return bubble;
+    }
+
+    function addAssistantTyping() {
+      var box = document.getElementById('assistantMessages');
+      if (!box) return null;
+      var b = document.createElement('div');
+      b.id = 'assistantTyping';
+      b.style.cssText = 'align-self:flex-start;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);border-radius:16px;display:flex;align-items:center;gap:4px;';
+      b.innerHTML =
+        '<span class="td"></span><span class="td"></span><span class="td"></span>';
+      box.appendChild(b);
+      box.scrollTop = box.scrollHeight;
+      return b;
+    }
+    function removeAssistantTyping() {
+      var t = document.getElementById('assistantTyping');
+      if (t) t.remove();
+    }
+
+    // Постепенный вывод текста как живой набор
+    function streamAssistantReply(fullText) {
+      return new Promise(function (resolve) {
+        var box = document.getElementById('assistantMessages');
+        if (!box) { resolve(); return; }
+        var bubble = document.createElement('div');
+        bubble.style.cssText = [
+          'max-width: 85%',
+          'padding: 10px 14px',
+          'border-radius: 16px',
+          'font-size: 14px',
+          'line-height: 1.45',
+          'white-space: pre-wrap',
+          'word-wrap: break-word',
+          'align-self: flex-start',
+          'background: rgba(255,255,255,0.05)',
+          'color: #eee',
+          'border: 1px solid rgba(255,255,255,0.06)'
+        ].join(';');
+        box.appendChild(bubble);
+
+        // Бьём текст на слова, чтобы шёл естественный набор
+        var words = fullText.split(/(\s+)/); // сохраняем пробелы между словами
+        var i = 0;
+        var current = '';
+
+        function step() {
+          if (i >= words.length) { resolve(); return; }
+          current += words[i];
+          bubble.textContent = current;
+          box.scrollTop = box.scrollHeight;
+          i++;
+          // 35-90мс на слово + случайная микро-пауза для оживления
+          var word = words[i - 1] || '';
+          var delay = 35 + Math.random() * 55;
+          if (word.length > 6) delay += 30;
+          // Иногда лёгкая «задумчивая» пауза после точки/запятой
+          if (/[.!?]$/.test(word.trim())) delay += 250;
+          else if (/[,;:]$/.test(word.trim())) delay += 120;
+          setTimeout(step, delay);
+        }
+        step();
+      });
+    }
+
+    function sendAssistantMessage(e) {
+      if (e) e.preventDefault();
+      if (assistantBusy) return false;
+      var input = document.getElementById('assistantInput');
+      var sendBtn = document.getElementById('assistantSend');
+      var text = (input.value || '').trim();
+      if (!text) return false;
+
+      addAssistantBubble('user', text);
+      assistantMessages.push({ role: 'user', content: text });
+      input.value = '';
+      assistantBusy = true;
+      sendBtn.disabled = true;
+      sendBtn.style.opacity = '0.5';
+      addAssistantTyping();
+
+      // контекст текущего шага квиза
+      var quizContext = {};
+      try {
+        if (typeof qState !== 'undefined' && qState) {
+          quizContext.step = qState.step || '';
+          quizContext.selected = {
+            month: qState.month, day: qState.day, time: qState.time,
+            oblast: qState.oblast, city: qState.city,
+            category: qState.category, duration: qState.duration,
+            guests: qState.guests
+          };
+        }
+      } catch (_) { }
+
+      // Засекаем время запроса для минимальной задержки «человечности»
+      var startTime = Date.now();
+      var MIN_THINK = 900 + Math.random() * 600; // 0.9-1.5s — будто менеджер читает
+
+      // sessionId — стабильный ID этого посетителя в localStorage
+      var sessionId = '';
+      try {
+        sessionId = localStorage.getItem('ekat_sid') || '';
+        if (!sessionId) {
+          sessionId = 'sid_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+          localStorage.setItem('ekat_sid', sessionId);
+        }
+      } catch (_) { }
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: assistantMessages, quizContext: quizContext, sessionId: sessionId })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          // Гарантируем минимальную задержку перед стартом печати
+          var elapsed = Date.now() - startTime;
+          var wait = Math.max(0, MIN_THINK - elapsed);
+          return new Promise(function (resolve) {
+            setTimeout(function () { resolve(data); }, wait);
+          });
+        })
+        .then(function (data) {
+          removeAssistantTyping();
+          if (data && data.ok && data.reply) {
+            assistantMessages.push({ role: 'assistant', content: data.reply });
+            return streamAssistantReply(data.reply);
+          } else {
+            addAssistantBubble('assistant', 'Извините, не удалось получить ответ. Попробуйте позже.');
+          }
+        })
+        .catch(function () {
+          removeAssistantTyping();
+          addAssistantBubble('assistant', 'Извините, я временно недоступен. Попробуйте чуть позже.');
+        })
+        .finally(function () {
+          assistantBusy = false;
+          sendBtn.disabled = false;
+          sendBtn.style.opacity = '1';
+          if (input) input.focus();
+        });
+
+      return false;
+    }
+
+    // Lightbox Logic
+    function openLightbox(el) {
+      var lb = document.getElementById('lightbox');
+      var lbImg = document.getElementById('lbImg');
+      if (!lb || !lbImg || !el) return;
+      var imgPath;
+      if (el.tagName === 'IMG') {
+        imgPath = el.src;
+      } else if (el.tagName === 'DIV' && el.classList.contains('swiper-slide')) {
+        imgPath = el.querySelector('img').src;
+      }
+      if (imgPath) {
+        lbImg.src = imgPath;
+        lb.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeLightbox() {
+      var lb = document.getElementById('lightbox');
+      var lbImg = document.getElementById('lbImg');
+      if (!lb || !lbImg) return;
+      lb.classList.remove('active');
+      document.body.style.overflow = '';
+      lbImg.src = '';
+    }
+
+    function initBrandsMarquee() {
+      var track = document.getElementById('brandsTrack');
+      if (!track) return;
+      var sets = track.querySelectorAll('.brand-set');
+      if (!sets.length) return;
+
+      var firstSet = sets[0];
+      var recalc = function () {
+        var shift = Math.round(firstSet.getBoundingClientRect().width || 0);
+        if (!shift) return;
+        track.style.setProperty('--brands-shift', shift + 'px');
+        var duration = Math.max(14, shift / 65);
+        track.style.setProperty('--brands-duration', duration.toFixed(2) + 's');
+      };
+
+      recalc();
+      window.addEventListener('resize', recalc, { passive: true });
+      track.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) {
+          img.addEventListener('load', recalc, { once: true });
+          img.addEventListener('error', recalc, { once: true });
+        }
+      });
+    }
+
+    // Initialize Gallery Swiper
+    document.addEventListener("DOMContentLoaded", function () {
+      initBrandsMarquee();
+      new Swiper('.swiper-gallery', {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        coverflowEffect: {
+          rotate: 40,
+          stretch: 0,
+          depth: 250,
+          modifier: 1,
+          slideShadows: true,
+        },
+        loop: true,
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: '.swiper-pagination',
+        },
+      });
+    });
+  </script>
+
+  <!-- ===== KOSTYUK PORTAL OVERLAY ===== -->
+  <div id="kostyukPortal">
+    <div class="kp-vignette"></div>
+    <div class="kp-rays">
+      <div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div>
+      <div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div>
+    </div>
+    <div class="kp-ring-outer"></div>
+    <div class="kp-ring-inner"></div>
+    <div class="kp-core"></div>
+    <div class="kp-name" id="kpName"></div>
+  </div>
+  <script>
+    function toggleProjectSwitcher(open) {
+      var switcher = document.getElementById('projectSwitcher');
+      if (!switcher) return;
+      switcher.classList.toggle('is-open', !!open);
+      switcher.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') toggleProjectSwitcher(false);
+    });
+    (function(){
+      var nameEl = document.getElementById('kpName');
+      'KOSTYUK PROJECT'.split('').forEach(function(ch, i){
+        var s = document.createElement('span');
+        s.textContent = ch === ' ' ? ' ' : ch;
+        s.style.animationDelay = (0.45 + i * 0.07) + 's';
+        nameEl.appendChild(s);
+      });
+      var portal = document.getElementById('kostyukPortal');
+      for (var i = 0; i < 60; i++){
+        var st = document.createElement('div');
+        st.className = 'kp-star';
+        st.style.left = Math.random() * 100 + 'vw';
+        st.style.top  = Math.random() * 100 + 'vh';
+        st.style.animationDelay = (Math.random() * 0.8) + 's';
+        st.style.transform = 'scale(' + (0.5 + Math.random() * 1.5) + ')';
+        portal.appendChild(st);
+      }
+    })();
+    function startSchoolTransition(e) {
+      if (e) e.preventDefault();
+      var url = (e && e.currentTarget && e.currentTarget.getAttribute('href')) || '/school/#video';
+      document.getElementById('kostyukPortal').classList.add('active');
+      setTimeout(function () { window.location.href = url; }, 1750);
+      return false;
+    }
+  </script>
+
+  <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
+  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.27-2.03-.49-.82-.27-1.47-.41-1.42-.87.03-.24.36-.49 1-.75 3.92-1.71 6.53-2.84 7.83-3.39 3.73-1.56 4.5-1.83 5.01-1.84.11 0 .36.03.52.16.14.11.18.26.2.37.02.1.03.3.01.47z"/>
+    </svg>
+  </a>
+  <style>
+    .tg-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      background: #24A1DE;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(36, 161, 222, 0.4);
+      z-index: 99999;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    }
+    .tg-float:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(36, 161, 222, 0.6);
+    }
+    @media (max-width: 600px) {
+      .tg-float {
+        bottom: 85px; /* Offset to clear mobile bottom navigation bar */
+        right: 16px;
+        width: 50px;
+        height: 50px;
+      }
+      .tg-float svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  </style>
+
+</body>
+
+</html>

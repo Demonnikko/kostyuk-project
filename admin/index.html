@@ -1628,6 +1628,10 @@
           <div class="ftab" onclick="switchConfigTab('travel', this)">🚗 Выезд в регионы</div>
           <div class="ftab" onclick="switchConfigTab('coef', this)">🎉 Коэффициенты</div>
           <div class="ftab" onclick="switchConfigTab('ai', this)">🤖 Инструкции ИИ</div>
+          <div class="ftab" onclick="switchConfigTab('bonuses', this)">🎁 Бонусы</div>
+          <div class="ftab" onclick="switchConfigTab('payments', this)">💳 Реквизиты</div>
+          <div class="ftab" onclick="switchConfigTab('orders', this)">📋 Частные заказы</div>
+          <div class="ftab" onclick="switchConfigTab('broadcast', this)">📢 Рассылка</div>
         </div>
 
         <!-- Содержимое вкладок -->
@@ -1943,6 +1947,128 @@
                 </div>
               </div>
 
+            </div>
+          </div>
+
+          <!-- Вкладка 5: Бонусы -->
+          <div class="config-tab-content" id="ctab-bonuses" style="display:none">
+            <div class="settings-card">
+              <div class="settings-card-title">🎁 Подарки и бонусы за сумму заказа</div>
+              <div style="font-size:12px; color:var(--dim); margin-bottom:16px;">Бонусы показываются клиенту в чате, если общая стоимость заказа превышает или равна указанному порогу.</div>
+              <div id="bonuses-list" style="display:grid; gap: 12px; margin-bottom: 20px;"></div>
+              
+              <button class="btn-primary" onclick="showAddBonusForm()" style="width:auto; padding: 8px 18px;">➕ Добавить бонус</button>
+              
+              <div id="add-bonus-form" style="display:none; margin-top:16px; border:1px solid var(--border); padding: 16px; border-radius: 10px; background:rgba(255,255,255,0.02);">
+                <div class="settings-card-title" style="font-size: 13px;">Новый бонус</div>
+                <div class="form-group">
+                  <label>Порог суммы (₽)</label>
+                  <input class="inp" id="new_bon_thr" type="number" placeholder="20000">
+                </div>
+                <div class="form-group">
+                  <label>Описание подарка</label>
+                  <input class="inp" id="new_bon_txt" placeholder="Обучение карточному фокусу...">
+                </div>
+                <div style="display:flex; gap:10px;">
+                  <button class="btn-primary" onclick="addPrivateBonus()" style="width:auto; padding:8px 16px;">Добавить</button>
+                  <button class="btn-logout" onclick="hideAddBonusForm()" style="width:auto; padding:8px 16px; border-radius:10px; border:1px solid rgba(201, 162, 39, 0.25);">Отмена</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Вкладка 6: Реквизиты -->
+          <div class="config-tab-content" id="ctab-payments" style="display:none">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+              
+              <!-- Предоплата -->
+              <div class="settings-card">
+                <div class="settings-card-title">💳 Настройка предоплаты</div>
+                <div class="form-group">
+                  <label>Размер предоплаты в процентах (%)</label>
+                  <div style="display:flex; gap: 10px; align-items:center;">
+                    <input class="inp" id="pc_deposit" type="number" min="10" max="100" placeholder="50" style="max-width: 120px;">
+                    <span style="color:var(--dim); font-size:16px;">%</span>
+                    <button class="btn-primary" onclick="savePrivateDeposit()" style="width:auto; padding: 10px 18px; margin-left: auto;">💾 Сохранить</button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Способы оплаты -->
+              <div class="settings-card">
+                <div class="settings-card-title">🏦 Способы оплаты (реквизиты)</div>
+                <div id="payments-list" style="display:grid; gap: 12px; margin-bottom: 20px;"></div>
+                
+                <button class="btn-primary" onclick="showAddPaymentForm()" style="width:auto; padding: 8px 18px;">➕ Добавить реквизиты</button>
+                
+                <div id="add-payment-form" style="display:none; margin-top:16px; border:1px solid var(--border); padding: 16px; border-radius: 10px; background:rgba(255,255,255,0.02);">
+                  <div class="settings-card-title" style="font-size: 13px;">Новые реквизиты</div>
+                  <div class="form-group">
+                    <label>Название (например: Перевод на Сбербанк)</label>
+                    <input class="inp" id="new_pay_title" placeholder="Перевод Сбербанк">
+                  </div>
+                  <div class="form-group">
+                    <label>Детали (номер телефона / карты)</label>
+                    <input class="inp" id="new_pay_text" placeholder="+7 (909) ...">
+                  </div>
+                  <div style="display:flex; gap:10px;">
+                    <button class="btn-primary" onclick="addPrivatePayment()" style="width:auto; padding:8px 16px;">Добавить</button>
+                    <button class="btn-logout" onclick="hideAddPaymentForm()" style="width:auto; padding:8px 16px; border-radius:10px; border:1px solid rgba(201, 162, 39, 0.25);">Отмена</button>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+
+          <!-- Вкладка 7: Частные заказы -->
+          <div class="config-tab-content" id="ctab-orders" style="display:none">
+            <div class="settings-card">
+              <div class="settings-card-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>📋 Заявки на частные мероприятия</span>
+                <span id="private-orders-count" class="status-pill pill-pending-pay" style="padding: 4px 10px; border-radius: 20px; font-size:12px; font-weight:600;">0 шт.</span>
+              </div>
+              <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center;">
+                <select class="inp" id="private-order-filter" style="max-width:160px; height: 38px;" onchange="renderPrivateOrders()">
+                  <option value="">Все статусы</option>
+                  <option value="new">Новые</option>
+                  <option value="done">Обработанные</option>
+                </select>
+                <button class="btn-primary" onclick="loadPrivateOrders()" style="width:auto; padding: 8px 16px; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); box-shadow: none;">🔄 Обновить</button>
+              </div>
+              <div id="private-orders-list" style="display:grid; gap: 12px;"></div>
+            </div>
+          </div>
+
+          <!-- Вкладка 8: Рассылка -->
+          <div class="config-tab-content" id="ctab-broadcast" style="display:none">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+              
+              <!-- Статистика -->
+              <div class="settings-card" style="text-align:center; display:flex; flex-direction:column; justify-content:center; align-items:center; padding: 30px;">
+                <div style="font-size: 54px; font-weight: 700; color: var(--gold);" id="private-broadcast-user-count">—</div>
+                <div style="font-size: 14px; color: var(--dim); margin-top: 8px; margin-bottom: 24px;">пользователей в базе для рассылки</div>
+                <button class="btn-primary" onclick="loadPrivateUserCount()" style="width:auto; padding: 10px 24px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); box-shadow: none;">🔄 Обновить счетчик</button>
+              </div>
+              
+              <!-- Форма сообщения -->
+              <div class="settings-card">
+                <div class="settings-card-title">📢 Отправить сообщение всем подписчикам</div>
+                <div class="form-group">
+                  <label>Текст сообщения рассылки</label>
+                  <textarea class="inp" id="private_bc_msg" rows="5" style="resize:vertical;" placeholder="Введите текст сообщения... Поддерживается перенос строк." oninput="previewPrivateBroadcast()"></textarea>
+                </div>
+                <div style="display:flex; gap:12px; align-items:center;">
+                  <button class="btn-primary" onclick="sendPrivateBroadcast()" style="width:auto; padding: 10px 20px;">📤 Отправить всем</button>
+                  <span id="private-bc-status" style="font-size: 13px; color: var(--dim); margin-left: auto;"></span>
+                </div>
+                
+                <div id="private-bc-preview" style="display:none; margin-top:16px; border:1px solid var(--border); padding: 12px; border-radius: 8px; background:rgba(0,0,0,0.2);">
+                  <div class="settings-card-title" style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--dim); margin-bottom:6px;">Предпросмотр сообщения</div>
+                  <pre id="private-bc-preview-text" style="white-space:pre-wrap; font-size:14px; color:var(--text); line-height:1.5;"></pre>
+                </div>
+              </div>
+              
             </div>
           </div>
 
@@ -2938,6 +3064,9 @@
 
     // ── Private Config (Цены & ИИ) logic ──
     let isPrivateConfigLoaded = false;
+    window._privateConfig = {};
+    let _privateOrders = {};
+    let _privateUsers = {};
 
     function switchConfigTab(tabId, el) {
       // Переключаем активный таб
@@ -2947,6 +3076,12 @@
       // Переключаем контент
       document.querySelectorAll('.config-tab-content').forEach(c => c.style.display = 'none');
       document.getElementById(`ctab-${tabId}`).style.display = 'block';
+
+      if (tabId === 'orders') {
+        loadPrivateOrders();
+      } else if (tabId === 'broadcast') {
+        loadPrivateUserCount();
+      }
     }
 
     async function loadPrivateConfig(force = false) {
@@ -2960,10 +3095,11 @@
       if (titleEl) titleEl.textContent = '🪄 Управление ценами и ИИ Екатерина';
 
       if (!config || config.error) {
-        // Если данных нет в БД, оставляем плейсхолдеры
         isPrivateConfigLoaded = true;
         return;
       }
+
+      window._privateConfig = config;
 
       // Заполняем шоу и услуги
       const s = config.shows || {};
@@ -3039,6 +3175,10 @@
       const ai = config.ai_settings || {};
       document.getElementById('pc_ai_tone').value = ai.tone || '';
       document.getElementById('pc_ai_rules').value = ai.rules || '';
+
+      // Рендерим бонусы и реквизиты
+      renderPrivateBonuses();
+      renderPrivatePayments();
 
       isPrivateConfigLoaded = true;
     }
@@ -3122,12 +3262,392 @@
       };
 
       try {
-        await fbPut('bot_private_config', config);
+        await fbPut('bot_private_config/shows', config.shows);
+        await fbPut('bot_private_config/travel', config.travel);
+        await fbPut('bot_private_config/coefficients', config.coefficients);
+        await fbPut('bot_private_config/ai_settings', config.ai_settings);
         toast('✅ Все цены и параметры ИИ успешно сохранены!');
       } catch (e) {
         toast('❌ Ошибка сохранения данных');
       } finally {
         if (btn) { btn.disabled = false; btn.textContent = '💾 Сохранить всё'; }
+      }
+    }
+
+    // ─── BONUSES ───
+    function showAddBonusForm() { document.getElementById('add-bonus-form').style.display = 'block'; }
+    function hideAddBonusForm() {
+      document.getElementById('add-bonus-form').style.display = 'none';
+      document.getElementById('new_bon_thr').value = '';
+      document.getElementById('new_bon_txt').value = '';
+    }
+
+    function renderPrivateBonuses() {
+      const bonuses = (window._privateConfig.bonuses || []).slice().sort((a, b) => a.threshold - b.threshold);
+      const el = document.getElementById('bonuses-list');
+      if (!el) return;
+      el.innerHTML = '';
+      
+      if (!bonuses.length) {
+        el.innerHTML = '<div style="color:var(--dim); font-size:13px; font-style:italic; padding:10px 0;">Бонусы не добавлены</div>';
+        return;
+      }
+
+      bonuses.forEach((b, i) => {
+        const item = document.createElement('div');
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.gap = '10px';
+        item.style.flexWrap = 'wrap';
+        item.style.padding = '12px';
+        item.style.border = '1px solid var(--border)';
+        item.style.borderRadius = '10px';
+        item.style.background = 'rgba(255,255,255,0.01)';
+        
+        item.innerHTML = `
+          <span style="font-size:13px; color:var(--dim); min-width:40px;">от</span>
+          <input class="inp" type="number" min="0" value="${b.threshold}" id="bon_thr_${i}" style="max-width:110px;">
+          <span style="font-size:13px; color:var(--dim);">₽</span>
+          <input class="inp" value="${b.text}" id="bon_txt_${i}" style="flex:1; min-width:200px;">
+          <button class="btn-primary" onclick="savePrivateBonus(${i})" style="width:auto; padding: 10px 14px; background: rgba(61, 191, 110, 0.15); border-color: rgba(61, 191, 110, 0.4); color: var(--green); box-shadow:none;">💾</button>
+          <button class="btn-logout" onclick="deletePrivateBonus(${i})" style="width:auto; padding: 10px 14px; border-radius:10px; border-color: rgba(232, 83, 72, 0.3); color: var(--red); box-shadow:none;">🗑</button>
+        `;
+        el.appendChild(item);
+      });
+    }
+
+    async function savePrivateBonus(i) {
+      const thr = parseInt(document.getElementById(`bon_thr_${i}`).value);
+      const txt = document.getElementById(`bon_txt_${i}`).value.trim();
+      if (isNaN(thr) || !txt) return toast('⚠️ Заполните все поля');
+
+      const sorted = (window._privateConfig.bonuses || []).slice().sort((a, b) => a.threshold - b.threshold);
+      const targetIndex = window._privateConfig.bonuses.indexOf(sorted[i]);
+      if (targetIndex !== -1) {
+        window._privateConfig.bonuses[targetIndex] = { threshold: thr, text: txt };
+      } else {
+        window._privateConfig.bonuses.push({ threshold: thr, text: txt });
+      }
+
+      try {
+        await fbPut('bot_private_config/bonuses', window._privateConfig.bonuses);
+        toast('✅ Бонус сохранен!');
+        renderPrivateBonuses();
+      } catch (e) {
+        toast('❌ Ошибка сохранения');
+      }
+    }
+
+    async function deletePrivateBonus(i) {
+      if (!confirm('Удалить этот бонус?')) return;
+      const sorted = (window._privateConfig.bonuses || []).slice().sort((a, b) => a.threshold - b.threshold);
+      const targetIndex = window._privateConfig.bonuses.indexOf(sorted[i]);
+      if (targetIndex !== -1) {
+        window._privateConfig.bonuses.splice(targetIndex, 1);
+      }
+
+      try {
+        await fbPut('bot_private_config/bonuses', window._privateConfig.bonuses);
+        toast('✅ Бонус удален!');
+        renderPrivateBonuses();
+      } catch (e) {
+        toast('❌ Ошибка удаления');
+      }
+    }
+
+    async function addPrivateBonus() {
+      const thr = parseInt(document.getElementById('new_bon_thr').value);
+      const txt = document.getElementById('new_bon_txt').value.trim();
+      if (isNaN(thr) || !txt) return toast('⚠️ Заполните все поля');
+
+      if (!window._privateConfig.bonuses) window._privateConfig.bonuses = [];
+      window._privateConfig.bonuses.push({ threshold: thr, text: txt });
+
+      try {
+        await fbPut('bot_private_config/bonuses', window._privateConfig.bonuses);
+        toast('✅ Бонус добавлен!');
+        hideAddBonusForm();
+        renderPrivateBonuses();
+      } catch (e) {
+        toast('❌ Ошибка добавления');
+      }
+    }
+
+    // ─── PAYMENTS ───
+    function showAddPaymentForm() { document.getElementById('add-payment-form').style.display = 'block'; }
+    function hideAddPaymentForm() {
+      document.getElementById('add-payment-form').style.display = 'none';
+      document.getElementById('new_pay_title').value = '';
+      document.getElementById('new_pay_text').value = '';
+    }
+
+    function renderPrivatePayments() {
+      document.getElementById('pc_deposit').value = window._privateConfig.deposit || 50;
+      const payments = window._privateConfig.payments || [];
+      const el = document.getElementById('payments-list');
+      if (!el) return;
+      el.innerHTML = '';
+
+      if (!payments.length) {
+        el.innerHTML = '<div style="color:var(--dim); font-size:13px; font-style:italic; padding:10px 0;">Способы оплаты не добавлены</div>';
+        return;
+      }
+
+      payments.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.gap = '10px';
+        row.style.flexWrap = 'wrap';
+        row.style.padding = '12px';
+        row.style.border = '1px solid var(--border)';
+        row.style.borderRadius = '10px';
+        row.style.background = 'rgba(255,255,255,0.01)';
+
+        row.innerHTML = `
+          <input class="inp" value="${p.title}" id="pay_title_${i}" style="max-width:120px;" placeholder="Название">
+          <input class="inp" value="${p.text}" id="pay_text_${i}" style="flex:1; min-width:200px;" placeholder="Реквизиты">
+          <button class="btn-primary" onclick="savePrivatePayment(${i})" style="width:auto; padding: 10px 14px; background: rgba(61, 191, 110, 0.15); border-color: rgba(61, 191, 110, 0.4); color: var(--green); box-shadow:none;">💾</button>
+          <button class="btn-logout" onclick="deletePrivatePayment(${i})" style="width:auto; padding: 10px 14px; border-radius:10px; border-color: rgba(232, 83, 72, 0.3); color: var(--red); box-shadow:none;">🗑</button>
+        `;
+        el.appendChild(row);
+      });
+    }
+
+    async function savePrivateDeposit() {
+      const val = parseInt(document.getElementById('pc_deposit').value);
+      if (isNaN(val) || val < 10 || val > 100) return toast('⚠️ Введите значение от 10 до 100%');
+      window._privateConfig.deposit = val;
+      try {
+        await fbPut('bot_private_config/deposit', val);
+        toast('✅ Предоплата сохранена!');
+      } catch (e) {
+        toast('❌ Ошибка сохранения');
+      }
+    }
+
+    async function savePrivatePayment(i) {
+      const title = document.getElementById(`pay_title_${i}`).value.trim();
+      const text = document.getElementById(`pay_text_${i}`).value.trim();
+      if (!title || !text) return toast('⚠️ Заполните все поля');
+
+      if (!window._privateConfig.payments) window._privateConfig.payments = [];
+      window._privateConfig.payments[i] = { title, text };
+
+      try {
+        await fbPut('bot_private_config/payments', window._privateConfig.payments);
+        toast('✅ Реквизиты сохранены!');
+      } catch (e) {
+        toast('❌ Ошибка сохранения');
+      }
+    }
+
+    async function deletePrivatePayment(i) {
+      if (!confirm('Удалить этот способ оплаты?')) return;
+      if (window._privateConfig.payments) {
+        window._privateConfig.payments.splice(i, 1);
+      }
+
+      try {
+        await fbPut('bot_private_config/payments', window._privateConfig.payments);
+        toast('✅ Реквизиты удалены!');
+        renderPrivatePayments();
+      } catch (e) {
+        toast('❌ Ошибка удаления');
+      }
+    }
+
+    async function addPrivatePayment() {
+      const title = document.getElementById('new_pay_title').value.trim();
+      const text = document.getElementById('new_pay_text').value.trim();
+      if (!title || !text) return toast('⚠️ Заполните все поля');
+
+      if (!window._privateConfig.payments) window._privateConfig.payments = [];
+      window._privateConfig.payments.push({ title, text });
+
+      try {
+        await fbPut('bot_private_config/payments', window._privateConfig.payments);
+        toast('✅ Способ оплаты добавлен!');
+        hideAddPaymentForm();
+        renderPrivatePayments();
+      } catch (e) {
+        toast('❌ Ошибка добавления');
+      }
+    }
+
+    // ─── PRIVATE ORDERS ───
+    async function loadPrivateOrders() {
+      const el = document.getElementById('private-orders-list');
+      if (el) el.innerHTML = '<div style="display:flex; justify-content:center; align-items:center; padding: 40px;"><div class="spinner"></div></div>';
+      
+      const orders = await fbGet('private_orders');
+      _privateOrders = orders || {};
+      renderPrivateOrders();
+    }
+
+    function renderPrivateOrders() {
+      const filter = document.getElementById('private-order-filter').value;
+      const el = document.getElementById('private-orders-list');
+      if (!el) return;
+      el.innerHTML = '';
+
+      const list = Object.entries(_privateOrders)
+        .filter(([, o]) => !filter || o.status === filter)
+        .sort(([, a], [, b]) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      const countEl = document.getElementById('private-orders-count');
+      if (countEl) countEl.textContent = list.length + ' шт.';
+
+      if (!list.length) {
+        el.innerHTML = '<div style="color:var(--dim); font-size:14px; text-align:center; padding:40px 0;">Заявок не найдено</div>';
+        return;
+      }
+
+      list.forEach(([id, o]) => {
+        const date = o.createdAt ? new Date(o.createdAt).toLocaleString('ru') : '—';
+        const ans = o.answers || {};
+        const price = o.price;
+        const extra = o.quizExtra || {};
+        
+        const card = document.createElement('div');
+        card.className = 'metric-card';
+        card.style.flexDirection = 'column';
+        card.style.gap = '8px';
+        card.style.padding = '20px';
+        card.style.alignItems = 'stretch';
+        card.style.justifyContent = 'flex-start';
+        card.style.border = '1px solid var(--border)';
+        card.style.borderRadius = '14px';
+        card.style.background = 'var(--bg2)';
+
+        function rubFormat(n) { return n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽' : '—'; }
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div>
+              <div style="font-size:16px; font-weight:600; color:var(--text);">${ans.service || '—'}</div>
+              <div style="font-size:12px; color:var(--dim); margin-top:2px;">${date} · ID: ${id.slice(-6)}</div>
+            </div>
+            <div style="text-align:right;">
+              ${price ? `<div style="font-size:18px; font-weight:700; color:var(--gold);">${rubFormat(price.total)}</div><div style="font-size:11px; color:var(--dim);">предоплата ${rubFormat(price.deposit)}</div>` : '<span class="status-pill pill-cancelled">Без цены</span>'}
+              <div style="margin-top:6px;">
+                <span class="status-pill ${o.status === 'new' ? 'pill-pending-pay' : 'pill-confirmed'}">${o.status === 'new' ? 'Новая' : 'Обработана'}</span>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,0.06); margin: 8px 0; padding-top:8px; font-size:13px; line-height:1.6; color:var(--text);">
+            <b>📅 Дата:</b> ${ans.date || '—'} &nbsp;&nbsp;
+            <b>📍 Город:</b> ${extra.selCity || '—'}<br>
+            <b>👥 Гостей:</b> ${extra.selGuests || '—'}<br>
+            <b>⏱ Длительность:</b> ${ans.duration || '—'}<br>
+            <b>👤 VK:</b> <a href="https://vk.com/id${o.userId}" target="_blank" style="color:var(--blue); font-weight:500;">vk.com/id${o.userId || '?'}</a><br>
+            ${ans.wishes && ans.wishes !== 'Не знаю' ? `<b>✨ Пожелания:</b> ${ans.wishes}<br>` : ''}
+            ${ans.host && ans.host !== 'Не знаю' ? `<b>🎤 Ведущий:</b> ${ans.host}<br>` : ''}
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            ${o.status === 'new' ? `<button class="btn-primary" onclick="markPrivateOrder('${id}','done')" style="width:auto; padding:6px 12px; font-size:12px; background:rgba(61, 191, 110, 0.15); border-color:rgba(61, 191, 110, 0.4); color:var(--green); box-shadow:none;">✅ Обработана</button>` : ''}
+            <button class="btn-logout" onclick="deletePrivateOrder('${id}')" style="width:auto; padding:6px 12px; font-size:12px; border-radius:8px; border-color:rgba(232, 83, 72, 0.3); color:var(--red); box-shadow:none; border: 1px solid rgba(232, 83, 72, 0.25);">🗑 Удалить</button>
+          </div>
+        `;
+        el.appendChild(card);
+      });
+    }
+
+    async function markPrivateOrder(id, status) {
+      if (_privateOrders[id]) {
+        _privateOrders[id].status = status;
+      }
+      try {
+        await fbPatch(`private_orders/${id}`, { status });
+        toast('✅ Заявка помечена как обработанная!');
+        renderPrivateOrders();
+      } catch (e) {
+        toast('❌ Ошибка обновления');
+      }
+    }
+
+    async function deletePrivateOrder(id) {
+      if (!confirm('Удалить эту заявку?')) return;
+      delete _privateOrders[id];
+      try {
+        await fbDelete(`private_orders/${id}`);
+        toast('✅ Заявка удалена!');
+        renderPrivateOrders();
+      } catch (e) {
+        toast('❌ Ошибка удаления');
+      }
+    }
+
+    // ─── VK BOT BROADCAST ───
+    async function loadPrivateUserCount() {
+      const el = document.getElementById('private-broadcast-user-count');
+      if (el) el.textContent = '⏳';
+      
+      try {
+        const users = await fbGet('bot_users') || {};
+        _privateUsers = users;
+        if (el) el.textContent = Object.keys(users).length;
+      } catch (e) {
+        if (el) el.textContent = '—';
+      }
+    }
+
+    function previewPrivateBroadcast() {
+      const msg = document.getElementById('private_bc_msg').value;
+      const wrap = document.getElementById('private-bc-preview');
+      const text = document.getElementById('private-bc-preview-text');
+      if (wrap && text) {
+        wrap.style.display = msg ? 'block' : 'none';
+        text.textContent = msg;
+      }
+    }
+
+    async function sendPrivateBroadcast() {
+      const msg = document.getElementById('private_bc_msg').value.trim();
+      if (!msg) return toast('⚠️ Введите текст сообщения');
+      
+      const userIds = Object.keys(_privateUsers || {});
+      if (!userIds.length) return toast('⚠️ Список пользователей пуст. Обновите счетчик.');
+      
+      if (!confirm(`Отправить сообщение всем ${userIds.length} пользователям?`)) return;
+
+      const statusEl = document.getElementById('private-bc-status');
+      if (statusEl) statusEl.textContent = '⏳ Отправка...';
+
+      try {
+        const r = await fetch('/api/broadcast', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ message: msg })
+        });
+        
+        if (!r.ok) {
+          const errData = await r.json();
+          throw new Error(errData.error || 'Server error');
+        }
+
+        const d = await r.json();
+        
+        let totalSent = 0;
+        let totalErrors = 0;
+        if (d.sent && typeof d.sent === 'object') {
+          totalSent = (d.sent.vk || 0) + (d.sent.tg || 0);
+        } else if (typeof d.sent === 'number') {
+          totalSent = d.sent;
+        }
+
+        if (d.errors && typeof d.errors === 'object') {
+          totalErrors = (d.errors.vk || 0) + (d.errors.tg || 0);
+        } else if (typeof d.errors === 'number') {
+          totalErrors = d.errors;
+        }
+
+        if (statusEl) statusEl.textContent = `✅ Отправлено: ${totalSent}, ошибок: ${totalErrors}`;
+        document.getElementById('private_bc_msg').value = '';
+        previewPrivateBroadcast();
+      } catch (e) {
+        console.error('Broadcast error:', e);
+        if (statusEl) statusEl.textContent = `❌ Ошибка: ${e.message}`;
       }
     }
 

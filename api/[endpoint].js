@@ -6,6 +6,7 @@ import chat from './_endpoints/chat.js';
 import checkin from './_endpoints/checkin.js';
 import huligan from './_endpoints/huligan.js';
 import leadConcert from './_endpoints/lead-concert.js';
+import matveySeats from './_endpoints/matvey-seats.js';
 import leadSchool from './_endpoints/lead-school.js';
 import leadShow from './_endpoints/lead-show.js';
 import notify from './_endpoints/notify.js';
@@ -25,6 +26,7 @@ const routes = {
   'checkin': checkin,
   'huligan': huligan,
   'lead-concert': leadConcert,
+  'matvey-seats': matveySeats,
   'lead-school': leadSchool,
   'lead-show': leadShow,
   'notify': notify,

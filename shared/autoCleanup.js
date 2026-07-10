@@ -1,4 +1,4 @@
-import {  fbGet, fbPatch, fbPut  } from './_firebase';
+import {  fbGet, fbPatch, fbPut  } from './firebase.js';
 
 const SECRET_RESERVE_MS = Number(process.env.SECRET_RESERVE_MS || process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const HULIGAN_RESERVE_MS = Number(process.env.HULIGAN_RESERVE_MS || 10 * 60 * 1000);

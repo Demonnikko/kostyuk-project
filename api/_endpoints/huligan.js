@@ -33,7 +33,7 @@ const TBANK_SUCCESS_URL = String(process.env.TBANK_HULIGAN_SUCCESS_URL || `${TIC
 const TBANK_FAIL_URL = String(process.env.TBANK_HULIGAN_FAIL_URL || `${TICKET_PUBLIC_ORIGIN}/huligan.html?pay=fail`).trim();
 const TBANK_API_TEST_BASE = 'https://securepay.tinkoff.ru/v2';
 const TBANK_API_PROD_BASE = 'https://securepay.tinkoff.ru/v2';
-import {  runHuliganAutoCleanup  } from '../../shared/autoCleanup';
+import {  runHuliganAutoCleanup  } from '../../shared/autoCleanup.js';
 
 const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted']);
 
@@ -721,7 +721,7 @@ function publicBookingView(bookingId, booking, full = false) {
   };
 }
 
-import {  setCors  } from '../../shared/cors';
+import {  setCors  } from '../../shared/cors.js';
 
 export default async (req, res) => {
   setCors(req, res, { methods: 'POST, GET, OPTIONS' });

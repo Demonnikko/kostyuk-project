@@ -1,7 +1,7 @@
-import {  fbGet, buildTicketLink, validateTicketAccess  } from '../../shared/ticketAccess';
-import {  runSecretAutoCleanup  } from '../../shared/autoCleanup';
+import {  fbGet, buildTicketLink, validateTicketAccess  } from '../../shared/ticketAccess.js';
+import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
 
-import {  setCors  } from '../../shared/cors';
+import {  setCors  } from '../../shared/cors.js';
 
 export default async (req, res) => {
   setCors(req, res, { publicRead: true, methods: 'GET, OPTIONS' });

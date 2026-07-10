@@ -1,8 +1,8 @@
 const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
-import {  getTrustedTelegramUserId  } from '../../shared/tg';
-import {  runSecretAutoCleanup  } from '../../shared/autoCleanup';
+import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
+import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 
 async function fbGet(path) {
@@ -14,7 +14,7 @@ async function fbGet(path) {
   }
 }
 
-import {  setCors  } from '../../shared/cors';
+import {  setCors  } from '../../shared/cors.js';
 
 export default async (req, res) => {
   setCors(req, res, { methods: 'GET, OPTIONS' });

@@ -3,5 +3,10 @@
   "redirects": [
     { "source": "/show", "destination": "/", "permanent": true },
     { "source": "/show/", "destination": "/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/admin.html", "destination": "/admin/index.html" },
+    { "source": "/admin-private", "destination": "/admin/index.html" },
+    { "source": "/admin", "destination": "/admin/index.html" }
   ]
 }

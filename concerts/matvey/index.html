@@ -2,12 +2,26 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Спасти Матвея — Магический квест-спектакль · Дмитрий Костюк</title>
-  <meta name="description" content="Спасти Матвея — магический квест-спектакль для всей семьи. Зрители — участники спасательной операции. Исход решаешь ты." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Билеты на квест-спектакль «Спасти Матвея» | Детское шоу — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
+  <meta name="description" content="Купить билеты на семейный квест-спектакль фокусов «Спасти Матвея» Дмитрия Костюка. Увлекательное интерактивное шоу иллюзий для всей семьи в Ярославле, Иваново, Костроме, Владимире, Вологде." />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/vendor/fonts/fonts.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "Магический квест-спектакль «Спасти Матвея»",
+    "description": "Семейное интерактивное иллюзионное шоу-квест Дмитрия Костюка.",
+    "url": "https://kostyuk.ru/concerts/matvey/",
+    "performer": {
+      "@type": "Person",
+      "name": "Дмитрий Костюк"
+    }
+  }
+  </script>
+  <link rel="stylesheet" href="/ecosystem.css?v=4" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
@@ -21,6 +35,13 @@
       --text: #f5edff;
       --muted: rgba(245, 237, 255, 0.6);
       --border: rgba(184, 144, 255, 0.28);
+      /* Цвета зон зала */
+      --zone-front: #9B6BFF;
+      --zone-front-rgb: 155,107,255;
+      --zone-back: #7B4FBF;
+      --zone-back-rgb: 123,79,191;
+      --zone-table: #E8C540;
+      --zone-table-rgb: 232,197,64;
     }
     html, body {
       background: var(--bg);
@@ -127,11 +148,16 @@
       width: 100%;
       margin-bottom: 36px;
       position: relative;
-      animation: floatPoster 7s ease-in-out infinite alternate;
+      animation: magicFloat 6s ease-in-out infinite alternate, matveyZoomIn 2s cubic-bezier(0.18, 0.89, 0.32, 1) forwards;
     }
-    @keyframes floatPoster {
-      from { transform: translateY(0) rotate(-0.3deg); }
-      to   { transform: translateY(-10px) rotate(0.3deg); }
+    @keyframes matveyZoomIn {
+      0% { transform: scale(0.85); opacity: 0; filter: blur(5px); }
+      100% { transform: scale(1); opacity: 1; filter: blur(0); }
+    }
+    @keyframes magicFloat {
+      0% { transform: translateY(0) rotate(-1deg) scale(0.98); }
+      50% { transform: translateY(-12px) rotate(1.5deg) scale(1.01); }
+      100% { transform: translateY(3px) rotate(-0.5deg) scale(0.99); }
     }
     .poster {
       width: 100%;
@@ -141,6 +167,46 @@
         0 30px 80px rgba(0, 0, 30, 0.7),
         0 0 80px rgba(140, 80, 240, 0.35);
       display: block;
+    }
+    /* Интерактивный волшебный холст на весь экран */
+    #magicCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Контейнер для магических искр при загрузке */
+    .magic-sparks-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, transparent 10%, rgba(10, 4, 32, 0.95) 80%);
+      animation: magicFade 3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes magicFade {
+      0% { opacity: 1; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+      35% { opacity: 0.9; }
+      100% { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); visibility: hidden; }
+    }
+    h1.title {
+      font-family: 'Cinzel', serif;
+      font-style: italic;
+      font-size: clamp(50px, 13vw, 110px);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 0.95;
+      background: linear-gradient(135deg, #ffffff 0%, var(--gold-light) 40%, var(--violet-light) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 14px;
+      text-shadow: 0 0 60px rgba(140, 80, 240, 0.4);
+      animation: magicTextReveal 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes magicTextReveal {
+      0% { text-shadow: 0 0 80px var(--violet-light); filter: blur(5px); transform: translateY(10px); }
+      100% { text-shadow: 0 0 30px rgba(140, 80, 240, 0.4); filter: blur(0); transform: translateY(0); }
     }
 
     .eyebrow {
@@ -158,21 +224,9 @@
       margin-bottom: 14px;
       font-weight: 600;
     }
-    h1.title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(46px, 11vw, 102px);
-      font-weight: 800;
-      letter-spacing: 0.01em;
-      line-height: 0.95;
-      background: linear-gradient(135deg, #ffffff 0%, #ffd698 35%, #c89cff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 14px;
-      text-shadow: 0 0 60px rgba(200, 156, 255, 0.3);
-    }
+
     .subtitle {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-style: italic;
       font-size: clamp(16px, 2.6vw, 22px);
       color: var(--violet-light);
@@ -238,7 +292,7 @@
       display: block;
     }
     .section__title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: clamp(30px, 5vw, 48px);
       font-weight: 700;
       margin-bottom: 28px;
@@ -257,7 +311,7 @@
     }
     .section__text strong { color: var(--gold-light); font-weight: 600; }
     .section__quote {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-style: italic;
       font-size: clamp(20px, 3vw, 26px);
       color: var(--gold-light);
@@ -269,7 +323,7 @@
     }
     .section__quote::before, .section__quote::after {
       content: '"';
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: 80px;
       line-height: 1;
       color: rgba(255, 184, 80, 0.3);
@@ -308,7 +362,7 @@
       opacity: 0.5;
     }
     .level__num {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: 32px;
       font-weight: 800;
       color: var(--violet-light);
@@ -337,7 +391,7 @@
       position: relative;
     }
     .footer-cta__title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: clamp(28px, 4.5vw, 42px);
       font-weight: 700;
       margin-bottom: 14px;
@@ -392,7 +446,7 @@
     }
     .modal__close:hover { background: rgba(140, 80, 240, 0.2); }
     .modal__title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: 28px;
       font-weight: 800;
       text-align: center;
@@ -417,7 +471,7 @@
       text-align: center;
     }
     .ticket-card__type {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: 22px;
       font-weight: 700;
       background: linear-gradient(135deg, #fff 0%, var(--gold-light) 100%);
@@ -482,7 +536,7 @@
     }
     .qty-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .qty-val {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-weight: 800;
       font-size: 32px;
       color: #fff;
@@ -509,13 +563,101 @@
     .modal__success { text-align: center; padding: 24px 8px; }
     .modal__success-icon { font-size: 64px; margin-bottom: 14px; }
     .modal__success h3 {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: 26px;
       font-weight: 800;
       margin-bottom: 8px;
       color: var(--violet-light);
     }
     .modal__success p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+    /* ===== \u0428\u0410\u0413\u0418 \u0418 \u0417\u0410\u041b ===== */
+    .steps { display:flex; gap:8px; justify-content:center; margin-bottom:20px; }
+    .step  { width:30px; height:4px; border-radius:2px; background:rgba(255,255,255,0.12); transition:background 0.3s; }
+    .step.active { background:var(--violet); }
+    .step.done   { background:var(--gold); }
+
+    .date-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+    .date-card {
+      background:rgba(139,95,229,0.07);
+      border:1.5px solid var(--border);
+      border-radius:12px;
+      padding:14px 10px;
+      text-align:center;
+      cursor:pointer;
+      transition:border-color 0.2s,background 0.2s;
+    }
+    .date-card:hover  { border-color:var(--violet); background:rgba(139,95,229,0.14); }
+    .date-card.selected { border-color:var(--gold); background:rgba(232,197,64,0.10); }
+    .date-card__day   { font-family:'Cinzel', serif; font-size:28px; font-weight:700; color:#fff; display:block; }
+    .date-card__month { font-size:10px; letter-spacing:0.22em; color:var(--violet-light); text-transform:uppercase; margin-bottom:4px; display:block; }
+    .date-card__time  { font-size:13px; font-weight:600; color:var(--gold); display:block; }
+    .date-card__venue { font-size:10px; color:var(--muted); margin-top:4px; display:block; }
+
+    .hall-wrap  { margin:0 -4px; }
+    .stage-label {
+      text-align:center;
+      font-family:'Cinzel', serif;
+      font-size:11px;
+      font-style:italic;
+      letter-spacing:0.22em;
+      color:var(--violet-light);
+      text-transform:uppercase;
+      margin-bottom:8px;
+      opacity:0.8;
+    }
+    .hall-svg { width:100%; display:block; cursor:default; }
+    .seat { cursor:pointer; transition:opacity 0.15s; }
+    .seat:hover { opacity:0.75; }
+    .seat.selected { filter:drop-shadow(0 0 5px var(--violet-light)); }
+
+    .legend {
+      display:flex; flex-wrap:wrap; gap:8px 16px;
+      justify-content:center;
+      margin:10px 0 14px;
+      font-size:11px; color:var(--muted);
+    }
+    .ldot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+
+    .cart {
+      background:rgba(139,95,229,0.06);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:12px 14px;
+      margin-bottom:14px;
+      min-height:50px;
+    }
+    .cart__empty { color:var(--muted); font-size:13px; text-align:center; padding:5px 0; }
+    .cart__row   { display:flex; justify-content:space-between; font-size:12px; padding:3px 0; color:var(--text); }
+    .cart__total { display:flex; justify-content:space-between; align-items:center; padding-top:8px; margin-top:6px; border-top:1px solid var(--border); }
+    .cart__total-label { font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--violet-light); }
+
+    .btn-primary {
+      padding:13px 22px; border-radius:8px;
+      background:linear-gradient(135deg,var(--violet) 0%,#6040bf 100%);
+      color:#fff; font-family:'Cinzel', serif;
+      font-size:16px; font-weight:700; font-style:italic;
+      letter-spacing:0.06em;
+      border:1px solid rgba(139,95,229,0.5); cursor:pointer;
+      transition:opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover:not(:disabled) { opacity:0.9; transform:translateY(-1px); }
+    .btn-primary:disabled { opacity:0.3; cursor:not-allowed; }
+    .btn-secondary {
+      padding:13px 22px; border-radius:8px;
+      background:rgba(255,255,255,0.06);
+      color:var(--muted); font-size:14px;
+      border:1px solid var(--border); cursor:pointer;
+      transition:background 0.2s;
+    }
+    .btn-secondary:hover { background:rgba(255,255,255,0.11); }
+    .modal__nav { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:14px; }
+
+    .summary {
+      background:rgba(139,95,229,0.06); border:1px solid var(--border);
+      border-radius:10px; padding:14px 16px; margin-bottom:14px;
+    }
+    .summary__row { display:flex; justify-content:space-between; font-size:13px; padding:4px 0; color:var(--text); }
 
     /* === Bottom nav === */
     #kpBottomNav {
@@ -573,9 +715,59 @@
     .d-2 { transition-delay: 0.3s; }
     .d-3 { transition-delay: 0.45s; }
     .d-4 { transition-delay: 0.6s; }
+
+    /* Индивидуальная касса: «Спасти Матвея» — космос, квест, золото и фиолетовая магия */
+    .modal.show {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 184, 80, 0.16), transparent 34%),
+        radial-gradient(circle at 16% 22%, rgba(139, 95, 229, 0.22), transparent 42%),
+        rgba(5, 2, 18, 0.92);
+    }
+    .modal__box {
+      background:
+        radial-gradient(circle at 50% -8%, rgba(255, 214, 152, 0.18), transparent 36%),
+        radial-gradient(circle at 12% 18%, rgba(139, 95, 229, 0.28), transparent 42%),
+        linear-gradient(180deg, rgba(16, 7, 45, 0.98), rgba(7, 3, 23, 0.99));
+      border-color: rgba(200, 156, 255, 0.48);
+      box-shadow:
+        0 32px 90px rgba(0, 0, 0, 0.86),
+        0 0 100px rgba(139, 95, 229, 0.24),
+        inset 0 1px 0 rgba(255, 214, 152, 0.12);
+    }
+    .modal__box::before {
+      content: '✦';
+      position: absolute;
+      right: 28px;
+      top: 18px;
+      z-index: 0;
+      font-size: 86px;
+      line-height: 1;
+      color: rgba(255, 214, 152, 0.075);
+      filter: drop-shadow(0 0 22px rgba(200, 156, 255, 0.35));
+      pointer-events: none;
+    }
+    .modal__box > * { position: relative; z-index: 1; }
+    .hall-wrap {
+      background:
+        radial-gradient(circle at 50% 8%, rgba(255, 214, 152, 0.12), transparent 36%),
+        radial-gradient(circle at 20% 80%, rgba(139, 95, 229, 0.16), transparent 38%),
+        rgba(10, 4, 32, 0.82);
+      border-color: rgba(200, 156, 255, 0.34);
+      box-shadow: inset 0 0 48px rgba(139, 95, 229, 0.11), 0 20px 54px rgba(0, 0, 0, 0.42);
+    }
+    .modal__submit,
+    .btn-primary {
+      background: linear-gradient(135deg, #ffe6ad 0%, #ffb850 42%, #8b5fe5 100%);
+      color: #14082e;
+      box-shadow: 0 14px 38px rgba(139, 95, 229, 0.28);
+    }
+    .seat.taken { opacity: 0.18; cursor: not-allowed; }
+    .seat.taken:hover { opacity: 0.18; }
   </style>
 </head>
 <body>
+  <div class="magic-sparks-overlay"></div>
+  <canvas id="magicCanvas"></canvas>
   <div class="cosmos"></div>
   <a class="back-btn" href="/concerts">К афише</a>
 
@@ -675,35 +867,68 @@
     <div class="modal__box">
       <button class="modal__close" onclick="closeMatveyModal()" aria-label="Закрыть">×</button>
 
-      <div id="bookingForm">
+      <!-- ШАГ 1: ДАТА -->
+      <div id="step1">
         <div class="modal__title">СПАСТИ МАТВЕЯ</div>
-        <div class="modal__sub">Магический квест-спектакль · 6+</div>
+        <div class="modal__sub">Магический квест-спектакль &middot; 6+</div>
+        <div class="steps"><div class="step active"></div><div class="step"></div><div class="step"></div></div>
+        <div class="date-grid" id="dateGrid"></div>
+        <div class="modal__nav"><span></span><button class="btn-primary" id="step1Next" onclick="goToStep(2)" disabled>Выбрать места</button></div>
+      </div>
 
-        <div class="ticket-card">
-          <div class="ticket-card__type">Семейный билет</div>
-          <div class="ticket-card__desc">Один билет — одно место. Дети младше 6 — бесплатно на коленях родителя.</div>
-        </div>
-
-        <form id="bookingFormEl" onsubmit="return submitMatveyBooking(event)">
-          <label class="field">
-            <span class="field__label">Желаемая дата</span>
-            <input class="field__input" type="text" name="eventDate" placeholder="например: 5 марта 2026" />
-          </label>
-
-          <div class="field">
-            <span class="field__label">Сколько билетов</span>
-            <div class="qty-row">
-              <button type="button" class="qty-btn" id="qtyMinus" onclick="changeQty(-1)">−</button>
-              <span class="qty-val" id="qtyVal">2</span>
-              <button type="button" class="qty-btn" id="qtyPlus" onclick="changeQty(1)">+</button>
-            </div>
-            <input type="hidden" name="ticketCount" id="ticketCount" value="2" />
+      <!-- ШАГ 2: СХЕМА ЗАЛА -->
+      <div id="step2" style="display:none">
+        <div class="modal__title">СПАСТИ МАТВЕЯ</div>
+        <div class="modal__sub" id="step2Date">&mdash;</div>
+        <div class="steps"><div class="step done"></div><div class="step active"></div><div class="step"></div></div>
+        <div class="hall-wrap">
+          <div class="stage-label">&mdash; Сцена &mdash;</div>
+          <svg class="hall-svg" id="hallSvg" viewBox="0 0 580 410" xmlns="http://www.w3.org/2000/svg" aria-label="Схема зала шоу Спасти Матвея">
+            <defs>
+              <linearGradient id="stageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(255,214,152,0.32)"/>
+                <stop offset="55%" stop-color="rgba(184,144,255,0.16)"/>
+                <stop offset="100%" stop-color="rgba(184,144,255,0)"/>
+              </linearGradient>
+              <filter id="matveySeatGlow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="2.6" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <!-- Сцена -->
+            <rect x="110" y="10" width="360" height="48" rx="10"
+                  fill="url(#stageGrad)" stroke="rgba(255,214,152,0.7)" stroke-width="1.6"/>
+            <text x="290" y="35" text-anchor="middle" dominant-baseline="central"
+                  font-family="'Cinzel', serif" font-size="20" font-style="italic"
+                  fill="rgba(255,236,190,0.95)" letter-spacing="3">СЦЕНА</text>
+            <path d="M90 68 H490" stroke="rgba(184,144,255,0.22)" stroke-width="1" stroke-dasharray="4 9"/>
+            <g id="hallG"></g>
+          </svg>
+          <div class="legend">
+            <span><span class="ldot" style="background:var(--zone-front);box-shadow:0 0 6px var(--zone-front)"></span>Ряды 1–4 (ближе к сцене)</span>
+            <span><span class="ldot" style="background:var(--zone-back);box-shadow:0 0 6px var(--zone-back)"></span>Ряды 5–7</span>
+            <span><span class="ldot" style="background:var(--zone-table);box-shadow:0 0 6px var(--zone-table)"></span>Столики</span>
+            <span><span class="ldot" style="background:#ff4f64;box-shadow:0 0 6px #ff4f64"></span>Диваны</span>
+            <span><span class="ldot" style="background:#ff9f43;box-shadow:0 0 6px #ff9f43"></span>Зона Лампа</span>
           </div>
+        </div>
+        <div class="cart" id="cartBox">
+          <div class="cart__empty" id="cartEmpty">Тапните по месту, чтобы выбрать</div>
+          <div class="cart__list" id="cartList" style="display:none"></div>
+        </div>
+        <div class="modal__nav">
+          <button class="btn-secondary" onclick="goToStep(1)">Назад</button>
+          <button class="btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Оформить бронь</button>
+        </div>
+      </div>
 
-          <label class="field">
-            <span class="field__label">Ваше имя *</span>
-            <input class="field__input" type="text" name="name" required placeholder="Как к вам обращаться" />
-          </label>
+      <!-- ШАГ 3: ФОРМА -->
+      <div id="step3" style="display:none">
+        <div class="modal__title">Контакты</div>
+        <div class="modal__sub">Менеджер свяжется для подтверждения</div>
+        <div class="steps"><div class="step done"></div><div class="step done"></div><div class="step active"></div></div>
+        <div class="summary" id="summaryBox"></div>
+        <form id="bookingFormEl" onsubmit="return submitMatveyBooking(event)">
 
           <label class="field">
             <span class="field__label">Телефон *</span>
@@ -735,11 +960,19 @@
     </div>
   </div>
 
-  <nav id="kpBottomNav" aria-label="Kostyuk Project">
+  <section class="kp-ecosystem-promo" aria-label="Другие проекты Дмитрия Костюка">
+    <div class="kp-ecosystem-promo__head"><div><small>Ещё в KOSTYUK PROJECT</small><h2>Магия может стать частью вашей истории</h2></div><p>Билеты на авторское шоу — главное здесь. Для личного праздника или обучения ребёнка выберите соседнее направление.</p></div>
+    <div class="kp-ecosystem-promo__grid">
+      <a class="kp-promo-card" href="/events/"><span class="kp-promo-card__label">Частные события</span><h3>Пригласите Дмитрия на ваш праздник</h3><p>Персональное выступление для свадьбы, юбилея, корпоратива или семейного вечера.</p><span class="kp-promo-card__action">Выбрать выступление <i>↗</i></span></a>
+      <a class="kp-promo-card" href="/school/"><span class="kp-promo-card__label">Дети 7–13 лет</span><h3>Первая школа фокусов в Ярославле</h3><p>Уверенность, речь и артистизм ребёнка через искусство иллюзии.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
+    </div>
+  </section>
+
+  <nav id="kpBottomNav" class="kp-bottom-nav" aria-label="Проекты Дмитрия Костюка">
     <div class="kp-tab-wrap">
-      <a class="kp-tab" href="/">
+      <a class="kp-tab" href="/events/">
         <img class="kp-tab-icon" src="/icons/magician.png" alt="" />
-        <span>Частные заказы</span>
+        <span>Частные события</span>
       </a>
     </div>
     <div class="kp-tab-wrap">
@@ -749,9 +982,9 @@
       </a>
     </div>
     <div class="kp-tab-wrap">
-      <a class="kp-tab active" href="/concerts">
+      <a class="kp-tab active" href="/concerts/" aria-current="page">
         <img class="kp-tab-icon" src="/icons/smoke.png" alt="" />
-        <span>Концерты</span>
+        <span>Авторские шоу</span>
       </a>
     </div>
   </nav>
@@ -770,94 +1003,648 @@
       obs.observe(el);
     });
 
-    // === МОДАЛКА ===
+    // === ЗАЛ И БРОНИРОВАНИЕ ===
     var bookingModal = document.getElementById('bookingModal');
+
     function openMatveyModal() {
       bookingModal.classList.add('show');
       document.body.style.overflow = 'hidden';
+      goToStep(1);
     }
     function closeMatveyModal() {
       bookingModal.classList.remove('show');
       document.body.style.overflow = '';
       setTimeout(function() {
-        document.getElementById('bookingForm').style.display = '';
-        document.getElementById('bookingSuccess').style.display = 'none';
-        var f = document.getElementById('bookingFormEl');
-        if (f) f.reset();
-        setQty(2);
+        booking.date = null; booking.selected = [];
+        var f = document.getElementById('bookingFormEl'); if(f) f.reset();
+        goToStep(1);
+        document.getElementById('step1Next').disabled = true;
       }, 300);
     }
     window.openMatveyModal = openMatveyModal;
     window.closeMatveyModal = closeMatveyModal;
-    bookingModal.addEventListener('click', function(e) {
-      if (e.target === bookingModal) closeMatveyModal();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && bookingModal.classList.contains('show')) closeMatveyModal();
+    bookingModal.addEventListener('click', function(e) { if(e.target===bookingModal) closeMatveyModal(); });
+    document.addEventListener('keydown', function(e) { if(e.key==='Escape'&&bookingModal.classList.contains('show')) closeMatveyModal(); });
+
+    function goToStep(n) {
+      ['step1','step2','step3','bookingSuccess'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+      booking.step=n;
+      if(n===1){document.getElementById('step1').style.display='';renderDates();}
+      else if(n===2){document.getElementById('step2').style.display='';document.getElementById('step2Date').textContent=booking.date?booking.date.date+' · '+booking.date.time:'—';renderHall();renderCart();}
+      else if(n===3){document.getElementById('step3').style.display='';renderSummary();}
+    }
+    window.goToStep = goToStep;
+
+    // Зоны зала
+    var ZONES = {
+      row_front: { color:'#9B6BFF', rgb:'155,107,255', label:'Ряды 1–4 (ближе к сцене)', price:1800 },
+      row_back:  { color:'#7B4FBF', rgb:'123,79,191',  label:'Ряды 5–7',              price:1200 },
+      table:     { color:'#E8C540', rgb:'232,197,64',  label:'Столики (места 1–4)',    price:1500 },
+      sofa:      { color:'#ff4f64', rgb:'255,79,100',  label:'Диваны',                price:4000 },
+      lampa:     { color:'#ff9f43', rgb:'255,159,67',  label:'Зона Лампа',            price:2500 }
+    };
+
+    var DEMO_TAKEN = new Set([
+      'r1_3', 'r1_8',
+      'r2_5', 'r2_6',
+      'r3_2', 'r3_9',
+      'r5_4', 'r5_9',
+      't1_2', 't3_4'
+    ]);
+
+    // Генерация мест (театральная схема ЛАМПА)
+    var SEATS = [];
+    
+    // Ряды 1-4: 5+5 мест (10 в ряду)
+    var r14_lx = 194, r14_rx = 314, r14_y0 = 110;
+    for(var row=1;row<=4;row++){
+      var ry = r14_y0+(row-1)*22;
+      for(var s=0;s<5;s++) {
+        SEATS.push({
+          key: 'r'+row+'_'+(s+1),
+          x: r14_lx+s*18,
+          y: ry,
+          zone: 'row_front',
+          label: 'Ряд '+row+', место '+(s+1),
+          seatNum: s+1
+        });
+      }
+      for(var s=0;s<5;s++) {
+        SEATS.push({
+          key: 'r'+row+'_'+(s+6),
+          x: r14_rx+s*18,
+          y: ry,
+          zone: 'row_front',
+          label: 'Ряд '+row+', место '+(s+6),
+          seatNum: s+6
+        });
+      }
+    }
+    
+    // Ряды 5-7: 6+6 мест (12 в ряду)
+    var r57_lx = 176, r57_rx = 314, r57_y0 = 198;
+    for(var row=5;row<=7;row++){
+      var ry = r57_y0+(row-5)*22;
+      for(var s=0;s<6;s++) {
+        SEATS.push({
+          key: 'r'+row+'_'+(s+1),
+          x: r57_lx+s*18,
+          y: ry,
+          zone: 'row_back',
+          label: 'Ряд '+row+', место '+(s+1),
+          seatNum: s+1
+        });
+      }
+      for(var s=0;s<6;s++) {
+        SEATS.push({
+          key: 'r'+row+'_'+(s+7),
+          x: r57_rx+s*18,
+          y: ry,
+          zone: 'row_back',
+          label: 'Ряд '+row+', место '+(s+7),
+          seatNum: s+7
+        });
+      }
+    }
+    
+    // Столики 1-4
+    var tableTX = [55, 115, 175, 235], tableTY = 330;
+    tableTX.forEach(function(tx,ti){
+      var tableNum = ti + 1;
+      var chairs = [
+        {dx:12, dy:-9, s:1},
+        {dx:12, dy:9, s:2},
+        {dx:-12, dy:9, s:3},
+        {dx:-12, dy:-9, s:4}
+      ];
+      chairs.forEach(function(b){
+        SEATS.push({
+          key: 't'+tableNum+'_'+b.s,
+          x: tx+b.dx,
+          y: tableTY+b.dy,
+          zone: 'table',
+          label: 'Столик '+tableNum+', место '+b.s,
+          seatNum: b.s
+        });
+      });
     });
 
-    function setQty(val) {
-      val = Math.max(1, Math.min(15, val));
-      document.getElementById('qtyVal').textContent = val;
-      document.getElementById('ticketCount').value = val;
-      document.getElementById('qtyMinus').disabled = val <= 1;
-      document.getElementById('qtyPlus').disabled = val >= 15;
-    }
-    function changeQty(delta) {
-      var cur = parseInt(document.getElementById('ticketCount').value, 10) || 1;
-      setQty(cur + delta);
-    }
-    window.changeQty = changeQty;
-    setQty(2);
+    // Диваны (Left Sofa, Right Sofa)
+    SEATS.push({
+      key: 'dl_1',
+      zone: 'sofa',
+      label: 'Левый диван (целиком)',
+      price: 4000
+    });
+    SEATS.push({
+      key: 'dr_1',
+      zone: 'sofa',
+      label: 'Правый диван (целиком)',
+      price: 4000
+    });
 
-    function getSource() {
-      try {
-        if (window.vkBridge || /VKBridge/i.test(navigator.userAgent)) return 'vk';
-        if (window.Telegram && window.Telegram.WebApp) return 'tg';
-      } catch (e) {}
-      return 'web';
+    // Зона Лампа
+    SEATS.push({
+      key: 'lampa',
+      zone: 'lampa',
+      label: 'Зона Лампа',
+      price: 2500
+    });
+
+    var booking = {step:1, date:null, selected:[]};
+    var SHOWS = [
+      {date:'18 октября 2026', day:18, month:'ОКТ', time:'18:00', venue:'ЛАМПА · Ярославль'},
+      {date:'15 ноября 2026',  day:15, month:'НОЯ', time:'14:00', venue:'РУСЬ · Владимир'},
+      {date:'20 декабря 2026', day:20, month:'ДЕК', time:'18:00', venue:'ЛЕНКОМ · Вологда'}
+    ];
+
+    function renderDates() {
+      var grid=document.getElementById('dateGrid'); grid.innerHTML='';
+      SHOWS.forEach(function(s){
+        var card=document.createElement('div'); card.className='date-card';
+        if(booking.date&&booking.date.date===s.date) card.classList.add('selected');
+        card.innerHTML='<div class="date-card__day">'+s.day+'</div><div class="date-card__month">'+s.month+'</div><div class="date-card__time">'+s.time+'</div><div class="date-card__venue">'+s.venue+'</div>';
+        card.onclick=function(){booking.date=s;document.getElementById('step1Next').disabled=false;renderDates();};
+        grid.appendChild(card);
+      });
     }
+
+    var NS='http://www.w3.org/2000/svg';
+    function svgEl(tag,attrs){var n=document.createElementNS(NS,tag);for(var k in attrs)n.setAttribute(k,attrs[k]);return n;}
+
+    function renderHall() {
+      var g=document.getElementById('hallG'); if(!g) return; g.innerHTML='';
+      
+      // 1. Отрисовка внешней рамки зала (синяя линия с вырезом под сцену)
+      var borderPath = svgEl('path', {
+        d: 'M 15 15 L 160 15 Q 170 15 170 25 L 170 50 Q 170 60 180 60 L 400 60 Q 410 60 410 50 L 410 25 Q 410 15 420 15 L 565 15 Q 570 15 570 20 L 570 390 Q 570 395 565 395 L 15 395 Q 10 395 10 390 L 10 20 Q 10 15 15 15 Z',
+        fill: 'none',
+        stroke: 'rgba(59, 130, 246, 0.7)',
+        'stroke-width': 2
+      });
+      g.appendChild(borderPath);
+      
+      // 2. Номера рядов в центральном проходе
+      var rows14cx=290, rows57cx=290;
+      var r14_y0=110, r57_y0=198;
+      for(var r=1;r<=4;r++){
+        var ly=r14_y0+(r-1)*22;
+        var lbl=svgEl('text',{x:rows14cx,y:ly,'text-anchor':'middle','dominant-baseline':'central','font-size':8,'font-weight':'700','font-family':'Inter,sans-serif',fill:'rgba(184,144,255,0.6)'});
+        lbl.textContent=r; g.appendChild(lbl);
+      }
+      for(var r=5;r<=7;r++){
+        var ly=r57_y0+(r-5)*22;
+        var lbl=svgEl('text',{x:rows57cx,y:ly,'text-anchor':'middle','dominant-baseline':'central','font-size':8,'font-weight':'700','font-family':'Inter,sans-serif',fill:'rgba(184,144,255,0.6)'});
+        lbl.textContent=r; g.appendChild(lbl);
+      }
+      
+      // 3. Диваны
+      // Left Sofa
+      var isSofaLeftSelected = booking.selected.some(function(x){return x.key==='dl_1';});
+      var isSofaLeftTaken = DEMO_TAKEN.has('dl_1');
+      var leftSofaFill = isSofaLeftSelected ? '#fff' : (isSofaLeftTaken ? 'rgba(255,255,255,0.1)' : 'rgba(60,60,75,0.85)');
+      var leftSofaStroke = isSofaLeftSelected ? ZONES.sofa.color : (isSofaLeftTaken ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.22)');
+      
+      var leftSofa = svgEl('path', {
+        d: 'M 30 100 L 50 100 Q 55 100 55 105 L 55 185 Q 55 190 60 190 L 85 190 Q 90 190 90 195 L 90 215 Q 90 220 85 220 L 30 220 Q 25 220 25 215 L 25 105 Q 25 100 30 100',
+        fill: leftSofaFill,
+        stroke: leftSofaStroke,
+        'stroke-width': isSofaLeftSelected ? 2 : 1,
+        style: isSofaLeftTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+      });
+      if (!isSofaLeftTaken) {
+        leftSofa.addEventListener('click', function(){ toggleSeat('dl_1', 'sofa', 'Левый диван (целиком)'); });
+      }
+      g.appendChild(leftSofa);
+      
+      // Text "ДИВАНЫ" inside Left Sofa
+      var leftSofaText = svgEl('text', {
+        x: 40,
+        y: 120,
+        'text-anchor': 'middle',
+        'font-size': '11',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: isSofaLeftSelected ? '#14082e' : (isSofaLeftTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
+        var tspan = svgEl('tspan', { x: 40, dy: i === 0 ? 0 : 14 });
+        tspan.textContent = char;
+        leftSofaText.appendChild(tspan);
+      });
+      g.appendChild(leftSofaText);
+
+      // Right Sofa
+      var isSofaRightSelected = booking.selected.some(function(x){return x.key==='dr_1';});
+      var isSofaRightTaken = DEMO_TAKEN.has('dr_1');
+      var rightSofaFill = isSofaRightSelected ? '#fff' : (isSofaRightTaken ? 'rgba(255,255,255,0.1)' : 'rgba(60,60,75,0.85)');
+      var rightSofaStroke = isSofaRightSelected ? ZONES.sofa.color : (isSofaRightTaken ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.22)');
+      
+      var rightSofa = svgEl('path', {
+        d: 'M 495 50 L 555 50 Q 560 50 560 55 L 560 145 Q 560 150 555 150 L 535 150 Q 530 150 530 145 L 530 85 Q 530 80 525 80 L 495 80 Q 490 80 490 75 L 490 55 Q 490 50 495 50',
+        fill: rightSofaFill,
+        stroke: rightSofaStroke,
+        'stroke-width': isSofaRightSelected ? 2 : 1,
+        style: isSofaRightTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+      });
+      if (!isSofaRightTaken) {
+        rightSofa.addEventListener('click', function(){ toggleSeat('dr_1', 'sofa', 'Правый диван (целиком)'); });
+      }
+      g.appendChild(rightSofa);
+      
+      // Text "ДИВАНЫ" inside Right Sofa
+      var rightSofaText = svgEl('text', {
+        x: 545,
+        y: 65,
+        'text-anchor': 'middle',
+        'font-size': '11',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: isSofaRightSelected ? '#14082e' : (isSofaRightTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
+        var tspan = svgEl('tspan', { x: 545, dy: i === 0 ? 0 : 14 });
+        tspan.textContent = char;
+        rightSofaText.appendChild(tspan);
+      });
+      g.appendChild(rightSofaText);
+
+      // 4. Лампа
+      var isLampaSelected = booking.selected.some(function(x){return x.key==='lampa';});
+      var isLampaTaken = DEMO_TAKEN.has('lampa');
+      var lampaFill = isLampaSelected ? '#fff' : (isLampaTaken ? 'rgba(255,255,255,0.1)' : '#ffc97a');
+      var lampaStroke = isLampaSelected ? ZONES.lampa.color : (isLampaTaken ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.22)');
+      
+      var lampa = svgEl('circle', {
+        cx: 535, cy: 190, r: 20,
+        fill: lampaFill,
+        stroke: lampaStroke,
+        'stroke-width': isLampaSelected ? 2 : 0.8,
+        style: isLampaTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+      });
+      if (!isLampaTaken) {
+        lampa.addEventListener('click', function(){ toggleSeat('lampa', 'lampa', 'Зона Лампа'); });
+      }
+      g.appendChild(lampa);
+      
+      var lampaText = svgEl('text', {
+        x: 535, y: 190,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '7',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: isLampaSelected ? '#14082e' : (isLampaTaken ? 'rgba(255,255,255,0.2)' : '#0a0420'),
+        'pointer-events': 'none'
+      });
+      lampaText.textContent = 'ЛАМПА';
+      g.appendChild(lampaText);
+
+      // 5. Бар
+      var bar = svgEl('path', {
+        d: 'M 535 290 L 555 290 Q 560 290 560 295 L 560 375 Q 560 380 555 380 L 425 380 Q 420 380 420 375 L 420 355 Q 420 350 425 350 L 525 350 Q 530 350 530 345 L 530 295 Q 530 290 535 290 Z',
+        fill: 'rgba(60,60,75,0.85)',
+        stroke: 'rgba(255,255,255,0.22)',
+        'stroke-width': 1
+      });
+      g.appendChild(bar);
+      
+      var barText = svgEl('text', {
+        x: 490, y: 365,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '14',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.7)',
+        'pointer-events': 'none'
+      });
+      barText.textContent = 'БАР';
+      g.appendChild(barText);
+
+      // 6. Столы (прямоугольные блоки)
+      tableTX.forEach(function(tx, ti){
+        var rect = svgEl('rect', {
+          x: tx-9, y: tableTY-15,
+          width: 18, height: 30, rx: 4,
+          fill: 'rgba(232,197,64,0.08)',
+          stroke: 'rgba(232,197,64,0.35)',
+          'stroke-width': 1
+        });
+        g.appendChild(rect);
+        
+        var lbl = svgEl('text', {
+          x: tx, y: tableTY,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': '10',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: 'rgba(232,197,64,0.8)'
+        });
+        lbl.textContent = (ti+1);
+        g.appendChild(lbl);
+      });
+
+      // 7. Места (кружки)
+      SEATS.forEach(function(seat){
+        // Пропускаем диваны и лампу, они отрисованы отдельно выше
+        if(seat.key === 'dl_1' || seat.key === 'dr_1' || seat.key === 'lampa') return;
+        
+        var z = ZONES[seat.zone];
+        var isTaken = DEMO_TAKEN.has(seat.key);
+        var isSelected = booking.selected.some(function(x){return x.key===seat.key;});
+        
+        var sr = seat.zone === 'table' ? 6 : 8; // радиус 6 для столов, 8 для рядов
+        var fill = isSelected ? '#fff' : (isTaken ? 'rgba(255,255,255,0.08)' : 'rgba('+z.rgb+',0.85)');
+        var stroke = isSelected ? z.color : (isTaken ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.22)');
+        
+        var c = svgEl('circle', {
+          cx: seat.x,
+          cy: seat.y,
+          r: sr,
+          fill: fill,
+          stroke: stroke,
+          'stroke-width': isSelected ? 2 : 0.8,
+          style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        });
+        c.classList.add('seat');
+        if (isTaken) c.classList.add('taken');
+        if (isSelected) {
+          c.classList.add('selected');
+          g.appendChild(svgEl('circle', {
+            cx: seat.x,
+            cy: seat.y,
+            r: sr+3,
+            fill: 'none',
+            stroke: z.color,
+            'stroke-width': 1.2,
+            'stroke-opacity': 0.55
+          }));
+        }
+        
+        if (!isTaken) {
+          c.addEventListener('click', function(){ toggleSeat(seat.key, seat.zone, seat.label); });
+        }
+        g.appendChild(c);
+        
+        // Цифра внутри кружка
+        if (seat.seatNum) {
+          var fontSize = seat.zone === 'table' ? 7 : 8.5;
+          var numText = svgEl('text', {
+            x: seat.x,
+            y: seat.y,
+            'text-anchor': 'middle',
+            'dominant-baseline': 'central',
+            'font-size': fontSize,
+            'font-weight': '800',
+            'font-family': 'Inter, sans-serif',
+            fill: isSelected ? '#14082e' : (isTaken ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.85)'),
+            'pointer-events': 'none'
+          });
+          numText.textContent = seat.seatNum;
+          g.appendChild(numText);
+        }
+      });
+    }
+
+    function toggleSeat(key,zone,label) {
+      var idx=booking.selected.findIndex(function(x){return x.key===key;});
+      if(idx>=0){booking.selected.splice(idx,1);}
+      else{
+        if(booking.selected.length>=15){alert('Можно выбрать максимум 15 мест.');return;}
+        booking.selected.push({key:key,zone:zone,label:label,price:ZONES[zone].price});
+      }
+      renderHall(); renderCart();
+      document.getElementById('step2Next').disabled=booking.selected.length===0;
+    }
+
+    function renderCart(){
+      var empty=document.getElementById('cartEmpty'),list=document.getElementById('cartList');
+      var oldTotal=document.querySelector('#cartBox .cart__total');
+      if(oldTotal) oldTotal.remove();
+      if(!booking.selected.length){empty.style.display='';list.style.display='none';return;}
+      empty.style.display='none'; list.style.display=''; list.innerHTML='';
+      var total=0;
+      booking.selected.forEach(function(s){
+        total+=s.price;
+        var row=document.createElement('div'); row.className='cart__row';
+        row.innerHTML='<span>'+s.label+'</span><span>'+s.price.toLocaleString('ru-RU')+' ₽</span>';
+        list.appendChild(row);
+      });
+      var tel=document.createElement('div'); tel.className='cart__total';
+      tel.innerHTML='<span class="cart__total-label">Итого</span><span style="font-family:\'Cinzel\',serif;font-size:20px;font-weight:700;font-style:italic;color:var(--gold)">'+total.toLocaleString('ru-RU')+' ₽</span>';
+      document.getElementById('cartBox').appendChild(tel);
+    }
+
+    function renderSummary(){
+      var box=document.getElementById('summaryBox'),total=booking.selected.reduce(function(a,s){return a+s.price;},0),html='';
+      if(booking.date) html+='<div class="summary__row"><span>Дата</span><span>'+booking.date.date+' · '+booking.date.time+'</span></div>';
+      html+='<div class="summary__row"><span>Билетов</span><span>'+booking.selected.length+' шт</span></div>';
+      html+='<div class="summary__row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span style="color:var(--gold);text-transform:uppercase;font-size:11px;letter-spacing:0.16em">Итого</span><span style="font-family:\'Cinzel\',serif;font-size:20px;font-weight:700;font-style:italic;color:var(--gold)">'+total.toLocaleString('ru-RU')+' ₽</span></div>';
+      box.innerHTML=html;
+    }
+
     async function submitMatveyBooking(e) {
       e.preventDefault();
-      var btn = document.getElementById('bookingSubmit');
-      btn.disabled = true;
-      btn.textContent = 'Отправляем...';
-      var form = e.target;
-      var data = new FormData(form);
-      var payload = {
-        show: 'matvey',
-        eventDate: data.get('eventDate') || '',
-        ticketType: 'Семейный билет',
-        ticketCount: parseInt(data.get('ticketCount'), 10) || 1,
-        name: data.get('name') || '',
-        phone: data.get('phone') || '',
-        telegram: data.get('telegram') || '',
-        comment: data.get('comment') || '',
-        source: getSource(),
+      var btn=document.getElementById('bookingSubmit');
+      btn.disabled=true; btn.textContent='Отправляем...';
+      var form=e.target; var data=new FormData(form);
+      var seatsInfo=booking.selected.map(function(s){return s.label;}).join(', ');
+      var total=booking.selected.reduce(function(a,s){return a+s.price;},0);
+      var payload={
+        show:'matvey',
+        eventDate:booking.date?booking.date.date+' '+booking.date.time:'',
+        seats:seatsInfo, ticketCount:booking.selected.length, totalPrice:total,
+        name:data.get('name')||'', phone:data.get('phone')||'',
+        telegram:data.get('telegram')||'', comment:data.get('comment')||'',
+        source:(function(){try{if(window.vkBridge||/VKBridge/i.test(navigator.userAgent))return 'vk';if(window.Telegram&&window.Telegram.WebApp)return 'tg';}catch(e){}return 'web';})()
       };
-      try {
-        var r = await fetch('/api/lead-concert', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        var json = await r.json();
-        if (json && json.ok) {
-          document.getElementById('bookingForm').style.display = 'none';
-          document.getElementById('bookingSuccess').style.display = 'block';
-        } else {
-          alert('Не удалось отправить заявку. Попробуйте позже.');
-          btn.disabled = false;
-          btn.textContent = 'Забронировать';
-        }
-      } catch (err) {
-        alert('Ошибка сети. Попробуйте ещё раз.');
-        btn.disabled = false;
-        btn.textContent = 'Забронировать';
-      }
+      try{
+        var r=await fetch('/api/lead-concert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        var json=await r.json();
+        if(json&&json.ok){
+          ['step1','step2','step3'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+          document.getElementById('bookingSuccess').style.display='';
+        }else{alert('Не удалось отправить заявку. Попробуйте позже.');btn.disabled=false;btn.textContent='Забронировать';}
+      }catch(err){alert('Ошибка сети. Попробуйте ещё раз.');btn.disabled=false;btn.textContent='Забронировать';}
       return false;
     }
     window.submitMatveyBooking = submitMatveyBooking;
+
+    // Скрипт интерактивного волшебного холста для шоу СПАСТИ МАТВЕЯ
+    (function() {
+      const canvas = document.getElementById('magicCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      let particles = [];
+      const colors = ['#ffd698', '#ffb850', '#d4b5ff', '#c89cff', '#ffffff'];
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor(x, y, isExplosion = false) {
+          this.x = x;
+          this.y = y;
+          this.size = Math.random() * 8 + 3; // Чуть больше размер для звезд
+
+          this.angle = Math.random() * Math.PI * 2;
+          this.rotation = Math.random() * 0.1 - 0.05;
+          this.speedMultiplier = Math.random() * 1.5 + 0.5;
+
+          if (isExplosion) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 9 + 4;
+            this.speedX = Math.cos(angle) * speed;
+            this.speedY = Math.sin(angle) * speed;
+          } else {
+            // Шлейф за курсором - легкая спираль вокруг траектории
+            this.speedX = (Math.random() * 2 - 1) * this.speedMultiplier;
+            this.speedY = (Math.random() * 2 - 0.8) * this.speedMultiplier;
+          }
+
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.alpha = 1;
+          this.decay = Math.random() * 0.015 + 0.012; // Живут чуть дольше
+          this.gravity = 0.02; // Легче гравитация для эффекта левитации
+        }
+
+        update() {
+          this.x += this.speedX + Math.sin(this.angle) * 1.2; // Добавляем завихрение
+          this.y += this.speedY;
+          this.angle += 0.08; // Скорость вращения вихря
+          this.speedY += this.gravity;
+          this.alpha -= this.decay;
+        }
+
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = this.alpha;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = this.color;
+          ctx.fillStyle = this.color;
+
+          // Рисуем красивую четырехконечную звездочку
+          ctx.beginPath();
+          const spikes = 4;
+          const outerRadius = this.size;
+          const innerRadius = this.size / 3.5;
+          let rot = Math.PI / 2 * 3;
+          let cx = this.x;
+          let cy = this.y;
+          let step = Math.PI / spikes;
+
+          ctx.moveTo(cx, cy - outerRadius);
+          for (let i = 0; i < spikes; i++) {
+            cx = this.x + Math.cos(rot) * outerRadius;
+            cy = this.y + Math.sin(rot) * outerRadius;
+            ctx.lineTo(cx, cy);
+            rot += step;
+
+            cx = this.x + Math.cos(rot) * innerRadius;
+            cy = this.y + Math.sin(rot) * innerRadius;
+            ctx.lineTo(cx, cy);
+            rot += step;
+          }
+          ctx.lineTo(this.x, this.y - outerRadius);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // Добавление искр от мыши
+      window.addEventListener('mousemove', function(e) {
+        for (let i = 0; i < 3; i++) {
+          particles.push(new Particle(e.clientX, e.clientY));
+        }
+      });
+
+      // Добавление искр от тача
+      window.addEventListener('touchmove', function(e) {
+        if (e.touches && e.touches[0]) {
+          for (let i = 0; i < 3; i++) {
+            particles.push(new Particle(e.touches[0].clientX, e.touches[0].clientY));
+          }
+        }
+      });
+
+      // Мощный взрыв искр из центра при загрузке страницы
+      setTimeout(function() {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight * 0.45; // Примерный центр постера
+        for (let i = 0; i < 80; i++) {
+          particles.push(new Particle(cx, cy, true));
+        }
+      }, 300);
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+
+          if (particles[i].alpha <= 0) {
+            particles.splice(i, 1);
+            i--;
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
   </script>
+
+  <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
+  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.27-2.03-.49-.82-.27-1.47-.41-1.42-.87.03-.24.36-.49 1-.75 3.92-1.71 6.53-2.84 7.83-3.39 3.73-1.56 4.5-1.83 5.01-1.84.11 0 .36.03.52.16.14.11.18.26.2.37.02.1.03.3.01.47z"/>
+    </svg>
+  </a>
+  <style>
+    .tg-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      background: #24A1DE;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(36, 161, 222, 0.4);
+      z-index: 99999;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    }
+    .tg-float:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(36, 161, 222, 0.6);
+    }
+    @media (max-width: 600px) {
+      .tg-float {
+        bottom: 24px;
+        right: 16px;
+        width: 50px;
+        height: 50px;
+      }
+      .tg-float svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  </style>
+
 </body>
 </html>

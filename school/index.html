@@ -2,30 +2,36 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
-  <title>Abracadabra — Первая школа фокусов в Ярославле</title>
-  <meta name="description" content="ABRACADABRA — первая школа фокусов в Ярославле для детей 7–13 лет от иллюзиониста Дмитрия Костюка." />
-  <meta property="og:title" content="Abracadabra — Школа фокусов для детей 7–13 лет" />
-  <meta property="og:description" content="Ваш ребёнок сможет то, о чём вы даже не догадываетесь. Уверенность, речь и артистизм через искусство иллюзии." />
-  <meta property="og:image" content="https://magic-school-eight.vercel.app/assets/images/abracadabra-poster.png" />
-  <meta property="og:url" content="https://magic-school-eight.vercel.app" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Школа фокусов в Ярославле для детей | ABRACADABRA — Дмитрий Костюк</title>
+  <meta name="description" content="Детская школа фокусов ABRACADABRA в Ярославле для детей 7–13 лет. Обучение иллюзионному искусству, актерскому мастерству и уверенности от иллюзиониста Дмитрия Костюка." />
+  <meta property="og:title" content="Abracadabra — Школа фокусов для детей 7–13 лет в Ярославле" />
+  <meta property="og:description" content="Уверенность, речь и артистизм вашего ребенка через искусство иллюзии. Занятия от Дмитрия Костюка." />
+  <meta property="og:image" content="https://kostyuk.ru/school/assets/images/abracadabra-poster.png" />
+  <meta property="og:url" content="https://kostyuk.ru/school/" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/images/kp-favicon.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
-  <link rel="shortcut icon" href="/images/kp-favicon-32.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet" />
-  <!-- PostHog Analytics -->
-  <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveDomains".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('YOUR_POSTHOG_API_KEY', {
-      api_host: 'https://us.i.posthog.com',
-      person_profiles: 'identified_only'
-    });
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Школа фокусов ABRACADABRA",
+    "image": "https://kostyuk.ru/images/kp-apple-touch.png",
+    "description": "Первая детская школа фокусов в Ярославле от профессионального иллюзиониста Дмитрия Костюка.",
+    "url": "https://kostyuk.ru/school/",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Ярославль",
+      "addressCountry": "RU"
+    }
+  }
   </script>
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/kp-favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="../images/kp-favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/kp-apple-touch.png" />
+  <link rel="shortcut icon" href="../images/kp-favicon-32.png" />
+  <link rel="stylesheet" href="../vendor/fonts/fonts.css" />
+  <link rel="stylesheet" href="../ecosystem.css?v=4" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -40,8 +46,8 @@
       --text: #ece8e0;
       --text-secondary: #b5b1a9;
       --text-muted: #6b6860;
-      --font-display: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
-      --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-display: 'Cinzel', 'Georgia', 'Times New Roman', serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       --max: 1200px;
     }
     body {
@@ -657,13 +663,111 @@
     }
     #kostyukPortal.active .kp-vignette { animation: kpVig 1.8s ease-out forwards; }
     @keyframes kpVig { 0%{opacity:0} 100%{opacity:1} }
+    .logo-link { display:flex; align-items:center; gap:9px; color:var(--text); font-family:var(--font-display); font-weight:700; }
+    .logo-link__text { display:flex; flex-direction:column; line-height:1; }
+    .logo-link__text small { margin-top:5px; color:var(--gold); font:600 7px var(--font-body); letter-spacing:.16em; }
+
+    /* Project Switcher premium styling like the hub cards */
+    .project-switcher__list a {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-height: 250px !important;
+      text-align: left;
+    }
+    .project-switcher__list a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.35;
+      filter: saturate(0.75) contrast(1.03);
+      transition: opacity 0.4s ease, transform 0.6s ease;
+    }
+    .project-switcher__list a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.08) 0%, rgba(5,5,5,0.16) 38%, rgba(7,7,7,0.94) 78%, #070707 100%);
+    }
+    .project-switcher__list a:hover::before {
+      opacity: 0.65;
+      transform: scale(1.03);
+    }
+    .project-switcher__list .switcher-item--shows::before {
+      background-image: url('../images/direction-shows.png');
+      background-position: 50% 44%;
+    }
+    .project-switcher__list .switcher-item--events::before {
+      background-image: url('../images/direction-events.png');
+      background-position: 50% 43%;
+    }
+    .project-switcher__list .switcher-item--school::before {
+      background-image: url('../images/direction-school.png');
+      background-position: 50% 42%;
+    }
+    
+    /* Current navigation state style */
+    .project-switcher__list a.is-current {
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 20px rgba(201, 168, 76, 0.25) !important;
+    }
+    .project-switcher__list a.is-current::before {
+      opacity: 0.5;
+    }
+    .project-switcher__list .switcher-badge {
+      align-self: flex-start;
+      margin-bottom: auto;
+      padding: 4px 8px;
+      border: 1px solid rgba(201, 168, 76, 0.3);
+      border-radius: 20px;
+      color: var(--gold);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .project-switcher__list .switcher-index {
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+    .project-switcher__list b {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.09);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .project-switcher__list a.is-current b {
+      color: var(--gold);
+    }
+    @media(max-width:900px) {
+      .project-switcher__list a {
+        min-height: 140px !important;
+      }
+      .project-switcher__list .switcher-index {
+        margin-bottom: 4px;
+      }
+      .project-switcher__list b {
+        margin-top: 8px;
+        padding-top: 6px;
+      }
+    }
   </style>
 </head>
 <body>
 
   <header class="header">
     <div class="header-inner">
-      <a href="#" class="logo-link"><img src="assets/logo/logo.png" alt="" width="32" height="32" /> Abracadabra</a>
+      <a href="#" class="logo-link"><img src="assets/logo/logo.png" alt="" width="32" height="32" /><span class="logo-link__text">Abracadabra<small>BY KOSTYUK PROJECT</small></span></a>
       <nav class="header-nav" id="headerNav">
         <a href="#benefits">Выгоды</a>
         <a href="#results">Результаты</a>
@@ -675,6 +779,7 @@
         <a href="#contact" style="color:var(--gold)">Контакты</a>
       </nav>
       <a href="tel:+79092763386" class="header-phone">+7 909 276-33-86</a>
+      <button type="button" onclick="toggleProjectSwitcher(true)" style="font-family: var(--font-body); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); border: 1px solid var(--gold-border); padding: 7px 16px; border-radius: 100px; background: transparent; cursor: pointer; margin-left: 8px; transition: all 0.3s;">Все проекты</button>
       <button class="nav-toggle" id="navToggle">☰</button>
     </div>
   </header>
@@ -896,7 +1001,7 @@
       </div>
 
       <div class="kostyuk-cta-wrap">
-        <a href="/show/" class="kostyuk-cta" onclick="return openKostyukPortal(event)">Заказать шоу на мероприятие →</a>
+        <a href="../events/index.html" class="kostyuk-cta">Заказать шоу на мероприятие →</a>
       </div>
     </div>
   </section>
@@ -997,6 +1102,17 @@
       <h2 class="section-title">Готовы попробовать?</h2>
       <a href="tel:+79092763386" class="contact-phone">+7 909 276-33-86</a>
       <p>Позвоните. Мы расскажем о расписании, приложении и пробном занятии. Без спешки и обязательств.</p>
+    </div>
+  </section>
+
+  <section class="kp-ecosystem-promo" aria-labelledby="schoolMoreTitle">
+    <div class="kp-ecosystem-promo__head">
+      <div><small>Проекты Дмитрия Костюка</small><h2 id="schoolMoreTitle">Магия бывает не только на занятиях</h2></div>
+      <p>Школа остаётся главным направлением этой страницы. Для семейного праздника или большого театрального вечера можно выбрать другой формат KOSTYUK PROJECT.</p>
+    </div>
+    <div class="kp-ecosystem-promo__grid">
+      <a class="kp-promo-card" href="../events/index.html"><span class="kp-promo-card__label">Свадьбы · юбилеи · семейные праздники</span><h3>Пригласите иллюзиониста на ваше событие</h3><p>Персональная программа, в которой гости не просто смотрят магию — они становятся её частью.</p><span class="kp-promo-card__action">Выбрать выступление <i>↗</i></span></a>
+      <a class="kp-promo-card" href="../concerts/index.html"><span class="kp-promo-card__label">Афиша и билеты</span><h3>Авторские иллюзионные шоу</h3><p>Уникальные сценические истории Дмитрия Костюка, созданные для большого зрительного зала.</p><span class="kp-promo-card__action">Посмотреть афишу <i>↗</i></span></a>
     </div>
   </section>
 
@@ -1120,23 +1236,23 @@
     }
   </style>
 
-  <nav id="kpBottomNav" role="navigation" aria-label="Kostyuk Project">
+  <nav id="kpBottomNav" class="kp-bottom-nav" role="navigation" aria-label="Проекты Дмитрия Костюка">
     <div class="kp-tab-wrap">
-      <a class="kp-tab" id="kpTabShow" href="/show/" onclick="return kpGoToShow(event)">
+      <a class="kp-tab" id="kpTabShow" href="../events/index.html">
         <img class="kp-tab-icon" src="assets/icons/magician.png" alt="" />
-        <span>Частные заказы</span>
+        <span>Частные события</span>
       </a>
     </div>
     <div class="kp-tab-wrap">
-      <a class="kp-tab active" href="#" aria-current="page">
+      <a class="kp-tab active" href="index.html" aria-current="page">
         <img class="kp-tab-icon" src="assets/icons/wand.png" alt="" />
         <span>Школа фокусов</span>
       </a>
     </div>
     <div class="kp-tab-wrap">
-      <a class="kp-tab" id="kpTabConcerts" href="/concerts/" onclick="return kpGoToConcerts(event)">
+      <a class="kp-tab" id="kpTabConcerts" href="../concerts/index.html">
         <img class="kp-tab-icon" src="assets/icons/smoke.png" alt="" />
-        <span>Концерты</span>
+        <span>Авторские шоу</span>
       </a>
     </div>
   </nav>
@@ -1146,7 +1262,7 @@
   <script>
     function kpGoToShow(e) {
       if (e) e.preventDefault();
-      var url = '/';
+      var url = '/events/';
       var portal = document.getElementById('kostyukPortal');
       if (portal) {
         portal.classList.add('active');
@@ -1233,7 +1349,36 @@
       var total = Math.round(200 * pct / 100);
       text.textContent = total + ' / 200 XP';
     }
-  </script>
+  </script>  <div class="project-switcher" id="projectSwitcher" aria-hidden="true">
+    <button class="project-switcher__backdrop" type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть меню"></button>
+    <section class="project-switcher__panel" role="dialog" aria-modal="true" aria-labelledby="projectSwitcherTitle">
+      <div class="project-switcher__head">
+        <div><span>KOSTYUK PROJECT</span><h2 id="projectSwitcherTitle">Выберите направление</h2></div>
+        <button type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть">×</button>
+      </div>
+      <div class="project-switcher__list">
+        <a class="switcher-item--shows" href="../concerts/index.html">
+          <span class="switcher-index">01</span>
+          <strong>Авторские шоу</strong>
+          <span>Афиша · билеты · гастроли</span>
+          <b>Смотреть афишу <i>↗</i></b>
+        </a>
+        <a class="switcher-item--events" href="../events/index.html">
+          <span class="switcher-index">02</span>
+          <strong>Частные события</strong>
+          <span>Свадьбы · корпоративы · праздники</span>
+          <b>Выбрать выступление <i>↗</i></b>
+        </a>
+        <a class="switcher-item--school is-current" href="#top" onclick="toggleProjectSwitcher(false)">
+          <span class="switcher-index">03</span>
+          <div class="switcher-badge">Вы здесь</div>
+          <strong style="margin-top: 10px;">Школа фокусов</strong>
+          <span>Обучение детей 7–13 лет</span>
+          <b>Активно <i>✓</i></b>
+        </a>
+      </div>
+    </section>
+  </div>
 
   <!-- ===== KOSTYUK PORTAL ===== -->
   <div id="kostyukPortal">
@@ -1274,7 +1419,55 @@
       setTimeout(function(){ window.location.href = url; }, 1750);
       return false;
     }
+    function toggleProjectSwitcher(open) {
+      var switcher = document.getElementById('projectSwitcher');
+      if (!switcher) return;
+      switcher.classList.toggle('is-open', !!open);
+      switcher.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
   </script>
+
+  <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
+  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.27-2.03-.49-.82-.27-1.47-.41-1.42-.87.03-.24.36-.49 1-.75 3.92-1.71 6.53-2.84 7.83-3.39 3.73-1.56 4.5-1.83 5.01-1.84.11 0 .36.03.52.16.14.11.18.26.2.37.02.1.03.3.01.47z"/>
+    </svg>
+  </a>
+  <style>
+    .tg-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      background: #24A1DE;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(36, 161, 222, 0.4);
+      z-index: 99999;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    }
+    .tg-float:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(36, 161, 222, 0.6);
+    }
+    @media (max-width: 600px) {
+      .tg-float {
+        bottom: 85px; /* Offset to clear mobile bottom navigation bar */
+        right: 16px;
+        width: 50px;
+        height: 50px;
+      }
+      .tg-float svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  </style>
 
 </body>
 </html>

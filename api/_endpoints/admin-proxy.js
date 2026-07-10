@@ -24,6 +24,7 @@ const ALLOWED_PATH_PREFIXES = [
   'huligan_reviews',
   'bot_private_config',
   'private_orders',
+  'bot_users',
 ];
 
 function isPathAllowed(path) {

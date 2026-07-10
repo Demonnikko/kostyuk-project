@@ -1,8 +1,8 @@
-import {  buildTicketLink, fbGet  } from '../../shared/ticketAccess';
+import {  buildTicketLink, fbGet  } from '../../shared/ticketAccess.js';
 import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
-import {  setCors  } from '../../shared/cors';
-import {  getTrustedTelegramUserId  } from '../../shared/tg';
-import {  runSecretAutoCleanup  } from '../../shared/autoCleanup';
+import {  setCors  } from '../../shared/cors.js';
+import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
+import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 
 const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted']);

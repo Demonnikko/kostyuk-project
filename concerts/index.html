@@ -2,24 +2,30 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
-  <title>Концертные шоу — KOSTYUK PROJECT</title>
-  <meta name="description" content="Авторские концертные шоу Дмитрия Костюка: Секрет, ХУЛИgan, Спасти Матвея. Афиша, билеты, бронирование." />
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/images/kp-favicon.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
-  <link rel="preload" as="image" href="/concerts/images/secret.jpg" />
-  <link rel="preload" as="image" href="/concerts/images/huligan.jpg" />
-  <link rel="preload" as="image" href="/concerts/images/matvey.jpg" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&family=Anton&display=swap" rel="stylesheet" />
-  <!-- PostHog Analytics -->
-  <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveDomains".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    posthog.init('YOUR_POSTHOG_API_KEY', {
-      api_host: 'https://us.i.posthog.com',
-      person_profiles: 'identified_only'
-    });
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Афиша шоу иллюзиониста Дмитрия Костюка | Билеты — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
+  <meta name="description" content="Афиша и покупка билетов на авторские иллюзионные шоу Дмитрия Костюка (Секрет, ХУЛИgan, Спасти Матвея) в Ярославле, Иваново, Костроме, Владимире, Вологде." />
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/kp-favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="../images/kp-favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/kp-apple-touch.png" />
+  <link rel="preload" as="image" href="images/secret.jpg" />
+  <link rel="preload" as="image" href="images/huligan.jpg" />
+  <link rel="preload" as="image" href="images/matvey.jpg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EventSeries",
+    "name": "Концертные шоу Дмитрия Костюка",
+    "description": "Авторские иллюзионные шоу и спектакли фокусов Дмитрия Костюка в городах Центральной России.",
+    "url": "https://kostyuk.ru/concerts/",
+    "actor": {
+      "@type": "Person",
+      "name": "Дмитрий Костюк"
+    }
+  }
   </script>
+  <link rel="stylesheet" href="../vendor/fonts/fonts.css" />
+  <link rel="stylesheet" href="../ecosystem.css?v=4" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
@@ -80,12 +86,47 @@
       50%      { opacity: 0.8; }
     }
 
-    /* ==== HERO ==== */
+    /* ==== HERO — полноэкранный ==== */
     .hero {
       position: relative;
       z-index: 2;
-      padding: 80px 16px 32px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      padding: 100px 24px 80px;
+      overflow: hidden;
+    }
+    /* Тройной коллаж-фон из постеров */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        url('images/huligan.jpg') center 30% / cover no-repeat;
+      transform: scale(1.05);
+      filter: saturate(0.6) brightness(0.35);
+      transition: transform 8s ease;
+    }
+    .hero:hover::before { transform: scale(1.08); }
+    /* Градиентное затемнение поверх фото */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(203,161,40,0.07) 0%, transparent 70%),
+        linear-gradient(to bottom, rgba(5,5,16,0.55) 0%, rgba(5,5,16,0.3) 40%, rgba(5,5,16,0.75) 80%, #050510 100%);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 3;
+      max-width: 820px;
     }
     .eyebrow {
       display: inline-flex;
@@ -99,7 +140,7 @@
       letter-spacing: 0.42em;
       text-transform: uppercase;
       color: var(--gold2);
-      margin-bottom: 22px;
+      margin-bottom: 28px;
       font-weight: 600;
     }
     .eyebrow::before {
@@ -114,12 +155,12 @@
       50%      { opacity: 1;   transform: scale(1.15); }
     }
     h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(38px, 10vw, 96px);
+      font-family: 'Cinzel', serif;
+      font-size: clamp(52px, 12vw, 110px);
       font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.0;
-      margin-bottom: 10px;
+      margin-bottom: 18px;
     }
     h1 .word {
       display: inline-block;
@@ -134,33 +175,74 @@
       font-weight: 500;
     }
     .lead {
-      max-width: 580px;
-      margin: 0 auto 12px;
-      font-size: clamp(14px, 2.2vw, 17px);
+      max-width: 540px;
+      margin: 0 auto 36px;
+      font-size: clamp(15px, 2.2vw, 18px);
       line-height: 1.65;
-      color: var(--muted);
+      color: rgba(240, 240, 245, 0.72);
+    }
+    /* Мини-плашки трёх шоу под заголовком */
+    .hero-shows-hint {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+    .hero-shows-hint span {
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: rgba(240,240,245,0.65);
+      font-weight: 500;
+    }
+    /* Стрелка скролла вниз */
+    .hero-scroll {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.35);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      background: none;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .hero-scroll svg { opacity: 0.4; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
     }
 
     /* ==== ВИТРИНА — 3 БОЛЬШИЕ АФИШИ ==== */
     .stage {
       position: relative;
       z-index: 2;
-      padding: 32px 12px calc(90px + env(safe-area-inset-bottom, 0px));
+      padding: 100px 16px calc(90px + env(safe-area-inset-bottom, 0px));
       max-width: 1380px;
       margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
     }
     .shows {
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
+      width: 100%;
     }
     @media (min-width: 760px) {
-      .shows { grid-template-columns: repeat(2, 1fr); gap: 28px; }
-      .stage { padding: 40px 20px calc(100px + env(safe-area-inset-bottom, 0px)); }
+      .shows { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .stage { padding: 100px 24px calc(100px + env(safe-area-inset-bottom, 0px)); }
     }
     @media (min-width: 1100px) {
-      .shows { grid-template-columns: repeat(3, 1fr); gap: 36px; }
-      .stage { padding: 50px 32px calc(110px + env(safe-area-inset-bottom, 0px)); }
+      .shows { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+      .stage { padding: 100px 32px calc(110px + env(safe-area-inset-bottom, 0px)); }
     }
 
     /* Карточка шоу */
@@ -235,18 +317,22 @@
     }
     .show__badge {
       display: inline-block;
-      font-size: 9px;
-      letter-spacing: 0.24em;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      padding: 4px 10px;
+      padding: 6px 16px;
       border-radius: 999px;
-      border: 1px solid var(--badge-border, rgba(255,255,255,0.4));
+      border: 1.5px solid var(--badge-border, rgba(255,255,255,0.4));
       color: var(--badge, #fff);
-      margin-bottom: 14px;
-      backdrop-filter: blur(4px);
+      margin-bottom: 20px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      font-family: var(--title-font, sans-serif);
     }
     .show__title {
-      font-family: var(--title-font, 'Cormorant Garamond', serif);
+      font-family: var(--title-font, 'Cinzel', serif);
       font-size: clamp(28px, 7vw, 42px);
       font-weight: 700;
       letter-spacing: 0.01em;
@@ -254,12 +340,14 @@
       margin-bottom: 8px;
     }
     .show__sub {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--sub-font, 'Inter', sans-serif);
       font-style: italic;
-      font-size: 15px;
-      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
       margin-bottom: 22px;
       font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
     .show__cta {
       display: inline-flex;
@@ -288,73 +376,74 @@
 
     /* ==== ИНДИВИДУАЛЬНЫЕ ЦВЕТА ==== */
 
-    /* SECRET — золото и тёмно-сапфировый */
+    /* SECRET — Cinzel, торжественный и загадочный */
     .show--secret {
       --c1: rgba(203, 161, 40, 0.55);
       --c2: rgba(20, 18, 80, 0.55);
       --frame: rgba(231, 199, 118, 0.28);
       --badge: #e7c776;
       --badge-border: rgba(231, 199, 118, 0.55);
-      --title-font: 'Playfair Display', serif;
+      --title-font: 'Cinzel', serif;
+      --sub-font: 'Inter', sans-serif;
     }
-    .show--secret .show__title {
-      background: linear-gradient(135deg, #ffffff 0%, #fff0c2 45%, #e7c776 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 30px rgba(231, 199, 118, 0.3);
+    .show--secret .show__badge {
+      font-size: 13px;
+      letter-spacing: 0.16em;
     }
     .show--secret .show__cta {
       background: linear-gradient(135deg, #fff0c2 0%, #e7c776 100%);
     }
 
-    /* HULIGAN — огонь и красный кирпич */
+    /* HULIGAN — Anton, уличный шрифт, хулиганит и прыгает */
+    @keyframes huligan-bounce {
+      0%, 100% { transform: skewX(-3deg) translateY(0px) rotate(-0.5deg); }
+      15%       { transform: skewX(-5deg) translateY(-6px) rotate(-1.5deg) scaleX(1.04); }
+      30%       { transform: skewX(2deg)  translateY(2px)  rotate(1deg);  }
+      45%       { transform: skewX(-4deg) translateY(-4px) rotate(-2deg) scaleX(0.97); }
+      60%       { transform: skewX(3deg)  translateY(3px)  rotate(0.8deg); }
+      75%       { transform: skewX(-2deg) translateY(-2px) rotate(-1deg); }
+    }
+    @keyframes huligan-shake {
+      0%, 100% { transform: skewX(-2deg) translateX(0); }
+      20%       { transform: skewX(-3deg) translateX(-3px) rotate(-1deg); }
+      40%       { transform: skewX(2deg)  translateX(3px)  rotate(1deg); }
+      60%       { transform: skewX(-2deg) translateX(-2px); }
+      80%       { transform: skewX(1deg)  translateX(2px); }
+    }
     .show--huligan {
       --c1: rgba(255, 110, 0, 0.55);
       --c2: rgba(168, 24, 0, 0.55);
       --frame: rgba(255, 144, 0, 0.32);
       --badge: #FFB347;
       --badge-border: rgba(255, 144, 0, 0.6);
-      --title-font: 'Anton', sans-serif;
+      --title-font: 'Cinzel', serif;
+      --sub-font: 'Inter', sans-serif;
     }
-    .show--huligan .show__title {
-      letter-spacing: 0.02em;
-      transform: skewX(-3deg);
-      background: linear-gradient(180deg, #FFE566 0%, #FF9000 50%, #FF3D00 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 30px rgba(255, 60, 0, 0.4);
-    }
-    .show--huligan .show__sub {
-      font-family: 'Anton', sans-serif;
-      font-style: normal;
+    .show--huligan .show__badge {
+      transform: skewX(-7deg);
+      font-size: 13.5px;
       letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 13px;
-      transform: skewX(-2deg);
     }
     .show--huligan .show__cta {
-      background: linear-gradient(135deg, #FF9000 0%, #FF3D00 100%);
-      color: #fff;
+      background: linear-gradient(135deg, #FF9000 0%, #FF6A00 100%);
+      color: #1a0800;
     }
 
-    /* MATVEY — глубокий фиолетовый и закатное золото */
+    /* MATVEY — Cormorant Garamond, театральный, сказочный */
     .show--matvey {
       --c1: rgba(140, 80, 240, 0.55);
       --c2: rgba(255, 180, 80, 0.45);
       --frame: rgba(184, 144, 255, 0.32);
-      --badge: #d4b5ff;
-      --badge-border: rgba(184, 144, 255, 0.55);
-      --title-font: 'Cormorant Garamond', serif;
+      --badge: #ffe6bb;
+      --badge-border: rgba(255, 184, 80, 0.55);
+      --title-font: 'Cinzel', serif;
+      --sub-font: 'Inter', sans-serif;
     }
-    .show--matvey .show__title {
-      background: linear-gradient(135deg, #ffffff 0%, #ffd698 40%, #c89cff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 30px rgba(200, 156, 255, 0.35);
-      font-weight: 800;
+    .show--matvey .show__badge {
+      font-style: italic;
+      text-transform: none; /* Убираем жесткий капслок для сказочного стиля */
+      font-size: 15px;
+      letter-spacing: 0.05em;
     }
     .show--matvey .show__cta {
       background: linear-gradient(135deg, #c89cff 0%, #8b5fe5 100%);
@@ -549,7 +638,7 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%) translateY(120px);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Cinzel', serif;
       font-size: clamp(22px, 4.5vw, 44px);
       color: #cba128;
       letter-spacing: 0.45em;
@@ -577,78 +666,216 @@
     }
     #kostyukPortal.active .kp-vignette { animation: kpVig 1.8s ease-out forwards; }
     @keyframes kpVig { 0%{opacity:0} 100%{opacity:1} }
+
+    /* Project Switcher premium styling like the hub cards */
+    .project-switcher__list a {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-height: 250px !important;
+      text-align: left;
+    }
+    .project-switcher__list a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.35;
+      filter: saturate(0.75) contrast(1.03);
+      transition: opacity 0.4s ease, transform 0.6s ease;
+    }
+    .project-switcher__list a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.08) 0%, rgba(5,5,5,0.16) 38%, rgba(7,7,7,0.94) 78%, #070707 100%);
+    }
+    .project-switcher__list a:hover::before {
+      opacity: 0.65;
+      transform: scale(1.03);
+    }
+    .project-switcher__list .switcher-item--shows::before {
+      background-image: url('../images/direction-shows.png');
+      background-position: 50% 44%;
+    }
+    .project-switcher__list .switcher-item--events::before {
+      background-image: url('../images/direction-events.png');
+      background-position: 50% 43%;
+    }
+    .project-switcher__list .switcher-item--school::before {
+      background-image: url('../images/direction-school.png');
+      background-position: 50% 42%;
+    }
+    
+    /* Current navigation state style */
+    .project-switcher__list a.is-current {
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 20px rgba(203, 161, 40, 0.25) !important;
+    }
+    .project-switcher__list a.is-current::before {
+      opacity: 0.5;
+    }
+    .project-switcher__list .switcher-badge {
+      align-self: flex-start;
+      margin-bottom: auto;
+      padding: 4px 8px;
+      border: 1px solid rgba(203, 161, 40, 0.3);
+      border-radius: 20px;
+      color: var(--gold2);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .project-switcher__list .switcher-index {
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+    .project-switcher__list b {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.09);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .project-switcher__list a.is-current b {
+      color: var(--gold);
+    }
+    @media(max-width:900px) {
+      .project-switcher__list a {
+        min-height: 140px !important;
+      }
+      .project-switcher__list .switcher-index {
+        margin-bottom: 4px;
+      }
+      .project-switcher__list b {
+        margin-top: 8px;
+        padding-top: 6px;
+      }
+      .header-phone-text { display: none; }
+    }
   </style>
 </head>
 <body>
   <div class="cosmos"></div>
 
-  <section class="hero">
-    <div class="eyebrow reveal">KOSTYUK PROJECT · АФИША</div>
-    <h1 class="reveal d-1">
-      <span class="word">Концертные</span>
-      <span class="word word--italic">шоу</span>
-    </h1>
-    <p class="lead reveal d-2">Три авторских вечера Дмитрия Костюка. Иллюзия, юмор, квест. Выберите свой.</p>
-  </section>
+  <header class="brand-bar" aria-label="Kostyuk Project">
+    <a class="brand-bar__identity" href="../index.html" aria-label="Kostyuk Project — на главную">
+      <img src="../images/kostyuk-project-logo-new.png" alt="" width="48" height="48" style="border-radius: 10px; border: 1px solid rgba(210,169,63,0.3);">
+      <span><strong>BY KOSTYUK PROJECT</strong><small>АФИША</small></span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <a href="tel:+79092763386" class="brand-bar__cta" style="padding: 10px 14px; font-size: 11px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; text-shadow: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span class="header-phone-text">+7 (909) 276-33-86</span>
+      </a>
+      <button class="brand-bar__cta" type="button" onclick="toggleProjectSwitcher(true)" aria-haspopup="dialog">Все проекты</button>
+    </div>
+  </header>
+
+  <div class="project-switcher" id="projectSwitcher" aria-hidden="true">
+    <button class="project-switcher__backdrop" type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть меню"></button>
+    <section class="project-switcher__panel" role="dialog" aria-modal="true" aria-labelledby="projectSwitcherTitle">
+      <div class="project-switcher__head">
+        <div><span>KOSTYUK PROJECT</span><h2 id="projectSwitcherTitle">Выберите направление</h2></div>
+        <button type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть">×</button>
+      </div>
+      <div class="project-switcher__list">
+        <a class="switcher-item--shows is-current" href="#top" onclick="toggleProjectSwitcher(false)">
+          <span class="switcher-index">01</span>
+          <div class="switcher-badge">Вы здесь</div>
+          <strong style="margin-top: 10px;">Авторские шоу</strong>
+          <span>Афиша · билеты · гастроли</span>
+          <b>Активно <i>✓</i></b>
+        </a>
+        <a class="switcher-item--events" href="../events/index.html">
+          <span class="switcher-index">02</span>
+          <strong>Частные события</strong>
+          <span>Свадьбы · корпоративы · праздники</span>
+          <b>Выбрать выступление <i>↗</i></b>
+        </a>
+        <a class="switcher-item--school" href="../school/index.html">
+          <span class="switcher-index">03</span>
+          <strong>Школа фокусов</strong>
+          <span>Обучение детей 7–13 лет</span>
+          <b>Подробнее <i>↗</i></b>
+        </a>
+      </div>
+    </section>
+  </div>
+
 
   <section class="stage">
     <div class="shows">
-      <a class="show show--secret reveal d-2" href="/concerts/secret">
-        <img class="show__poster" src="/concerts/images/secret.jpg" alt="Шоу Секрет" />
+      <a class="show show--secret reveal d-2" href="secret/index.html">
+        <img class="show__poster" src="images/secret.jpg" alt="Шоу Секрет" />
         <div class="show__frame"></div>
         <div class="show__overlay"></div>
         <div class="show__content">
           <span class="show__badge">12+ · 2 часа</span>
-          <div class="show__title">СЕКРЕТ</div>
-          <div class="show__sub">Шоу, которое вдохновляет</div>
           <span class="show__cta">К афише</span>
         </div>
       </a>
 
-      <a class="show show--huligan reveal d-3" href="/concerts/huligan">
-        <img class="show__poster" src="/concerts/images/huligan.jpg" alt="Шоу ХУЛИgan" />
+      <a class="show show--huligan reveal d-3" href="huligan/index.html">
+        <img class="show__poster" src="images/huligan.jpg" alt="Шоу ХУЛИgan" />
         <div class="show__frame"></div>
         <div class="show__overlay"></div>
         <div class="show__content">
           <span class="show__badge">16+ · 1ч 20м</span>
-          <div class="show__title">ХУЛИgan</div>
-          <div class="show__sub">Магический стендап</div>
           <span class="show__cta">К афише</span>
         </div>
       </a>
 
-      <a class="show show--matvey reveal d-4" href="/concerts/matvey">
-        <img class="show__poster" src="/concerts/images/matvey.jpg" alt="Спасти Матвея" />
+      <a class="show show--matvey reveal d-4" href="matvey/index.html">
+        <img class="show__poster" src="images/matvey.jpg" alt="Спасти Матвея" />
         <div class="show__frame"></div>
         <div class="show__overlay"></div>
         <div class="show__content">
           <span class="show__badge">6+ · 1,5 часа</span>
-          <div class="show__title">СПАСТИ МАТВЕЯ</div>
-          <div class="show__sub">Магический квест-спектакль</div>
           <span class="show__cta">К афише</span>
         </div>
       </a>
     </div>
   </section>
 
+  <section class="kp-ecosystem-promo" aria-labelledby="concertsMoreTitle">
+    <div class="kp-ecosystem-promo__head">
+      <div><small>Ещё в KOSTYUK PROJECT</small><h2 id="concertsMoreTitle">Унесите магию со сцены в свою жизнь</h2></div>
+      <p>Сначала выберите шоу и билеты. А для личного праздника или первых шагов ребёнка в искусстве иллюзии существуют ещё два направления.</p>
+    </div>
+    <div class="kp-ecosystem-promo__grid">
+      <a class="kp-promo-card" href="../events/index.html"><span class="kp-promo-card__label">Частные события</span><h3>Иллюзионист на вашем празднике</h3><p>Свадьба, юбилей или корпоратив превращаются в персональную историю, созданную для ваших гостей.</p><span class="kp-promo-card__action">Пригласить Дмитрия <i>↗</i></span></a>
+      <a class="kp-promo-card" href="../school/index.html"><span class="kp-promo-card__label">Дети 7–13 лет · Ярославль</span><h3>Первая школа фокусов в Ярославле</h3><p>Настоящие фокусы становятся инструментом уверенности, речи и сценического мастерства.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
+    </div>
+  </section>
+
   <!-- KOSTYUK PROJECT bottom nav -->
-  <nav id="kpBottomNav" role="navigation" aria-label="Kostyuk Project">
+  <nav id="kpBottomNav" class="kp-bottom-nav" role="navigation" aria-label="Проекты Дмитрия Костюка">
     <div class="kp-tab-wrap">
-      <a class="kp-tab" href="/" onclick="return kpNavigate(event, '/')">
-        <img class="kp-tab-icon" src="/icons/magician.png" alt="" />
-        <span>Частные заказы</span>
+      <a class="kp-tab" href="../events/index.html">
+        <img class="kp-tab-icon" src="../icons/magician.png" alt="" />
+        <span>Частные события</span>
       </a>
     </div>
     <div class="kp-tab-wrap">
-      <a class="kp-tab" href="/school/" onclick="return kpNavigate(event, '/school/')">
-        <img class="kp-tab-icon" src="/icons/wand.png" alt="" />
+      <a class="kp-tab" href="../school/index.html">
+        <img class="kp-tab-icon" src="../icons/wand.png" alt="" />
         <span>Школа фокусов</span>
       </a>
     </div>
     <div class="kp-tab-wrap">
-      <a class="kp-tab active" href="#" aria-current="page">
-        <img class="kp-tab-icon" src="/icons/smoke.png" alt="" />
-        <span>Концерты</span>
+      <a class="kp-tab active" href="index.html" aria-current="page">
+        <img class="kp-tab-icon" src="../icons/smoke.png" alt="" />
+        <span>Авторские шоу</span>
       </a>
     </div>
   </nav>
@@ -705,6 +932,55 @@
         document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
       }, 100);
     });
+    function toggleProjectSwitcher(open) {
+      var switcher = document.getElementById('projectSwitcher');
+      if (!switcher) return;
+      switcher.classList.toggle('is-open', !!open);
+      switcher.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
   </script>
+
+  <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
+  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.27-2.03-.49-.82-.27-1.47-.41-1.42-.87.03-.24.36-.49 1-.75 3.92-1.71 6.53-2.84 7.83-3.39 3.73-1.56 4.5-1.83 5.01-1.84.11 0 .36.03.52.16.14.11.18.26.2.37.02.1.03.3.01.47z"/>
+    </svg>
+  </a>
+  <style>
+    .tg-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      background: #24A1DE;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(36, 161, 222, 0.4);
+      z-index: 99999;
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    }
+    .tg-float:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(36, 161, 222, 0.6);
+    }
+    @media (max-width: 600px) {
+      .tg-float {
+        bottom: 85px; /* Offset to clear mobile bottom navigation bar */
+        right: 16px;
+        width: 50px;
+        height: 50px;
+      }
+      .tg-float svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  </style>
+
 </body>
 </html>

@@ -3,15 +3,15 @@ const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rt
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID) || 196783025;
 import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
-import {  validateTicketAccess  } from '../../shared/ticketAccess';
+import {  validateTicketAccess  } from '../../shared/ticketAccess.js';
 const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app54466228_-209268664';
 const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();
 const TELEGRAM_SECRET_WEBAPP_URL = (process.env.TELEGRAM_SECRET_WEBAPP_URL || `${TICKET_PUBLIC_ORIGIN}/index.html`).trim();
 const ADMIN_PANEL_URL = (process.env.SECRET_ADMIN_PANEL_URL || 'https://vk-tickets.vercel.app/admin.html').trim();
-import {  getTrustedTelegramUserId  } from '../../shared/tg';
-import {  runSecretAutoCleanup  } from '../../shared/autoCleanup';
+import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
+import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const VKPAY_SECRET_ENABLED = String(process.env.VKPAY_SECRET_ENABLED || process.env.VKPAY_ENABLED || '').trim().toLowerCase() === 'true';
@@ -397,7 +397,7 @@ async function confirmSecretBookingAndNotify(bookingId, booking, meta = {}) {
   return { ok: true };
 }
 
-import {  setCors  } from '../../shared/cors';
+import {  setCors  } from '../../shared/cors.js';
 
 export default async (req, res) => {
   setCors(req, res, { methods: 'POST, OPTIONS' });
