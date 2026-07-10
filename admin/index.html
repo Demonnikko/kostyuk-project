@@ -1582,6 +1582,15 @@
               <div class="empty-state">⏳ Сбор последних событий...</div>
             </div>
           </div>
+          <div class="activity-card" id="metrikaCard" style="display:flex; flex-direction:column;">
+            <div class="activity-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>📈 Яндекс.Метрика</span>
+              <button class="btn-sm" onclick="showMetrikaSetupModal()" style="font-size:11px; padding:3px 8px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text); border-radius:6px; cursor:pointer;">⚙️ Настроить</button>
+            </div>
+            <div id="metrikaContent" style="padding:15px; display:flex; flex-direction:column; flex:1; justify-content:center;">
+              <div class="empty-state">⏳ Загрузка веб-аналитики...</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -3027,13 +3036,188 @@
           </div>
         `).join('');
       }
+      
+      // Load Metrika
+      loadYandexMetrika();
     }
 
     async function refreshDashboard() {
       toast('🔄 Обновляем показатели дашборда...');
       allBookings = {};
       allHuliganOrders = {};
+      metrikaDataCache = {};
       await loadDashboard();
+    }
+
+    // ── Yandex Metrika ──
+    let currentMetrikaTab = 'today';
+    let metrikaDataCache = {};
+
+    async function loadYandexMetrika(forceRefresh = false) {
+      const container = document.getElementById('metrikaContent');
+      if (!container) return;
+
+      if (!forceRefresh && metrikaDataCache[currentMetrikaTab]) {
+        renderMetrikaData(metrikaDataCache[currentMetrikaTab]);
+        return;
+      }
+
+      container.innerHTML = '<div class="empty-state">⏳ Загрузка веб-аналитики...</div>';
+
+      const counterId = '107696179';
+      let token = '';
+      try {
+        token = await fbGet('bot_private_config/yandex_metrika_token') || '';
+      } catch (e) {
+        console.warn('Failed to load metrika token from Firebase:', e);
+      }
+
+      // Determine date range based on tab
+      let date1 = 'today', date2 = 'today';
+      if (currentMetrikaTab === 'yesterday') {
+        date1 = 'yesterday'; date2 = 'yesterday';
+      } else if (currentMetrikaTab === '7days') {
+        date1 = '7daysAgo'; date2 = 'today';
+      }
+
+      const headers = {};
+      if (token) {
+        headers['Authorization'] = `OAuth ${token}`;
+      }
+
+      const statsUrl = `https://api-metrika.yandex.net/stat/v1/data?ids=${counterId}&metrics=ym:s:users,ym:s:pageviews,ym:s:bounceRate,ym:s:avgSessionDuration&date1=${date1}&date2=${date2}`;
+      const pagesUrl = `https://api-metrika.yandex.net/stat/v1/data?ids=${counterId}&metrics=ym:s:pageviews&dimensions=ym:s:startURL&sort=-ym:s:pageviews&limit=3&date1=${date1}&date2=${date2}`;
+
+      try {
+        const [statsRes, pagesRes] = await Promise.all([
+          fetch(statsUrl, { headers }).then(r => r.json()),
+          fetch(pagesUrl, { headers }).then(r => r.json())
+        ]);
+
+        if (statsRes.errors || statsRes.error || statsRes.code === 400 || statsRes.code === 403) {
+          throw new Error(statsRes.message || 'Access Denied');
+        }
+
+        const data = {
+          stats: statsRes,
+          pages: pagesRes
+        };
+        metrikaDataCache[currentMetrikaTab] = data;
+        renderMetrikaData(data);
+      } catch (err) {
+        console.error('Yandex Metrika fetch error:', err);
+        container.innerHTML = `
+          <div style="text-align:center; padding:10px 0;">
+            <span style="font-size:32px;">🔒</span>
+            <h4 style="margin:10px 0 6px 0; color:var(--gold);">Статистика скрыта</h4>
+            <p style="font-size:12px; color:var(--dim); line-height:1.5; margin-bottom:14px;">
+              Не удалось загрузить данные для счётчика №107696179. Включите публичный доступ в настройках Метрики или добавьте API-токен.
+            </p>
+            <button class="btn-save-settings" onclick="showMetrikaSetupModal()" style="width:100%; justify-content:center; background:rgba(201,162,39,0.15); border:1px solid rgba(201,162,39,0.3); color:var(--gold); padding:10px 14px; border-radius:8px;">🔑 Настроить доступ</button>
+          </div>
+        `;
+      }
+    }
+
+    function changeMetrikaTab(tab) {
+      currentMetrikaTab = tab;
+      loadYandexMetrika();
+    }
+
+    function renderMetrikaData(data) {
+      const container = document.getElementById('metrikaContent');
+      if (!container) return;
+
+      const totals = data.stats.totals || [0, 0, 0, 0];
+      const users = Math.round(totals[0] || 0);
+      const views = Math.round(totals[1] || 0);
+      const bounce = (totals[2] || 0).toFixed(1);
+      const durationSec = Math.round(totals[3] || 0);
+      
+      const min = Math.floor(durationSec / 60);
+      const sec = durationSec % 60;
+      const durationStr = min > 0 ? `${min}м ${sec}с` : `${sec}с`;
+
+      const pages = data.pages?.data || [];
+      let pagesHtml = '';
+      if (pages.length === 0) {
+        pagesHtml = '<div style="font-size:12px;color:var(--dim);text-align:center;padding:10px 0;">Нет данных о просмотренных страницах</div>';
+      } else {
+        pagesHtml = pages.map(p => {
+          let displayPath = p.dimensions[0].name || '';
+          try {
+            const urlObj = new URL(displayPath);
+            displayPath = urlObj.pathname + urlObj.search;
+          } catch(e) {}
+          if (displayPath === '/') displayPath = 'Главная (Хаб)';
+          return `
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px; border-bottom:1px dashed rgba(255,255,255,0.05); padding-bottom:4px;">
+              <span style="color:var(--text); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:180px;" title="${esc(p.dimensions[0].name)}">${esc(displayPath)}</span>
+              <span style="font-weight:600; color:var(--gold);">${p.metrics[0]} просм</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      container.innerHTML = `
+        <!-- Tabs -->
+        <div style="display:flex; gap:6px; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:8px;">
+          <button onclick="changeMetrikaTab('today')" style="background:${currentMetrikaTab==='today'?'var(--gold)':'transparent'}; color:${currentMetrikaTab==='today'?'#000':'var(--text)'}; border:none; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; transition:0.2s;">Сегодня</button>
+          <button onclick="changeMetrikaTab('yesterday')" style="background:${currentMetrikaTab==='yesterday'?'var(--gold)':'transparent'}; color:${currentMetrikaTab==='yesterday'?'#000':'var(--text)'}; border:none; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; transition:0.2s;">Вчера</button>
+          <button onclick="changeMetrikaTab('7days')" style="background:${currentMetrikaTab==='7days'?'var(--gold)':'transparent'}; color:${currentMetrikaTab==='7days'?'#000':'var(--text)'}; border:none; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; transition:0.2s;">7 дней</button>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:10px;">
+            <div style="font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Посетители</div>
+            <div style="font-size:18px; font-weight:700; color:var(--text);">${fmt(users)}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:10px;">
+            <div style="font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Просмотры</div>
+            <div style="font-size:18px; font-weight:700; color:var(--text);">${fmt(views)}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:10px;">
+            <div style="font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Отказы</div>
+            <div style="font-size:18px; font-weight:700; color:${bounce > 30 ? 'var(--red)' : 'var(--green)'};">${bounce}%</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:10px;">
+            <div style="font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Время на сайте</div>
+            <div style="font-size:18px; font-weight:700; color:var(--text);">${durationStr}</div>
+          </div>
+        </div>
+
+        <!-- Top Pages -->
+        <div>
+          <div style="font-size:11px; font-weight:600; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">
+            <span>🔥 Популярные страницы</span>
+          </div>
+          ${pagesHtml}
+        </div>
+      `;
+    }
+
+    async function showMetrikaSetupModal() {
+      let currentToken = '';
+      try {
+        currentToken = await fbGet('bot_private_config/yandex_metrika_token') || '';
+      } catch(e) {}
+      const token = prompt('🔑 Введите ваш OAuth API-токен Яндекс.Метрики:\\n\\nЕсли статистика вашего счётчика №107696179 открыта для публичного доступа в настройках Метрики (Настройки -> Доступ -> Публичный доступ), оставьте это поле пустым.\\n\\nИнструкция для получения токена: https://yandex.ru/dev/oauth/', currentToken);
+      
+      if (token === null) return;
+      
+      toast('⏳ Сохраняем настройки...');
+      try {
+        if (token.trim()) {
+          await fbPut('bot_private_config/yandex_metrika_token', token.trim());
+        } else {
+          await fbDelete('bot_private_config/yandex_metrika_token');
+        }
+        toast('✅ Настройки сохранены');
+        loadYandexMetrika(true);
+      } catch (e) {
+        toast('❌ Ошибка при сохранении');
+      }
     }
 
     // ── Chats logic ──
