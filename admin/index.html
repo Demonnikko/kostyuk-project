@@ -5928,7 +5928,7 @@
     async function loadAdminHuliganHall() {
       const g = document.getElementById('adminHuliganHall');
       if (!g) return;
-      g.innerHTML = '<text x="245" y="260" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="12" font-family="Inter,sans-serif">Загрузка...</text>';
+      g.innerHTML = '<text x="245" y="200" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="12" font-family="Inter,sans-serif">Загрузка...</text>';
 
       const [seatsRaw, bookingsRaw] = await Promise.all([
         fbGet('huligan_seats'),
@@ -5946,90 +5946,337 @@
         if (st !== 'confirmed' && st !== 'pending_confirmation' && st !== 'waiting_admin') continue;
         const mappedStatus = st === 'confirmed' ? 'confirmed' : 'pending_confirmation';
         for (const s of bk.seats) {
-          const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
+          const k = `${s.tableId || s.table || '0'}_${s.seatIdx || s.seatNum || '0'}`;
           seatInfo[k] = { bookingStatus: mappedStatus, name: bk.name || '?', bookingId };
         }
       }
 
       g.innerHTML = '';
+      
+      // 1. Draw outer border
+      const borderPath = svgEl('path', {
+        d: 'M 15 15 L 160 15 Q 170 15 170 25 L 170 50 Q 170 60 180 60 L 400 60 Q 410 60 410 50 L 410 25 Q 410 15 420 15 L 565 15 Q 570 15 570 20 L 570 390 Q 570 395 565 395 L 15 395 Q 10 395 10 390 L 10 20 Q 10 15 15 15 Z',
+        fill: 'none',
+        stroke: 'rgba(255, 110, 0, 0.45)',
+        'stroke-width': 2
+      });
+      g.appendChild(borderPath);
+
+      // Сцена
+      const stageRect = svgEl('rect', {
+        x: 180, y: 18, width: 220, height: 35, rx: 8,
+        fill: 'none',
+        stroke: 'rgba(255, 110, 0, 0.25)',
+        'stroke-width': 1
+      });
+      g.appendChild(stageRect);
+
+      const stageRectInner = svgEl('rect', {
+        x: 184, y: 22, width: 212, height: 27, rx: 6,
+        fill: 'none',
+        stroke: 'rgba(255, 110, 0, 0.55)',
+        'stroke-width': 1.2
+      });
+      g.appendChild(stageRectInner);
+
+      const stageText = svgEl('text', {
+        x: 290, y: 35,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '12',
+        'font-weight': '600',
+        'font-family': 'Inter, sans-serif',
+        fill: '#fff5eb',
+        'letter-spacing': '2'
+      });
+      stageText.textContent = 'СЦЕНА';
+      g.appendChild(stageText);
+
+      // 2. Decorative squares next to seats
+      g.appendChild(svgEl('rect', { x: 82, y: 147, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+      g.appendChild(svgEl('rect', { x: 82, y: 187, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+
       let totalConfirmed = 0, totalPending = 0;
 
-      for (const tbl of TABLES) {
-        const z = ZONE_COLORS[tbl.zone];
-        const tr = tbl.big ? 22 : 14;
+      // Helper function to resolve seat display status
+      function getSeatEff(key) {
+        const info = seatInfo[key];
+        const rawS = seats[key];
+        if (info?.bookingStatus === 'confirmed') {
+          totalConfirmed++;
+          return 'confirmed';
+        } else if (info?.bookingStatus === 'pending_confirmation') {
+          totalPending++;
+          return 'pending';
+        } else if (rawS?.status === 'taken') {
+          return 'confirmed';
+        } else if (rawS?.status === 'reserved' && rawS.reservedAt && (now - rawS.reservedAt) < 600000) {
+          return 'reserved';
+        }
+        return 'available';
+      }
 
-        const pts = adminSeatPos(tbl.cx, tbl.cy, tbl.n, tbl.big, tbl.zone);
-        const sr = tbl.big ? 9 : 8;
+      function getFillAndStroke(eff, defaultColor) {
+        if (eff === 'confirmed') return { fill: defaultColor, stroke: '#ffffff', strokeWidth: '1.5' };
+        if (eff === 'pending') return { fill: '#f5a623', stroke: '#ffcc44', strokeWidth: '1.5' };
+        if (eff === 'reserved') return { fill: 'rgba(201,162,39,0.35)', stroke: 'rgba(201,162,39,0.65)', strokeWidth: '1' };
+        return { fill: defaultColor, stroke: 'rgba(255,255,255,0.22)', strokeWidth: '0.8', opacity: '0.18' };
+      }
 
-        for (let si = 0; si < pts.length; si++) {
-          const key = `${tbl.id}_${si}`;
-          const info = seatInfo[key];
-          const rawS = seats[key];
-          const pt = pts[si];
+      // Draw Left Sofa
+      const slEff = getSeatEff('sl_0');
+      const slStyle = getFillAndStroke(slEff, 'rgba(60,60,75,0.85)');
+      const leftSofa = svgEl('path', {
+        d: 'M 50 100 Q 50 95 45 95 L 30 95 Q 25 95 25 100 L 25 275 Q 25 280 30 280 L 75 280 Q 80 280 80 275 L 80 250 Q 80 245 75 245 L 55 245 Q 50 245 50 240 Z',
+        fill: slStyle.fill,
+        stroke: slStyle.stroke,
+        'stroke-width': slStyle.strokeWidth,
+        opacity: slStyle.opacity || '1'
+      });
+      leftSofa.style.cursor = 'pointer';
+      leftSofa.addEventListener('click', () => manageSeatStatus('sl_0', 'huligan'));
+      g.appendChild(leftSofa);
 
-          let eff;
-          if (info?.bookingStatus === 'confirmed') {
-            eff = 'confirmed'; totalConfirmed++;
-          } else if (info?.bookingStatus === 'pending_confirmation') {
-            eff = 'pending'; totalPending++;
-          } else if (rawS?.status === 'reserved' && rawS.reservedAt && (now - rawS.reservedAt) < 600000) {
-            eff = 'reserved';
-          } else {
-            eff = 'available';
-          }
+      const leftSofaText = svgEl('text', {
+        x: 37, y: 155,
+        'text-anchor': 'middle',
+        'font-size': '9',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.7)',
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach((char, i) => {
+        const tspan = svgEl('tspan', { x: 37, dy: i === 0 ? 0 : 12 });
+        tspan.textContent = char;
+        leftSofaText.appendChild(tspan);
+      });
+      g.appendChild(leftSofaText);
 
-          const dot = svgEl('circle', { cx: pt.x.toFixed(1), cy: pt.y.toFixed(1), r: sr });
-          if (eff === 'confirmed') {
-            dot.setAttribute('fill', z);
-            dot.setAttribute('stroke', '#ffffff');
-            dot.setAttribute('stroke-width', '1.5');
-            if (info?.name) dot.setAttribute('title', `✓ ${info.name}`);
-          } else if (eff === 'pending') {
-            dot.setAttribute('fill', '#f5a623');
-            dot.setAttribute('stroke', '#ffcc44');
-            dot.setAttribute('stroke-width', '1.5');
-            if (info?.name) dot.setAttribute('title', `⏳ ${info.name}`);
-          } else if (eff === 'reserved') {
-            dot.setAttribute('fill', 'rgba(201,162,39,0.35)');
-            dot.setAttribute('stroke', 'rgba(201,162,39,0.65)');
-            dot.setAttribute('stroke-width', '1');
-          } else {
-            dot.setAttribute('fill', z);
-            dot.setAttribute('opacity', '0.18');
-          }
+      // Draw Right Sofa
+      const srEff = getSeatEff('sr_0');
+      const srStyle = getFillAndStroke(srEff, 'rgba(60,60,75,0.85)');
+      const rightSofa = svgEl('path', {
+        d: 'M 505 110 Q 500 110 500 105 L 500 85 Q 500 80 505 80 L 550 80 Q 555 80 555 85 L 555 185 Q 555 190 550 190 L 535 190 Q 530 190 530 185 L 530 120 Q 530 115 525 115 Z',
+        fill: srStyle.fill,
+        stroke: srStyle.stroke,
+        'stroke-width': srStyle.strokeWidth,
+        opacity: srStyle.opacity || '1'
+      });
+      rightSofa.style.cursor = 'pointer';
+      rightSofa.addEventListener('click', () => manageSeatStatus('sr_0', 'huligan'));
+      g.appendChild(rightSofa);
+
+      const rightSofaText = svgEl('text', {
+        x: 542, y: 110,
+        'text-anchor': 'middle',
+        'font-size': '9',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.7)',
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach((char, i) => {
+        const tspan = svgEl('tspan', { x: 542, dy: i === 0 ? 0 : 12 });
+        tspan.textContent = char;
+        rightSofaText.appendChild(tspan);
+      });
+      g.appendChild(rightSofaText);
+
+      // Draw Bar
+      const barEff = getSeatEff('bar_0');
+      const barStyle = getFillAndStroke(barEff, 'rgba(60,60,75,0.85)');
+      const bar = svgEl('path', {
+        d: 'M 440 380 Q 435 380 435 375 L 435 355 Q 435 350 440 350 L 515 350 Q 520 350 520 345 L 520 295 Q 520 290 525 290 L 550 290 Q 555 290 555 295 L 555 375 Q 555 380 550 380 Z',
+        fill: barStyle.fill,
+        stroke: barStyle.stroke,
+        'stroke-width': barStyle.strokeWidth,
+        opacity: barStyle.opacity || '1'
+      });
+      bar.style.cursor = 'pointer';
+      bar.addEventListener('click', () => manageSeatStatus('bar_0', 'huligan'));
+      g.appendChild(bar);
+
+      const barText = svgEl('text', {
+        x: 480, y: 365,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '11',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.7)',
+        'pointer-events': 'none'
+      });
+      barText.textContent = 'БАР';
+      g.appendChild(barText);
+
+      // Define zones color maps
+      const colors = { vip: '#e85348', standart: '#3dbf6e', econom: '#4a8fd9' };
+
+      // Tables 1, 2, 3 (5 seats each)
+      const tables5 = [
+        { id: 1, cx: 200, cy: 90, zone: 'vip' },
+        { id: 2, cx: 290, cy: 90, zone: 'vip' },
+        { id: 3, cx: 380, cy: 90, zone: 'vip' }
+      ];
+
+      tables5.forEach(tbl => {
+        // Table circle
+        const circle = svgEl('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: 16,
+          fill: 'rgba(232,83,72,0.1)', stroke: 'rgba(232,83,72,0.45)', 'stroke-width': 1.3
+        });
+        g.appendChild(circle);
+
+        const lbl = svgEl('text', {
+          x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle',
+          'dominant-baseline': 'central', fill: 'rgba(232,83,72,0.85)',
+          'font-size': '10', 'font-weight': '700', 'font-family': 'Inter, sans-serif'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+
+        // Seats circles
+        const startSeat = (tbl.id - 1) * 8 + 3;
+        const r = 24;
+        const angles = [-Math.PI/12, Math.PI/4, Math.PI/2, 3*Math.PI/4, 13*Math.PI/12];
+        angles.forEach((a, idx) => {
+          const sx = tbl.cx + Math.cos(a) * r;
+          const sy = tbl.cy + Math.sin(a) * r;
+          const seatNum = startSeat + idx;
+          const key = `t${tbl.id}_${seatNum}`;
+          
+          const eff = getSeatEff(key);
+          const style = getFillAndStroke(eff, colors[tbl.zone]);
+          const dot = svgEl('circle', {
+            cx: sx.toFixed(1), cy: sy.toFixed(1), r: 6.2,
+            fill: style.fill, stroke: style.stroke, 'stroke-width': style.strokeWidth,
+            opacity: style.opacity || '1'
+          });
           dot.style.cursor = 'pointer';
           dot.addEventListener('click', () => manageSeatStatus(key, 'huligan'));
           g.appendChild(dot);
 
-          if (info) {
-            const ini = (info.name || '').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
-            const t = svgEl('text', {
-              x: pt.x.toFixed(1), y: pt.y.toFixed(1),
-              'text-anchor': 'middle', 'dominant-baseline': 'central',
-              fill: '#fff', 'font-size': tbl.big ? 6 : 5,
-              'font-family': 'Inter,sans-serif', 'font-weight': '700',
-              'pointer-events': 'none'
-            });
-            t.textContent = ini;
-            g.appendChild(t);
-          }
-        }
+          // Seat number text
+          const t = svgEl('text', {
+            x: sx.toFixed(1), y: sy.toFixed(1),
+            'text-anchor': 'middle', 'dominant-baseline': 'central',
+            fill: '#fff', 'font-size': '6', 'font-weight': '700', 'font-family': 'Inter, sans-serif',
+            'pointer-events': 'none'
+          });
+          t.textContent = seatNum;
+          g.appendChild(t);
 
-        const tc = svgEl('circle', {
-          cx: tbl.cx, cy: tbl.cy, r: tr,
-          fill: 'rgba(255,255,255,0.03)', stroke: 'rgba(255,255,255,0.1)', 'stroke-width': 1
+          // Show booking details if booked
+          const info = seatInfo[key];
+          if (info && info.name) dot.setAttribute('title', `✓ ${info.name}`);
         });
-        g.appendChild(tc);
+      });
+
+      // Tables 4 to 12 (4 seats each)
+      const tables4 = [
+        { id: 4, cx: 145, cy: 155, zone: 'standart' },
+        { id: 5, cx: 245, cy: 155, zone: 'standart' },
+        { id: 6, cx: 345, cy: 155, zone: 'standart' },
+        { id: 7, cx: 445, cy: 155, zone: 'standart' },
+        
+        { id: 8, cx: 195, cy: 220, zone: 'standart' },
+        { id: 9, cx: 295, cy: 220, zone: 'standart' },
+        { id: 10, cx: 395, cy: 220, zone: 'standart' },
+        
+        { id: 11, cx: 245, cy: 285, zone: 'econom' },
+        { id: 12, cx: 345, cy: 285, zone: 'econom' }
+      ];
+
+      tables4.forEach(tbl => {
+        const z = colors[tbl.zone];
+        const circle = svgEl('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: 11,
+          fill: `rgba(255,255,255,0.02)`, stroke: `rgba(255,255,255,0.15)`, 'stroke-width': 1
+        });
+        g.appendChild(circle);
 
         const lbl = svgEl('text', {
           x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle',
-          'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.35)',
-          'font-size': tbl.big ? 10 : 8, 'font-family': 'Inter,sans-serif'
+          'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.3)',
+          'font-size': '9', 'font-weight': '700', 'font-family': 'Inter, sans-serif'
         });
         lbl.textContent = tbl.id;
         g.appendChild(lbl);
-      }
 
+        const r = 16;
+        const offsets = [
+          { dx: 0, dy: -r, label: 25 },
+          { dx: r, dy: 0,  label: 26 },
+          { dx: 0, dy: r,  label: 27 },
+          { dx: -r, dy: 0, label: 28 }
+        ];
+
+        offsets.forEach(off => {
+          const key = `t${tbl.id}_${off.label}`;
+          const eff = getSeatEff(key);
+          const style = getFillAndStroke(eff, z);
+
+          const dot = svgEl('circle', {
+            cx: (tbl.cx + off.dx).toFixed(1), cy: (tbl.cy + off.dy).toFixed(1), r: 5.2,
+            fill: style.fill, stroke: style.stroke, 'stroke-width': style.strokeWidth,
+            opacity: style.opacity || '1'
+          });
+          dot.style.cursor = 'pointer';
+          dot.addEventListener('click', () => manageSeatStatus(key, 'huligan'));
+          g.appendChild(dot);
+
+          const t = svgEl('text', {
+            x: (tbl.cx + off.dx).toFixed(1), y: (tbl.cy + off.dy).toFixed(1),
+            'text-anchor': 'middle', 'dominant-baseline': 'central',
+            fill: '#fff', 'font-size': '5.2', 'font-weight': '700', 'font-family': 'Inter, sans-serif',
+            'pointer-events': 'none'
+          });
+          t.textContent = off.label;
+          g.appendChild(t);
+
+          const info = seatInfo[key];
+          if (info && info.name) dot.setAttribute('title', `✓ ${info.name}`);
+        });
+      });
+
+      // Left Chairs (1 to 5)
+      const leftChairs = [
+        { num: 5, x: 74, y: 115 },
+        { num: 4, x: 74, y: 155 },
+        { num: 3, x: 74, y: 195 },
+        { num: 2, x: 74, y: 235 },
+        { num: 1, x: 96, y: 268 }
+      ];
+
+      leftChairs.forEach(ch => {
+        const key = `c_${ch.num}`;
+        const eff = getSeatEff(key);
+        const style = getFillAndStroke(eff, colors.econom);
+
+        const dot = svgEl('circle', {
+          cx: ch.x.toFixed(1), cy: ch.y.toFixed(1), r: 6.0,
+          fill: style.fill, stroke: style.stroke, 'stroke-width': style.strokeWidth,
+          opacity: style.opacity || '1'
+        });
+        dot.style.cursor = 'pointer';
+        dot.addEventListener('click', () => manageSeatStatus(key, 'huligan'));
+        g.appendChild(dot);
+
+        const t = svgEl('text', {
+          x: ch.x.toFixed(1), y: ch.y.toFixed(1),
+          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          fill: '#fff', 'font-size': '6.5', 'font-weight': '700', 'font-family': 'Inter, sans-serif',
+          'pointer-events': 'none'
+        });
+        t.textContent = ch.num;
+        g.appendChild(t);
+
+        const info = seatInfo[key];
+        if (info && info.name) dot.setAttribute('title', `✓ ${info.name}`);
+      });
+
+      // Счётчик
       const counter = document.getElementById('huliganHallCounter');
       if (counter) {
         counter.innerHTML =

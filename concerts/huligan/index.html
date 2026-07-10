@@ -1341,25 +1341,27 @@
 
     var SEATS = [];
 
-    // --- 1. Столы кружки на 8 мест (Столы 1, 2, 3, 6, 7) ---
-    var tables8 = [
-      { id: 1, cx: 195, cy: 115, zone: 'vip' },
-      { id: 2, cx: 290, cy: 100, zone: 'vip' },
-      { id: 3, cx: 385, cy: 115, zone: 'vip' },
-      { id: 6, cx: 225, cy: 190, zone: 'vip' },
-      { id: 7, cx: 355, cy: 190, zone: 'vip' }
+    // --- 1. Столы кружки на 5 мест (Столы 1, 2, 3) ---
+    var tables5 = [
+      { id: 1, cx: 200, cy: 90, zone: 'vip' },
+      { id: 2, cx: 290, cy: 90, zone: 'vip' },
+      { id: 3, cx: 380, cy: 90, zone: 'vip' }
     ];
 
-    var table8SeatStarts = { 1: 1, 2: 9, 3: 17, 6: 33, 7: 41 };
-
-    tables8.forEach(function(tbl) {
-      var startIdx = table8SeatStarts[tbl.id];
-      var r = 29; 
-      for (var i = 0; i < 8; i++) {
-        var a = (i / 8) * 2 * Math.PI - Math.PI / 2;
+    tables5.forEach(function(tbl) {
+      var startSeat = (tbl.id - 1) * 8 + 3; // Table 1: 3-7, Table 2: 11-15, Table 3: 19-23
+      var r = 24;
+      var angles = [
+        -Math.PI / 12,       // 3/11/19 (top-right)
+        Math.PI / 4,         // 4/12/20 (bottom-right)
+        Math.PI / 2,         // 5/13/21 (bottom)
+        3 * Math.PI / 4,     // 6/14/22 (bottom-left)
+        13 * Math.PI / 12    // 7/15/23 (top-left)
+      ];
+      angles.forEach(function(a, idx) {
         var sx = tbl.cx + Math.cos(a) * r;
         var sy = tbl.cy + Math.sin(a) * r;
-        var seatNum = startIdx + i;
+        var seatNum = startSeat + idx;
         SEATS.push({
           key: 't' + tbl.id + '_' + seatNum,
           x: sx,
@@ -1368,51 +1370,45 @@
           table: tbl.id,
           seatIdx: seatNum,
           seatNum: seatNum,
-          type: 'round8',
+          type: 'round5',
           tableCx: tbl.cx,
           tableCy: tbl.cy
         });
-      }
+      });
     });
 
-    // --- 2. Столы кружки на 4 места (Столы 4, 5, 8, 9, 10, 11, 12, 13, 14, 15) ---
+    // --- 2. Столы кружки на 4 места (Столы 4-12) ---
     var tables4 = [
-      { id: 4,  cx: 145, cy: 170, zone: 'vip' },
-      { id: 8,  cx: 435, cy: 170, zone: 'vip' },
-      { id: 5,  cx: 150, cy: 250, zone: 'standart' },
-      { id: 9,  cx: 245, cy: 260, zone: 'standart' },
-      { id: 10, cx: 335, cy: 260, zone: 'standart' },
-      { id: 11, cx: 140, cy: 320, zone: 'standart' },
-      { id: 12, cx: 215, cy: 320, zone: 'standart' },
-      { id: 13, cx: 290, cy: 320, zone: 'standart' },
-      { id: 14, cx: 365, cy: 320, zone: 'standart' },
-      { id: 15, cx: 440, cy: 320, zone: 'standart' }
+      { id: 4, cx: 145, cy: 155, zone: 'standart' },
+      { id: 5, cx: 245, cy: 155, zone: 'standart' },
+      { id: 6, cx: 345, cy: 155, zone: 'standart' },
+      { id: 7, cx: 445, cy: 155, zone: 'standart' },
+      
+      { id: 8, cx: 195, cy: 220, zone: 'standart' },
+      { id: 9, cx: 295, cy: 220, zone: 'standart' },
+      { id: 10, cx: 395, cy: 220, zone: 'standart' },
+      
+      { id: 11, cx: 245, cy: 285, zone: 'econom' },
+      { id: 12, cx: 345, cy: 285, zone: 'econom' }
     ];
 
-    var table4SeatStarts = {
-      4: 25, 5: 29, 8: 49, 9: 53, 10: 57,
-      11: 61, 12: 65, 13: 69, 14: 73, 15: 77
-    };
-
     tables4.forEach(function(tbl) {
-      var startIdx = table4SeatStarts[tbl.id];
-      var r = 18; 
+      var r = 16;
       var offsets = [
-        { dx: 0, dy: -r },
-        { dx: r, dy: 0 },
-        { dx: 0, dy: r },
-        { dx: -r, dy: 0 }
+        { dx: 0, dy: -r, label: 25 },
+        { dx: r, dy: 0,  label: 26 },
+        { dx: 0, dy: r,  label: 27 },
+        { dx: -r, dy: 0, label: 28 }
       ];
-      offsets.forEach(function(off, i) {
-        var seatNum = startIdx + i;
+      offsets.forEach(function(off) {
         SEATS.push({
-          key: 't' + tbl.id + '_' + seatNum,
+          key: 't' + tbl.id + '_' + off.label,
           x: tbl.cx + off.dx,
           y: tbl.cy + off.dy,
           zone: tbl.zone,
           table: tbl.id,
-          seatIdx: seatNum,
-          seatNum: seatNum,
+          seatIdx: off.label,
+          seatNum: off.label,
           type: 'round4',
           tableCx: tbl.cx,
           tableCy: tbl.cy
@@ -1420,102 +1416,51 @@
       });
     });
 
-    // --- 3. Прямоугольные столики 16, 17, 18, 19 ---
-    var tablesRect = [
-      { id: 16, cx: 55,  cy: 362, zone: 'econom' },
-      { id: 17, cx: 115, cy: 362, zone: 'econom' },
-      { id: 18, cx: 175, cy: 362, zone: 'econom' },
-      { id: 19, cx: 235, cy: 362, zone: 'econom' }
+    // --- 3. Стулья у левой стены (Места 1, 2, 3, 4, 5) ---
+    var leftChairs = [
+      { num: 5, x: 74, y: 115 },
+      { num: 4, x: 74, y: 155 },
+      { num: 3, x: 74, y: 195 },
+      { num: 2, x: 74, y: 235 },
+      { num: 1, x: 96, y: 268 }
     ];
 
-    var tableRectStarts = { 16: 81, 17: 85, 18: 89, 19: 93 };
-
-    tablesRect.forEach(function(tbl) {
-      var startIdx = tableRectStarts[tbl.id];
-      var chairs = [
-        { dx: 12, dy: -9,  s: 0 },
-        { dx: 12, dy: 9,   s: 1 },
-        { dx: -12, dy: 9,  s: 2 },
-        { dx: -12, dy: -9, s: 3 }
-      ];
-      chairs.forEach(function(ch) {
-        var seatNum = startIdx + ch.s;
-        SEATS.push({
-          key: 't' + tbl.id + '_' + seatNum,
-          x: tbl.cx + ch.dx,
-          y: tbl.cy + ch.dy,
-          zone: tbl.zone,
-          table: tbl.id,
-          seatIdx: seatNum,
-          seatNum: seatNum,
-          type: 'rect',
-          tableCx: tbl.cx,
-          tableCy: tbl.cy
-        });
-      });
-    });
-
-    // --- 4. Стулья у левого дивана (1-5) ---
-    var leftSofaChairs = [
-      { x: 95,  y: 215, s: 1 },
-      { x: 72,  y: 185, s: 2 },
-      { x: 72,  y: 155, s: 3 },
-      { x: 72,  y: 125, s: 4 },
-      { x: 72,  y: 95,  s: 5 }
-    ];
-    leftSofaChairs.forEach(function(ch) {
+    leftChairs.forEach(function(ch) {
       SEATS.push({
-        key: 'dl_' + ch.s,
+        key: 'c_' + ch.num,
         x: ch.x,
         y: ch.y,
-        zone: 'standart',
-        table: 'Диван L',
-        seatIdx: ch.s,
-        seatNum: ch.s
+        zone: 'econom',
+        table: 'Стул',
+        seatIdx: ch.num,
+        seatNum: ch.num,
+        type: 'chair',
+        tableCx: ch.x,
+        tableCy: ch.y
       });
     });
 
-    // --- 5. Стулья у правого дивана (6-10) ---
-    var rightSofaChairs = [
-      { x: 513, y: 185, s: 6 },
-      { x: 513, y: 155, s: 7 },
-      { x: 513, y: 125, s: 8 },
-      { x: 513, y: 95,  s: 9 },
-      { x: 475, y: 65,  s: 10 }
-    ];
-    rightSofaChairs.forEach(function(ch) {
-      SEATS.push({
-        key: 'dr_' + ch.s,
-        x: ch.x,
-        y: ch.y,
-        zone: 'standart',
-        table: 'Диван R',
-        seatIdx: ch.s,
-        seatNum: ch.s
-      });
-    });
-
-    // --- 6. Диваны и Лампа ---
+    // --- 4. Диваны и Бар (Добавляем в SEATS для отслеживания выбора) ---
     SEATS.push({
-      key: 'dl_0',
+      key: 'sl_0',
       zone: 'sofa',
       table: 'Левый',
       seatIdx: 'целиком',
       label: 'Левый диван (целиком)'
     });
     SEATS.push({
-      key: 'dr_0',
+      key: 'sr_0',
       zone: 'sofa',
       table: 'Правый',
       seatIdx: 'целиком',
       label: 'Правый диван (целиком)'
     });
     SEATS.push({
-      key: 'lampa',
-      zone: 'lampa',
-      table: 'Лампа',
-      seatIdx: 'Зона',
-      label: 'Зона Лампа'
+      key: 'bar_0',
+      zone: 'econom',
+      table: 'Бар',
+      seatIdx: 'целиком',
+      label: 'Барная стойка (целиком)'
     });
 
     // === Состояние брони ===
@@ -1526,43 +1471,11 @@
     };
 
     // === Даты шоу (демо) ===
-    
-    // === Даты шоу (демо) ===
     var SHOWS = [
       { date: '16 октября 2026', day: 16, month: 'ОКТ', time: '20:00', venue: 'ЛАМПА · Ярославль' },
       { date: '13 ноября 2026',  day: 13, month: 'НОЯ', time: '19:30', venue: 'КВАРТАЛ · Кострома' },
       { date: '18 декабря 2026', day: 18, month: 'ДЕК', time: '20:00', venue: 'СКЛАД · Иваново' }
     ];
-
-
-    function renderDates() {
-      var grid = document.getElementById('dateGrid');
-      grid.innerHTML = '';
-      SHOWS.forEach(function(s, idx) {
-        var card = document.createElement('div');
-        card.className = 'date-card';
-        if (booking.date && booking.date.date === s.date) card.classList.add('selected');
-        card.innerHTML =
-          '<div class="date-card__day">' + s.day + '</div>' +
-          '<div class="date-card__month">' + s.month + '</div>' +
-          '<div class="date-card__time">' + s.time + '</div>' +
-          '<div class="date-card__venue">' + s.venue + '</div>';
-        card.onclick = function() {
-          booking.date = s;
-          document.getElementById('step1Next').disabled = false;
-          renderDates();
-        };
-        grid.appendChild(card);
-      });
-    }
-
-    // === Отрисовка зала ===
-    var NS = 'http://www.w3.org/2000/svg';
-    function el(tag, attrs) {
-      var n = document.createElementNS(NS, tag);
-      for (var k in attrs) n.setAttribute(k, attrs[k]);
-      return n;
-    }
 
     function renderHall() {
       var g = document.getElementById('hallG');
@@ -1573,7 +1486,7 @@
       var borderPath = el('path', {
         d: 'M 15 15 L 160 15 Q 170 15 170 25 L 170 50 Q 170 60 180 60 L 400 60 Q 410 60 410 50 L 410 25 Q 410 15 420 15 L 565 15 Q 570 15 570 20 L 570 390 Q 570 395 565 395 L 15 395 Q 10 395 10 390 L 10 20 Q 10 15 15 15 Z',
         fill: 'none',
-        stroke: 'rgba(201, 162, 39, 0.45)',
+        stroke: 'rgba(255, 110, 0, 0.45)',
         'stroke-width': 2
       });
       g.appendChild(borderPath);
@@ -1582,7 +1495,7 @@
       var stageRect = el('rect', {
         x: 180, y: 18, width: 220, height: 35, rx: 8,
         fill: 'none',
-        stroke: 'rgba(201, 162, 39, 0.25)',
+        stroke: 'rgba(255, 110, 0, 0.25)',
         'stroke-width': 1
       });
       g.appendChild(stageRect);
@@ -1590,7 +1503,7 @@
       var stageRectInner = el('rect', {
         x: 184, y: 22, width: 212, height: 27, rx: 6,
         fill: 'none',
-        stroke: 'rgba(201, 162, 39, 0.55)',
+        stroke: 'rgba(255, 110, 0, 0.55)',
         'stroke-width': 1.2
       });
       g.appendChild(stageRectInner);
@@ -1602,152 +1515,127 @@
         'font-size': '12',
         'font-weight': '600',
         'font-family': 'Inter, sans-serif',
-        fill: 'rgba(255, 236, 190, 0.95)',
+        fill: '#fff5eb',
         'letter-spacing': '2'
       });
       stageText.textContent = 'СЦЕНА';
       g.appendChild(stageText);
 
-      // 2. Декоративные квадраты по бокам
-      // Левые квадраты
-      g.appendChild(el('rect', { x: 82, y: 107, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
-      g.appendChild(el('rect', { x: 82, y: 137, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
-      // Правые квадраты
-      g.appendChild(el('rect', { x: 484, y: 107, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
-      g.appendChild(el('rect', { x: 484, y: 137, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+      // 2. Декоративные квадраты по бокам (столики у стульев)
+      g.appendChild(el('rect', { x: 82, y: 147, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+      g.appendChild(el('rect', { x: 82, y: 187, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
 
       // 3. Диваны
       // Left Sofa
-      var isSofaLeftSelected = booking.selected.some(function(x){return x.key==='dl_0';});
-      var isSofaLeftTaken = DEMO_TAKEN.has('dl_0') || (liveSeats['dl_0'] && (liveSeats['dl_0'].status === 'taken' || liveSeats['dl_0'].status === 'reserved'));
+      var isSofaLeftSelected = booking.selected.some(function(x){return x.key==='sl_0';});
+      var isSofaLeftTaken = DEMO_TAKEN.has('sl_0') || (liveSeats['sl_0'] && (liveSeats['sl_0'].status === 'taken' || liveSeats['sl_0'].status === 'reserved'));
       var leftSofaFill = isSofaLeftSelected ? '#fff' : (isSofaLeftTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
       var leftSofaStroke = isSofaLeftSelected ? ZONES.sofa.color : (isSofaLeftTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
       
       var leftSofa = el('path', {
-        d: 'M 30 100 L 50 100 Q 55 100 55 105 L 55 185 Q 55 190 60 190 L 85 190 Q 90 190 90 195 L 90 215 Q 90 220 85 220 L 30 220 Q 25 220 25 215 L 25 105 Q 25 100 30 100',
+        d: 'M 50 100 Q 50 95 45 95 L 30 95 Q 25 95 25 100 L 25 275 Q 25 280 30 280 L 75 280 Q 80 280 80 275 L 80 250 Q 80 245 75 245 L 55 245 Q 50 245 50 240 Z',
         fill: leftSofaFill,
         stroke: leftSofaStroke,
         'stroke-width': isSofaLeftSelected ? 2 : 1,
         style: isSofaLeftTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
       });
       if (!isSofaLeftTaken) {
-        leftSofa.addEventListener('click', function(){ toggleSeat('dl_0', 'sofa', 'Левый диван (целиком)', 'Левый', 'целиком'); });
+        leftSofa.addEventListener('click', function(){ toggleSeat('sl_0', 'sofa', 'Левый диван (целиком)', 'Левый', 'целиком'); });
       }
       g.appendChild(leftSofa);
       
       // Text "ДИВАНЫ" inside Left Sofa
       var leftSofaText = el('text', {
-        x: 40,
-        y: 120,
+        x: 37,
+        y: 155,
         'text-anchor': 'middle',
-        'font-size': '11',
+        'font-size': '9',
         'font-weight': '700',
         'font-family': 'Inter, sans-serif',
-        fill: isSofaLeftSelected ? '#14082e' : (isSofaLeftTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        fill: isSofaLeftSelected ? '#14080a' : (isSofaLeftTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
         'pointer-events': 'none'
       });
       ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
-        var tspan = el('tspan', { x: 40, dy: i === 0 ? 0 : 14 });
+        var tspan = el('tspan', { x: 37, dy: i === 0 ? 0 : 12 });
         tspan.textContent = char;
         leftSofaText.appendChild(tspan);
       });
       g.appendChild(leftSofaText);
-
+      
       // Right Sofa
-      var isSofaRightSelected = booking.selected.some(function(x){return x.key==='dr_0';});
-      var isSofaRightTaken = DEMO_TAKEN.has('dr_0') || (liveSeats['dr_0'] && (liveSeats['dr_0'].status === 'taken' || liveSeats['dr_0'].status === 'reserved'));
+      var isSofaRightSelected = booking.selected.some(function(x){return x.key==='sr_0';});
+      var isSofaRightTaken = DEMO_TAKEN.has('sr_0') || (liveSeats['sr_0'] && (liveSeats['sr_0'].status === 'taken' || liveSeats['sr_0'].status === 'reserved'));
       var rightSofaFill = isSofaRightSelected ? '#fff' : (isSofaRightTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
       var rightSofaStroke = isSofaRightSelected ? ZONES.sofa.color : (isSofaRightTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
       
       var rightSofa = el('path', {
-        d: 'M 495 50 L 555 50 Q 560 50 560 55 L 560 145 Q 560 150 555 150 L 535 150 Q 530 150 530 145 L 530 85 Q 530 80 525 80 L 495 80 Q 490 80 490 75 L 490 55 Q 490 50 495 50',
+        d: 'M 505 110 Q 500 110 500 105 L 500 85 Q 500 80 505 80 L 550 80 Q 555 80 555 85 L 555 185 Q 555 190 550 190 L 535 190 Q 530 190 530 185 L 530 120 Q 530 115 525 115 Z',
         fill: rightSofaFill,
         stroke: rightSofaStroke,
         'stroke-width': isSofaRightSelected ? 2 : 1,
         style: isSofaRightTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
       });
       if (!isSofaRightTaken) {
-        rightSofa.addEventListener('click', function(){ toggleSeat('dr_0', 'sofa', 'Правый диван (целиком)', 'Правый', 'целиком'); });
+        rightSofa.addEventListener('click', function(){ toggleSeat('sr_0', 'sofa', 'Правый диван (целиком)', 'Правый', 'целиком'); });
       }
       g.appendChild(rightSofa);
       
       // Text "ДИВАНЫ" inside Right Sofa
       var rightSofaText = el('text', {
-        x: 545,
-        y: 65,
+        x: 542,
+        y: 110,
         'text-anchor': 'middle',
-        'font-size': '11',
+        'font-size': '9',
         'font-weight': '700',
         'font-family': 'Inter, sans-serif',
-        fill: isSofaRightSelected ? '#14082e' : (isSofaRightTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        fill: isSofaRightSelected ? '#14080a' : (isSofaRightTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
         'pointer-events': 'none'
       });
       ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
-        var tspan = el('tspan', { x: 545, dy: i === 0 ? 0 : 14 });
+        var tspan = el('tspan', { x: 542, dy: i === 0 ? 0 : 12 });
         tspan.textContent = char;
         rightSofaText.appendChild(tspan);
       });
       g.appendChild(rightSofaText);
 
-      // 4. Лампа
-      var isLampaSelected = booking.selected.some(function(x){return x.key==='lampa';});
-      var isLampaTaken = DEMO_TAKEN.has('lampa') || (liveSeats['lampa'] && (liveSeats['lampa'].status === 'taken' || liveSeats['lampa'].status === 'reserved'));
-      var lampaFill = isLampaSelected ? '#fff' : (isLampaTaken ? 'rgba(255,255,255,0.06)' : '#ffc97a');
-      var lampaStroke = isLampaSelected ? ZONES.lampa.color : (isLampaTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
-      
-      var lampa = el('circle', {
-        cx: 535, cy: 190, r: 20,
-        fill: lampaFill,
-        stroke: lampaStroke,
-        'stroke-width': isLampaSelected ? 2 : 0.8,
-        style: isLampaTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
-      });
-      if (!isLampaTaken) {
-        lampa.addEventListener('click', function(){ toggleSeat('lampa', 'lampa', 'Зона Лампа', 'Лампа', 'Зона'); });
-      }
-      g.appendChild(lampa);
-      
-      var lampaText = el('text', {
-        x: 535, y: 190,
-        'text-anchor': 'middle',
-        'dominant-baseline': 'central',
-        'font-size': '7',
-        'font-weight': '700',
-        'font-family': 'Inter, sans-serif',
-        fill: isLampaSelected ? '#14082e' : (isLampaTaken ? 'rgba(255,255,255,0.2)' : '#0a0420'),
-        'pointer-events': 'none'
-      });
-      lampaText.textContent = 'ЛАМПА';
-      g.appendChild(lampaText);
+      // 4. Бар
+      var isBarSelected = booking.selected.some(function(x){return x.key==='bar_0';});
+      var isBarTaken = DEMO_TAKEN.has('bar_0') || (liveSeats['bar_0'] && (liveSeats['bar_0'].status === 'taken' || liveSeats['bar_0'].status === 'reserved'));
+      var barFill = isBarSelected ? '#fff' : (isBarTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
+      var barStroke = isBarSelected ? ZONES.econom.color : (isBarTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
 
-      // 5. Бар
       var bar = el('path', {
-        d: 'M 535 290 L 555 290 Q 560 290 560 295 L 560 375 Q 560 380 555 380 L 425 380 Q 420 380 420 375 L 420 355 Q 420 350 425 350 L 525 350 Q 530 350 530 345 L 530 295 Q 530 290 535 290 Z',
-        fill: 'rgba(60,60,75,0.85)',
-        stroke: 'rgba(255,255,255,0.22)',
-        'stroke-width': 1
+        d: 'M 440 380 Q 435 380 435 375 L 435 355 Q 435 350 440 350 L 515 350 Q 520 350 520 345 L 520 295 Q 520 290 525 290 L 550 290 Q 555 290 555 295 L 555 375 Q 555 380 550 380 Z',
+        fill: barFill,
+        stroke: barStroke,
+        'stroke-width': isBarSelected ? 2 : 1,
+        style: isBarTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
       });
+      if (!isBarTaken) {
+        bar.addEventListener('click', function(){ toggleSeat('bar_0', 'econom', 'Барная стойка (целиком)', 'Бар', 'целиком'); });
+      }
       g.appendChild(bar);
       
       var barText = el('text', {
-        x: 490, y: 365,
+        x: 480,
+        y: 365,
         'text-anchor': 'middle',
         'dominant-baseline': 'central',
-        'font-size': '14',
+        'font-size': '11',
         'font-weight': '700',
         'font-family': 'Inter, sans-serif',
-        fill: 'rgba(255,255,255,0.7)',
+        fill: isBarSelected ? '#14080a' : (isBarTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
         'pointer-events': 'none'
       });
       barText.textContent = 'БАР';
       g.appendChild(barText);
 
-      // 6. Отрисовка столов (Круглые столы на 8 и 4 мест)
-      // Столы на 8 мест
-      tables8.forEach(function(tbl) {
+      // 5. Отрисовка столов
+      // Столы на 5 мест
+      tables5.forEach(function(tbl) {
         var z = ZONES[tbl.zone];
         var circle = el('circle', {
-          cx: tbl.cx, cy: tbl.cy, r: 20,
+          cx: tbl.cx, cy: tbl.cy, r: 16,
           fill: 'rgba(' + z.rgb + ', 0.10)',
           stroke: 'rgba(' + z.rgb + ', 0.45)',
           'stroke-width': 1.3
@@ -1758,7 +1646,7 @@
           x: tbl.cx, y: tbl.cy,
           'text-anchor': 'middle',
           'dominant-baseline': 'central',
-          'font-size': '11',
+          'font-size': '10',
           'font-weight': '700',
           'font-family': 'Inter, sans-serif',
           fill: 'rgba(' + z.rgb + ', 0.85)'
@@ -1767,11 +1655,11 @@
         g.appendChild(lbl);
       });
 
-      // Столы на 4 места (круглые)
+      // Столы на 4 места
       tables4.forEach(function(tbl) {
         var z = ZONES[tbl.zone];
         var circle = el('circle', {
-          cx: tbl.cx, cy: tbl.cy, r: 12,
+          cx: tbl.cx, cy: tbl.cy, r: 11,
           fill: 'rgba(' + z.rgb + ', 0.10)',
           stroke: 'rgba(' + z.rgb + ', 0.45)',
           'stroke-width': 1.1
@@ -1791,43 +1679,19 @@
         g.appendChild(lbl);
       });
 
-      // Столики прямоугольные (16-19)
-      tablesRect.forEach(function(tbl) {
-        var z = ZONES[tbl.zone];
-        var rect = el('rect', {
-          x: tbl.cx - 9, y: tbl.cy - 15,
-          width: 18, height: 30, rx: 4,
-          fill: 'rgba(' + z.rgb + ', 0.08)',
-          stroke: 'rgba(' + z.rgb + ', 0.35)',
-          'stroke-width': 1
-        });
-        g.appendChild(rect);
-
-        var lbl = el('text', {
-          x: tbl.cx, y: tbl.cy,
-          'text-anchor': 'middle',
-          'dominant-baseline': 'central',
-          'font-size': '10',
-          'font-weight': '700',
-          'font-family': 'Inter, sans-serif',
-          fill: 'rgba(' + z.rgb + ', 0.8)'
-        });
-        lbl.textContent = tbl.id;
-        g.appendChild(lbl);
-      });
-
-      // 7. Отрисовка стульев (кружков)
+      // 6. Отрисовка стульев (кружков)
       SEATS.forEach(function(seat) {
-        // Пропускаем диваны и лампу, они отрисованы отдельно выше
-        if (seat.key === 'dl_0' || seat.key === 'dr_0' || seat.key === 'lampa') return;
+        if (seat.key === 'sl_0' || seat.key === 'sr_0' || seat.key === 'bar_0') return;
 
         var z = ZONES[seat.zone];
         var isTaken = DEMO_TAKEN.has(seat.key) || (liveSeats[seat.key] && (liveSeats[seat.key].status === 'taken' || liveSeats[seat.key].status === 'reserved'));
         var isSelected = booking.selected.some(function(x) { return x.key === seat.key; });
 
-        var sr = 7.5; // по умолчанию
-        if (seat.type === 'round4' || seat.type === 'rect') {
-          sr = 6.5; // поменьше
+        var sr = 6.2;
+        if (seat.type === 'round4') {
+          sr = 5.2;
+        } else if (seat.type === 'chair') {
+          sr = 6.0;
         }
 
         var fill = isSelected ? '#fff' : (isTaken ? 'rgba(255,255,255,0.06)' : 'rgba(' + z.rgb + ',0.88)');
@@ -1842,55 +1706,37 @@
           'stroke-width': isSelected ? 2 : 0.8,
           style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
         });
-        c.classList.add('seat');
-        if (isTaken) c.classList.add('taken');
-        if (isSelected) c.classList.add('selected');
 
         if (!isTaken) {
           c.addEventListener('click', function() {
-            var label = 'Стол ' + seat.table + ', место ' + seat.seatNum;
-            if (seat.table === 'Диван L') {
-              label = 'У левого дивана, место ' + seat.seatNum;
-            } else if (seat.table === 'Диван R') {
-              label = 'У правого дивана, место ' + seat.seatNum;
+            var label = '';
+            if (seat.type === 'chair') {
+              label = 'Стул ' + seat.seatNum;
+              toggleSeat(seat.key, seat.zone, label, 'Стулья', 'Стул ' + seat.seatNum);
+            } else {
+              label = 'Стол ' + seat.table + ', Место ' + seat.seatNum;
+              toggleSeat(seat.key, seat.zone, label, 'Стол ' + seat.table, 'Место ' + seat.seatNum);
             }
-            toggleSeat(seat.key, seat.zone, label, seat.table, seat.seatNum);
           });
         }
         g.appendChild(c);
 
-        if (isSelected) {
-          g.appendChild(el('circle', {
-            cx: seat.x.toFixed(1),
-            cy: seat.y.toFixed(1),
-            r: sr + 3,
-            fill: 'none',
-            stroke: z.color,
-            'stroke-width': '1.2',
-            'stroke-opacity': '0.55'
-          }));
-        }
-
-        // Цифра внутри кружка
-        if (seat.seatNum) {
-          var fontSize = (seat.type === 'round4' || seat.type === 'rect') ? 7 : 8.5;
-          var numText = el('text', {
-            x: seat.x.toFixed(1),
-            y: seat.y.toFixed(1),
-            'text-anchor': 'middle',
-            'dominant-baseline': 'central',
-            'font-size': fontSize,
-            'font-weight': '800',
-            'font-family': 'Inter, sans-serif',
-            fill: isSelected ? '#14082e' : (isTaken ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.85)'),
-            'pointer-events': 'none'
-          });
-          numText.textContent = seat.seatNum;
-          g.appendChild(numText);
-        }
+        // Добавим номер места внутри кружка
+        var t = el('text', {
+          x: seat.x.toFixed(1),
+          y: seat.y.toFixed(1),
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': seat.type === 'round4' ? '5.5' : '6.5',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: isSelected ? '#14080a' : (isTaken ? 'rgba(255,255,255,0.15)' : '#fff'),
+          'pointer-events': 'none'
+        });
+        t.textContent = seat.seatNum;
+        g.appendChild(t);
       });
     }
-
     function toggleSeat(key, zone, label, table, seatIdx) {
       var idx = booking.selected.findIndex(function(x) { return x.key === key; });
       if (idx >= 0) {
