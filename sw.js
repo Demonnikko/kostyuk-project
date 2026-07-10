@@ -1,12 +1,18 @@
 // Простой офлайн-кэш шелла
-const CACHE_NAME = 'kostiuk-v1';
+const CACHE_NAME = 'kostyuk-ecosystem-v6';
 const ASSETS = [
   '/',
   '/index.html',
+  '/ecosystem.css',
   '/manifest.json',
-  // критичные ассеты — добавьте по необходимости:
-  '/images/portrait.jpg',
-  '/images/portrait.webp'
+  '/images/портрет.jpg',
+  '/images/kostyuk-project-logo.jpg',
+  '/vendor/fonts/fonts.css',
+  '/vendor/swiper/swiper-bundle.min.css',
+  '/vendor/swiper/swiper-bundle.min.js',
+  '/events/',
+  '/school/',
+  '/concerts/'
 ];
 
 self.addEventListener('install', (e) => {
