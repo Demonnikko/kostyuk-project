@@ -627,20 +627,46 @@ async function findBookingByTBankOrderId(orderId) {
   return null;
 }
 
-async function confirmBookingAndNotify(bookingId, booking, meta = {}) {
-  const now = Date.now();
-  const curStatus = String(booking.status || '').toLowerCase();
-  if (BLOCKED_STATUSES.has(curStatus)) {
-    return { ok: false, error: `Cannot confirm: status is '${curStatus}'` };
-  }
-  if (curStatus !== 'waiting_admin' && curStatus !== 'waiting_payment' && curStatus !== 'new' && curStatus !== 'confirmed') {
-    return { ok: false, error: `Cannot confirm: status is '${curStatus}'` };
-  }
+async function confirmBookingAndNotify(bookingId, ignoredBooking, meta = {}) {
+  let ticketNumber = '';
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { data: booking, etag } = await fbGetWithETag(`huligan_bookings/${bookingId}`);
+    if (!booking) return { ok: false, error: 'Booking not found' };
 
-  let ticketNumber = String(booking.ticketNumber || '');
-  if (!ticketNumber) ticketNumber = genTicketNum();
-  if (curStatus !== 'confirmed') {
+    const curStatus = String(booking.status || '').toLowerCase();
+    if (BLOCKED_STATUSES.has(curStatus)) return { ok: false, error: `Cannot confirm: status is '${curStatus}'` };
+
+    if (curStatus === 'confirmed') {
+      ticketNumber = String(booking.ticketNumber || '');
+      let delivered = false;
+      if (!hasNotifyFlag(booking, 'confirmedUserNotifiedAt')) {
+        if (booking.vkUserId) {
+          const ticketLink = buildHuliganMiniAppTicketLink(bookingId);
+          const msg = `Теперь ты тоже хулиган, а вот твой билет: ${ticketLink}`;
+          const vkResult = await vkSend(booking.vkUserId, msg).catch(() => ({ ok: false }));
+          delivered = delivered || !!vkResult?.ok;
+        }
+        if (booking.tgUserId) {
+          const tgResult = await tgSendTicketReady(booking.tgUserId, bookingId).catch(() => ({ ok: false }));
+          delivered = delivered || !!tgResult?.ok;
+        }
+        if (delivered || (!booking.vkUserId && !booking.tgUserId)) {
+          await markNotifyFlag(bookingId, booking, 'confirmedUserNotifiedAt');
+        }
+      }
+      return { ok: true, ticketNumber };
+    }
+
+    if (curStatus !== 'waiting_admin' && curStatus !== 'waiting_payment' && curStatus !== 'new') {
+      return { ok: false, error: `Cannot confirm: status is '${curStatus}'` };
+    }
+
+    ticketNumber = String(booking.ticketNumber || '');
+    if (!ticketNumber) ticketNumber = genTicketNum();
+    const now = Date.now();
+
     const patch = {
+      ...booking,
       status: 'confirmed',
       ticketNumber,
       confirmedAt: now
@@ -656,31 +682,45 @@ async function confirmBookingAndNotify(bookingId, booking, meta = {}) {
         provider: String(meta.provider || 'vkpay')
       };
     }
-    await fbPatch(`huligan_bookings/${bookingId}`, patch);
-    booking.status = 'confirmed';
-    booking.ticketNumber = ticketNumber;
-    booking.confirmedAt = patch.confirmedAt;
-    if (patch.paidAt) booking.paidAt = patch.paidAt;
-    if (patch.vkPay) booking.vkPay = patch.vkPay;
-  }
 
-  let delivered = false;
-  if (!hasNotifyFlag(booking, 'confirmedUserNotifiedAt')) {
-    if (booking.vkUserId) {
-      const ticketLink = buildHuliganMiniAppTicketLink(bookingId);
-      const msg = `Теперь ты тоже хулиган, а вот твой билет: ${ticketLink}`;
-      const vkResult = await vkSend(booking.vkUserId, msg).catch(() => ({ ok: false }));
-      delivered = delivered || !!vkResult?.ok;
-    }
-    if (booking.tgUserId) {
-      const tgResult = await tgSendTicketReady(booking.tgUserId, bookingId).catch(() => ({ ok: false }));
-      delivered = delivered || !!tgResult?.ok;
-    }
-    if (delivered || (!booking.vkUserId && !booking.tgUserId)) {
-      await markNotifyFlag(bookingId, booking, 'confirmedUserNotifiedAt');
+    try {
+      const success = await fbConditionalPut(`huligan_bookings/${bookingId}`, patch, etag);
+      if (!success) throw new Error('ETAG_MISMATCH');
+
+      const seats = Array.isArray(booking.seats) ? booking.seats : [];
+      await Promise.all(seats.map(async s => {
+        const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+        try {
+          const { data: seatCur, etag: seatEtag } = await fbGetWithETag(`huligan_seats/${seatKey}`);
+          if (seatCur) {
+            await fbConditionalPut(`huligan_seats/${seatKey}`, { ...seatCur, status: 'taken', bookingId }, seatEtag);
+          }
+        } catch(e) {}
+      }));
+      
+      let delivered = false;
+      if (!hasNotifyFlag(patch, 'confirmedUserNotifiedAt')) {
+        if (patch.vkUserId) {
+          const ticketLink = buildHuliganMiniAppTicketLink(bookingId);
+          const msg = `Теперь ты тоже хулиган, а вот твой билет: ${ticketLink}`;
+          const vkResult = await vkSend(patch.vkUserId, msg).catch(() => ({ ok: false }));
+          delivered = delivered || !!vkResult?.ok;
+        }
+        if (patch.tgUserId) {
+          const tgResult = await tgSendTicketReady(patch.tgUserId, bookingId).catch(() => ({ ok: false }));
+          delivered = delivered || !!tgResult?.ok;
+        }
+        if (delivered || (!patch.vkUserId && !patch.tgUserId)) {
+          await markNotifyFlag(bookingId, patch, 'confirmedUserNotifiedAt');
+        }
+      }
+      return { ok: true, ticketNumber };
+    } catch (err) {
+      if (err.message === 'ETAG_MISMATCH') continue;
+      return { ok: false, error: err.message };
     }
   }
-  return { ok: true, ticketNumber };
+  return { ok: false, error: 'Concurrent modification' };
 }
 
 function canAccessBooking(booking, body = {}, { allowVkUserId = false, allowTgUserId = false } = {}) {
@@ -1570,6 +1610,11 @@ export default async (req, res) => {
       }
       if (status !== 'cancelled') {
         await fbPatch(`huligan_bookings/${bookingId}`, { status: 'cancelled', cancelledAt: Date.now() });
+        const seats = Array.isArray(booking.seats) ? booking.seats : [];
+        await Promise.all(seats.map(s => {
+          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          return fbPut(`huligan_seats/${seatKey}`, { status: 'available' }).catch(() => {});
+        })).catch(() => {});
       }
 
       let delivered = false;
@@ -1627,6 +1672,11 @@ export default async (req, res) => {
           refundedAt: Date.now(),
           refundReason: reason || null
         });
+        const seats = Array.isArray(booking.seats) ? booking.seats : [];
+        await Promise.all(seats.map(s => {
+          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          return fbPut(`huligan_seats/${seatKey}`, { status: 'available' }).catch(() => {});
+        })).catch(() => {});
       }
 
       let delivered = false;
@@ -1687,14 +1737,53 @@ export default async (req, res) => {
       const bookingIdNew = path.split('/')[1];
       const existing = await fbGet(`huligan_bookings/${bookingIdNew}`);
       if (existing) return res.status(409).json({ error: 'Booking ID already exists' });
+
+      // --- СЕРВЕРНАЯ ПРОВЕРКА И АТОМАРНОЕ РЕЗЕРВИРОВАНИЕ МЕСТ ---
+      const seats = Array.isArray(data.seats) ? data.seats : [];
+      const tempBookingId = String(body.tempBookingId || data.tempBookingId || '').trim();
+      const RESERVE_MS = 10 * 60 * 1000; // 10 минут
+      const now = Date.now();
+      const takenSeats = [];
+
+      for (const s of seats) {
+        const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+        const seatData = await fbGet(`huligan_seats/${seatKey}`);
+        if (!seatData) continue;
+
+        const status = String(seatData.status || '');
+        const seatBookingId = String(seatData.bookingId || '');
+
+        if (status === 'taken') {
+          takenSeats.push(seatKey);
+        } else if (status === 'reserved' && seatBookingId !== tempBookingId) {
+          const reservedAt = Number(seatData.reservedAt || seatData.at || 0);
+          if (now - reservedAt < RESERVE_MS) {
+            takenSeats.push(seatKey);
+          }
+        }
+      }
+
+      if (takenSeats.length > 0) {
+        return res.status(409).json({ error: 'Seats already taken', seats: takenSeats });
+      }
+
       // Проверяем цены на сервере — клиент не должен сам устанавливать стоимость
       const cfg = await fbGet('huligan_config');
-      const typeKey = String(data.ticketType);
+      const prices = cfg?.prices || { vip: 1400, std: 1100, eco: 800 };
       let expectedPrice = 0;
-      if (cfg?.ticketTypes?.[typeKey]?.price != null) {
-        expectedPrice = Number(cfg.ticketTypes[typeKey].price);
-      } else if (cfg?.prices?.[typeKey] != null) {
-        expectedPrice = Number(cfg.prices[typeKey]);
+      if (seats.length > 0) {
+        for (const s of seats) {
+          const zone = String(s.zone || 'std').toLowerCase();
+          const zoneKey = zone === 'standard' || zone === 'standart' || zone === 'std' ? 'std' : (zone === 'econom' || zone === 'eco' ? 'eco' : zone);
+          expectedPrice += Number(prices[zoneKey] || prices.std || 1100);
+        }
+      } else {
+        const typeKey = String(data.ticketType);
+        if (cfg?.ticketTypes?.[typeKey]?.price != null) {
+          expectedPrice = Number(cfg.ticketTypes[typeKey].price);
+        } else if (prices[typeKey] != null) {
+          expectedPrice = Number(prices[typeKey]);
+        }
       }
       if (expectedPrice > 0 && Number(data.originalPrice) !== expectedPrice) {
         return res.status(400).json({ error: 'Price mismatch' });
@@ -1724,7 +1813,26 @@ export default async (req, res) => {
       // Принудительно устанавливаем finalPrice — клиенту не доверяем
       data = { ...data, finalPrice: serverFinalPrice };
 
-      await fbPut(path, data);
+      try {
+        await fbPut(path, data);
+
+        // Резервируем места
+        await Promise.all(seats.map(s => {
+          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          return fbPut(`huligan_seats/${seatKey}`, {
+            status: 'reserved',
+            bookingId: bookingIdNew,
+            reservedAt: now
+          });
+        }));
+      } catch (err) {
+        // Откат при сбое записи брони
+        await Promise.all(seats.map(s => {
+          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          return fbPatch(`huligan_seats/${seatKey}`, { bookingId: tempBookingId || null, status: tempBookingId ? 'reserved' : null }).catch(() => {});
+        })).catch(() => {});
+        return res.status(500).json({ error: 'Internal server error' });
+      }
 
       // Списываем промокод
       if (promoApplied && promoApplied.usesLeft !== -1) {

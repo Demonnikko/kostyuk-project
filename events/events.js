@@ -233,17 +233,32 @@
       lb.addEventListener('touchend', function (e) { var d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) { d < 0 ? openByIndex(ci + 1) : openByIndex(ci - 1) } }, { passive: true });
     })();
 
-    /* ===== HERO IMG FALLBACK ===== */
+    /* ===== HERO IMG FALLBACK & VIDEO CROSS-FADE ===== */
     var hi = document.getElementById('heroImg');
-    if (hi) hi.addEventListener('error', function () { hi.style.display = 'none' });
     var hv = document.getElementById('heroVideo');
+    if (hi) {
+      hi.addEventListener('error', function () { hi.style.display = 'none'; });
+    }
     if (hv && hi) {
-      var showHeroFallback = function () { hi.style.opacity = '1'; };
-      var hideHeroFallback = function () { hi.style.opacity = '0'; };
-      hv.addEventListener('loadeddata', hideHeroFallback);
-      hv.addEventListener('canplay', hideHeroFallback);
-      hv.addEventListener('error', showHeroFallback);
-      hv.play && hv.play().catch(showHeroFallback);
+      var onVideoStart = function () {
+        hi.style.opacity = '0';
+        hv.style.opacity = '1';
+      };
+      var onVideoError = function () {
+        hi.style.opacity = '1';
+        hv.style.opacity = '0';
+      };
+      
+      hv.addEventListener('playing', onVideoStart);
+      hv.addEventListener('canplay', onVideoStart);
+      hv.addEventListener('error', onVideoError);
+      
+      // If already playing or cached
+      if (hv.readyState >= 3 && !hv.paused) {
+        onVideoStart();
+      } else if (hv.play) {
+        hv.play().then(onVideoStart).catch(onVideoError);
+      }
     }
 
     // Inject CSS for new icons
@@ -524,60 +539,78 @@
       routeToMiniApp(buildVkPersonalChatUrl(summary ? summary.contactMessage : ''));
     }
 
-    // ===== CONCERTS CAROUSEL INIT =====
-    var concertsSwiper = new Swiper('.swiper-concerts', {
-      effect: 'coverflow', // Drum/3D effect
-      grabCursor: true,
-      centeredSlides: true,
-      slidesPerView: 'auto',
-      loop: false,
-      initialSlide: 0,
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-      },
-      coverflowEffect: {
-        rotate: 40,
-        stretch: 0,
-        depth: 250,
-        modifier: 1,
-        slideShadows: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      on: {
-        slideChange: function () {
-          var idx = this.activeIndex;
-          var infos = document.querySelectorAll('.concert-info-box');
-          infos.forEach(function (el, i) {
-            if (i === idx) {
-              el.classList.add('active');
-            } else {
-              el.classList.remove('active');
-            }
-          });
-          if (window.haptic) haptic('light');
-        }
+    // ===== CONCERTS & REVIEWS CAROUSEL INIT (safe wrapper) =====
+    var concertsSwiper = null;
+    var reviewsSwiper = null;
+    function initSwipers() {
+      if (typeof Swiper === 'undefined') {
+        console.warn('Swiper is not loaded yet, retrying in 50ms...');
+        setTimeout(initSwipers, 50);
+        return;
       }
-    });
 
-    // ===== REVIEWS CAROUSEL INIT =====
-    var reviewsNode = document.querySelector('.swiper-reviews');
-    if (reviewsNode) {
-      new Swiper('.swiper-reviews', {
-        loop: true,
-        slidesPerView: 1,
-        spaceBetween: 10,
-        speed: 520,
-        autoHeight: true,
-        allowTouchMove: true,
-        navigation: {
-          nextEl: '.reviews-nav__next',
-          prevEl: '.reviews-nav__prev'
-        }
-      });
+      var concertsNode = document.querySelector('.swiper-concerts');
+      if (concertsNode) {
+        concertsSwiper = new Swiper('.swiper-concerts', {
+          effect: 'coverflow', // Drum/3D effect
+          grabCursor: true,
+          centeredSlides: true,
+          slidesPerView: 'auto',
+          loop: false,
+          initialSlide: 0,
+          autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+          },
+          coverflowEffect: {
+            rotate: 40,
+            stretch: 0,
+            depth: 250,
+            modifier: 1,
+            slideShadows: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+          on: {
+            slideChange: function () {
+              var idx = this.activeIndex;
+              var infos = document.querySelectorAll('.concert-info-box');
+              infos.forEach(function (el, i) {
+                if (i === idx) {
+                  el.classList.add('active');
+                } else {
+                  el.classList.remove('active');
+                }
+              });
+              if (window.haptic) haptic('light');
+            }
+          }
+        });
+      }
+
+      var reviewsNode = document.querySelector('.swiper-reviews');
+      if (reviewsNode) {
+        reviewsSwiper = new Swiper('.swiper-reviews', {
+          loop: true,
+          slidesPerView: 1,
+          spaceBetween: 10,
+          speed: 520,
+          autoHeight: true,
+          allowTouchMove: true,
+          navigation: {
+            nextEl: '.reviews-nav__next',
+            prevEl: '.reviews-nav__prev'
+          }
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener("DOMContentLoaded", initSwipers);
+    } else {
+      initSwipers();
     }
 
     // ===== ROUTING =====

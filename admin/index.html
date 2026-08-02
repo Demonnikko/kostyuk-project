@@ -1420,6 +1420,9 @@
         <div class="nav-item active" onclick="showSection('dashboard')" data-sec="dashboard">
           <span class="nav-icon">📊</span> Дашборд
         </div>
+        <div class="nav-item" onclick="showSection('scanner')" data-sec="scanner">
+          <span class="nav-icon">📷</span> Сканнер
+        </div>
         <div class="nav-item" onclick="showSection('chats')" data-sec="chats">
           <span class="nav-icon">💬</span> Диалоги AI
         </div>
@@ -1507,6 +1510,39 @@
         <div class="show-tab active" data-show="secret" onclick="switchShow('secret')" style="padding:12px 8px">🎭
           Секрет</div>
         <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')" style="padding:12px 8px">😈 ХУЛИgan
+        </div>
+      </div>
+
+      <!-- Scanner Section -->
+      <div class="section" id="sec-scanner">
+        <div class="section-title">📷 Сканнер билетов</div>
+        
+        <div class="card" style="padding: 20px; margin-bottom: 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+             <select id="scannerShowSelect" class="form-input" style="max-width: 200px;">
+               <option value="auto">Авто-определение</option>
+               <option value="secret">Шоу СЕКРЕТ</option>
+               <option value="huligan">Шоу ХУЛИgan</option>
+             </select>
+             <div>
+                <button class="btn btn-sm" id="btnStartScan" onclick="startScanner()" style="background:var(--gold); color:#000;">Начать скан</button>
+                <button class="btn btn-sm" id="btnStopScan" onclick="stopScanner()" style="display:none; background:#e85348;">Остановить</button>
+             </div>
+          </div>
+          
+          <div id="qr-reader" style="width:100%; max-width: 500px; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #000;"></div>
+          
+          <div style="margin-top: 20px; text-align: center;">
+            <input type="text" id="scannerInput" class="form-input" placeholder="Введите номер билета (например, SEC-X...)" style="max-width:300px; margin: 0 auto 10px auto;">
+            <button class="btn" onclick="manualScan()">Проверить вручную</button>
+          </div>
+        </div>
+
+        <div id="scanFeedback" class="card" style="display:none; text-align:center; padding: 40px 20px;">
+          <div id="scanFeedbackIcon" style="font-size: 64px; margin-bottom: 10px;"></div>
+          <h2 id="scanFeedbackTitle" style="margin-bottom: 10px;"></h2>
+          <p id="scanFeedbackText" style="color:var(--dim); font-size: 16px; margin-bottom: 20px;"></p>
+          <div id="scanFeedbackDetails" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; text-align:left; font-size: 14px; color: #ddd; max-width: 400px; margin: 0 auto;"></div>
         </div>
       </div>
 
@@ -2832,6 +2868,9 @@
     <div class="bnav-item active" onclick="showSection('dashboard')" data-bsec="dashboard">
       <span class="bnav-icon">📊</span>Аналитика
     </div>
+    <div class="bnav-item" onclick="showSection('scanner')" data-bsec="scanner">
+      <span class="bnav-icon">📷</span>Сканнер
+    </div>
     <div class="bnav-item" onclick="showSection('chats')" data-bsec="chats">
       <span class="bnav-icon">💬</span>Диалоги
     </div>
@@ -3065,13 +3104,6 @@
       container.innerHTML = '<div class="empty-state">⏳ Загрузка веб-аналитики...</div>';
 
       const counterId = '107696179';
-      let token = '';
-      try {
-        token = await fbGet('bot_private_config/yandex_metrika_token') || '';
-      } catch (e) {
-        console.warn('Failed to load metrika token from Firebase:', e);
-      }
-
       // Determine date range based on tab
       let date1 = 'today', date2 = 'today';
       if (currentMetrikaTab === 'yesterday') {
@@ -3080,22 +3112,25 @@
         date1 = '7daysAgo'; date2 = 'today';
       }
 
-      const headers = {};
-      if (token) {
-        headers['Authorization'] = `OAuth ${token}`;
-      }
-
-      const statsUrl = `https://api-metrika.yandex.net/stat/v1/data?ids=${counterId}&metrics=ym:s:users,ym:s:pageviews,ym:s:bounceRate,ym:s:avgSessionDuration&date1=${date1}&date2=${date2}`;
-      const pagesUrl = `https://api-metrika.yandex.net/stat/v1/data?ids=${counterId}&metrics=ym:s:pageviews&dimensions=ym:s:startURL&sort=-ym:s:pageviews&limit=3&date1=${date1}&date2=${date2}`;
+      const statsQuery = `ids=${counterId}&metrics=ym:s:users,ym:s:pageviews,ym:s:bounceRate,ym:s:avgSessionDuration&date1=${date1}&date2=${date2}`;
+      const pagesQuery = `ids=${counterId}&metrics=ym:s:pageviews&dimensions=ym:s:startURL&sort=-ym:s:pageviews&limit=3&date1=${date1}&date2=${date2}`;
 
       try {
         const [statsRes, pagesRes] = await Promise.all([
-          fetch(statsUrl, { headers }).then(r => r.json()),
-          fetch(pagesUrl, { headers }).then(r => r.json())
+          fetch('/api/_endpoints/admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'metrika_proxy', metrikaQuery: statsQuery, adminPassword: window._adminPass })
+          }).then(r => r.json()),
+          fetch('/api/_endpoints/admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'metrika_proxy', metrikaQuery: pagesQuery, adminPassword: window._adminPass })
+          }).then(r => r.json())
         ]);
 
         if (statsRes.errors || statsRes.error || statsRes.code === 400 || statsRes.code === 403) {
-          throw new Error(statsRes.message || 'Access Denied');
+          throw new Error(statsRes.message || statsRes.error || 'Access Denied');
         }
 
         const data = {
@@ -4336,14 +4371,7 @@
         });
         const data = await r.json();
         if (data.ok) {
-          // Lock seats in Firebase
-          const b = window.allHuliganBookings[bookingId];
-          if (b && Array.isArray(b.seats)) {
-            for (const s of b.seats) {
-              const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
-              await fbPut(`huligan_seats/${k}`, { status: 'taken', bookingId });
-            }
-          }
+
           toast(`✅ Подтверждено! Билет: ${data.ticketNumber}`);
           setTimeout(loadHuliganOrders, 800);
         } else {
@@ -4366,14 +4394,7 @@
         });
         const data = await r.json();
         if (data.ok) {
-          // Unlock seats in Firebase
-          const b = window.allHuliganBookings[bookingId];
-          if (b && Array.isArray(b.seats)) {
-            for (const s of b.seats) {
-              const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
-              await fbDelete(`huligan_seats/${k}`);
-            }
-          }
+
           toast('❌ Заказ отменён');
           loadHuliganOrders();
         } else {
@@ -4395,14 +4416,7 @@
         });
         const data = await r.json();
         if (data.ok) {
-          // Unlock seats in Firebase
-          const b = window.allHuliganBookings[bookingId];
-          if (b && Array.isArray(b.seats)) {
-            for (const s of b.seats) {
-              const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
-              await fbDelete(`huligan_seats/${k}`);
-            }
-          }
+
           toast('↩ Возврат оформлен');
           loadHuliganOrders();
         } else {
@@ -6360,7 +6374,149 @@
       if (document.getElementById('sec-bookings').classList.contains('active')) loadBookings();
       if (document.getElementById('sec-hul-bookings').classList.contains('active')) loadHuliganOrders();
     }, 30000);
+    // ── SCANNER LOGIC ──
+    let html5QrcodeScanner = null;
+    let scanCooldown = false;
+    let scanAudioSuccess = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    let scanAudioError = new Audio('https://actions.google.com/sounds/v1/alarms/error_beep.ogg');
+
+    function playSound(type) {
+      try {
+        if (type === 'success') {
+           scanAudioSuccess.currentTime = 0;
+           scanAudioSuccess.play().catch(e => console.log('Audio error:', e));
+        } else {
+           scanAudioError.currentTime = 0;
+           scanAudioError.play().catch(e => console.log('Audio error:', e));
+        }
+      } catch (e) {}
+    }
+
+    function startScanner() {
+      if (!html5QrcodeScanner) {
+        html5QrcodeScanner = new Html5Qrcode("qr-reader");
+      }
+      document.getElementById('btnStartScan').style.display = 'none';
+      document.getElementById('btnStopScan').style.display = 'inline-block';
+      document.getElementById('scanFeedback').style.display = 'none';
+      
+      const config = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
+      html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+      .catch((err) => {
+        alert("Ошибка доступа к камере. Разрешите доступ в настройках браузера. Детали: " + err);
+        stopScanner();
+      });
+    }
+
+    function stopScanner() {
+      if (html5QrcodeScanner && html5QrcodeScanner.isScanning) {
+        html5QrcodeScanner.stop().then(() => {
+          document.getElementById('btnStartScan').style.display = 'inline-block';
+          document.getElementById('btnStopScan').style.display = 'none';
+        }).catch(err => console.log("Stop error", err));
+      } else {
+        document.getElementById('btnStartScan').style.display = 'inline-block';
+        document.getElementById('btnStopScan').style.display = 'none';
+      }
+    }
+
+    function onScanSuccess(decodedText) {
+      if (scanCooldown) return;
+      stopScanner(); // Auto-stop to show result clearly
+      processScan(decodedText);
+    }
+
+    function onScanFailure(error) {
+      // Ignore background scan failures
+    }
+
+    function manualScan() {
+      const val = document.getElementById('scannerInput').value.trim();
+      if (!val) return;
+      processScan(val);
+      document.getElementById('scannerInput').value = '';
+    }
+
+    async function processScan(payload) {
+      scanCooldown = true;
+      const showHint = document.getElementById('scannerShowSelect').value;
+      const feedback = document.getElementById('scanFeedback');
+      const icon = document.getElementById('scanFeedbackIcon');
+      const title = document.getElementById('scanFeedbackTitle');
+      const text = document.getElementById('scanFeedbackText');
+      const details = document.getElementById('scanFeedbackDetails');
+      
+      feedback.style.display = 'block';
+      icon.innerHTML = '⏳';
+      title.innerText = 'Проверка...';
+      title.style.color = 'var(--text)';
+      text.innerText = 'Связываемся с сервером';
+      details.innerHTML = '';
+      
+      try {
+        const res = await fetch('/api/checkin', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ action: 'scan', payload, showHint, operator: 'admin_panel' })
+        });
+        
+        const data = await res.json();
+        
+        if (data.error || !data.ok) {
+           playSound('error');
+           icon.innerHTML = '❌';
+           title.innerText = 'Ошибка';
+           title.style.color = '#e85348';
+           text.innerText = data.error || data.reason || 'Неизвестная ошибка';
+        } else if (data.state === 'admitted' || data.state === 'admitted_manual') {
+           playSound('success');
+           icon.innerHTML = '✅';
+           title.innerText = 'ПРОХОДИ';
+           title.style.color = 'var(--std)';
+           text.innerText = 'Билет успешно проверен и погашен.';
+           
+           if (data.booking) {
+              const b = data.booking;
+              let seatsHtml = '';
+              if (b.seats && b.seats.length > 0) {
+                 seatsHtml = b.seats.map(s => `Ряд ${s.row}, Место ${s.seat}`).join('<br>');
+              }
+              details.innerHTML = `
+                <div><strong>Шоу:</strong> ${b.show === 'secret' ? 'СЕКРЕТ' : 'ХУЛИgan'}</div>
+                <div><strong>Гость:</strong> ${b.name || 'Не указано'}</div>
+                <div><strong>Билет:</strong> ${b.ticketNumber || b.ticketType}</div>
+                ${seatsHtml ? `<div style="margin-top:10px; padding:10px; background:rgba(61,191,110,0.2); border-radius:4px; font-weight:bold; color:var(--std);">${seatsHtml}</div>` : ''}
+              `;
+           }
+        } else if (data.state === 'duplicate') {
+           playSound('error');
+           icon.innerHTML = '⚠️';
+           title.innerText = 'УЖЕ ОТСКАНИРОВАН';
+           title.style.color = '#e85348';
+           text.innerText = 'Этот билет уже был активирован ранее!';
+           if (data.checkin && data.checkin.checkedInAt) {
+              const dt = new Date(data.checkin.checkedInAt).toLocaleString('ru-RU');
+              details.innerHTML = `Время первого сканирования:<br><strong style="color:#e85348">${dt}</strong>`;
+           }
+        } else {
+           playSound('error');
+           icon.innerHTML = '❓';
+           title.innerText = 'Отказ';
+           title.style.color = '#e85348';
+           text.innerText = `Статус билета: ${data.state} / ${data.reason}`;
+        }
+      } catch (err) {
+         playSound('error');
+         icon.innerHTML = '❌';
+         title.innerText = 'Ошибка сети';
+         title.style.color = '#e85348';
+         text.innerText = err.message;
+      }
+      
+      setTimeout(() => { scanCooldown = false; }, 2000);
+    }
   </script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </body>
 
 </html>

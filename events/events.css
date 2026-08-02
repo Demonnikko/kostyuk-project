@@ -241,11 +241,26 @@
 
     .hero__bg video,
     .hero__bg img {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: top center;
       /* Fix face cropping */
+    }
+
+    .hero__video {
+      z-index: -2;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+    }
+
+    .hero__fallback {
+      z-index: -1;
+      opacity: 1;
+      transition: opacity 1.2s ease-in-out;
+      pointer-events: none;
     }
 
     .hero__overlay {

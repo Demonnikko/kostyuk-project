@@ -1,4 +1,4 @@
-import {  fbGet, fbPut  } from '../../shared/firebase.js';
+import {  fbGet, fbPut, fbGetWithETag, fbConditionalPut  } from '../../shared/firebase.js';
 import {  setCors  } from '../../shared/cors.js';
 import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
 import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
@@ -26,6 +26,10 @@ function isValidTempBookingId(v) {
 }
 
 function normalizeSeat(raw) {
+  const key = String(raw?.key || '').trim();
+  if (key === 'sl_0' || key === 'sr_0' || key === 'bar_0' || key === 'dl_0' || key === 'dr_0' || key === 'lampa') {
+    return { tableId: 0, seatIdx: 0, key };
+  }
   const tableId = Number(raw?.tableId);
   const seatIdx = Number(raw?.seatIdx);
   if (!Number.isInteger(tableId) || tableId < 1 || tableId > 100) return null;
@@ -162,7 +166,9 @@ export default async (req, res) => {
     const hasVkAuth = ALLOW_VK_USERID_FALLBACK && Number.isFinite(vkUserId) && vkUserId > 0;
 
     if ((action === 'reserve' || action === 'release') && !hasTgAuth && !hasVkAuth) {
-      return res.status(403).json({ error: 'Trusted user identity required' });
+      if (!tempBookingId || !isValidTempBookingId(tempBookingId)) {
+        return res.status(403).json({ error: 'Trusted user identity or valid tempBookingId required' });
+      }
     }
 
     const seatList = Array.isArray(seats) ? seats.map(normalizeSeat).filter(Boolean) : [];
@@ -177,28 +183,39 @@ export default async (req, res) => {
       if (!isValidTempBookingId(tempBookingId)) return res.status(400).json({ error: 'Only TEMP bookings allowed' });
       const now = Date.now();
 
-      const conflicts = [];
+      const seatUpdates = [];
       for (const s of seatList) {
-        const cur = await fbGet(`${dbPath}/${s.key}`);
+        const { data: cur, etag } = await fbGetWithETag(`${dbPath}/${s.key}`);
         const status = String(cur?.status || '');
         const curBookingId = String(cur?.bookingId || '');
         const reservedAt = Number(cur?.reservedAt || 0);
         const isFreshReserve = status === 'reserved' && now - reservedAt < RESERVE_MS;
         const occupiedByAnother = curBookingId && curBookingId !== String(tempBookingId);
-        if (status === 'taken' || (isFreshReserve && occupiedByAnother)) conflicts.push(s.key);
+        if (status === 'taken' || (isFreshReserve && occupiedByAnother)) {
+          conflicts.push(s.key);
+        } else {
+          seatUpdates.push({ key: s.key, etag });
+        }
       }
 
       if (conflicts.length) return res.status(409).json({ error: 'Seats already taken', seats: conflicts });
 
-      await Promise.all(seatList.map(s =>
-        fbPut(`${dbPath}/${s.key}`, {
-          status: 'reserved',
-          bookingId: tempBookingId,
-          reservedAt: now,
-          ownerTgUserId: hasTgAuth ? trustedTgUserId : null,
-          ownerVkUserId: hasVkAuth ? vkUserId : null
-        })
-      ));
+      try {
+        await Promise.all(seatUpdates.map(s =>
+          fbConditionalPut(`${dbPath}/${s.key}`, {
+            status: 'reserved',
+            bookingId: tempBookingId,
+            reservedAt: now,
+            ownerTgUserId: hasTgAuth ? trustedTgUserId : null,
+            ownerVkUserId: hasVkAuth ? vkUserId : null
+          }, s.etag)
+        ));
+      } catch (e) {
+        if (e.message === 'ETAG_MISMATCH') {
+          return res.status(409).json({ error: 'Concurrent modification detected, please try again' });
+        }
+        throw e;
+      }
       return res.status(200).json({ ok: true });
     }
 
@@ -208,7 +225,7 @@ export default async (req, res) => {
 
       for (const s of seatList) {
         const path = `${dbPath}/${s.key}`;
-        const cur = await fbGet(path);
+        const { data: cur, etag } = await fbGetWithETag(path);
         if (!cur) continue;
         if (String(cur.status || '') !== 'reserved') continue;
         if (String(cur.bookingId || '') !== String(tempBookingId)) continue;
@@ -218,8 +235,12 @@ export default async (req, res) => {
         if (curOwnerTg > 0 && (!hasTgAuth || curOwnerTg !== trustedTgUserId)) continue;
         if (curOwnerVk > 0 && (!hasVkAuth || curOwnerVk !== vkUserId)) continue;
 
-        await fbPut(path, { status: 'available' });
-        released++;
+        try {
+          await fbConditionalPut(path, { status: 'available' }, etag);
+          released++;
+        } catch(e) {
+          // Ignore ETAG mismatch on release, it means it's already modified
+        }
       }
 
       return res.status(200).json({ ok: true, released });

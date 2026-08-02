@@ -5,20 +5,20 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kostyuk.ru/concerts/huligan/" />
-  <meta property="og:title" content="Шоу Секрет | Иллюзионный моноспектакль" />
-  <meta property="og:description" content="Один артист. Один секрет. Потрясающие фокусы и глубокая история, которая вдохновляет." />
+  <meta property="og:title" content="Шоу ХУЛИgan | Иллюзионный спектакль" />
+  <meta property="og:description" content="Дмитрий Костюк представляет шоу ХУЛИgan. Уникальные фокусы, драйв и невероятные иллюзии." />
   <meta property="og:image" content="https://kostyuk.ru/concerts/images/huligan.jpg" />
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://kostyuk.ru/concerts/huligan/" />
-  <meta property="twitter:title" content="Шоу Секрет | Иллюзионный моноспектакль" />
-  <meta property="twitter:description" content="Один артист. Один секрет. Потрясающие фокусы и глубокая история, которая вдохновляет." />
+  <meta property="twitter:title" content="Шоу ХУЛИgan | Иллюзионный спектакль" />
+  <meta property="twitter:description" content="Дмитрий Костюк представляет шоу ХУЛИgan. Уникальные фокусы, драйв и невероятные иллюзии." />
   <meta property="twitter:image" content="https://kostyuk.ru/concerts/images/huligan.jpg" />
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Билеты на иллюзионное шоу «Секрет» | Дмитрий Костюк — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
-  <meta name="description" content="Купить билеты на шоу «Секрет» Дмитрия Костюка — захватывающая театральная исповедь с масштабными иллюзиями в Ярославле, Иваново, Костроме, Владимире, Вологде." />
+  <title>Билеты на иллюзионное шоу «ХУЛИgan» | Дмитрий Костюк — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
+  <meta name="description" content="Купить билеты на шоу «ХУЛИgan» Дмитрия Костюка — драйвовый спектакль с масштабными иллюзиями." />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
   <link rel="stylesheet" href="/vendor/fonts/fonts.css" />
@@ -26,8 +26,8 @@
   {
     "@context": "https://schema.org",
     "@type": "Event",
-    "name": "Иллюзионное шоу «Секрет» Дмитрия Костюка",
-    "description": "Театрально-иллюзионный моноспектакль фокусника Дмитрия Костюка.",
+    "name": "Иллюзионное шоу «ХУЛИgan» Дмитрия Костюка",
+    "description": "Театрально-иллюзионный спектакль фокусника Дмитрия Костюка ХУЛИgan.",
     "url": "https://kostyuk.ru/concerts/huligan/",
     "performer": {
       "@type": "Person",
@@ -75,37 +75,18 @@
     }
     a { color: inherit; text-decoration: none; }
 
-    /* ==== ФОНОВЫЙ КОСМОС + ЗОЛОТЫЕ ЧАСТИЦЫ ==== */
-    .cosmos {
+    /* ==== ФОН ==== */
+    .bg {
       position: fixed;
       inset: 0;
       z-index: 0;
-      overflow: hidden;
+      background-image: 
+        radial-gradient(ellipse at 50% 50%, transparent 10%, rgba(20, 18, 70, 0.7) 100%),
+        url('../../images/huligan_bg_brick.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.6;
       pointer-events: none;
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(201, 162, 39, 0.18) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(20, 18, 70, 0.4) 0%, transparent 50%);
-    }
-    .cosmos::before {
-      content: '';
-      position: absolute;
-      inset: -50%;
-      background-image:
-        radial-gradient(2px 2px at 12% 22%, #fff 50%, transparent 100%),
-        radial-gradient(1px 1px at 38% 67%, rgba(232,197,64,0.9) 50%, transparent 100%),
-        radial-gradient(1px 1px at 72% 14%, #fff 50%, transparent 100%),
-        radial-gradient(2px 2px at 88% 84%, rgba(232,197,64,0.9) 50%, transparent 100%),
-        radial-gradient(1px 1px at 24% 88%, #fff 50%, transparent 100%),
-        radial-gradient(2px 2px at 58% 32%, rgba(232,197,64,0.7) 50%, transparent 100%),
-        radial-gradient(1px 1px at 12% 51%, #fff 50%, transparent 100%);
-      background-repeat: repeat;
-      background-size: 600px 600px;
-      animation: twinkle 5s linear infinite;
-      opacity: 0.5;
-    }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; }
-      50%      { opacity: 0.7; }
     }
 
     /* Floating fire embers */
@@ -225,31 +206,47 @@
       transform: translateZ(50px);
       transition: box-shadow 0.3s ease;
     }
-    /* Интерактивный оверлей темноты с дырой от фонарика */
-    .flashlight-overlay {
+    /* Сценический холст для неоновых вспышек */
+    .strobe-canvas {
       position: absolute;
       inset: 0;
-      z-index: 10;
-      background: radial-gradient(
-        circle 200px at var(--flashlight-x, 50%) var(--flashlight-y, 45%),
-        rgba(6, 6, 22, 0) 0%,
-        rgba(6, 6, 22, 0.5) 45%,
-        rgba(6, 6, 22, 0.98) 85%,
-        #060616 100%
-      );
+      z-index: 8;
       pointer-events: none;
     }
-    /* Вспомогательный золотой отблеск фонарика на элементах */
-    .flashlight-glow {
-      position: absolute;
-      inset: 0;
-      z-index: 9;
-      background: radial-gradient(
-        circle 320px at var(--flashlight-x, 50%) var(--flashlight-y, 45%),
-        rgba(201, 162, 39, 0.15) 0%,
-        transparent 80%
-      );
-      pointer-events: none;
+    /* Глитч-эффект для постера и заголовка */
+    .poster-wrap.glitch {
+      animation: posterGlitch 0.25s steps(2) infinite;
+    }
+    .title.glitch {
+      animation: titleGlitch 0.2s steps(2) infinite;
+    }
+    @keyframes posterGlitch {
+      0% {
+        box-shadow: 6px -3px 0 rgba(255, 110, 0, 0.5), -6px 3px 0 rgba(255, 229, 102, 0.5);
+        transform: translate(2px, -1px) scale(1.02);
+      }
+      50% {
+        box-shadow: -6px 3px 0 rgba(255, 110, 0, 0.5), 6px -3px 0 rgba(255, 229, 102, 0.5);
+        transform: translate(-2px, 1px) scale(0.98);
+      }
+      100% {
+        box-shadow: 3px -1px 0 rgba(255, 110, 0, 0.5), -3px 1px 0 rgba(255, 229, 102, 0.5);
+        transform: translate(0, 0) scale(1);
+      }
+    }
+    @keyframes titleGlitch {
+      0% {
+        text-shadow: 4px -2px 0 #ff6e00, -4px 2px 0 #ffe566;
+        transform: skewX(-4deg) translate(1px, -1px);
+      }
+      50% {
+        text-shadow: -4px 2px 0 #ff6e00, 4px -2px 0 #ffe566;
+        transform: skewX(4deg) translate(-1px, 1px);
+      }
+      100% {
+        text-shadow: 1px -1px 0 #ff6e00, -1px 1px 0 #ffe566;
+        transform: skewX(0);
+      }
     }
     h1.title {
       animation: secretTitleReveal 2.8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
@@ -1052,13 +1049,12 @@
   </style>
 </head>
 <body>
-  <div class="cosmos"></div>
+  <div class="bg"></div>
   <a class="back-btn" href="/concerts">К афише</a>
 
   <main>
     <section class="hero" id="secretHero">
-      <div class="flashlight-overlay"></div>
-      <div class="flashlight-glow"></div>
+
       <div class="poster-wrap reveal" id="secretPoster">
         <img loading="lazy" class="poster" src="/concerts/images/huligan.jpg" alt="Афиша Шоу Секрет" />
       </div>
@@ -1096,22 +1092,18 @@
     <section class="section">
       <span class="section__eyebrow">Зрители</span>
       <h2 class="section__title">Что говорят о шоу</h2>
-      <div class="video-review-container">
-        <iframe loading="lazy" src="https://vkvideo.ru/video_ext.php?oid=-209268664&id=456239121&hd=2&autoplay=0"
-                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
-                allowfullscreen></iframe>
-        <div class="video-corner-overlay"></div>
-        <span class="video-age-badge">12+</span>
+      <div class="card" style="padding: 40px 20px; text-align: center; border: 1px dashed rgba(255,255,255,0.2); background: rgba(0,0,0,0.3);">
+        <span style="font-size: 32px; margin-bottom: 15px; display: block;">🤫</span>
+        <p style="color: var(--dim); margin: 0;">Здесь скоро появятся первые отзывы зрителей о шоу «ХУЛИgan».</p>
       </div>
     </section>
 
     <section class="section">
       <span class="section__eyebrow">Атмосфера</span>
       <h2 class="section__title">Промо-ролик шоу</h2>
-      <div class="promo-video-container">
-        <iframe loading="lazy" src="https://vkvideo.ru/video_ext.php?oid=-209268664&id=456239120&hd=2&autoplay=0"
-                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
-                allowfullscreen></iframe>
+      <div class="card" style="padding: 40px 20px; text-align: center; border: 1px dashed rgba(255,255,255,0.2); background: rgba(0,0,0,0.3);">
+        <span style="font-size: 32px; margin-bottom: 15px; display: block;">🎬</span>
+        <p style="color: var(--dim); margin: 0;">Промо-материалы находятся в стадии монтажа. Скоро мы покажем вам безумие на видео!</p>
       </div>
     </section>
 
@@ -1140,6 +1132,34 @@
           <div class="feature__title">Монологи</div>
           <div class="feature__desc">Тексты, которые остаются с вами после финала.</div>
         </div>
+      </div>
+    </section>
+
+    <section class="section" style="max-width: 800px; margin: 0 auto;">
+      <span class="section__eyebrow">FAQ</span>
+      <h2 class="section__title">Частые вопросы</h2>
+      <div class="faq-list" style="display:flex; flex-direction:column; gap: 15px;">
+        <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+          <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Есть ли строгий дресс-код? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Особо строгого дресс-кода нет, но мы рекомендуем стиль Smart Casual. Главное, чтобы вы чувствовали себя комфортно и стильно в атмосфере вечера.</div>
+        </details>
+        <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+          <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Можно ли сдать билет? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Да, возврат возможен. Полный возврат осуществляется не позднее, чем за 3 дня до начала шоу. При возврате день в день удерживается комиссия площадки.</div>
+        </details>
+        <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+          <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Есть ли возрастные ограничения? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Рекомендуемый возраст зрителей для шоу «ХУЛИgan» — 16+. Шоу содержит элементы триллера, немного мрачной эстетики и специфический юмор.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" style="margin-top: 20px;">
+      <h2 class="section__title" style="text-align:center; font-size: 20px; margin-bottom: 30px; opacity: 0.8;">Билеты защищены</h2>
+      <div style="display:flex; justify-content:center; gap: 40px; flex-wrap: wrap; opacity: 0.5; filter: grayscale(100%); align-items:center;">
+        <span style="font-weight:900; font-size:26px; letter-spacing:1px; font-family:sans-serif;">T-Bank</span>
+        <span style="font-weight:700; font-size:22px; letter-spacing:2px; font-family:sans-serif;">KASSIR.RU</span>
+        <span style="font-weight:bold; font-size:22px; letter-spacing:0px; font-family:sans-serif;">Яндекс.Афиша</span>
       </div>
     </section>
 
@@ -1249,6 +1269,12 @@
           </label>
 
           <label class="field">
+            <span class="field__label">Промокод (при наличии)</span>
+            <input class="field__input" type="text" name="promoCode" id="promoCodeInput" placeholder="PROMO" oninput="applyPromoCodeHuligan()" style="text-transform: uppercase;" />
+            <span id="promoStatus" style="font-size: 11px; margin-top: 4px; display: block; font-weight: 500;"></span>
+          </label>
+
+          <label class="field">
             <span class="field__label">Комментарий</span>
             <textarea class="field__textarea" name="comment" placeholder="Пожелания, вопросы"></textarea>
           </label>
@@ -1260,12 +1286,32 @@
         </form>
       </div>
 
+      <!-- ШАГ 4: ОПЛАТА -->
+      <div id="stepPayment" style="display:none">
+        <div class="modal__title">Оплата билетов</div>
+        <div class="modal__sub" id="paymentSum">Сумма к оплате: 0 ₽</div>
+
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step done"></div>
+          <div class="step active"></div>
+        </div>
+
+        <!-- Контейнер онлайн-оплаты через Т-Банк -->
+        <div id="tbankPaymentContainer" style="text-align:center; margin-top:20px; font-family:'Inter',sans-serif; line-height:1.6;">
+          <p style="font-size:14px; color:rgba(255,255,255,0.85); margin-bottom:20px;">
+            Для завершения покупки перейдите к безопасной оплате банковской картой или через СБП.
+          </p>
+          <button class="btn-primary" id="tbankPayBtn" onclick="initTbankPaymentHuligan()" style="background:#ffdd2d; color:#14082e; font-weight:700; width:100%;">Оплатить онлайн (Т-Банк)</button>
+        </div>
+      </div>
+
       <!-- УСПЕХ -->
       <div id="bookingSuccess" style="display:none">
         <div class="modal__success">
           <div class="modal__success-icon">✨</div>
-          <h3>Заявка принята</h3>
-          <p>Менеджер Екатерина свяжется с вами,<br>чтобы подтвердить дату и места.</p>
+          <h3>Билет успешно куплен!</h3>
+          <p>Электронный билет с QR-кодом подтверждён<br>и отправлен в ваш Telegram/VK.</p>
           <button class="btn-primary" onclick="closeBookingModal()" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
         </div>
       </div>
@@ -1467,7 +1513,9 @@
     var booking = {
       step: 1,
       date: null,
-      selected: []
+      selected: [],
+      promo: null,
+      tempBookingId: 'TEMP-' + Math.random().toString(36).slice(2).toUpperCase()
     };
 
     // === Даты шоу (демо) ===
@@ -1476,6 +1524,38 @@
       { date: '13 ноября 2026',  day: 13, month: 'НОЯ', time: '19:30', venue: 'КВАРТАЛ · Кострома' },
       { date: '18 декабря 2026', day: 18, month: 'ДЕК', time: '20:00', venue: 'СКЛАД · Иваново' }
     ];
+
+    // === Отрисовка зала ===
+    var NS = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs) {
+      var n = document.createElementNS(NS, tag);
+      for (var k in attrs) {
+        n.setAttribute(k, attrs[k]);
+      }
+      return n;
+    }
+
+    function renderDates() {
+      var grid = document.getElementById('dateGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      SHOWS.forEach(function(s, idx) {
+        var card = document.createElement('div');
+        card.className = 'date-card';
+        if (booking.date && booking.date.date === s.date) card.classList.add('selected');
+        card.innerHTML =
+          '<div class="date-card__day">' + s.day + '</div>' +
+          '<div class="date-card__month">' + s.month + '</div>' +
+          '<div class="date-card__time">' + s.time + '</div>' +
+          '<div class="date-card__venue">' + s.venue + '</div>';
+        card.onclick = function() {
+          booking.date = s;
+          document.getElementById('step1Next').disabled = false;
+          renderDates();
+        };
+        grid.appendChild(card);
+      });
+    }
 
     function renderHall() {
       var g = document.getElementById('hallG');
@@ -1741,22 +1821,66 @@
       var idx = booking.selected.findIndex(function(x) { return x.key === key; });
       if (idx >= 0) {
         booking.selected.splice(idx, 1);
+        renderHall();
+        renderCart();
+        fetch('/api/seats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'release',
+            seats: [{ tableId: parseInt(table) || 0, seatIdx: parseInt(seatIdx) || 0, key: key }],
+            tempBookingId: booking.tempBookingId,
+            show: 'huligan',
+            tgInitData: window.Telegram?.WebApp?.initData || ''
+          })
+        }).catch(function(e){ console.error('Release error:', e); });
       } else {
         if (booking.selected.length >= 10) {
           alert('Можно выбрать максимум 10 мест за одну бронь.');
           return;
         }
-        booking.selected.push({
+        var seatObj = {
           key: key,
           table: table,
           zone: zone,
           seatIdx: seatIdx,
           price: ZONES[zone].price,
           label: label
+        };
+        booking.selected.push(seatObj);
+        renderHall();
+        renderCart();
+        fetch('/api/seats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'reserve',
+            seats: [{ tableId: parseInt(table) || 0, seatIdx: parseInt(seatIdx) || 0, key: key }],
+            tempBookingId: booking.tempBookingId,
+            show: 'huligan',
+            tgInitData: window.Telegram?.WebApp?.initData || ''
+          })
+        })
+        .then(function(r) {
+          if (r.status === 409) {
+            alert('Извините, это место только что было зарезервировано кем-то другим.');
+            var rollbackIdx = booking.selected.findIndex(function(x) { return x.key === key; });
+            if (rollbackIdx >= 0) booking.selected.splice(rollbackIdx, 1);
+            loadLiveSeats();
+            renderHall();
+            renderCart();
+          } else if (!r.ok) {
+            throw new Error('Lock failed');
+          }
+        })
+        .catch(function(err) {
+          console.error('Lock error:', err);
+          var rollbackIdx = booking.selected.findIndex(function(x) { return x.key === key; });
+          if (rollbackIdx >= 0) booking.selected.splice(rollbackIdx, 1);
+          renderHall();
+          renderCart();
         });
       }
-      renderHall();
-      renderCart();
     }
 
     function renderCart() {
@@ -1767,7 +1891,6 @@
         list.style.display = 'none';
         empty.style.display = '';
         nextBtn.disabled = true;
-        // удаляем total
         var oldTotal = document.querySelector('.cart__total');
         if (oldTotal) oldTotal.remove();
         return;
@@ -1782,15 +1905,27 @@
         chip.innerHTML = s.label + ' · стол ' + s.table + ' / м. ' + s.seatIdx + ' <span class="x" data-idx="' + idx + '">×</span>';
         chip.querySelector('.x').onclick = function(e) {
           e.stopPropagation();
-          booking.selected.splice(idx, 1);
+          var removed = booking.selected.splice(idx, 1)[0];
           renderHall();
           renderCart();
+          if (removed) {
+            fetch('/api/seats', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'release',
+                seats: [{ tableId: parseInt(removed.table) || 0, seatIdx: parseInt(removed.seatIdx) || 0, key: removed.key }],
+                tempBookingId: booking.tempBookingId,
+                show: 'huligan',
+                tgInitData: window.Telegram?.WebApp?.initData || ''
+              })
+            }).catch(function(e){ console.error('Release error:', e); });
+          }
         };
         list.appendChild(chip);
         total += s.price;
       });
 
-      // total строчка
       var existing = document.querySelector('.cart__total');
       if (existing) existing.remove();
       var totalEl = document.createElement('div');
@@ -1806,16 +1941,67 @@
     function renderSummary() {
       var box = document.getElementById('summaryBox');
       var total = booking.selected.reduce(function(acc, s) { return acc + s.price; }, 0);
+      var finalTotal = total;
+      var promoRow = '';
+      if (booking.promo) {
+        if (booking.promo.type === 'free') finalTotal = 0;
+        else if (booking.promo.type === 'percent') finalTotal = Math.round(total * (1 - booking.promo.value / 100));
+        else if (booking.promo.type === 'fixed') finalTotal = Math.max(0, total - booking.promo.value);
+        var discount = total - finalTotal;
+        promoRow = '<div class="summary__row" style="color:#ff6e00"><span>Скидка</span><span>-' + discount.toLocaleString('ru-RU') + ' ₽</span></div>';
+      }
       var html = '';
       if (booking.date) html += '<div class="summary__row"><span>Дата</span><span>' + booking.date.date + ' · ' + booking.date.time + '</span></div>';
       html += '<div class="summary__row"><span>Билетов</span><span>' + booking.selected.length + ' шт</span></div>';
-      html += '<div class="summary__row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span style="color:var(--gold2);text-transform:uppercase;font-size:11px;letter-spacing:0.16em">Итого</span><span style="font-family:Cinzel,serif;font-size:18px;font-weight:900;color:var(--gold2)">' + total.toLocaleString('ru-RU') + ' ₽</span></div>';
+      if (promoRow) html += promoRow;
+      html += '<div class="summary__row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span style="color:var(--gold2);text-transform:uppercase;font-size:11px;letter-spacing:0.16em">Итого</span><span style="font-family:Cinzel,serif;font-size:18px;font-weight:900;color:var(--gold2)">' + finalTotal.toLocaleString('ru-RU') + ' ₽</span></div>';
       box.innerHTML = html;
+      booking.calculatedTotal = finalTotal;
+    }
+
+    var activePromoFetch = null;
+    function applyPromoCodeHuligan() {
+      var inp = document.getElementById('promoCodeInput');
+      var status = document.getElementById('promoStatus');
+      if (!inp || !status) return;
+      var code = inp.value.trim().toUpperCase();
+      if (!code) {
+        booking.promo = null;
+        status.textContent = '';
+        renderSummary();
+        return;
+      }
+      status.style.color = 'rgba(255,255,255,0.4)';
+      status.textContent = 'Проверка...';
+      var fetchId = Date.now();
+      activePromoFetch = fetchId;
+      fetch('/api/seats?type=promo&code=' + encodeURIComponent(code))
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (activePromoFetch !== fetchId) return;
+          if (res && res.active) {
+            booking.promo = res;
+            booking.promo.code = code;
+            status.style.color = '#ff6e00';
+            status.textContent = 'Промокод применен: ' + (res.description || 'Скидка');
+          } else {
+            booking.promo = null;
+            status.style.color = '#e85348';
+            status.textContent = 'Неверный или истекший промокод';
+          }
+          renderSummary();
+        })
+        .catch(function() {
+          if (activePromoFetch !== fetchId) return;
+          status.textContent = '';
+          booking.promo = null;
+          renderSummary();
+        });
     }
 
     // === Шаги ===
     function goToStep(n) {
-      ['step1','step2','step3','bookingSuccess'].forEach(function(id) {
+      ['step1','step2','step3','stepPayment','bookingSuccess'].forEach(function(id) {
         var el = document.getElementById(id);
         if (el) el.style.display = 'none';
       });
@@ -1832,9 +2018,38 @@
       } else if (n === 3) {
         document.getElementById('step3').style.display = '';
         renderSummary();
+      } else if (n === 4) {
+        document.getElementById('stepPayment').style.display = '';
+        document.getElementById('paymentSum').textContent = 'Сумма к оплате: ' + (booking.calculatedTotal || 0).toLocaleString('ru-RU') + ' ₽';
+        loadPaymentConfigHuligan();
       }
     }
     window.goToStep = goToStep;
+
+    async function loadPaymentConfigHuligan() {
+      var tbankContainer = document.getElementById('tbankPaymentContainer');
+      var sbpContainer = document.getElementById('sbpPaymentContainer');
+      if (!tbankContainer || !sbpContainer) return;
+
+      tbankContainer.style.display = 'none';
+      sbpContainer.style.display = 'none';
+
+      try {
+        var configRes = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'get_config' })
+        });
+        var config = await configRes.json();
+        if (config && config.tbank && config.tbank.enabled) {
+          tbankContainer.style.display = 'block';
+        } else {
+          sbpContainer.style.display = 'block';
+        }
+      } catch (err) {
+        sbpContainer.style.display = 'block';
+      }
+    }
 
     // === Открытие/закрытие модалки ===
     var bookingModal = document.getElementById('bookingModal');
@@ -1844,13 +2059,36 @@
       goToStep(1);
     }
     function closeBookingModal() {
+      if (booking.selected.length > 0) {
+        var seatsToRelease = booking.selected.map(function(s) {
+          return { tableId: parseInt(s.table) || 0, seatIdx: parseInt(s.seatIdx) || 0, key: s.key };
+        });
+        fetch('/api/seats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'release',
+            seats: seatsToRelease,
+            tempBookingId: booking.tempBookingId,
+            show: 'huligan',
+            tgInitData: window.Telegram?.WebApp?.initData || ''
+          })
+        }).catch(function(e){ console.error('Release all error:', e); });
+      }
+
       bookingModal.classList.remove('show');
       document.body.style.overflow = '';
       setTimeout(function() {
         booking.date = null;
         booking.selected = [];
+        booking.promo = null;
+        booking.tempBookingId = 'TEMP-' + Math.random().toString(36).slice(2).toUpperCase();
         var f = document.getElementById('bookingFormEl');
         if (f) f.reset();
+        var promoInp = document.getElementById('promoCodeInput');
+        if (promoInp) promoInp.value = '';
+        var promoStatus = document.getElementById('promoStatus');
+        if (promoStatus) promoStatus.textContent = '';
         goToStep(1);
         document.getElementById('step1Next').disabled = true;
       }, 300);
@@ -1878,35 +2116,63 @@
       e.preventDefault();
       var btn = document.getElementById('bookingSubmit');
       btn.disabled = true;
-      btn.textContent = 'Отправляем...';
+      btn.textContent = 'Оформление...';
 
       var form = e.target;
       var data = new FormData(form);
+      var bookingId = 'HL-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase();
+      var clientKey = 'CL-' + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      
+      var seatsPayload = booking.selected.map(function(s) {
+        var zoneKey = s.zone === 'standard' || s.zone === 'standart' ? 'std' : (s.zone === 'econom' ? 'eco' : s.zone);
+        return { table: s.table, zone: zoneKey, seatNum: s.seatIdx, price: s.price, key: s.key };
+      });
+
+      var originalPrice = booking.selected.reduce(function(acc, s) { return acc + s.price; }, 0);
+      var finalPrice = booking.calculatedTotal || originalPrice;
+
       var payload = {
-        show: 'huligan',
-        eventDate: booking.date ? booking.date.date + ' ' + booking.date.time : '',
-        seats: booking.selected.map(function(s) {
-          return { table: s.table, zone: ZONES[s.zone].label, seatNum: s.seatIdx, price: s.price };
-        }),
-        name: data.get('name') || '',
-        phone: data.get('phone') || '',
-        telegram: data.get('telegram') || '',
-        comment: data.get('comment') || '',
-        source: getSource(),
+        action: 'fb_put',
+        path: 'huligan_bookings/' + bookingId,
+        tempBookingId: booking.tempBookingId,
+        data: {
+          bookingId: bookingId,
+          clientKey: clientKey,
+          name: data.get('name') || '',
+          phone: data.get('phone') || '',
+          telegram: data.get('telegram') || '',
+          comment: data.get('comment') || '',
+          createdAt: Date.now(),
+          status: 'new',
+          ticketType: 'std',
+          originalPrice: originalPrice,
+          finalPrice: finalPrice,
+          promoCode: booking.promo ? booking.promo.code : null,
+          seats: seatsPayload,
+          source: getSource(),
+          tgInitData: window.Telegram?.WebApp?.initData || ''
+        }
       };
 
       try {
-        var r = await fetch('/api/lead-concert', {
+        var r = await fetch('/api/huligan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
         var json = await r.json();
-        if (json && json.ok) {
-          ['step1','step2','step3'].forEach(function(id) { document.getElementById(id).style.display = 'none'; });
-          document.getElementById('bookingSuccess').style.display = 'block';
+        if (r.ok) {
+          localStorage.setItem('huligan_last_booking_id', bookingId);
+          localStorage.setItem('huligan_last_client_key', clientKey);
+          
+          booking.lastBookingId = bookingId;
+          booking.lastClientKey = clientKey;
+          
+          btn.disabled = false;
+          btn.textContent = 'Забронировать';
+          goToStep(4);
         } else {
-          alert('Не удалось отправить заявку. Попробуйте позже.');
+          alert('Не удалось оформить бронирование: ' + (json.error || 'попробуйте позже.'));
           btn.disabled = false;
           btn.textContent = 'Забронировать';
         }
@@ -1919,11 +2185,84 @@
     }
     window.submitHuliganBooking = submitHuliganBooking;
 
-    // Скрипт интерактивного фонарика и 3D-параллакса для шоу СЕКРЕТ
+    async function initTbankPaymentHuligan() {
+      var btn = document.getElementById('tbankPayBtn');
+      if (!btn) return;
+      btn.disabled = true;
+      btn.textContent = 'Инициализация...';
+      try {
+        var r = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'tbank_init',
+            bookingId: booking.lastBookingId,
+            clientKey: booking.lastClientKey
+          })
+        });
+        var json = await r.json();
+        if (json && json.paymentUrl) {
+          window.location.href = json.paymentUrl;
+        } else {
+          alert('Не удалось запустить онлайн-оплату: ' + (json.error || 'попробуйте позже.'));
+          btn.disabled = false;
+          btn.textContent = 'Оплатить онлайн (Т-Банк)';
+        }
+      } catch (e) {
+        alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+        btn.disabled = false;
+        btn.textContent = 'Оплатить онлайн (Т-Банк)';
+      }
+    }
+    window.initTbankPaymentHuligan = initTbankPaymentHuligan;
+
+    // Check query params for payment status
+    document.addEventListener('DOMContentLoaded', function() {
+      var params = new URLSearchParams(window.location.search);
+      var payStatus = params.get('pay');
+      if (payStatus === 'success') {
+        booking.selected = [];
+        openBookingModal();
+        goToStep(5);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else if (payStatus === 'fail') {
+        alert('Платеж был отклонен или отменен. Вы можете попробовать заново выбрать места и оплатить.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
+
+    // Скрипт глитча и неоновых вспышек для шоу ХУЛИgan
     (function() {
       const hero = document.getElementById('secretHero');
       const poster = document.getElementById('secretPoster');
       if (!hero || !poster) return;
+
+      // Создаем холст для вспышек и частиц
+      const canvas = document.createElement('canvas');
+      canvas.className = 'strobe-canvas';
+      hero.insertBefore(canvas, hero.firstChild);
+
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = hero.clientWidth * dpr;
+        canvas.height = hero.clientHeight * dpr;
+        canvas.style.width = hero.clientWidth + 'px';
+        canvas.style.height = hero.clientHeight + 'px';
+        ctx.scale(dpr, dpr);
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      let isVisible = true;
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(entries => {
+          isVisible = entries[0].isIntersecting;
+        });
+        observer.observe(hero);
+      }
 
       // Текущие и целевые координаты мыши
       let currentX = window.innerWidth / 2;
@@ -1931,58 +2270,178 @@
       let targetX = currentX;
       let targetY = currentY;
 
-      // Сила амортизации (lerp фактор): 0.1 - очень плавно, 1.0 - мгновенно
+      // Сила амортизации
       const ease = 0.08;
 
+      let lastX = null;
+      let lastY = null;
+      let lastTime = null;
+      let glitchTimeout = null;
+
       window.addEventListener('mousemove', function(e) {
-        targetX = e.clientX;
-        targetY = e.clientY;
+        const rect = hero.getBoundingClientRect();
+        targetX = e.clientX - rect.left;
+        targetY = e.clientY - rect.top;
+
+        const now = Date.now();
+        if (lastX !== null && lastTime !== null) {
+          const dx = targetX - lastX;
+          const dy = targetY - lastY;
+          const dt = now - lastTime;
+          if (dt > 0) {
+            const speed = Math.sqrt(dx * dx + dy * dy) / dt;
+            if (speed > 1.8) {
+              triggerGlitch();
+              // Спавним вспышки при высокой скорости
+              spawnBurst(targetX, targetY, Math.round(speed * 3));
+            }
+          }
+        }
+
+        // Обычный спавн небольшого количества частиц при движении
+        if (Math.random() < 0.4) {
+          spawnParticle(targetX, targetY);
+        }
+
+        lastX = targetX;
+        lastY = targetY;
+        lastTime = now;
       });
 
       window.addEventListener('touchmove', function(e) {
         if (e.touches && e.touches[0]) {
-          targetX = e.touches[0].clientX;
-          targetY = e.touches[0].clientY;
+          const rect = hero.getBoundingClientRect();
+          targetX = e.touches[0].clientX - rect.left;
+          targetY = e.touches[0].clientY - rect.top;
+          if (Math.random() < 0.5) {
+            spawnParticle(targetX, targetY);
+          }
         }
       });
 
-      // При старте фонарик плавно выезжает из центра к мышке
-      function animateFlashlight() {
-        // Линейная интерполяция для координат
+      function triggerGlitch() {
+        if (glitchTimeout) clearTimeout(glitchTimeout);
+        poster.classList.add('glitch');
+        const titleEl = document.querySelector('.title');
+        if (titleEl) titleEl.classList.add('glitch');
+
+        glitchTimeout = setTimeout(function() {
+          poster.classList.remove('glitch');
+          if (titleEl) titleEl.classList.remove('glitch');
+        }, 300);
+      }
+
+      const PARTICLE_COLORS = [
+        'rgba(255, 110, 0, ',  // Сочный оранжевый
+        'rgba(255, 190, 0, ',  // Теплый желтый/золотой
+        'rgba(232, 83, 72, ',  // Насыщенный красно-оранжевый
+        'rgba(255, 230, 100, ' // Яркая золотая искра
+      ];
+
+      function spawnParticle(x, y) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+          alpha: 1,
+          decay: 0.02 + Math.random() * 0.03,
+          radius: 2 + Math.random() * 4
+        });
+      }
+
+      function spawnBurst(x, y, count) {
+        const num = Math.min(count, 25);
+        for (let i = 0; i < num; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1 + Math.random() * 8;
+          particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+            alpha: 1,
+            decay: 0.02 + Math.random() * 0.04,
+            radius: 2 + Math.random() * 5
+          });
+        }
+      }
+
+      function animate() {
+        // Линейная интерполяция
         currentX += (targetX - currentX) * ease;
         currentY += (targetY - currentY) * ease;
-
-        const rect = hero.getBoundingClientRect();
-        const px = ((currentX - rect.left) / rect.width) * 100;
-        const py = ((currentY - rect.top) / rect.height) * 100;
-
-        hero.style.setProperty('--flashlight-x', px + '%');
-        hero.style.setProperty('--flashlight-y', py + '%');
 
         // Вычисляем наклон 3D карточки
         const posterRect = poster.getBoundingClientRect();
         const pCenterX = posterRect.left + posterRect.width / 2;
         const pCenterY = posterRect.top + posterRect.height / 2;
 
-        // Чем дальше мышка от центра карточки, тем сильнее наклон
-        const tiltX = (currentY - pCenterY) / 15;
-        const tiltY = -(currentX - pCenterX) / 15;
+        const rect = hero.getBoundingClientRect();
+        const absoluteMouseX = currentX + rect.left;
+        const absoluteMouseY = currentY + rect.top;
 
-        const limit = 16;
-        const boundedTiltX = Math.max(-limit, Math.min(limit, tiltX));
-        const boundedTiltY = Math.max(-limit, Math.min(limit, tiltY));
+        const tiltX = (absoluteMouseY - pCenterY) / 15;
+        const tiltY = -(absoluteMouseX - pCenterX) / 15;
 
-        poster.style.transform = `rotateX(${boundedTiltX}deg) rotateY(${boundedTiltY}deg) scale(1.04)`;
+        // Ограничиваем наклон
+        const maxTilt = 15;
+        const clampedTiltX = Math.max(-maxTilt, Math.min(maxTilt, tiltX));
+        const clampedTiltY = Math.max(-maxTilt, Math.min(maxTilt, tiltY));
 
-        requestAnimationFrame(animateFlashlight);
+        poster.style.transform = `rotateX(${clampedTiltX}deg) rotateY(${clampedTiltY}deg)`;
+
+        // Рисуем вспышки на Canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Фоновый градиент подсветки вокруг курсора
+        const glow = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 250);
+        glow.addColorStop(0, 'rgba(255, 110, 0, 0.08)');
+        glow.addColorStop(0.5, 'rgba(255, 190, 0, 0.03)');
+        glow.addColorStop(1, 'transparent');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Рендерим и обновляем частицы
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.98; // трение
+          p.vy *= 0.98;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + p.alpha + ')';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color + '0.8)';
+          ctx.fill();
+        }
+        ctx.shadowBlur = 0; // Сбрасываем свечение
+
+        // Спавним фоновые редкие искры, чтобы сцена была живой даже без мыши
+        if (Math.random() < 0.05) {
+          const rx = Math.random() * canvas.width;
+          const ry = Math.random() * canvas.height;
+          spawnParticle(rx, ry);
+        }
+
+        requestAnimationFrame(animate);
       }
-
-      animateFlashlight();
+      animate();
 
       // Сброс при выходе за пределы
       window.addEventListener('mouseleave', function() {
-        targetX = window.innerWidth / 2;
-        targetY = window.innerHeight * 0.45;
+        targetX = hero.clientWidth / 2;
+        targetY = hero.clientHeight * 0.45;
       });
     })();
   </script>
@@ -1990,7 +2449,7 @@
   <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
   <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
     <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.27-2.03-.49-.82-.27-1.47-.41-1.42-.87.03-.24.36-.49 1-.75 3.92-1.71 6.53-2.84 7.83-3.39 3.73-1.56 4.5-1.83 5.01-1.84.11 0 .36.03.52.16.14.11.18.26.2.37.02.1.03.3.01.47z"/>
+      <path d="M21.9 2.1c-.2-.2-.5-.2-.8-.1L1.8 9.7c-.3.1-.5.4-.5.7 0 .3.2.6.5.7l5.3 1.9 2.2 6.7c.1.3.3.5.6.5.1 0 .2 0 .3-.1l3.2-2.6 4.6 3.4c.2.1.4.1.6 0 .2-.1.3-.3.3-.5L22.5 2.7c0-.3-.4-.5-.6-.6zM8.5 12.1l9.4-6.3-7.7 7.6c-.1.1-.2.2-.2.4l-.5 2.7-1-3.9c0-.3 0-.5.1-.6z"/>
     </svg>
   </a>
   <style>
@@ -2015,5 +2474,33 @@
   <noscript><div><img src="https://mc.yandex.ru/watch/107696179" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
 
+  <!-- STICKY CTA -->
+  <div id="stickyCta" style="position: fixed; bottom: -100px; left: 0; right: 0; background: rgba(14,12,36,0.95); backdrop-filter: blur(10px); padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 99; transition: bottom 0.3s ease; display:flex; justify-content:space-between; align-items:center; max-width: 600px; margin: 0 auto; border-radius: 16px 16px 0 0;">
+    <div>
+      <div style="font-weight: 600; font-size: 16px;">Шоу ХУЛИgan</div>
+      <div style="color: var(--gold); font-size: 14px; opacity:0.8;">Билеты от 1500 ₽</div>
+    </div>
+    <button class="buy-cta" style="margin:0; padding: 12px 24px; font-size: 15px;" onclick="openBookingModal()">Купить билет</button>
+  </div>
+  
+  <script>
+    window.addEventListener('scroll', () => {
+       const sticky = document.getElementById('stickyCta');
+       // Show sticky CTA if scrolled past the first 500px, but hide if we are near the very bottom footer CTA
+       const footerCta = document.querySelector('.footer-cta');
+       let hideNearBottom = false;
+       if (footerCta) {
+          const rect = footerCta.getBoundingClientRect();
+          if (rect.top < window.innerHeight) {
+             hideNearBottom = true;
+          }
+       }
+       if (window.scrollY > 500 && !hideNearBottom) {
+          sticky.style.bottom = '0px';
+       } else {
+          sticky.style.bottom = '-100px';
+       }
+    });
+  </script>
 </body>
 </html>

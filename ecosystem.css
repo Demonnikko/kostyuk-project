@@ -901,15 +901,15 @@ body {
       transform: scale(1.03);
     }
     .project-switcher__list .switcher-item--shows::before {
-      background-image: url('../images/direction-shows.png');
+      background-image: url('../images/direction-shows.webp');
       background-position: 50% 44%;
     }
     .project-switcher__list .switcher-item--events::before {
-      background-image: url('../images/direction-events.png');
+      background-image: url('../images/direction-events.webp');
       background-position: 50% 43%;
     }
     .project-switcher__list .switcher-item--school::before {
-      background-image: url('../images/direction-school.png');
+      background-image: url('../images/direction-school.webp');
       background-position: 50% 42%;
     }
     
@@ -934,10 +934,14 @@ body {
       letter-spacing: 0.1em;
     }
     .project-switcher__list .switcher-index {
-      color: rgba(255,255,255,0.4);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-
+      display: none !important;
+    }
+    .tg-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
       background: #24A1DE;
       color: #fff;
       border-radius: 50%;
