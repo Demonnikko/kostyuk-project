@@ -495,7 +495,9 @@ html { scroll-padding-top: 92px; }
 }
 
 .title {
-  font-size: clamp(46px, 7.2vw, 82px);
+  /* Было clamp(46px, ...): нижняя граница 46px не давала заголовку
+     уменьшаться, и «Дмитрий Костюк» обрезался справа на 375px. */
+  font-size: clamp(30px, 9vw, 82px);
   letter-spacing: .015em;
 }
 

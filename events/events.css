@@ -295,6 +295,7 @@
       position: relative;
       display: inline-block;
       isolation: isolate;
+      max-width: 100%;
       text-shadow: 0 2px 26px rgba(203, 161, 53, .34), 0 0 1px rgba(255, 235, 183, .85);
       animation: titleBreath 5.6s ease-in-out infinite
     }
