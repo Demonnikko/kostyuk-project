@@ -1830,8 +1830,7 @@
             action: 'release',
             seats: [{ tableId: parseInt(table) || 0, seatIdx: parseInt(seatIdx) || 0, key: key }],
             tempBookingId: booking.tempBookingId,
-            show: 'huligan',
-            tgInitData: window.Telegram?.WebApp?.initData || ''
+            show: 'huligan'
           })
         }).catch(function(e){ console.error('Release error:', e); });
       } else {
@@ -1857,8 +1856,7 @@
             action: 'reserve',
             seats: [{ tableId: parseInt(table) || 0, seatIdx: parseInt(seatIdx) || 0, key: key }],
             tempBookingId: booking.tempBookingId,
-            show: 'huligan',
-            tgInitData: window.Telegram?.WebApp?.initData || ''
+            show: 'huligan'
           })
         })
         .then(function(r) {
@@ -1916,8 +1914,7 @@
                 action: 'release',
                 seats: [{ tableId: parseInt(removed.table) || 0, seatIdx: parseInt(removed.seatIdx) || 0, key: removed.key }],
                 tempBookingId: booking.tempBookingId,
-                show: 'huligan',
-                tgInitData: window.Telegram?.WebApp?.initData || ''
+                show: 'huligan'
               })
             }).catch(function(e){ console.error('Release error:', e); });
           }
@@ -2070,8 +2067,7 @@
             action: 'release',
             seats: seatsToRelease,
             tempBookingId: booking.tempBookingId,
-            show: 'huligan',
-            tgInitData: window.Telegram?.WebApp?.initData || ''
+            show: 'huligan'
           })
         }).catch(function(e){ console.error('Release all error:', e); });
       }
@@ -2105,10 +2101,6 @@
 
     // === Отправка ===
     function getSource() {
-      try {
-        if (window.vkBridge || /VKBridge/i.test(navigator.userAgent)) return 'vk';
-        if (window.Telegram && window.Telegram.WebApp) return 'tg';
-      } catch (e) {}
       return 'web';
     }
 
@@ -2149,8 +2141,7 @@
           finalPrice: finalPrice,
           promoCode: booking.promo ? booking.promo.code : null,
           seats: seatsPayload,
-          source: getSource(),
-          tgInitData: window.Telegram?.WebApp?.initData || ''
+          source: getSource()
         }
       };
 
