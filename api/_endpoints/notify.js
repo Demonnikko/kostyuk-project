@@ -14,30 +14,9 @@ import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
 import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
-const VKPAY_SECRET_ENABLED = String(process.env.VKPAY_SECRET_ENABLED || process.env.VKPAY_ENABLED || '').trim().toLowerCase() === 'true';
-const VKPAY_APP_ID = String(process.env.VKPAY_APP_ID || process.env.VK_APP_ID || '').trim();
-const VKPAY_APP_SECURE_KEY = String(process.env.VKPAY_APP_SECURE_KEY || process.env.VK_APP_SECURE_KEY || '').trim();
-const VKPAY_MERCHANT_ID = String(process.env.VKPAY_MERCHANT_ID || '').trim();
-const VKPAY_MERCHANT_PRIVATE_KEY = String(process.env.VKPAY_MERCHANT_PRIVATE_KEY || '').trim();
-const VKPAY_NOTIFY_PUBLIC_KEY = String(process.env.VKPAY_NOTIFY_PUBLIC_KEY || '').replace(/\\n/g, '\n').trim();
 
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted']);
-
-function stableStringify(value) {
-  if (value === null || typeof value !== 'object') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
-  const keys = Object.keys(value).sort();
-  return `{${keys.map(k => `${JSON.stringify(k)}:${stableStringify(value[k])}`).join(',')}}`;
-}
-
-function sha1Hex(text) {
-  return crypto.createHash('sha1').update(String(text || ''), 'utf8').digest('hex');
-}
-
-function md5Hex(text) {
-  return crypto.createHash('md5').update(String(text || ''), 'utf8').digest('hex');
-}
 
 function parseIncomingBody(rawBody) {
   if (rawBody == null) return {};
@@ -59,90 +38,6 @@ function parseIncomingBody(rawBody) {
   }
   if (typeof rawBody === 'object') return rawBody;
   return {};
-}
-
-function isSecretVkPayConfigured() {
-  return VKPAY_SECRET_ENABLED
-    && VKPAY_APP_ID
-    && VKPAY_APP_SECURE_KEY
-    && VKPAY_MERCHANT_ID
-    && VKPAY_MERCHANT_PRIVATE_KEY;
-}
-
-function isSecretVkPayWebhookConfigured() {
-  return isSecretVkPayConfigured() && VKPAY_NOTIFY_PUBLIC_KEY;
-}
-
-function makeVkPayDataPayload({ amount, currency = 'RUB', orderId, ts }) {
-  const merchantDataObj = {
-    amount: Number(amount),
-    currency: String(currency || 'RUB'),
-    order_id: String(orderId || ''),
-    ts: String(ts || '')
-  };
-  const merchantData = Buffer.from(stableStringify(merchantDataObj), 'utf8').toString('base64');
-  const merchantSign = sha1Hex(`${merchantData}${VKPAY_MERCHANT_PRIVATE_KEY}`);
-  return {
-    currency: merchantDataObj.currency,
-    merchant_data: merchantData,
-    merchant_sign: merchantSign,
-    order_id: merchantDataObj.order_id,
-    ts: merchantDataObj.ts
-  };
-}
-
-function makeVkPayAppSign(params) {
-  const keys = Object.keys(params).sort();
-  const plain = keys.map((k) => {
-    const v = params[k];
-    if (v && typeof v === 'object') return `${k}=${stableStringify(v)}`;
-    return `${k}=${String(v)}`;
-  }).join('');
-  return md5Hex(`${plain}${VKPAY_APP_SECURE_KEY}`);
-}
-
-function decodeVkPayNotificationData(raw) {
-  const source = String(raw || '').trim();
-  if (!source) return null;
-  try {
-    return JSON.parse(source);
-  } catch { }
-  try {
-    const decoded = Buffer.from(source, 'base64').toString('utf8');
-    return JSON.parse(decoded);
-  } catch {
-    return null;
-  }
-}
-
-function verifyVkPayNotificationSignature(dataRaw, signatureB64) {
-  if (!VKPAY_NOTIFY_PUBLIC_KEY) return false;
-  const sig = Buffer.from(String(signatureB64 || ''), 'base64');
-  const payload = Buffer.from(String(dataRaw || ''), 'utf8');
-  const algos = ['RSA-SHA256', 'RSA-SHA1'];
-  for (const algo of algos) {
-    try {
-      const verifier = crypto.createVerify(algo);
-      verifier.update(payload);
-      verifier.end();
-      if (verifier.verify(VKPAY_NOTIFY_PUBLIC_KEY, sig)) return true;
-    } catch { }
-  }
-  return false;
-}
-
-function makeVkPayNotifyReply({ transactionId = '', notifyType = 'payment_delivered', ok = true, errorCode = 'INPUT', errorDescription = '' }) {
-  const body = {
-    transaction_id: String(transactionId || ''),
-    notify_type: ok ? String(notifyType || 'payment_delivered') : 'TRANSACTION_STATUS'
-  };
-  const header = ok
-    ? { status: 'OK' }
-    : { status: 'ERROR', error: { code: String(errorCode || 'INPUT'), description: String(errorDescription || 'Error') } };
-  const payload = { header, body };
-  const data = Buffer.from(stableStringify(payload), 'utf8').toString('base64');
-  const signature = sha1Hex(`${data}${VKPAY_MERCHANT_PRIVATE_KEY}`);
-  return { data, signature };
 }
 
 function randomFromAlphabet(length, alphabet) {
@@ -320,18 +215,6 @@ function hasOwnerAccessForSecretBooking(booking, body = {}) {
   return false;
 }
 
-async function findSecretBookingByVkPayOrderId(orderId) {
-  const all = await fbGet('ticket_bookings');
-  if (!all || typeof all !== 'object') return null;
-  for (const [id, booking] of Object.entries(all)) {
-    const bOrder = String(booking?.vkPay?.orderId || booking?.vkPayOrderId || '');
-    if (bOrder && bOrder === String(orderId)) {
-      return { bookingId: String(id), booking };
-    }
-  }
-  return null;
-}
-
 async function confirmSecretBookingAndNotify(bookingId, booking, meta = {}) {
   const now = Date.now();
   const curStatus = String(booking.status || '').toLowerCase();
@@ -349,20 +232,20 @@ async function confirmSecretBookingAndNotify(bookingId, booking, meta = {}) {
     };
     if (meta.paidAt) patch.paidAt = Number(meta.paidAt) || now;
     if (meta.transactionId || meta.orderId || meta.provider) {
-      patch.vkPay = {
-        ...(booking.vkPay && typeof booking.vkPay === 'object' ? booking.vkPay : {}),
+      patch.payment = {
+        ...(booking.payment && typeof booking.payment === 'object' ? booking.payment : {}),
         status: 'paid',
         paidAt: Number(meta.paidAt) || now,
-        transactionId: String(meta.transactionId || booking?.vkPay?.transactionId || ''),
-        orderId: String(meta.orderId || booking?.vkPay?.orderId || ''),
-        provider: String(meta.provider || 'vkpay')
+        transactionId: String(meta.transactionId || booking?.payment?.transactionId || ''),
+        orderId: String(meta.orderId || booking?.payment?.orderId || ''),
+        provider: String(meta.provider || 'tbank')
       };
     }
     await fbPatch(`ticket_bookings/${bookingId}`, patch);
     booking.status = 'confirmed';
     booking.confirmedAt = now;
     if (patch.paidAt) booking.paidAt = patch.paidAt;
-    if (patch.vkPay) booking.vkPay = patch.vkPay;
+    if (patch.payment) booking.payment = patch.payment;
   }
 
   await Promise.all((booking.seats || []).map((s) =>
@@ -420,158 +303,9 @@ export default async (req, res) => {
   // Нормализуем event: body.action === 'refund_request' → event = 'refund_request'
   const event = body?.event || (action === 'refund_request' ? 'refund_request' : undefined);
 
-  const isVkPayNotify = body
-    && typeof body === 'object'
-    && !event
-    && !action
-    && body.signature
-    && body.data;
-
-  if (isVkPayNotify) {
-    if (!isSecretVkPayWebhookConfigured()) {
-      return res.status(200).json(
-        makeVkPayNotifyReply({
-          ok: false,
-          errorCode: 'SYSTEM',
-          errorDescription: 'VK Pay integration is not configured'
-        })
-      );
-    }
-
-    const rawData = String(body.data || '');
-    const signature = String(body.signature || '');
-    if (!verifyVkPayNotificationSignature(rawData, signature)) {
-      return res.status(200).json(
-        makeVkPayNotifyReply({
-          ok: false,
-          errorCode: 'SECURITY',
-          errorDescription: 'Invalid signature'
-        })
-      );
-    }
-
-    const payload = decodeVkPayNotificationData(rawData);
-    if (!payload || typeof payload !== 'object') {
-      return res.status(200).json(
-        makeVkPayNotifyReply({
-          ok: false,
-          errorCode: 'INPUT',
-          errorDescription: 'Invalid notification data'
-        })
-      );
-    }
-
-    const notifyTypeRaw = String(payload.notify_type || '').toLowerCase();
-    const statusRaw = String(payload.status || payload.transaction_status || '').toUpperCase();
-    const merchantParams = payload.merchant_params && typeof payload.merchant_params === 'object'
-      ? payload.merchant_params
-      : {};
-    const orderId = String(merchantParams.order_id || payload.order_id || '').trim();
-    const bookingIdFromPayload = String(merchantParams.booking_id || payload.booking_id || '').trim();
-    const transactionId = String(payload.transaction_id || payload.transactionId || '').trim();
-    const amount = Number(payload.amount || 0);
-
-    let found = null;
-    if (orderId) found = await findSecretBookingByVkPayOrderId(orderId);
-    if (!found && bookingIdFromPayload) {
-      const byId = await fbGet(`ticket_bookings/${bookingIdFromPayload}`);
-      if (byId) found = { bookingId: bookingIdFromPayload, booking: byId };
-    }
-    if (!found) {
-      return res.status(200).json(
-        makeVkPayNotifyReply({
-          ok: false,
-          errorCode: 'ORDER_NOT_FOUND',
-          errorDescription: 'Booking not found for order'
-        })
-      );
-    }
-
-    const { bookingId: resolvedBookingId, booking } = found;
-    const successByType = notifyTypeRaw === 'payment_delivered';
-    const successByStatus = ['OK', 'PAID', 'SUCCESS'].includes(statusRaw);
-    const declinedByType = notifyTypeRaw === 'payment_declined';
-    const declinedByStatus = ['DECLINED', 'FAILED', 'ERROR', 'CANCELLED'].includes(statusRaw);
-    const isPaid = successByType || successByStatus;
-    const isDeclined = declinedByType || declinedByStatus;
-
-    const expectedAmount = Number(booking.discountedTotal || booking.total || 0);
-    if (Number.isFinite(expectedAmount) && expectedAmount > 0 && Number.isFinite(amount) && amount > 0) {
-      if (Math.abs(expectedAmount - amount) > 0.01) {
-        return res.status(200).json(
-          makeVkPayNotifyReply({
-            ok: false,
-            errorCode: 'INPUT',
-            errorDescription: 'Amount mismatch'
-          })
-        );
-      }
-    }
-
-    if (isPaid) {
-      const result = await confirmSecretBookingAndNotify(resolvedBookingId, booking, {
-        provider: 'vkpay',
-        orderId,
-        transactionId,
-        paidAt: Date.now()
-      });
-      if (!result.ok) {
-        return res.status(200).json(
-          makeVkPayNotifyReply({
-            ok: false,
-            errorCode: 'SYSTEM',
-            errorDescription: result.error || 'Failed to confirm booking'
-          })
-        );
-      }
-      return res.status(200).json(
-        makeVkPayNotifyReply({
-          ok: true,
-          transactionId,
-          notifyType: 'payment_delivered'
-        })
-      );
-    }
-
-    if (isDeclined) {
-      const nextVkPay = {
-        ...(booking.vkPay && typeof booking.vkPay === 'object' ? booking.vkPay : {}),
-        status: 'failed',
-        failedAt: Date.now(),
-        orderId: String(orderId || booking?.vkPay?.orderId || ''),
-        transactionId: String(transactionId || ''),
-        lastNotifyType: notifyTypeRaw || null,
-        lastNotifyStatus: statusRaw || null
-      };
-      const currentStatus = String(booking.status || '').toLowerCase();
-      await fbPatch(`ticket_bookings/${resolvedBookingId}`, {
-        status: currentStatus === 'confirmed' ? 'confirmed' : 'pending_payment',
-        vkPay: nextVkPay
-      });
-      return res.status(200).json(
-        makeVkPayNotifyReply({
-          ok: true,
-          transactionId,
-          notifyType: 'payment_declined'
-        })
-      );
-    }
-
-    return res.status(200).json(
-      makeVkPayNotifyReply({
-        ok: false,
-        errorCode: 'INPUT',
-        errorDescription: 'Unknown transaction status'
-      })
-    );
-  }
-
   if (action === 'get_config') {
     return res.status(200).json({
-      salesPaused: await isSecretSalesPaused(),
-      vkPay: {
-        enabled: Boolean(isSecretVkPayConfigured())
-      }
+      salesPaused: await isSecretSalesPaused()
     });
   }
 
@@ -631,112 +365,6 @@ export default async (req, res) => {
       });
     }
 
-    return res.status(200).json({ ok: true });
-  }
-
-  if (action === 'vkpay_prepare') {
-    if (await isSecretSalesPaused()) {
-      return res.status(409).json({ error: 'Продажи на шоу «Секрет» временно остановлены' });
-    }
-    if (!isSecretVkPayConfigured()) {
-      return res.status(409).json({ error: 'VK Pay is not configured' });
-    }
-    if (!bookingId) return res.status(400).json({ error: 'Missing bookingId' });
-
-    const booking = await fbGet(`ticket_bookings/${bookingId}`);
-    if (!booking) return res.status(404).json({ error: 'Booking not found' });
-
-    const isAdmin = await isAdminAuthorized(req, body);
-    if (!isAdmin && !hasOwnerAccessForSecretBooking(booking, body)) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
-
-    const status = String(booking.status || '').toLowerCase();
-    if (BLOCKED_STATUSES.has(status) || status === 'refund_requested') {
-      return res.status(409).json({ error: `Cannot pay in status '${status}'` });
-    }
-    if (status === 'confirmed') {
-      return res.status(200).json({ ok: true, alreadyConfirmed: true });
-    }
-    if (status !== 'pending_payment' && status !== 'pending_confirmation' && status !== 'new') {
-      return res.status(409).json({ error: `Cannot pay in status '${status}'` });
-    }
-
-    const amount = Number(booking.discountedTotal || booking.total || 0);
-    if (!Number.isFinite(amount) || amount <= 0) {
-      const freeConfirm = await confirmSecretBookingAndNotify(bookingId, booking, {
-        provider: 'vkpay',
-        paidAt: Date.now()
-      });
-      if (!freeConfirm.ok) {
-        return res.status(500).json({ error: freeConfirm.error || 'Failed to confirm booking' });
-      }
-      return res.status(200).json({ ok: true, alreadyConfirmed: true, freeTicket: true });
-    }
-
-    const ts = Math.floor(Date.now() / 1000);
-    const orderId = `${bookingId}-${ts}`;
-    const amountRounded = Math.round(amount * 100) / 100;
-    const payData = makeVkPayDataPayload({
-      amount: amountRounded,
-      currency: 'RUB',
-      orderId,
-      ts
-    });
-    payData.booking_id = String(bookingId);
-
-    const params = {
-      amount: amountRounded,
-      data: payData,
-      description: 'Билет на Шоу «Секрет» 12+',
-      merchant_id: Number(VKPAY_MERCHANT_ID),
-      version: 2
-    };
-    params.sign = makeVkPayAppSign(params);
-
-    await fbPatch(`ticket_bookings/${bookingId}`, {
-      status: status === 'new' ? 'pending_payment' : status,
-      vkPay: {
-        ...(booking.vkPay && typeof booking.vkPay === 'object' ? booking.vkPay : {}),
-        provider: 'vkpay',
-        status: 'prepared',
-        preparedAt: Date.now(),
-        orderId,
-        amount: amountRounded
-      }
-    });
-
-    return res.status(200).json({
-      ok: true,
-      orderId,
-      payload: {
-        app_id: Number(VKPAY_APP_ID),
-        action: 'pay-to-service',
-        params
-      }
-    });
-  }
-
-  if (action === 'vkpay_client_result') {
-    if (!bookingId) return res.status(400).json({ error: 'Missing bookingId' });
-    const booking = await fbGet(`ticket_bookings/${bookingId}`);
-    if (!booking) return res.status(404).json({ error: 'Booking not found' });
-    const isAdmin = await isAdminAuthorized(req, body);
-    if (!isAdmin && !hasOwnerAccessForSecretBooking(booking, body)) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
-    const paymentResult = body?.paymentResult && typeof body.paymentResult === 'object' ? body.paymentResult : {};
-    const nextVkPay = {
-      ...(booking.vkPay && typeof booking.vkPay === 'object' ? booking.vkPay : {}),
-      clientResultAt: Date.now(),
-      clientResult: {
-        status: Boolean(paymentResult.status),
-        transaction_id: String(paymentResult.transaction_id || ''),
-        amount: String(paymentResult.amount || ''),
-        extra: String(paymentResult.extra || '')
-      }
-    };
-    await fbPatch(`ticket_bookings/${bookingId}`, { vkPay: nextVkPay });
     return res.status(200).json({ ok: true });
   }
 

@@ -5,21 +5,6 @@ import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const MAX_SEATS_MUTATION = 10;
-const VKPAY_SECRET_ENABLED = String(process.env.VKPAY_SECRET_ENABLED || process.env.VKPAY_ENABLED || '').trim().toLowerCase() === 'true';
-const VKPAY_APP_ID = String(process.env.VKPAY_APP_ID || process.env.VK_APP_ID || '').trim();
-const VKPAY_APP_SECURE_KEY = String(process.env.VKPAY_APP_SECURE_KEY || process.env.VK_APP_SECURE_KEY || '').trim();
-const VKPAY_MERCHANT_ID = String(process.env.VKPAY_MERCHANT_ID || '').trim();
-const VKPAY_MERCHANT_PRIVATE_KEY = String(process.env.VKPAY_MERCHANT_PRIVATE_KEY || '').trim();
-const VKPAY_NOTIFY_PUBLIC_KEY = String(process.env.VKPAY_NOTIFY_PUBLIC_KEY || '').replace(/\\n/g, '\n').trim();
-
-function isSecretVkPayConfigured() {
-  return VKPAY_SECRET_ENABLED
-    && VKPAY_APP_ID
-    && VKPAY_APP_SECURE_KEY
-    && VKPAY_MERCHANT_ID
-    && VKPAY_MERCHANT_PRIVATE_KEY
-    && VKPAY_NOTIFY_PUBLIC_KEY;
-}
 
 function isValidTempBookingId(v) {
   return /^TEMP-[A-Z0-9_-]{6,80}$/i.test(String(v || ''));
@@ -134,9 +119,6 @@ export default async (req, res) => {
       delete config.adminPassword;
       config.metrics = {
         yandexCounterId: String(process.env.YM_SECRET_COUNTER_ID || '').trim()
-      };
-      config.vkPay = {
-        enabled: Boolean(isSecretVkPayConfigured())
       };
       return res.status(200).json(config);
     }
