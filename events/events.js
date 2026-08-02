@@ -49,49 +49,6 @@
     }
 
 // Quiz & AI Assistant Logic
-    /* ===== PLATFORM BRIDGE INIT ===== */
-    window.APP_PLATFORM = {
-      isVK: false,
-      vkInited: false,
-      isTelegram: false
-    };
-
-    (function initPlatformBridge() {
-      try {
-        if (window.vkBridge && typeof window.vkBridge.send === 'function') {
-          APP_PLATFORM.isVK = true;
-          if (typeof window.vkBridge.subscribe === 'function') {
-            window.vkBridge.subscribe(function () { });
-          }
-          window.vkBridge.send('VKWebAppInit')
-            .then(function () {
-              APP_PLATFORM.vkInited = true;
-            })
-            .catch(function (error) {
-              console.error('VKWebAppInit failed:', error);
-            });
-        }
-      } catch (e) {
-        console.error('VK bridge bootstrap error:', e);
-      }
-    })();
-
-    function expandTelegramWebApp() {
-      try {
-        if (!window.Telegram || !window.Telegram.WebApp) return;
-        APP_PLATFORM.isTelegram = true;
-        var tg = window.Telegram.WebApp;
-        if (typeof tg.ready === 'function') tg.ready();
-        if (typeof tg.expand === 'function') tg.expand();
-        if (typeof tg.requestFullscreen === 'function' && typeof tg.isVersionAtLeast === 'function' && tg.isVersionAtLeast('8.0')) {
-          try { tg.requestFullscreen(); } catch (e) { }
-        }
-      } catch (e) { }
-    }
-    expandTelegramWebApp();
-    document.addEventListener('visibilitychange', function () {
-      if (!document.hidden) expandTelegramWebApp();
-    });
     function haptic() { }
 
     /* ===== PRELOADER & EFFECTS ===== */
@@ -305,22 +262,6 @@
       }
     ];
 
-    function getTelegramViewer() {
-      try {
-        var tgUser = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe
-          ? window.Telegram.WebApp.initDataUnsafe.user
-          : null;
-        if (!tgUser) return null;
-        return {
-          id: tgUser.id || '',
-          username: tgUser.username || '',
-          name: [tgUser.first_name || '', tgUser.last_name || ''].join(' ').trim()
-        };
-      } catch (e) {
-        return null;
-      }
-    }
-
     var site76MetricsState = {
       counterId: '',
       app: 'site76',
@@ -463,14 +404,12 @@
 
     function buildQuizLeadPayload(summary, meta) {
       meta = meta || {};
-      var viewer = getTelegramViewer();
       return {
         kind: meta.kind || 'quiz_completed',
         leadId: summary.leadId,
         channel: meta.channel || '',
         note: meta.note || '',
         source: 'site76_quiz',
-        viewer: viewer,
         magic: summary.magicPrize || null,
         order: {
           area: qState.oblast || '',
@@ -617,29 +556,6 @@
     function routeToMiniApp(url) {
       var targetUrl = String(url || '').trim();
       if (!targetUrl) return;
-
-      try {
-        if (window.Telegram && window.Telegram.WebApp) {
-          if ((/^https:\/\/t\.me\//i.test(targetUrl) || /^tg:\/\//i.test(targetUrl)) && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
-            window.Telegram.WebApp.openTelegramLink(targetUrl);
-            return;
-          }
-          if (/^https?:\/\//i.test(targetUrl) && typeof window.Telegram.WebApp.openLink === 'function') {
-            window.Telegram.WebApp.openLink(targetUrl);
-            return;
-          }
-        }
-      } catch (e) { }
-
-      if (window.vkBridge && typeof vkBridge.send === 'function') {
-        vkBridge.send('VKWebAppOpenURL', { url: targetUrl })
-          .catch(function () {
-            vkBridge.send('VKWebAppOpenUrl', { url: targetUrl })
-              .catch(function () { window.open(targetUrl, '_blank', 'noopener'); });
-          });
-        return;
-      }
-
       window.open(targetUrl, '_blank', 'noopener');
     }
 

@@ -8,7 +8,6 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
-  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js" defer></script>
   <style>
     *,
     *::before,
@@ -6337,18 +6336,6 @@
       } catch {
         toast('Ошибка. Попробуйте ещё раз.');
       }
-    }
-
-    // ── VK Mini App: auto-login for community admins ──
-    async function checkVkRole() {
-      try {
-        const raw = window.location.search.slice(1) || window.location.hash.slice(1);
-        const params = new URLSearchParams(raw);
-        const role = params.get('vk_viewer_group_role');
-        if (role === 'admin' || role === 'editor') return true;
-        if (typeof vkBridge !== 'undefined') await vkBridge.send('VKWebAppInit');
-      } catch (e) { }
-      return false;
     }
 
     function showAdminPanel(cfg) {

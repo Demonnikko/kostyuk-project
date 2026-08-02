@@ -1453,7 +1453,7 @@
         seats:seatsInfo, ticketCount:booking.selected.length, totalPrice:total,
         name:data.get('name')||'', phone:data.get('phone')||'',
         telegram:data.get('telegram')||'', comment:data.get('comment')||'',
-        source:(function(){try{if(window.vkBridge||/VKBridge/i.test(navigator.userAgent))return 'vk';if(window.Telegram&&window.Telegram.WebApp)return 'tg';}catch(e){}return 'web';})()
+        source:'web'
       };
       try{
         var r=await fetch('/api/lead-concert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
