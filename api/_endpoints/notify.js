@@ -232,12 +232,15 @@ async function confirmSecretBookingAndNotify(bookingId, booking, meta = {}) {
     };
     if (meta.paidAt) patch.paidAt = Number(meta.paidAt) || now;
     if (meta.transactionId || meta.orderId || meta.provider) {
+      // legacy: у старых броней реквизиты лежат в vkPay
+      const prev = (booking.payment && typeof booking.payment === 'object' ? booking.payment : null)
+        || (booking.vkPay && typeof booking.vkPay === 'object' ? booking.vkPay : {});
       patch.payment = {
-        ...(booking.payment && typeof booking.payment === 'object' ? booking.payment : {}),
+        ...prev,
         status: 'paid',
         paidAt: Number(meta.paidAt) || now,
-        transactionId: String(meta.transactionId || booking?.payment?.transactionId || ''),
-        orderId: String(meta.orderId || booking?.payment?.orderId || ''),
+        transactionId: String(meta.transactionId || prev.transactionId || ''),
+        orderId: String(meta.orderId || prev.orderId || ''),
         provider: String(meta.provider || 'tbank')
       };
     }

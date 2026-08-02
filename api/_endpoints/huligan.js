@@ -558,12 +558,15 @@ async function confirmBookingAndNotify(bookingId, ignoredBooking, meta = {}) {
     };
     if (meta.paidAt) patch.paidAt = Number(meta.paidAt) || now;
     if (meta.transactionId || meta.orderId || meta.provider) {
+      // legacy: у старых броней реквизиты лежат в vkPay
+      const prev = (booking.payment && typeof booking.payment === 'object' ? booking.payment : null)
+        || (booking.vkPay && typeof booking.vkPay === 'object' ? booking.vkPay : {});
       patch.payment = {
-        ...(booking.payment && typeof booking.payment === 'object' ? booking.payment : {}),
+        ...prev,
         status: 'paid',
         paidAt: Number(meta.paidAt) || now,
-        transactionId: String(meta.transactionId || booking?.payment?.transactionId || ''),
-        orderId: String(meta.orderId || booking?.payment?.orderId || ''),
+        transactionId: String(meta.transactionId || prev.transactionId || ''),
+        orderId: String(meta.orderId || prev.orderId || ''),
         provider: String(meta.provider || 'tbank')
       };
     }
@@ -1213,10 +1216,12 @@ export default async (req, res) => {
       const booking = await fbGet(`huligan_bookings/${bookingId}`);
       if (!booking) return res.status(404).json({ error: 'Booking not found' });
       const curStatus = String(booking.status || '').toLowerCase();
+      // legacy: у броней, созданных до отказа от VK Pay, реквизиты лежат в vkPay
+      const prevPayment = booking?.payment || booking?.vkPay || {};
       const result = await confirmBookingAndNotify(bookingId, booking, {
-        provider: String(booking?.payment?.provider || 'manual'),
-        orderId: String(booking?.payment?.orderId || ''),
-        transactionId: String(booking?.payment?.transactionId || ''),
+        provider: String(prevPayment.provider || 'manual'),
+        orderId: String(prevPayment.orderId || ''),
+        transactionId: String(prevPayment.transactionId || ''),
         paidAt: Number(booking?.paidAt || Date.now())
       });
       if (!result.ok) return res.status(409).json({ error: result.error || 'Cannot confirm booking' });
