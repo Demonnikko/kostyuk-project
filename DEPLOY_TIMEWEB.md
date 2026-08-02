@@ -1,54 +1,92 @@
 # Деплой KOSTYUK PROJECT на Timeweb Cloud App Platform
 
-Цель: перенести сайт с Vercel на Timeweb без смены домена и проверить стабильность открытия в России.
+Цель: перенести сайт с Vercel на Timeweb без смены домена.
 
 ## Что подготовлено
 
 - `server.js` — production-сервер на Node.js.
-- `Dockerfile` — универсальный запуск в Timeweb App Platform.
-- Статика отдаётся из текущей папки сайта.
-- Поддержаны API, которые использует сайт:
-  - `GET /api/prices`
-  - `POST /api/lead`
-  - `POST /api/lead-concert`
-  - `POST /api/chat`
-  - `GET /api/admin-chats`
-  - `GET /healthz`
+- `Dockerfile` — запуск в Timeweb App Platform.
+- Статика отдаётся из корня проекта.
 
-## Переменные окружения в Timeweb
+### API
 
-Обязательные для заявок:
+`server.js` обслуживает тот же набор эндпоинтов, что и Vercel: собственные
+маршруты (`/api/prices`, `/api/lead`, `/api/lead-concert`, `/api/chat`,
+`/api/admin-chats`, `/healthz`) плюс всё из `api/_endpoints/` через общий
+роутер `api/[endpoint].js` — билеты, рассадка, брони, админка, Т-Банк.
+
+Добавили новый эндпоинт в `api/_endpoints/` — впишите его в `api/[endpoint].js`,
+и он заработает сразу на обеих платформах.
+
+## Переменные окружения
+
+### Обязательные
+
+Без них билетная система не работает:
 
 ```text
-TELEGRAM_BOT_TOKEN=...
-TELEGRAM_CHAT_ID=...
+FIREBASE_DB_URL=
+FIREBASE_SECRET=
+TICKET_PUBLIC_ORIGIN=      # публичный адрес сайта, напр. https://kostyuk.ru
+ADMIN_TOKEN=
+TICKET_LINK_SECRET=
 ```
 
-Опционально для чата Екатерины:
+> `FIREBASE_DB_URL` больше не имеет значения по умолчанию. Если переменная
+> не задана, сервер пишет в лог `[firebase] FIREBASE_DB_URL не задан` —
+> проверяйте логи после первого запуска.
+
+### Уведомления о заявках
 
 ```text
-DEEPSEEK_API_KEY=...
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+TELEGRAM_ADMIN_CHAT_ID=
+```
+
+### Опционально
+
+```text
+DEEPSEEK_API_KEY=          # чат-ассистент; без него отвечает резервная логика
 DEEPSEEK_MODEL=deepseek-chat
+YM_HULIGAN_COUNTER_ID=     # Яндекс.Метрика
+YM_SECRET_COUNTER_ID=
 ```
 
-Опционально для Метрики:
+### Т-Банк — при подключении эквайринга
 
 ```text
-YANDEX_COUNTER_ID=107696179
+TBANK_TERMINAL_KEY=
+TBANK_TERMINAL_PASSWORD=
+TBANK_HULIGAN_ENABLED=true
+TBANK_FORCE_TEST_MODE=false
 ```
 
-Если `DEEPSEEK_API_KEY` не задан, чат не ломает сайт, а отвечает резервной короткой логикой.
-Если `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` не заданы, формы возвращают успешный ответ для интерфейса, но заявка не отправляется в Telegram.
+Полный список — в `.env.example`.
 
 ## Настройки приложения в Timeweb
 
 1. Timeweb Cloud → App Platform → создать приложение.
-2. Источник: GitHub-репозиторий с этим проектом.
-3. Ветка: `main` или нужная production-ветка.
+2. Источник: GitHub-репозиторий проекта.
+3. Ветка: `main`.
 4. Способ запуска: Dockerfile.
-5. Порт приложения: `3000`.
+5. Порт: `3000`.
 6. Healthcheck: `/healthz`.
-7. Сначала использовать технический домен Timeweb.
-8. После проверки скорости и стабильности подключить текущий домен через DNS.
+7. Прописать переменные окружения (см. выше).
+8. Сначала технический домен Timeweb, после проверки — свой через DNS.
 
-Переход на домен `.ru` не нужен: домен и хостинг независимы.
+## Проверка после деплоя
+
+```bash
+curl https://<домен>/healthz
+```
+
+```bash
+curl -X POST https://<домен>/api/huligan -H 'Content-Type: application/json' -d '{"action":"get_config"}'
+```
+
+Первый должен вернуть `{"ok":true}`, второй — конфигурацию шоу. Если во
+втором пусто или ошибка — проверьте `FIREBASE_DB_URL` и `FIREBASE_SECRET`
+в логах приложения.
+
+Домен и хостинг независимы: переезд не требует смены домена.

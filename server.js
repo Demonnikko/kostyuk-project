@@ -238,7 +238,57 @@ async function handleApi(req, res, pathname) {
     return handleChat(req, res);
   }
 
-  return sendJson(res, 404, { ok: false, error: 'Not found' });
+  // Всё остальное обслуживают эндпоинты из api/_endpoints — тот же набор,
+  // что и на Vercel (билеты, рассадка, брони, админка, Т-Банк).
+  return handleVercelEndpoint(req, res, pathname);
+}
+
+/**
+ * Эндпоинты в api/_endpoints написаны под Vercel: они ждут req.query,
+ * req.body и res.status().json(). Node такого не даёт, поэтому здесь
+ * лёгкая прослойка, приводящая объекты к нужному виду.
+ */
+async function handleVercelEndpoint(req, res, pathname) {
+  const name = pathname.replace(/^\/api\//, '').replace(/\/+$/, '');
+  if (!name) return sendJson(res, 404, { ok: false, error: 'Not found' });
+
+  let route;
+  try {
+    const mod = await import('./api/[endpoint].js');
+    route = mod.default;
+  } catch (error) {
+    console.error('[api] не удалось загрузить роутер:', error.message);
+    return sendJson(res, 500, { ok: false, error: 'Internal server error' });
+  }
+
+  const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+  const query = Object.fromEntries(url.searchParams.entries());
+  query.endpoint = name;
+  req.query = query;
+
+  if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+    req.body = await readJsonBody(req).catch(() => ({}));
+  }
+
+  let statusCode = 200;
+  const shim = {
+    setHeader: (k, v) => res.setHeader(k, v),
+    status(code) { statusCode = code; return shim; },
+    json: (payload) => sendJson(res, statusCode, payload),
+    send(payload) {
+      if (payload && typeof payload === 'object') return sendJson(res, statusCode, payload);
+      res.writeHead(statusCode, { 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end(String(payload ?? ''));
+    },
+    end: (payload) => res.end(payload)
+  };
+
+  try {
+    return await route(req, shim);
+  } catch (error) {
+    console.error(`[api] ошибка в эндпоинте ${name}:`, error);
+    if (!res.headersSent) return sendJson(res, 500, { ok: false, error: 'Internal server error' });
+  }
 }
 
 function resolveStaticPath(urlPathname) {

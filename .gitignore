@@ -7,5 +7,4 @@ node_modules/
 *.log
 .claude/
 .agents/
-САЙТ/
 scratch/
