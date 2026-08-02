@@ -184,7 +184,7 @@
     .section-header.centered { text-align: center; }
     .section-header.centered .section-sub { margin: 0 auto; }
 
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .card {
       background: var(--card); border: 1px solid var(--gold-border);
       padding: 28px 24px; border-radius: 12px;
@@ -195,7 +195,12 @@
     .card h3 { font-family: var(--font-display); font-size: 19px; font-weight: 600; margin-bottom: 6px; }
     .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
 
-    .grid-4-alt { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .grid-4-alt { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    /* Ровно 4 карточки в 3 колонки оставляют сироту в последнем ряду —
+       раскладываем такие блоки 2×2. */
+    .grid-4:has(> :last-child:nth-child(4)),
+    .grid-4-alt:has(> :last-child:nth-child(4)) { grid-template-columns: repeat(2, 1fr); }
     .block {
       padding: 20px 16px 20px 32px; border-left: 1px solid var(--gold-border);
       position: relative; transition: border-color 0.3s;
@@ -355,6 +360,9 @@
       .creator-photo img { height: auto; max-height: 380px; }
       .quote { text-align: left; }
       .creator-photos { grid-template-columns: repeat(2,1fr); }
+      .grid-4, .grid-4-alt,
+      .grid-4:has(> :last-child:nth-child(4)),
+      .grid-4-alt:has(> :last-child:nth-child(4)) { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 768px) {
@@ -369,7 +377,9 @@
       section { padding: 48px 0; }
       .section-title { font-size: clamp(22px, 5vw, 30px); }
       .section-sub { font-size: 14px; }
-      .grid-4, .grid-4-alt { grid-template-columns: 1fr; }
+      .grid-4, .grid-4-alt,
+      .grid-4:has(> :last-child:nth-child(4)),
+      .grid-4-alt:has(> :last-child:nth-child(4)) { grid-template-columns: 1fr; }
       .card { padding: 22px 18px; }
       .card h3 { font-size: 17px; }
       .card p { font-size: 13px; }
