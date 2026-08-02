@@ -2,8 +2,14 @@
  * Общие функции для работы с Firebase Realtime Database.
  * Используется всеми API-эндпоинтами vk-tickets.
  */
-const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
+const FB_URL = process.env.FIREBASE_DB_URL || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
+
+if (!FB_URL) {
+  // Раньше здесь стоял адрес старой базы как запасной вариант: при забытой
+  // переменной код молча писал не туда. Лучше громкая ошибка в логах.
+  console.error('[firebase] FIREBASE_DB_URL не задан — запросы к базе работать не будут');
+}
 
 async function fbGet(path) {
   try {

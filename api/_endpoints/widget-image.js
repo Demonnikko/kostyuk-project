@@ -1,4 +1,4 @@
-const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
+const FB_URL = process.env.FIREBASE_DB_URL || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 
 import {  setCors  } from '../../shared/cors.js';

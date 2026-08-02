@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
+const FB_URL = process.env.FIREBASE_DB_URL || '';
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID) || 196783025;
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';

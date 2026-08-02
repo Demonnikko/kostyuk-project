@@ -95,7 +95,7 @@ export default async function handler(req, res) {
 
 // ===== Загрузка цен и базы знаний ИИ из Firebase =====
 async function loadDynamicKnowledge() {
-  const fbUrl = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
+  const fbUrl = process.env.FIREBASE_DB_URL || '';
   const fbSecret = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
   try {
     const controller = new AbortController();

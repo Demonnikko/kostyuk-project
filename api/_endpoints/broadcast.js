@@ -7,7 +7,7 @@ import crypto from 'crypto';
 import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
 import {  setCors  } from '../../shared/cors.js';
 
-const FB_URL = process.env.FIREBASE_DB_URL || 'https://kostyuk-vk-bot-default-rtdb.firebaseio.com';
+const FB_URL = process.env.FIREBASE_DB_URL || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 const VK_TOKEN = (process.env.VK_TOKEN || '').trim();
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
