@@ -96,22 +96,8 @@ function verifyPassword(plaintext, stored) {
 // ── Управление паролем ──
 
 async function getAdminPassword() {
-  try {
-    const securePass = await fbGet(SECURE_PASS_PATH);
-    if (securePass && typeof securePass === 'string') return securePass;
-
-    const legacyPass = await fbGet(LEGACY_PASS_PATH);
-    if (legacyPass && typeof legacyPass === 'string') {
-      // Миграция из публичного пути + сразу хешируем
-      const hashed = await hashPassword(legacyPass);
-      await fbPut(SECURE_PASS_PATH, hashed);
-      await fbDelete(LEGACY_PASS_PATH);
-      return hashed;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+  const securePass = await fbGet(SECURE_PASS_PATH);
+  return securePass && typeof securePass === 'string' ? securePass : null;
 }
 
 async function setAdminPassword(newPass) {

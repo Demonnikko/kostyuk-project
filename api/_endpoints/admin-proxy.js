@@ -72,16 +72,9 @@ export default async (req, res) => {
         // 1) Verify password
         const storedPass = await getAdminPassword();
 
-        // Bootstrap mode: first password setup
         const isPasswordPath = path === SECURE_PASS_PATH;
         if (!storedPass) {
-            const canBootstrap = isPasswordPath && (method === 'PUT' || method === 'PATCH');
-            if (!canBootstrap) return res.status(403).json({ error: 'Admin password is not initialized' });
-            const raw = req.body;
-            const nextPass = typeof raw === 'string' ? raw : (raw && typeof raw === 'object' ? String(raw.adminPassword || '') : '');
-            if (!nextPass || nextPass.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
-            await setAdminPassword(nextPass);
-            return res.json({ ok: true });
+            return res.status(403).json({ error: 'Admin password is not initialized' });
         }
 
         // Проверяем пароль (поддержка и plaintext, и хешей)

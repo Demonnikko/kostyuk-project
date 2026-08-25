@@ -4120,28 +4120,14 @@
 
       let cfg = await fbGet('ticket_config');
 
-      // First-time setup: password not yet initialized in Firebase → bootstrap it
-      if (cfg && cfg.error === 'Admin password is not initialized') {
-        toast('⏳ Первый вход — устанавливаю пароль...');
-        try {
-          const r = await fetch('/api/admin-proxy?path=' + encodeURIComponent('ticket_admin/adminPassword'), {
-            method: 'PUT',
-            headers: Object.assign(adminHeaders(), { 'Content-Type': 'application/json' }),
-            body: JSON.stringify(pwd)
-          });
-          if (r.ok) {
-            cfg = await fbGet('ticket_config');
-          } else {
-            cfg = null;
-          }
-        } catch (e) {
-          cfg = null;
-        }
-      }
 
       // If API proxy responds with error, parsing it gives { error: ... }
       if (!cfg || cfg.error) {
+        const errorText = cfg && cfg.error ? String(cfg.error) : '';
         window._adminPass = '';
+        if (errorText && errorText !== 'Forbidden' && errorText !== 'No password') {
+          return toast(`❌ ${errorText}`);
+        }
         _loginAttempts++;
         if (_loginAttempts >= 5) {
           _loginLockedUntil = Date.now() + 30000;
