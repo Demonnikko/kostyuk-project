@@ -1622,31 +1622,39 @@
 
       <!-- Scanner Section -->
       <div class="section" id="sec-scanner">
-        <div class="section-title">📷 Сканнер билетов</div>
-        
-        <div class="card" style="padding: 20px; margin-bottom: 20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-             <select id="scannerShowSelect" class="form-input" style="max-width: 200px;">
-               <option value="auto">Авто-определение</option>
-               <option value="secret">Шоу СЕКРЕТ</option>
-               <option value="huligan">Шоу ХУЛИgan</option>
-               <option value="matvey">Спасти Матвея</option>
-             </select>
-             <div>
-                <button class="btn btn-sm" id="btnStartScan" onclick="startScanner()" style="background:var(--gold); color:#000;">Начать скан</button>
-                <button class="btn btn-sm" id="btnStopScan" onclick="stopScanner()" style="display:none; background:#e85348;">Остановить</button>
-             </div>
+        <div class="section-title">📷 Сканер билетов</div>
+
+        <div class="card" style="padding: 22px; margin-bottom: 16px; max-width: 560px; margin-left:auto; margin-right:auto;">
+          <!-- Выбор шоу -->
+          <label style="display:block; font-size:12px; color:var(--dim); margin-bottom:6px; text-align:center;">Какое шоу проверяем</label>
+          <select id="scannerShowSelect" class="form-input" style="width:100%; max-width:280px; margin:0 auto 18px; display:block; text-align:center;">
+            <option value="auto">Авто-определение</option>
+            <option value="secret">Шоу СЕКРЕТ</option>
+            <option value="huligan">Шоу ХУЛИgan</option>
+            <option value="matvey">Спасти Матвея</option>
+          </select>
+
+          <!-- Область камеры -->
+          <div id="qr-reader" style="width:100%; max-width:420px; aspect-ratio:1/1; margin:0 auto 8px; border-radius:14px; overflow:hidden; background:#000; border:1px solid rgba(255,255,255,.08);"></div>
+          <p id="scannerHint" style="text-align:center; font-size:13px; color:var(--dim); margin-bottom:16px;">Нажмите «Запустить камеру» и наведите на QR-код билета</p>
+
+          <!-- Кнопки камеры -->
+          <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
+            <button class="btn" id="btnStartScan" onclick="startScanner()" style="background:var(--gold); color:#000; min-width:170px; font-weight:700;">📷 Запустить камеру</button>
+            <button class="btn" id="btnStopScan" onclick="stopScanner()" style="display:none; background:#e85348; color:#fff; min-width:170px;">⏹ Остановить</button>
           </div>
-          
-          <div id="qr-reader" style="width:100%; max-width: 500px; margin: 0 auto; border-radius: 8px; overflow: hidden; background: #000;"></div>
-          
-          <div style="margin-top: 20px; text-align: center;">
-            <input type="text" id="scannerInput" class="form-input" placeholder="Введите номер билета (например, SEC-X...)" style="max-width:300px; margin: 0 auto 10px auto;">
-            <button class="btn" onclick="manualScan()">Проверить вручную</button>
+
+          <!-- Ручной ввод -->
+          <div style="border-top:1px solid rgba(255,255,255,.08); padding-top:16px;">
+            <label style="display:block; font-size:12px; color:var(--dim); margin-bottom:6px; text-align:center;">Или введите номер билета вручную</label>
+            <div style="display:flex; gap:8px; max-width:380px; margin:0 auto;">
+              <input type="text" id="scannerInput" class="form-input" placeholder="Например, SEC-A1B2 или HUL-X..." style="flex:1;" onkeydown="if(event.key==='Enter'){manualScan();}">
+              <button class="btn" onclick="manualScan()" style="white-space:nowrap;">Проверить</button>
+            </div>
           </div>
         </div>
 
-        <div id="scanFeedback" class="card" style="display:none; text-align:center; padding: 40px 20px;">
+        <div id="scanFeedback" class="card" style="display:none; text-align:center; padding: 40px 20px; max-width:560px; margin:0 auto 16px;">
           <div id="scanFeedbackIcon" style="font-size: 64px; margin-bottom: 10px;"></div>
           <h2 id="scanFeedbackTitle" style="margin-bottom: 10px;"></h2>
           <p id="scanFeedbackText" style="color:var(--dim); font-size: 16px; margin-bottom: 20px;"></p>
@@ -1654,7 +1662,7 @@
         </div>
 
         <!-- Контроль зала: сколько куплено / прошло / ждём -->
-        <div class="card" style="padding: 18px; margin-bottom: 16px;">
+        <div class="card" style="padding: 18px; margin: 0 auto 16px; max-width:560px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
             <div class="section-title" style="margin:0; font-size:16px;">🎟 Контроль зала</div>
             <button class="btn btn-sm" onclick="loadScanStats()">↻ Обновить</button>
@@ -1677,7 +1685,7 @@
         </div>
 
         <!-- Кто уже прошёл (последние проходы) -->
-        <div class="card" style="padding: 18px;">
+        <div class="card" style="padding: 18px; max-width:560px; margin:0 auto;">
           <div class="section-title" style="margin:0 0 12px; font-size:16px;">✅ Кто прошёл</div>
           <div id="scanHistoryList" style="display:flex; flex-direction:column; gap:8px; font-size:14px;">
             <div style="color:var(--dim); text-align:center; padding:16px;">Нажмите «Обновить» выше, чтобы загрузить список</div>
@@ -7500,7 +7508,9 @@
       document.getElementById('btnStartScan').style.display = 'none';
       document.getElementById('btnStopScan').style.display = 'inline-block';
       document.getElementById('scanFeedback').style.display = 'none';
-      
+      const hint = document.getElementById('scannerHint');
+      if (hint) hint.innerText = '📷 Наведите камеру на QR-код билета зрителя';
+
       const config = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
       html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
       .catch((err) => {
@@ -7510,6 +7520,8 @@
     }
 
     function stopScanner() {
+      const hint = document.getElementById('scannerHint');
+      if (hint) hint.innerText = 'Нажмите «Запустить камеру» и наведите на QR-код билета';
       if (html5QrcodeScanner && html5QrcodeScanner.isScanning) {
         html5QrcodeScanner.stop().then(() => {
           document.getElementById('btnStartScan').style.display = 'inline-block';
