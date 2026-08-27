@@ -17,7 +17,7 @@ const TICKET_LINK_SECRET = process.env.TICKET_LINK_SECRET || '';
 // на прод-домен, и вебхук об оплате никогда не находил бы preview-бронь.
 const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app');
+  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://kostyuk-project.vercel.app');
 import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
 import {  sendEmail, buildTicketEmailHtml  } from '../../shared/email.js';
 import {  renderTicketImage  } from '../../shared/ticketImage.js';
@@ -25,7 +25,7 @@ const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();
 const TELEGRAM_HULIGAN_WEBAPP_URL = (process.env.TELEGRAM_HULIGAN_WEBAPP_URL || `${TICKET_PUBLIC_ORIGIN}/huligan.html`).trim();
-const ADMIN_PANEL_URL = (process.env.HULIGAN_ADMIN_PANEL_URL || 'https://vk-tickets.vercel.app/admin.html').trim();
+const ADMIN_PANEL_URL = (process.env.HULIGAN_ADMIN_PANEL_URL || 'https://kostyuk-project.vercel.app/admin/index.html').trim();
 const TG_INITDATA_MAX_AGE_SEC = Number(process.env.TG_INITDATA_MAX_AGE_SEC || 86400);
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const TBANK_HULIGAN_ENABLED_RAW = String(process.env.TBANK_HULIGAN_ENABLED || '').trim().toLowerCase();

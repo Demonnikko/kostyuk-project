@@ -19,7 +19,7 @@ const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREB
 // на прод-домен, и вебхук об оплате никогда не находил бы preview-бронь.
 const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app');
+  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://kostyuk-project.vercel.app');
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_SECRET_WEBAPP_URL = (process.env.TELEGRAM_SECRET_WEBAPP_URL || `${TICKET_PUBLIC_ORIGIN}/index.html`).trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();

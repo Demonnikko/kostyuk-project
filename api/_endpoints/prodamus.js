@@ -26,7 +26,7 @@ const PRODAMUS_ENABLED = String(process.env.PRODAMUS_ENABLED || '').trim().toLow
 const PRODAMUS_SECRET_KEY = String(process.env.PRODAMUS_SECRET_KEY || '').trim();
 const PRODAMUS_FORM_URL = String(process.env.PRODAMUS_FORM_URL || '').trim();
 const PRODAMUS_SYS = String(process.env.PRODAMUS_SYS || '').trim();
-const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
+const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://kostyuk-project.vercel.app';
 
 const LINK_TTL_MS = Number(process.env.PRODAMUS_LINK_TTL_MS || 20 * 60 * 1000); // 20 минут на оплату по ссылке
 const GRACE_MS = Number(process.env.PRODAMUS_GRACE_MS || 15 * 60 * 1000); // +15 минут запаса на доставку вебхука

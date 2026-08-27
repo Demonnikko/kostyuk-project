@@ -6,7 +6,7 @@ const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREB
 // автоматически — иначе ссылка на билет всегда вела бы на прод-домен.
 const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app');
+  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://kostyuk-project.vercel.app');
 const TICKET_LINK_SECRET = process.env.TICKET_LINK_SECRET || '';
 
 const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted']);

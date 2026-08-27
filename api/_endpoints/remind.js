@@ -137,7 +137,7 @@ export default async (req, res) => {
         const linkRes = await issueTicketLink(b.id);
         const ticketUrl = linkRes.ok
           ? linkRes.url
-          : `https://vk-tickets.vercel.app/index.html`;
+          : `https://kostyuk-project.vercel.app/index.html`;
         await vkSend(b.vkUserId,
           `🎟 Ваш билет:\n${ticketUrl}`
         );

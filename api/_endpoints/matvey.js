@@ -21,7 +21,7 @@ import { isAdminAuthorized } from '../../shared/adminAuth.js';
 
 const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app');
+  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://kostyuk-project.vercel.app');
 
 const BOOKING_ID_RE = /^[A-Z0-9-]{4,40}$/i;
 const SEAT_KEY_RE = /^([rt]\d+_\d+|d[lr]_\d+|lampa)$/;
