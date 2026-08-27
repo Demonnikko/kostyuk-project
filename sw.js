@@ -1,5 +1,5 @@
 // Простой офлайн-кэш шелла
-const CACHE_NAME = 'kostyuk-ecosystem-v29';
+const CACHE_NAME = 'kostyuk-ecosystem-v30';
 const ASSETS = [
   '/',
   '/index.html',

@@ -2235,32 +2235,59 @@
         }
       };
 
+      // Успешное оформление: сохраняем ключи и идём к оплате
+      function bookingSucceeded() {
+        localStorage.setItem('huligan_last_booking_id', bookingId);
+        localStorage.setItem('huligan_last_client_key', clientKey);
+        booking.lastBookingId = bookingId;
+        booking.lastClientKey = clientKey;
+        btn.disabled = false;
+        btn.textContent = 'Забронировать';
+        goToStep(4);
+      }
+      // Если запрос оборвался (таймаут/cold start/мобильная сеть) — проверяем,
+      // не создалась ли бронь на самом деле. Если да — тихо продолжаем к оплате.
+      async function bookingWasActuallyCreated() {
+        try {
+          var check = await fetch('/api/huligan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_booking', bookingId: bookingId, clientKey: clientKey }),
+          });
+          return check.ok;
+        } catch (e) { return false; }
+      }
+
+      // Таймаут запроса: 20с. Мягкая обработка обрыва вместо «Ошибка сети».
+      var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      var to = ctrl ? setTimeout(function(){ ctrl.abort(); }, 20000) : null;
       try {
         var r = await fetch('/api/huligan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
+          signal: ctrl ? ctrl.signal : undefined,
         });
-        var json = await r.json();
+        if (to) clearTimeout(to);
         if (r.ok) {
-          localStorage.setItem('huligan_last_booking_id', bookingId);
-          localStorage.setItem('huligan_last_client_key', clientKey);
-          
-          booking.lastBookingId = bookingId;
-          booking.lastClientKey = clientKey;
-          
-          btn.disabled = false;
-          btn.textContent = 'Забронировать';
-          goToStep(4);
+          bookingSucceeded();
         } else {
+          var json = {};
+          try { json = await r.json(); } catch (e) {}
           alert('Не удалось оформить бронирование: ' + (json.error || 'попробуйте позже.'));
           btn.disabled = false;
           btn.textContent = 'Забронировать';
         }
       } catch (err) {
-        alert('Ошибка сети. Попробуйте ещё раз.');
-        btn.disabled = false;
-        btn.textContent = 'Забронировать';
+        if (to) clearTimeout(to);
+        // Запрос оборвался — но бронь могла успеть создаться на сервере.
+        if (await bookingWasActuallyCreated()) {
+          bookingSucceeded();
+        } else {
+          alert('Не удалось связаться с сервером. Проверьте интернет и попробуйте ещё раз.');
+          btn.disabled = false;
+          btn.textContent = 'Забронировать';
+        }
       }
       return false;
     }
