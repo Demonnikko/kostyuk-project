@@ -1474,8 +1474,8 @@
           <button class="eye-btn" type="button" onclick="togglePass('loginPwd',this)" tabindex="-1">👁</button>
         </div>
       </div>
-      <button class="btn-primary" onclick="doLogin()">Войти</button>
-      <button id="touchIdLoginBtn" onclick="loginWithTouchId()" style="display:none;width:100%;margin-top:10px;padding:12px;background:rgba(201,162,39,0.12);border:1px solid rgba(201,162,39,0.4);color:var(--gold);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">☝️ Войти по Touch ID</button>
+      <button id="touchIdLoginBtn" onclick="loginWithTouchId()" style="display:none;width:100%;margin-bottom:10px;padding:14px;background:linear-gradient(135deg,#f0d98b,#d6ac45);border:none;color:#000;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer">🔓 Войти по Face ID</button>
+      <button class="btn-primary" onclick="doLogin()">Войти по паролю</button>
       <div class="login-hint" style="opacity:0.4">Введите пароль администратора</div>
     </div>
   </div>
@@ -4704,7 +4704,25 @@
     function b64e(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
     function b64d(s) { return Uint8Array.from(atob(s), c => c.charCodeAt(0)); }
 
-    // Показываем/прячем кнопки Touch ID в зависимости от поддержки и наличия привязки
+    // rp.id для WebAuthn: базовый домен, чтобы биометрия работала и на www,
+    // и на будущем поддомене admin.kostyukproject.ru. На vercel.app / localhost
+    // используем текущий хост как есть.
+    function tidRpId() {
+      const h = location.hostname;
+      if (h.endsWith('kostyukproject.ru')) return 'kostyukproject.ru';
+      return h; // vercel.app, localhost и пр. — сам хост
+    }
+
+    // Название биометрии под устройство: Face ID (iPhone) / Touch ID (Mac) / отпечаток (Android)
+    function bioName() {
+      const ua = navigator.userAgent;
+      if (/iPhone|iPad/.test(ua)) return 'Face ID';
+      if (/Macintosh/.test(ua)) return 'Touch ID';
+      if (/Android/.test(ua)) return 'отпечаток';
+      return 'биометрию';
+    }
+
+    // Показываем/прячем кнопки биометрии в зависимости от поддержки и наличия привязки
     async function touchIdInit() {
       const statusEl = document.getElementById('touchIdStatus');
       const bindBtn = document.getElementById('touchIdBindBtn');
@@ -4712,14 +4730,18 @@
       const supported = window.PublicKeyCredential && typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function';
       const available = supported ? await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(() => false) : false;
       const bound = !!localStorage.getItem(TID_CRED) && !!localStorage.getItem(TID_ENC);
+      const bio = bioName();
 
-      if (loginBtn) loginBtn.style.display = (available && bound) ? '' : 'none';
-      if (statusEl) {
-        statusEl.textContent = !available ? '⚠️ Устройство не поддерживает Touch ID / Face ID для сайтов.'
-          : bound ? '✅ Touch ID привязан на этом устройстве. Вход по отпечатку доступен.'
-            : 'Привяжите Touch ID, чтобы входить по отпечатку (пароль останется резервным).';
+      if (loginBtn) {
+        loginBtn.style.display = (available && bound) ? '' : 'none';
+        loginBtn.textContent = '🔓 Войти по ' + bio;
       }
-      if (bindBtn) { bindBtn.style.display = available ? '' : 'none'; bindBtn.textContent = bound ? '☝️ Перепривязать Touch ID' : '☝️ Привязать Touch ID на этом устройстве'; }
+      if (statusEl) {
+        statusEl.textContent = !available ? `⚠️ Устройство не поддерживает ${bio} для сайтов.`
+          : bound ? `✅ ${bio} привязан на этом устройстве. Быстрый вход доступен.`
+            : `Привяжите ${bio}, чтобы входить без пароля (пароль останется резервным).`;
+      }
+      if (bindBtn) { bindBtn.style.display = available ? '' : 'none'; bindBtn.textContent = bound ? `☝️ Перепривязать ${bio}` : `☝️ Привязать ${bio} на этом устройстве`; }
     }
 
     // Получить AES-ключ из WebAuthn PRF (или фолбэк на детерминированный из rawId)
@@ -4739,7 +4761,7 @@
         const cred = await navigator.credentials.create({
           publicKey: {
             challenge: crypto.getRandomValues(new Uint8Array(32)),
-            rp: { name: 'KOSTYUK PROJECT Admin' },
+            rp: { name: 'KOSTYUK PROJECT Admin', id: tidRpId() },
             user: { id: new TextEncoder().encode('kostyuk-admin'), name: 'admin', displayName: 'Администратор' },
             pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
             authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
@@ -4754,21 +4776,22 @@
         const enc = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(pass));
         localStorage.setItem(TID_CRED, b64e(cred.rawId));
         localStorage.setItem(TID_ENC, JSON.stringify({ iv: b64e(iv), data: b64e(enc) }));
-        toast('☝️ Touch ID привязан!');
+        toast('☝️ ' + bioName() + ' привязан!');
         touchIdInit();
       } catch (e) {
-        toast('Не удалось привязать Touch ID: ' + (e.message || e.name));
+        toast('Не удалось привязать ' + bioName() + ': ' + (e.message || e.name));
       }
     }
 
     async function loginWithTouchId() {
       const credId = localStorage.getItem(TID_CRED);
       const encRaw = localStorage.getItem(TID_ENC);
-      if (!credId || !encRaw) return toast('Touch ID не привязан на этом устройстве');
+      if (!credId || !encRaw) return toast(bioName() + ' не привязан на этом устройстве');
       try {
         const assertion = await navigator.credentials.get({
           publicKey: {
             challenge: crypto.getRandomValues(new Uint8Array(32)),
+            rpId: tidRpId(),
             allowCredentials: [{ type: 'public-key', id: b64d(credId) }],
             userVerification: 'required',
             extensions: { prf: { eval: { first: new TextEncoder().encode('kostyuk-admin-prf') } } },
@@ -4783,7 +4806,7 @@
         document.getElementById('loginPwd').value = pass;
         doLogin();
       } catch (e) {
-        toast('Touch ID не сработал. Войдите паролем.');
+        toast(bioName() + ' не сработал. Войдите паролем.');
       }
     }
 
