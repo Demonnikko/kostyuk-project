@@ -7,6 +7,7 @@ const routes = {
   'checkin': () => import('./_endpoints/checkin.js'),
   'huligan': () => import('./_endpoints/huligan.js'),
   'lead-concert': () => import('./_endpoints/lead-concert.js'),
+  'matvey': () => import('./_endpoints/matvey.js'),
   'matvey-seats': () => import('./_endpoints/matvey-seats.js'),
   'lead-school': () => import('./_endpoints/lead-school.js'),
   'lead-show': () => import('./_endpoints/lead-show.js'),
@@ -16,6 +17,7 @@ const routes = {
   'ticket-booking': () => import('./_endpoints/ticket-booking.js'),
   'ticket-data': () => import('./_endpoints/ticket-data.js'),
   'ticket-link': () => import('./_endpoints/ticket-link.js'),
+  'track': () => import('./_endpoints/track.js'),
   'widget-image': () => import('./_endpoints/widget-image.js')
 };
 

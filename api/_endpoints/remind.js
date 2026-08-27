@@ -43,27 +43,10 @@ async function fbPut(path, data) {
   } catch { }
 }
 
+// Боты убраны — напоминания через VK отключены (no-op). Cron остаётся живым,
+// но наружу ничего не шлёт. Напоминания перенесём на веб/SMS позже.
 async function vkSend(userId, text, keyboard) {
-  if (!VK_TOKEN) return null;
-  const params = new URLSearchParams({
-    peer_id: userId,
-    message: text,
-    random_id: crypto.randomInt(1, 2_000_000_000),
-    access_token: VK_TOKEN,
-    v: '5.199'
-  });
-  if (keyboard) params.set('keyboard', JSON.stringify(keyboard));
-  try {
-    const r = await fetch('https://api.vk.com/method/messages.send', {
-      method: 'POST', body: params
-    });
-    const d = await r.json();
-    if (d.error) console.warn('[remind] vkSend error:', JSON.stringify(d.error));
-    return d;
-  } catch (e) {
-    console.error('[remind] vkSend exception:', e.message);
-    return null;
-  }
+  return null;
 }
 
 // Клавиатура для запроса отзыва

@@ -1,13 +1,13 @@
 /* Main Events Page CSS */
     /* ===== VARIABLES & RESET ===== */
     :root {
-      --bg: #000;
-      --text: #eee;
-      --gold: #CBA135;
-      --gold2: #E7C776;
+      --bg: #030303;
+      --text: #f5f0e5;
+      --gold: #d6ac45;
+      --gold2: #f0d98b;
       --gold3: #f5e6b8;
-      --panel: rgba(12, 12, 18, .75);
-      --card: rgba(18, 19, 26, .92);
+      --panel: rgba(10, 10, 12, .75);
+      --card: rgba(17, 17, 20, .92);
       --r: 14px;
       --ff-head: 'Cinzel', serif;
       --ff-text: 'Inter', sans-serif;
@@ -257,7 +257,7 @@
     }
 
     .hero__fallback {
-      z-index: -1;
+      z-index: -2;
       opacity: 1;
       transition: opacity 1.2s ease-in-out;
       pointer-events: none;
@@ -556,7 +556,7 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      color: #9fb0d0;
+      color: #aaa69d;
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
@@ -947,7 +947,7 @@
       padding: 2px 8px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, .16);
-      color: #9cb5d8;
+      color: #aaa69d;
       font-size: .72rem;
       letter-spacing: .03em;
       text-transform: uppercase;
@@ -1654,6 +1654,388 @@
     .swiper-button-next:after,
     .swiper-button-prev:after {
       font-size: 18px !important;
+    }
+
+
+    /* ===== EVENTS AUTHOR SHOWS PARITY FIXES ===== */
+    #formats {
+      max-width: 1160px;
+    }
+
+    .packGrid--formats {
+      width: min(100%, 1080px);
+      max-width: 1080px;
+      grid-template-columns: repeat(3, minmax(310px, 1fr));
+      gap: 24px;
+    }
+
+    .packGrid--formats .pack {
+      min-width: 0;
+      min-height: 100%;
+      padding: 1.45rem 1.25rem;
+      border-radius: 18px;
+    }
+
+    .packGrid--formats .pack h3 {
+      font-size: clamp(20px, 2.1vw, 24px);
+      line-height: 1.15;
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+      text-wrap: balance;
+    }
+
+    .packGrid--formats .pack ul {
+      font-size: .94rem;
+      line-height: 1.55;
+    }
+
+    .packGrid--formats .pack .btn {
+      height: 54px;
+      min-height: 54px;
+      padding: 0 12px;
+      border-radius: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 13px;
+      letter-spacing: .02em;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .events-shows-section {
+      max-width: 1180px;
+      padding: 4.5rem 16px 4rem;
+    }
+
+    .events-shows-grid {
+      width: min(100%, 1120px);
+      margin: 28px auto 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+      align-items: start;
+    }
+
+    .events-show-card {
+      --show-card-accent: rgba(214, 172, 69, .55);
+      --show-card-frame: rgba(231, 199, 118, .26);
+      --show-card-badge: #e7c776;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      border-radius: 24px;
+      background: #07070c;
+      isolation: isolate;
+      transform: translateZ(0);
+      transition: transform .55s cubic-bezier(.2, .8, .2, 1), filter .35s ease;
+    }
+
+    .events-show-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .events-show-card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      z-index: -1;
+      border-radius: 26px;
+      background: radial-gradient(circle at 50% 18%, var(--show-card-accent), transparent 58%);
+      opacity: .45;
+      filter: blur(18px);
+      transition: opacity .35s ease;
+    }
+
+    .events-show-card:hover::before {
+      opacity: .78;
+    }
+
+    .events-show-card__poster {
+      display: block;
+      width: 100%;
+      aspect-ratio: 720 / 1080;
+      height: auto;
+      object-fit: contain;
+      background: #050507;
+      transition: filter .35s ease;
+    }
+
+    .events-show-card:hover .events-show-card__poster {
+      filter: brightness(1.04);
+    }
+
+    .events-show-card__frame {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border: 1px solid var(--show-card-frame);
+      border-radius: 24px;
+      box-shadow: inset 0 0 70px rgba(0, 0, 0, .45);
+      pointer-events: none;
+    }
+
+    .events-show-card__overlay {
+      display: none;
+    }
+
+    .events-show-card__content {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      gap: 12px;
+      padding: 16px 18px 18px;
+      background: #07070c;
+      color: #fff;
+      text-align: left;
+    }
+
+    .events-show-card__badge {
+      display: inline-flex;
+      justify-self: start;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1.5px solid color-mix(in srgb, var(--show-card-badge) 70%, transparent);
+      color: var(--show-card-badge);
+      font: 800 11px var(--ff-text);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .events-show-card__content strong {
+      color: var(--show-card-badge);
+      font: 900 clamp(22px, 2.8vw, 34px) var(--ff-head);
+      line-height: 1;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .events-show-card__content small {
+      color: rgba(245, 240, 229, .74);
+      font: 600 13px var(--ff-text);
+      line-height: 1.35;
+    }
+
+    .events-show-card__content em {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      width: 100%;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fff0c2 0%, var(--gold2) 100%);
+      color: #141006;
+      font: 900 12px var(--ff-text);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-style: normal;
+      white-space: nowrap;
+    }
+
+    .events-show-card__content em::after {
+      content: '→';
+      margin-left: 10px;
+      font-weight: 900;
+    }
+
+    .events-show-card--huligan {
+      --show-card-accent: rgba(255, 110, 0, .58);
+      --show-card-frame: rgba(255, 110, 0, .42);
+      --show-card-badge: #ff6e00;
+    }
+
+    .events-show-card--huligan .events-show-card__poster {
+      aspect-ratio: 1055 / 1491;
+    }
+
+    .events-show-card--huligan .events-show-card__content {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .82) 24%, rgba(0, 0, 0, .95));
+    }
+
+    .events-show-card--huligan .events-show-card__content em {
+      background: linear-gradient(135deg, #ff9000 0%, #ff6a00 100%);
+      color: #1a0800;
+    }
+
+    .events-show-card--matvey {
+      --show-card-accent: rgba(174, 105, 255, .52);
+      --show-card-frame: rgba(184, 126, 255, .38);
+      --show-card-badge: #b979ff;
+    }
+
+    .events-show-card--matvey .events-show-card__content em {
+      background: linear-gradient(135deg, #c996ff 0%, #9d5df5 100%);
+      color: #15051d;
+    }
+
+
+
+    .events-shows-carousel.swiper-concerts {
+      width: min(100%, 760px);
+      margin: 24px auto 0;
+      padding: 18px 58px 42px;
+      overflow: hidden;
+    }
+
+    .events-shows-carousel.swiper-concerts .swiper-wrapper {
+      align-items: center;
+    }
+
+    .events-shows-carousel.swiper-concerts .swiper-slide {
+      width: clamp(260px, 22vw, 330px);
+      height: auto;
+      aspect-ratio: 2 / 3;
+      border-radius: 18px;
+      background: #050507;
+      box-shadow: 0 18px 58px rgba(0, 0, 0, .72), 0 0 0 1px rgba(214, 172, 69, .18);
+    }
+
+    .events-shows-carousel.swiper-concerts .swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #050507;
+    }
+
+    .events-shows-carousel .swiper-button-next,
+    .events-shows-carousel .swiper-button-prev {
+      top: 50%;
+      width: 42px;
+      height: 42px;
+      margin-top: -21px;
+      border-color: rgba(214, 172, 69, .45);
+      background: rgba(5, 5, 7, .72);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
+    }
+
+    .events-shows-carousel .swiper-button-prev {
+      left: 8px;
+    }
+
+    .events-shows-carousel .swiper-button-next {
+      right: 8px;
+    }
+
+    .events-shows-carousel + .concert-info-container {
+      min-height: 108px;
+      margin-top: 0;
+    }
+
+    .events-shows-link {
+      margin: 30px auto 0;
+      display: flex;
+      justify-content: center;
+      padding: 0 16px;
+    }
+
+    .events-shows-link__button {
+      width: auto;
+      min-width: 230px;
+      max-width: calc(100vw - 40px);
+      height: 52px;
+      min-height: 52px;
+      padding: 0 28px;
+      border-radius: 999px;
+      white-space: nowrap;
+      line-height: 1;
+      letter-spacing: .03em;
+    }
+
+    body #formats .packGrid--formats .pack .btn.btn--primary {
+      height: 54px !important;
+      min-height: 54px !important;
+      padding: 0 12px !important;
+      border-radius: 14px !important;
+      font-size: 13px !important;
+      letter-spacing: .02em !important;
+      line-height: 1 !important;
+      text-transform: none !important;
+    }
+
+    body .events-shows-link .events-shows-link__button.btn--primary {
+      height: 52px !important;
+      min-height: 52px !important;
+      padding: 0 28px !important;
+      border-radius: 999px !important;
+      font-size: 15px !important;
+      letter-spacing: .03em !important;
+      line-height: 1 !important;
+      text-transform: none !important;
+    }
+
+    .events-shows-link__button:hover,
+    .events-shows-link__button:active {
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, var(--gold), var(--gold2), var(--gold3));
+      color: #111;
+      border: none;
+      box-shadow: 0 8px 26px rgba(203, 161, 53, .35), inset 0 1px 0 rgba(255,255,255,.28);
+      text-shadow: none;
+    }
+
+    @media (max-width: 980px) {
+      #formats {
+        max-width: 500px;
+      }
+
+      .packGrid--formats {
+        width: min(100%, 440px);
+        max-width: 440px;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .packGrid--formats .pack {
+        padding: 1.35rem 1.2rem;
+      }
+
+      .events-shows-section {
+        max-width: 480px;
+        padding-top: 4rem;
+      }
+
+      .events-shows-grid {
+        width: min(100%, 420px);
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+
+      .events-shows-carousel.swiper-concerts {
+        width: min(100%, 390px);
+        padding: 14px 42px 34px;
+      }
+
+      .events-shows-carousel.swiper-concerts .swiper-slide {
+        width: clamp(230px, 68vw, 280px);
+      }
+
+      .events-shows-carousel + .concert-info-container {
+        min-height: 120px;
+      }
+
+      .events-show-card {
+        border-radius: 20px;
+      }
+
+      .events-show-card__frame {
+        border-radius: 20px;
+      }
+
+      .events-show-card:hover {
+        transform: none;
+      }
     }
 
     /* Photo Gallery Swiper */

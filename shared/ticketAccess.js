@@ -2,7 +2,11 @@ import crypto from 'crypto';
 
 const FB_URL = process.env.FIREBASE_DB_URL || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
-const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
+// На preview-деплоях (у каждого свой временный URL) используем VERCEL_URL
+// автоматически — иначе ссылка на билет всегда вела бы на прод-домен.
+const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app');
 const TICKET_LINK_SECRET = process.env.TICKET_LINK_SECRET || '';
 
 const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted']);

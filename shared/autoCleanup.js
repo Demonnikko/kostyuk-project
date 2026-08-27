@@ -19,6 +19,20 @@ function canRun(scope) {
   return (nowTs() - st.lastRunAt) >= CLEANUP_INTERVAL_MS;
 }
 
+/**
+ * true, если у брони есть активная попытка оплаты Prodamus, чей grace-период
+ * (linkExpiredAt + 15 мин, см. api/_endpoints/prodamus.js) ещё не истёк.
+ * Пока это так, автоочистка НЕ должна отменять бронь/место — иначе можно
+ * отменить бронь прямо во время того как покупатель уже платит по ссылке.
+ */
+function hasActivePaymentHold(booking, now) {
+  const attemptId = booking?.activePaymentAttemptId;
+  if (!attemptId) return false;
+  const attempt = booking?.payments?.[attemptId];
+  const holdUntil = Number(attempt?.paymentHoldUntil || 0);
+  return holdUntil > now;
+}
+
 async function releaseSecretSeats(bookingIds) {
   if (!bookingIds || !bookingIds.size) return 0;
   const seats = await fbGet('ticket_seats') || {};
@@ -53,6 +67,7 @@ async function runSecretAutoCleanup() {
       if (!Number.isFinite(createdAt) || createdAt <= 0) continue;
       if (Number(b?.paidAt || 0) > 0) continue;
       if ((now - createdAt) < SECRET_RESERVE_MS) continue;
+      if (hasActivePaymentHold(b, now)) continue;
       expired.push(id);
     }
     if (!expired.length) return { ok: true, cancelled: 0, released: 0 };
@@ -67,6 +82,7 @@ async function runSecretAutoCleanup() {
       if (!Number.isFinite(createdAt) || createdAt <= 0) continue;
       if (Number(latest?.paidAt || 0) > 0) continue;
       if ((now - createdAt) < SECRET_RESERVE_MS) continue;
+      if (hasActivePaymentHold(latest, now)) continue;
       await fbPatch(`ticket_bookings/${id}`, {
         status: 'cancelled',
         cancelledAt: now,
@@ -86,6 +102,24 @@ async function runSecretAutoCleanup() {
   }
 }
 
+async function releaseHuliganSeats(bookingIds) {
+  if (!bookingIds || !bookingIds.size) return 0;
+  const seats = await fbGet('huligan_seats') || {};
+  let released = 0;
+  const jobs = [];
+  for (const [seatKey, seatData] of Object.entries(seats)) {
+    const bid = String(seatData?.bookingId || '').trim();
+    if (!bid || !bookingIds.has(bid)) continue;
+    jobs.push(
+      fbPut(`huligan_seats/${seatKey}`, { status: 'available' })
+        .then(() => { released += 1; })
+        .catch(() => {})
+    );
+  }
+  if (jobs.length) await Promise.all(jobs);
+  return released;
+}
+
 async function runHuliganAutoCleanup() {
   if (!canRun('huligan')) return { ok: true, skipped: true };
   const st = _state.huligan;
@@ -95,6 +129,7 @@ async function runHuliganAutoCleanup() {
     const all = await fbGet('huligan_bookings') || {};
     const now = nowTs();
     let cancelled = 0;
+    const cancelledSet = new Set();
     for (const [id, b] of Object.entries(all)) {
       const status = String(b?.status || '').toLowerCase();
       const createdAt = Number(b?.createdAt || 0);
@@ -102,6 +137,7 @@ async function runHuliganAutoCleanup() {
       if (!Number.isFinite(createdAt) || createdAt <= 0) continue;
       if (Number(b?.paidAt || 0) > 0) continue;
       if ((now - createdAt) < HULIGAN_RESERVE_MS) continue;
+      if (hasActivePaymentHold(b, now)) continue;
 
       const latest = await fbGet(`huligan_bookings/${id}`);
       if (!latest) continue;
@@ -111,6 +147,7 @@ async function runHuliganAutoCleanup() {
       if (!Number.isFinite(latestCreatedAt) || latestCreatedAt <= 0) continue;
       if (Number(latest?.paidAt || 0) > 0) continue;
       if ((now - latestCreatedAt) < HULIGAN_RESERVE_MS) continue;
+      if (hasActivePaymentHold(latest, now)) continue;
 
       await fbPatch(`huligan_bookings/${id}`, {
         status: 'cancelled',
@@ -119,8 +156,10 @@ async function runHuliganAutoCleanup() {
         cancelReason: 'Автоотмена: истекло 10 минут на оплату'
       }).catch(() => {});
       cancelled += 1;
+      cancelledSet.add(id);
     }
-    return { ok: true, cancelled };
+    const released = await releaseHuliganSeats(cancelledSet);
+    return { ok: true, cancelled, released };
   } catch {
     return { ok: false };
   } finally {

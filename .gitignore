@@ -9,3 +9,8 @@ node_modules/
 .agents/
 scratch/
 .worktrees/
+.env*.local
+.backups/
+.superpowers/
+*.bak
+ticketing-sites/

@@ -1032,6 +1032,7 @@
     function openAssistant() {
       var ov = document.getElementById('assistantOverlay');
       ov.style.display = 'block';
+      document.body.style.overflow = 'hidden';
 
       // Первое приветствие — два сообщения с эффектом "печатает"
       if (assistantMessages.length === 0) {
@@ -1066,6 +1067,7 @@
 
     function closeAssistant() {
       document.getElementById('assistantOverlay').style.display = 'none';
+      document.body.style.overflow = '';
     }
 
     function addAssistantBubble(role, text) {

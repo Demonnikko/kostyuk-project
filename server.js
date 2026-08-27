@@ -1,12 +1,44 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { createReadStream } from 'node:fs';
+import { createReadStream, existsSync, readFileSync } from "node:fs";
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+function parseEnvValue(value) {
+  const trimmed = String(value || "").trim();
+  const quote = trimmed[0];
+  if ((quote === "\"" || quote?.charCodeAt(0) === 39) && trimmed.endsWith(quote)) {
+    const unquoted = trimmed.slice(1, -1);
+    return quote === "\"" ? unquoted.replace(/\\n/g, "\n").replace(/\\r/g, "\r") : unquoted;
+  }
+  return trimmed;
+}
+
+function loadLocalEnv(files) {
+  const shellKeys = new Set(Object.keys(process.env));
+  for (const fileName of files) {
+    const fullPath = path.join(__dirname, fileName);
+    if (!existsSync(fullPath)) continue;
+    const lines = readFileSync(fullPath, "utf8").split(/\r?\n/);
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const cleanLine = trimmed.startsWith("export ") ? trimmed.slice(7).trim() : trimmed;
+      const eq = cleanLine.indexOf("=");
+      if (eq <= 0) continue;
+      const key = cleanLine.slice(0, eq).trim();
+      if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key) || shellKeys.has(key)) continue;
+      process.env[key] = parseEnvValue(cleanLine.slice(eq + 1));
+    }
+  }
+}
+
+loadLocalEnv([".env", ".env.local", ".env.vercel.local"]);
 const rootDir = __dirname;
 const port = Number(process.env.PORT || 3000);
+const host = process.env.HOST || '0.0.0.0';
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -359,6 +391,6 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(port, '0.0.0.0', () => {
-  console.log(`KOSTYUK PROJECT server started on port ${port}`);
+server.listen(port, host, () => {
+  console.log(`KOSTYUK PROJECT server started on http://${host}:${port}`);
 });

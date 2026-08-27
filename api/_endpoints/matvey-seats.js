@@ -19,6 +19,7 @@ export default async function handler(req, res) {
       const cfg = await fbGet('matvey_config') || {};
       return res.status(200).json({
         show: cfg.show || null,
+        prices: cfg.prices || null,
         salesPaused: Boolean(cfg.show?.salesPaused),
         metrics: {
           yandexCounterId: String(process.env.YM_MATVEY_COUNTER_ID || '').trim()

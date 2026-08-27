@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
+  <meta name="theme-color" content="#030303">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Школа фокусов в Ярославле для детей | ABRACADABRA — Дмитрий Костюк</title>
   <meta name="description" content="Детская школа фокусов ABRACADABRA в Ярославле для детей 7–13 лет. Обучение иллюзионному искусству, актерскому мастерству и уверенности от иллюзиониста Дмитрия Костюка." />
@@ -31,29 +32,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="../images/kp-apple-touch.png" />
   <link rel="shortcut icon" href="../images/kp-favicon-32.png" />
   <link rel="stylesheet" href="../vendor/fonts/fonts.css" />
-  <link rel="stylesheet" href="../ecosystem.css?v=4" />
-  <link rel="stylesheet" href="school.css?v=2">
+  <link rel="stylesheet" href="../ecosystem.css?v=39" />
+  <link rel="stylesheet" href="school.css?v=10">
 </head>
-<body>
-
-  <header class="header">
-    <div class="header-inner">
-      <a href="#" class="logo-link"><img src="assets/logo/logo-small.png" alt="" width="32" height="32" /><span class="logo-link__text">Abracadabra<small>BY KOSTYUK PROJECT</small></span></a>
-      <nav class="header-nav" id="headerNav">
-        <a href="#benefits">Выгоды</a>
-        <a href="#results">Результаты</a>
-        <a href="#program">Программа</a>
-        <a href="#app">Приложение</a>
-        <a href="#creator">Создатель</a>
-        <a href="#faq">Вопросы</a>
-        <a href="#video">Видео</a>
-        <a href="#contact" style="color:var(--gold)">Контакты</a>
-      </nav>
-      <a href="tel:+79092763386" class="header-phone">+7 909 276-33-86</a>
-      <button type="button" onclick="toggleProjectSwitcher(true)" style="font-family: var(--font-body); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); border: 1px solid var(--gold-border); padding: 7px 16px; border-radius: 100px; background: transparent; cursor: pointer; margin-left: 8px; transition: all 0.3s;">Все проекты</button>
-      <button class="nav-toggle" id="navToggle">☰</button>
-    </div>
-  </header>
+<body class="school-page">
 
   <section class="hero">
     <div class="hero-content">
@@ -403,37 +385,6 @@
 
   <script src="school.js?v=2" defer></script>
 
-  <div class="project-switcher" id="projectSwitcher" aria-hidden="true">
-    <button class="project-switcher__backdrop" type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть меню"></button>
-    <section class="project-switcher__panel" role="dialog" aria-modal="true" aria-labelledby="projectSwitcherTitle">
-      <div class="project-switcher__head">
-        <div><span>KOSTYUK PROJECT</span><h2 id="projectSwitcherTitle">Выберите направление</h2></div>
-        <button type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть">×</button>
-      </div>
-      <div class="project-switcher__list">
-        <a class="switcher-item--shows" href="../concerts/index.html">
-          <span class="switcher-index">01</span>
-          <strong>Авторские шоу</strong>
-          <span>Афиша · билеты · гастроли</span>
-          <b>Смотреть афишу <i>↗</i></b>
-        </a>
-        <a class="switcher-item--events" href="../events/index.html">
-          <span class="switcher-index">02</span>
-          <strong>Частные события</strong>
-          <span>Свадьбы · корпоративы · праздники</span>
-          <b>Выбрать выступление <i>↗</i></b>
-        </a>
-        <a class="switcher-item--school is-current" href="#top" onclick="toggleProjectSwitcher(false)">
-          <span class="switcher-index">03</span>
-          <div class="switcher-badge">Вы здесь</div>
-          <strong style="margin-top: 10px;">Школа фокусов</strong>
-          <span>Обучение детей 7–13 лет</span>
-          <b>Активно <i>✓</i></b>
-        </a>
-      </div>
-    </section>
-  </div>
-
   <!-- ===== KOSTYUK PORTAL ===== -->
   <div id="kostyukPortal">
     <div class="kp-vignette"></div>
@@ -448,11 +399,6 @@
   </div>
 
   <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
-  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
-    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-      <path d="M21.9 2.1c-.2-.2-.5-.2-.8-.1L1.8 9.7c-.3.1-.5.4-.5.7 0 .3.2.6.5.7l5.3 1.9 2.2 6.7c.1.3.3.5.6.5.1 0 .2 0 .3-.1l3.2-2.6 4.6 3.4c.2.1.4.1.6 0 .2-.1.3-.3.3-.5L22.5 2.7c0-.3-.4-.5-.6-.6zM8.5 12.1l9.4-6.3-7.7 7.6c-.1.1-.2.2-.2.4l-.5 2.7-1-3.9c0-.3 0-.5.1-.6z"/>
-    </svg>
-  </a>
 
 
   <!-- Yandex.Metrika counter -->
@@ -473,5 +419,6 @@
   <noscript><div><img src="https://mc.yandex.ru/watch/107696179" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
 
+<script src="/ecosystem.js?v=11" data-root="/" data-section="school" defer></script>
 </body>
 </html>

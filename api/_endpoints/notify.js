@@ -97,51 +97,15 @@ async function fbSaveNotification(text, event, bookingId) {
   } catch { }
 }
 
+// Боты Telegram/VK убраны — всё через сайт. Отправка отключена (no-op):
+// сохраняем сигнатуру и форму ответа, чтобы вызывающий код не ломался,
+// но наружу ничего не уходит. Логика событий и admin_notifications работают.
 async function vkSend(userId, text) {
-  if (!VK_TOKEN) return { ok: false, vkError: { error_msg: 'VK_TOKEN is not configured' } };
-  const params = new URLSearchParams({
-    peer_id: userId,
-    message: text,
-    random_id: crypto.randomInt(1, 2_000_000_000),
-    access_token: VK_TOKEN,
-    v: '5.199'
-  });
-  const r = await fetch('https://api.vk.com/method/messages.send', {
-    method: 'POST',
-    body: params
-  });
-  const data = await r.json();
-  if (data.error) {
-    console.error('[notify] vkSend error:', JSON.stringify(data.error));
-    return { ok: false, vkError: data.error };
-  }
-  return { ok: true };
+  return { ok: false, disabled: true };
 }
 
 async function tgSend(chatId, text, opts = {}) {
-  if (!TELEGRAM_BOT_TOKEN || !chatId) return { ok: false, error: { description: 'TELEGRAM_BOT_TOKEN/CHAT_ID is not configured' } };
-  try {
-    const payload = {
-      chat_id: String(chatId),
-      text: String(text),
-      disable_web_page_preview: true
-    };
-    if (opts && typeof opts === 'object') {
-      if (opts.reply_markup) payload.reply_markup = opts.reply_markup;
-      if (opts.parse_mode) payload.parse_mode = String(opts.parse_mode);
-    }
-    const r = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const data = await r.json();
-    if (!data.ok) console.error('[notify] tgSend error:', JSON.stringify(data));
-    return data;
-  } catch (e) {
-    console.error('[notify] tgSend exception:', e.message);
-    return { ok: false, error: { description: e.message } };
-  }
+  return { ok: false, disabled: true };
 }
 
 async function isSecretSalesPaused() {
@@ -351,16 +315,22 @@ export default async (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
     const reviewId = String(body.reviewId || '').trim();
-    const show = String(body.show || 'secret').trim();
+    const show = String(body.show || 'secret').trim().toLowerCase();
     if (!reviewId) return res.status(400).json({ error: 'Missing reviewId' });
 
-    const collection = show === 'huligan' ? 'huligan_reviews' : 'ticket_reviews';
+    const collection = show === 'huligan' ? 'huligan_reviews'
+      : show === 'matvey' ? 'matvey_reviews'
+      : 'ticket_reviews';
     await fetch(`${FB_URL}/${collection}/${reviewId}.json${FIREBASE_SECRET}`, { method: 'DELETE' });
 
     // Сбрасываем флаг reviewed/reviewPromoIssued на бронировании
     if (bookingId && bookingId !== 'none') {
-      const bookingCollection = show === 'huligan' ? 'huligan_bookings' : 'ticket_bookings';
-      const patch = show === 'huligan' ? { reviewed: false } : { reviewPromoIssued: false };
+      const bookingCollection = show === 'huligan' ? 'huligan_bookings'
+        : show === 'matvey' ? 'matvey_bookings'
+        : 'ticket_bookings';
+      const patch = show === 'huligan' || show === 'matvey'
+        ? { reviewed: false, reviewPromoCode: null }
+        : { reviewPromoIssued: false, reviewPromoCode: null };
       await fetch(`${FB_URL}/${bookingCollection}/${bookingId}.json${FIREBASE_SECRET}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

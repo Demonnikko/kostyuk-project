@@ -1,0 +1,72 @@
+/* Shared compact ticket checkout for every KOSTYUK PROJECT concert. */
+.ticket-review { display: grid; gap: 8px; margin: 14px 0; }
+.ticket-review__row { display: grid; grid-template-columns: minmax(90px, .7fr) minmax(0, 1.3fr); gap: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 13px; line-height: 1.45; }
+.ticket-review__row span:first-child { color: rgba(255,255,255,.5); }
+.ticket-review__row strong { color: rgba(255,255,255,.92); text-align: right; overflow-wrap: anywhere; }
+.ticket-review__row--total { padding-top: 3px; border-bottom: 0; }
+.ticket-review__row--total strong { color: var(--gold2, #e8c540); font-size: 18px; }
+.payment-pending { margin: 12px 0 0; padding: 11px 12px; border: 1px solid rgba(232,197,64,.2); border-radius: 12px; background: rgba(232,197,64,.06); color: rgba(255,255,255,.68); font-size: 12px; line-height: 1.5; text-align: left; }
+.payment-pending[hidden] { display: none; }
+.seat-hit:focus-visible { outline: none; stroke: #fff; stroke-width: 2; }
+
+.modal {
+  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  align-items: center;
+  box-sizing: border-box;
+}
+.modal__box {
+  width: min(760px, calc(100vw - 24px));
+  max-width: 760px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 22px 22px 18px;
+  box-sizing: border-box;
+}
+.modal__title { font-size: clamp(21px, 3vw, 29px); line-height: 1.1; margin-bottom: 5px; }
+.modal__sub { font-size: 12px; line-height: 1.4; margin-bottom: 11px; }
+.steps { margin: 9px 0 13px; gap: 5px; }
+.step { height: 3px; }
+.date-grid { gap: 10px; }
+.date-card { min-height: 112px; }
+.hall-wrap { padding: 7px 7px 9px; border-radius: 15px; }
+.hall-svg { width: 100%; height: auto; max-height: 48dvh; display: block; touch-action: manipulation; }
+.legend { margin-top: 6px; gap: 5px 10px; font-size: 9px; justify-content: center; }
+.legend span { white-space: nowrap; }
+.cart { margin-top: 9px; padding: 10px 11px; border-radius: 13px; }
+.cart__empty { padding: 3px 0; font-size: 12px; }
+.cart__list { gap: 6px; }
+.cart__chip, .cart__row { min-height: 32px; box-sizing: border-box; font-size: 11px; }
+.cart__total { margin-top: 8px; padding-top: 8px; }
+.modal__nav { position: sticky; bottom: -18px; z-index: 4; margin-top: 13px; padding: 10px 0 max(2px, env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, rgba(10,5,22,.98) 28%); }
+.modal__nav button, .modal__nav .btn-primary, .modal__nav .btn-secondary, #tbankPayBtn { min-height: 44px; }
+.field { margin-bottom: 10px; }
+.field__label { margin-bottom: 5px; font-size: 10px; }
+.field__input, .field__textarea { min-height: 44px; padding: 10px 12px; font-size: 16px; }
+.field__textarea { min-height: 60px; }
+.summary { margin: 10px 0 13px; padding: 11px 12px; }
+.summary__row { margin-bottom: 7px; font-size: 12px; }
+
+@media (max-width: 600px) {
+  .modal { padding: max(6px, env(safe-area-inset-top)) 6px max(6px, env(safe-area-inset-bottom)); }
+  .modal__box { width: calc(100vw - 12px); max-height: calc(100dvh - 12px); padding: 14px 11px 10px; border-radius: 17px; scrollbar-gutter: auto; }
+  .modal__close { top: 8px; right: 8px; width: 38px; height: 38px; }
+  .modal__title { padding-right: 40px; font-size: 19px; }
+  .modal__sub { padding-right: 34px; font-size: 11px; }
+  .steps { margin: 7px 0 9px; }
+  .hall-wrap { padding: 4px 3px 7px; }
+  .hall-svg { max-height: min(43dvh, 300px); }
+  .legend { display: grid; grid-template-columns: repeat(3, max-content); justify-content: center; font-size: 8px; }
+  .cart { margin-top: 7px; padding: 8px; }
+  .cart__list { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cart__chip, .cart__row { padding: 7px 8px; }
+  .modal__nav { bottom: -10px; margin-top: 9px; padding-top: 8px; gap: 7px; }
+  .modal__nav button { padding-left: 10px; padding-right: 10px; font-size: 12px; }
+  .ticket-review__row { grid-template-columns: 86px minmax(0, 1fr); gap: 8px; font-size: 12px; }
+}
+
+@media (max-width: 370px) {
+  .legend { grid-template-columns: repeat(2, max-content); }
+  .hall-svg { max-height: 38dvh; }
+}

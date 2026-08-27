@@ -203,30 +203,77 @@
     /* Show switcher */
     .show-switcher {
       display: flex;
-      border-bottom: 1px solid var(--border);
+      gap: 3px;
+      margin: 6px 12px 0;
+      padding: 3px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
       flex-shrink: 0;
     }
 
     .show-tab {
       flex: 1;
       text-align: center;
-      padding: 10px 4px;
+      padding: 8px 4px;
       font-size: 12px;
       font-weight: 600;
+      border-radius: 7px;
       cursor: pointer;
       color: var(--dim);
       transition: color .15s, background .15s;
       letter-spacing: .2px;
+      white-space: nowrap;
     }
 
     .show-tab.active {
       color: var(--gold);
-      background: rgba(201, 162, 39, 0.08);
-      box-shadow: inset 0 -2px 0 var(--gold);
+      background: rgba(201, 162, 39, 0.14);
+      box-shadow: inset 0 0 0 1px rgba(201,162,39,0.3);
     }
 
     .show-tab:hover:not(.active) {
       color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* Direction switcher (верхний уровень: Авторские шоу / Частные события / Школа) */
+    .dir-switcher {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 12px 10px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .dir-tab {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--dim);
+      transition: background .15s, color .15s;
+    }
+    .dir-tab:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.04); }
+    .dir-tab.active {
+      color: var(--gold);
+      background: rgba(201, 162, 39, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(201,162,39,0.35);
+    }
+    .dir-tab .nav-icon { font-size: 17px; }
+    /* Метка-раздел внутри направления */
+    .nav-group-label {
+      padding: 12px 20px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--dim);
+      opacity: .7;
     }
 
     /* Mobile show switcher (top of main) */
@@ -759,6 +806,31 @@
       gap: 16px;
       margin-bottom: 24px;
     }
+
+    /* Разбивка по шоу в «Обзоре» */
+    .shows-overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .show-ov-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: border-color .15s, transform .15s;
+    }
+    .show-ov-card:hover { border-color: rgba(201,162,39,0.45); transform: translateY(-2px); }
+    .show-ov-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .show-ov-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .show-ov-badge:not(:empty) {
+      font-size: 11px; font-weight: 700; color: #fff;
+      background: var(--red); border-radius: 20px; padding: 2px 9px;
+    }
+    .show-ov-stats { display: flex; gap: 24px; }
+    .show-ov-num { display: block; font-size: 22px; font-weight: 700; color: var(--gold); line-height: 1.1; }
+    .show-ov-lbl { font-size: 12px; color: var(--dim); }
 
     .metric-card {
       background: var(--bg2);
@@ -1393,6 +1465,7 @@
         </div>
       </div>
       <button class="btn-primary" onclick="doLogin()">Войти</button>
+      <button id="touchIdLoginBtn" onclick="loginWithTouchId()" style="display:none;width:100%;margin-top:10px;padding:12px;background:rgba(201,162,39,0.12);border:1px solid rgba(201,162,39,0.4);color:var(--gold);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">☝️ Войти по Touch ID</button>
       <div class="login-hint" style="opacity:0.4">Введите пароль администратора</div>
     </div>
   </div>
@@ -1407,94 +1480,129 @@
         <div class="sidebar-logo-sub">KOSTYUK PROJECT</div>
       </div>
 
-      <!-- Show switcher (sidebar) -->
-      <div class="show-switcher">
-        <div class="show-tab active" data-show="secret" onclick="switchShow('secret')">🎭 Секрет</div>
-        <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')">😈 ХУЛИgan</div>
-        <div class="show-tab" data-show="matvey" onclick="switchShow('matvey')">🧸 Матвей</div>
+      <!-- Переключатель НАПРАВЛЕНИЙ -->
+      <div class="nav-group-label" style="padding-top:14px;">Направление</div>
+      <div class="dir-switcher" style="padding-top:2px;">
+        <div class="dir-tab active" data-dir="shows" onclick="switchDirection('shows')">
+          <span class="nav-icon">🎭</span> Авторские шоу
+        </div>
+        <div class="dir-tab" data-dir="private" onclick="switchDirection('private')">
+          <span class="nav-icon">💍</span> Частные события
+        </div>
+        <div class="dir-tab" data-dir="school" onclick="switchDirection('school')">
+          <span class="nav-icon">🎓</span> Школа
+        </div>
       </div>
 
-      <!-- Глобальный nav -->
-      <nav class="sidebar-nav" id="navGlobal" style="border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px;">
-        <div class="nav-item active" onclick="showSection('dashboard')" data-sec="dashboard">
-          <span class="nav-icon">📊</span> Дашборд
-        </div>
-        <div class="nav-item" onclick="showSection('scanner')" data-sec="scanner">
-          <span class="nav-icon">📷</span> Сканнер
-        </div>
-        <div class="nav-item" onclick="showSection('chats')" data-sec="chats">
-          <span class="nav-icon">💬</span> Диалоги AI
-        </div>
-        <div class="nav-item" onclick="showSection('private-config')" data-sec="private-config">
-          <span class="nav-icon">🪄</span> Цены & ИИ
-        </div>
-      </nav>
+      <!-- ══════ НАПРАВЛЕНИЕ: Авторские шоу ══════ -->
+      <div class="dir-block" id="dirShows">
 
-      <!-- Секрет nav -->
-      <nav class="sidebar-nav" id="navSecret">
-        <div class="nav-item" onclick="showSection('bookings')" data-sec="bookings">
-          <span class="nav-icon">📋</span> Заявки
-          <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
-        </div>
-        <div class="nav-item" onclick="showSection('users')" data-sec="users">
-          <span class="nav-icon">👥</span> Пользователи
-        </div>
-        <div class="nav-item" onclick="showSection('reviews')" data-sec="reviews">
-          <span class="nav-icon">⭐</span> Отзывы
-        </div>
-        <div class="nav-item" onclick="showSection('settings')" data-sec="settings">
-          <span class="nav-icon">⚙️</span> Настройки
-        </div>
-        <div class="nav-item" onclick="showSection('promo')" data-sec="promo">
-          <span class="nav-icon">🎫</span> Промокоды
-        </div>
-        <div class="nav-item" onclick="showSection('hall')" data-sec="hall">
-          <span class="nav-icon">🗺</span> Схема зала
-        </div>
-        <div class="nav-item" onclick="showSection('broadcast')" data-sec="broadcast">
-          <span class="nav-icon">📣</span> Рассылки
-        </div>
-      </nav>
+        <!-- Общее по всем шоу -->
+        <div class="nav-group-label">Все шоу вместе</div>
+        <nav class="sidebar-nav" style="flex:none; padding:2px 0 10px; border-bottom:1px solid var(--border);">
+          <div class="nav-item active" onclick="showSection('dashboard')" data-sec="dashboard">
+            <span class="nav-icon">📊</span> Обзор шоу
+          </div>
+          <div class="nav-item" onclick="showSection('finances')" data-sec="finances">
+            <span class="nav-icon">💰</span> Финансы
+          </div>
+          <div class="nav-item" onclick="showSection('scanner')" data-sec="scanner">
+            <span class="nav-icon">📷</span> Сканер на входе
+          </div>
+        </nav>
 
-      <!-- ХУЛИgan nav -->
-      <nav class="sidebar-nav" id="navHuligan" style="display:none">
-        <div class="nav-item" onclick="showSection('hul-bookings')" data-sec="hul-bookings">
-          <span class="nav-icon">📋</span> Заявки
-          <span class="nav-badge" id="huliganBadge" style="display:none">0</span>
+        <!-- Выбор конкретного шоу -->
+        <div class="nav-group-label" style="padding-bottom:0;">Выберите шоу</div>
+        <div class="show-switcher">
+          <div class="show-tab active" data-show="secret" onclick="switchShow('secret')">Секрет</div>
+          <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')">ХУЛИgan</div>
+          <div class="show-tab" data-show="matvey" onclick="switchShow('matvey')">Матвей</div>
         </div>
-        <div class="nav-item" onclick="showSection('hul-hall')" data-sec="hul-hall">
-          <span class="nav-icon">🗺</span> Схема зала
-        </div>
-        <div class="nav-item" onclick="showSection('hul-users')" data-sec="hul-users">
-          <span class="nav-icon">👥</span> Пользователи
-        </div>
-        <div class="nav-item" onclick="showSection('hul-reviews')" data-sec="hul-reviews">
-          <span class="nav-icon">⭐</span> Отзывы
-        </div>
-        <div class="nav-item" onclick="showSection('hul-settings')" data-sec="hul-settings">
-          <span class="nav-icon">⚙️</span> Настройки
-        </div>
-        <div class="nav-item" onclick="showSection('hul-promo')" data-sec="hul-promo">
-          <span class="nav-icon">🎫</span> Промокоды
-        </div>
-        <div class="nav-item" onclick="showSection('broadcast')" data-sec="broadcast">
-          <span class="nav-icon">📣</span> Рассылки
-        </div>
-      </nav>
 
-      <!-- Матвей nav -->
-      <nav class="sidebar-nav" id="navMatvey" style="display:none">
-        <div class="nav-item" onclick="showSection('mat-bookings')" data-sec="mat-bookings">
-          <span class="nav-icon">📋</span> Заявки
-          <span class="nav-badge" id="matveyBadge" style="display:none">0</span>
-        </div>
-        <div class="nav-item" onclick="showSection('mat-settings')" data-sec="mat-settings">
-          <span class="nav-icon">⚙️</span> Настройки
-        </div>
-        <div class="nav-item" onclick="showSection('mat-hall')" data-sec="mat-hall">
-          <span class="nav-icon">🗺</span> Схема зала
-        </div>
-      </nav>
+        <!-- Динамическая метка выбранного шоу -->
+        <div class="nav-group-label" id="currentShowLabel">🎭 Секрет — управление</div>
+
+        <!-- Секрет nav -->
+        <nav class="sidebar-nav" id="navSecret">
+          <div class="nav-item" onclick="showSection('bookings')" data-sec="bookings">
+            <span class="nav-icon">📋</span> Заявки
+            <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+          </div>
+          <div class="nav-item" onclick="showSection('hall')" data-sec="hall">
+            <span class="nav-icon">🗺</span> Схема зала
+          </div>
+          <div class="nav-item" onclick="showSection('settings')" data-sec="settings">
+            <span class="nav-icon">⚙️</span> Настройки
+          </div>
+          <div class="nav-item" onclick="showSection('promo')" data-sec="promo">
+            <span class="nav-icon">🎫</span> Промокоды
+          </div>
+          <div class="nav-item" onclick="showSection('reviews')" data-sec="reviews">
+            <span class="nav-icon">⭐</span> Отзывы
+          </div>
+        </nav>
+
+        <!-- ХУЛИgan nav -->
+        <nav class="sidebar-nav" id="navHuligan" style="display:none">
+          <div class="nav-item" onclick="showSection('hul-bookings')" data-sec="hul-bookings">
+            <span class="nav-icon">📋</span> Заявки
+            <span class="nav-badge" id="huliganBadge" style="display:none">0</span>
+          </div>
+          <div class="nav-item" onclick="showSection('hul-hall')" data-sec="hul-hall">
+            <span class="nav-icon">🗺</span> Схема зала
+          </div>
+          <div class="nav-item" onclick="showSection('hul-settings')" data-sec="hul-settings">
+            <span class="nav-icon">⚙️</span> Настройки
+          </div>
+          <div class="nav-item" onclick="showSection('hul-promo')" data-sec="hul-promo">
+            <span class="nav-icon">🎫</span> Промокоды
+          </div>
+          <div class="nav-item" onclick="showSection('hul-reviews')" data-sec="hul-reviews">
+            <span class="nav-icon">⭐</span> Отзывы
+          </div>
+        </nav>
+
+        <!-- Матвей nav -->
+        <nav class="sidebar-nav" id="navMatvey" style="display:none">
+          <div class="nav-item" onclick="showSection('mat-bookings')" data-sec="mat-bookings">
+            <span class="nav-icon">📋</span> Заявки
+            <span class="nav-badge" id="matveyBadge" style="display:none">0</span>
+          </div>
+          <div class="nav-item" onclick="showSection('mat-hall')" data-sec="mat-hall">
+            <span class="nav-icon">🗺</span> Схема зала
+          </div>
+          <div class="nav-item" onclick="showSection('mat-settings')" data-sec="mat-settings">
+            <span class="nav-icon">⚙️</span> Настройки
+          </div>
+          <div class="nav-item" onclick="showSection('mat-promo')" data-sec="mat-promo">
+            <span class="nav-icon">🎫</span> Промокоды
+          </div>
+          <div class="nav-item" onclick="showSection('mat-reviews')" data-sec="mat-reviews">
+            <span class="nav-icon">⭐</span> Отзывы
+          </div>
+        </nav>
+      </div>
+
+      <!-- ══════ НАПРАВЛЕНИЕ: Частные события ══════ -->
+      <div class="dir-block" id="dirPrivate" style="display:none">
+        <nav class="sidebar-nav">
+          <div class="nav-item" onclick="showSection('private-config')" data-sec="private-config">
+            <span class="nav-icon">🪄</span> Цены &amp; ИИ
+          </div>
+          <div class="nav-item" onclick="showSection('chats')" data-sec="chats">
+            <span class="nav-icon">💬</span> Диалоги AI
+          </div>
+        </nav>
+      </div>
+
+      <!-- ══════ НАПРАВЛЕНИЕ: Школа ══════ -->
+      <div class="dir-block" id="dirSchool" style="display:none">
+        <nav class="sidebar-nav">
+          <div class="nav-item" style="cursor:default;opacity:.6">
+            <span class="nav-icon">🎓</span> Скоро: заявки школы
+          </div>
+        </nav>
+      </div>
 
       <div class="sidebar-footer">
         <button class="btn-logout" onclick="logout()">↩ Выйти</button>
@@ -1580,6 +1688,32 @@
           </div>
         </div>
 
+        <!-- Разбивка по шоу (за всё время) -->
+        <div class="section-title" style="font-size:16px; margin-top:28px; margin-bottom:12px;">🎭 По каждому шоу — за всё время</div>
+        <div class="shows-overview-grid" id="showsOverview">
+          <div class="show-ov-card" data-show="secret" onclick="switchShow('secret')">
+            <div class="show-ov-head"><span class="show-ov-name">🎭 Секрет</span><span class="show-ov-badge" id="ovSecretPending"></span></div>
+            <div class="show-ov-stats">
+              <div><span class="show-ov-num" id="ovSecretSold">0</span><span class="show-ov-lbl">билетов</span></div>
+              <div><span class="show-ov-num" id="ovSecretRev">0 ₽</span><span class="show-ov-lbl">выручка</span></div>
+            </div>
+          </div>
+          <div class="show-ov-card" data-show="huligan" onclick="switchShow('huligan')">
+            <div class="show-ov-head"><span class="show-ov-name">😈 ХУЛИgan</span><span class="show-ov-badge" id="ovHulPending"></span></div>
+            <div class="show-ov-stats">
+              <div><span class="show-ov-num" id="ovHulSold">0</span><span class="show-ov-lbl">билетов</span></div>
+              <div><span class="show-ov-num" id="ovHulRev">0 ₽</span><span class="show-ov-lbl">выручка</span></div>
+            </div>
+          </div>
+          <div class="show-ov-card" data-show="matvey" onclick="switchShow('matvey')">
+            <div class="show-ov-head"><span class="show-ov-name">🧸 Матвей</span><span class="show-ov-badge" id="ovMatPending"></span></div>
+            <div class="show-ov-stats">
+              <div><span class="show-ov-num" id="ovMatSold">0</span><span class="show-ov-lbl">билетов</span></div>
+              <div><span class="show-ov-num" id="ovMatRev">0 ₽</span><span class="show-ov-lbl">выручка</span></div>
+            </div>
+          </div>
+        </div>
+
         <!-- Quick Links Grid -->
         <div class="section-title" style="font-size:16px; margin-top:28px; margin-bottom:12px;">🏠 Быстрые переходы на ваши сайты</div>
         <div class="quick-links-grid">
@@ -1619,13 +1753,92 @@
           </div>
           <div class="activity-card" id="metrikaCard" style="display:flex; flex-direction:column;">
             <div class="activity-title" style="display:flex; justify-content:space-between; align-items:center;">
-              <span>📈 Яндекс.Метрика</span>
-              <button class="btn-sm" onclick="showMetrikaSetupModal()" style="font-size:11px; padding:3px 8px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--text); border-radius:6px; cursor:pointer;">⚙️ Настроить</button>
+              <span>📊 Воронка продаж</span>
+              <select id="funnelPeriod" onchange="loadOwnAnalytics()" style="background:var(--bg2); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:5px 8px; font-size:12px; cursor:pointer;">
+                <option value="today">Сегодня</option>
+                <option value="7">7 дней</option>
+                <option value="30">30 дней</option>
+              </select>
             </div>
-            <div id="metrikaContent" style="padding:15px; display:flex; flex-direction:column; flex:1; justify-content:center;">
-              <div class="empty-state">⏳ Загрузка веб-аналитики...</div>
+            <div id="funnelContent" style="padding:14px; flex:1;">
+              <div class="empty-state" style="padding:20px 0;">⏳ Загрузка воронки...</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Финансы -->
+      <div class="section" id="sec-finances">
+        <div class="section-title">💰 Финансы — доход, расходы, чистая прибыль</div>
+
+        <!-- Итоговая сводка -->
+        <div class="dashboard-grid" style="margin-bottom:20px">
+          <div class="metric-card">
+            <span class="metric-title">Грязный доход</span>
+            <span class="metric-value" id="finRevenue" style="color:#3dbf6e">0 ₽</span>
+            <span class="metric-sub">Оплаченные билеты (все шоу)</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Расходы</span>
+            <span class="metric-value" id="finExpenses" style="color:#e85348">0 ₽</span>
+            <span class="metric-sub">Всё, что вы вписали</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Чистая прибыль</span>
+            <span class="metric-value" id="finProfit" style="color:var(--gold)">0 ₽</span>
+            <span class="metric-sub">Доход − расходы</span>
+          </div>
+        </div>
+
+        <!-- Разбивка по шоу -->
+        <div class="section-title" style="font-size:16px;margin-bottom:12px">🎭 По каждому шоу</div>
+        <div class="shows-overview-grid" id="finByShow" style="margin-bottom:24px"></div>
+
+        <!-- Добавить расход -->
+        <div class="settings-card" style="max-width:640px;margin-bottom:20px">
+          <div class="settings-card-title">➕ Добавить расход</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Шоу</label>
+              <select class="inp" id="expShow">
+                <option value="secret">🎭 Секрет</option>
+                <option value="huligan">😈 ХУЛИgan</option>
+                <option value="matvey">🧸 Матвей</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Сумма (₽)</label>
+              <input class="inp" id="expAmount" type="number" placeholder="5000">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Категория</label>
+              <select class="inp" id="expCategory">
+                <option value="Аренда">Аренда зала</option>
+                <option value="Реклама">Реклама</option>
+                <option value="Оборудование">Оборудование</option>
+                <option value="Зарплаты">Зарплаты / гонорары</option>
+                <option value="Реквизит">Реквизит</option>
+                <option value="Прочее">Прочее</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Дата</label>
+              <input class="inp" id="expDate" type="date">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Комментарий (за что)</label>
+            <input class="inp" id="expComment" placeholder="Например: аренда ЛАМПА на 31 октября">
+          </div>
+          <button class="btn-save-settings" onclick="addExpense()">➕ Добавить расход</button>
+        </div>
+
+        <!-- Список расходов -->
+        <div class="section-title" style="font-size:16px;margin-bottom:12px">📋 Все расходы</div>
+        <div id="expensesList">
+          <div class="empty-state"><span class="empty-icon">💸</span>Расходов пока нет</div>
         </div>
       </div>
 
@@ -2167,9 +2380,9 @@
               <div class="form-group" style="margin-bottom:0">
                 <label>Зона</label>
                 <select class="inp" id="manualZone">
-                  <option value="vip">VIP — 1400 ₽</option>
-                  <option value="standart" selected>Стандарт — 1100 ₽</option>
-                  <option value="econom">Эконом — 800 ₽</option>
+                  <option value="vip">Красная зона — 1800 ₽</option>
+                  <option value="standart" selected>Зелёная зона — 1500 ₽</option>
+                  <option value="econom">Синяя зона — 1200 ₽</option>
                 </select>
               </div>
               <div class="form-group" style="margin-bottom:0">
@@ -2206,6 +2419,10 @@
           <div class="ftab" onclick="filterBookings('pending_confirmation',this)">Ждут подтверждения</div>
           <div class="ftab" onclick="filterBookings('confirmed',this)">Подтверждённые</div>
           <div class="ftab" onclick="filterBookings('cancelled',this)">Отменённые</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+          <input class="inp" id="bookingSearch" placeholder="🔍 Поиск по имени или телефону..." oninput="renderBookings()" style="flex:1;min-width:200px">
+          <button class="btn-sm" onclick="exportBookings('secret')" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.3);color:var(--gold);padding:8px 14px;border-radius:8px;white-space:nowrap;cursor:pointer">📥 Экспорт списка</button>
         </div>
         <div class="booking-list" id="bookingList">
           <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка заявок...</div>
@@ -2260,16 +2477,24 @@
           <div class="settings-card">
             <div class="settings-card-title">💰 Цены</div>
             <div class="form-group">
-              <label>VIP (₽)</label>
-              <input class="inp" id="priceVip" type="number" placeholder="1400">
+              <label>Красная зона (₽)</label>
+              <input class="inp" id="priceVip" type="number" placeholder="1800">
             </div>
             <div class="form-group">
-              <label>Стандарт (₽)</label>
-              <input class="inp" id="priceStandart" type="number" placeholder="1100">
+              <label>Зелёная зона (₽)</label>
+              <input class="inp" id="priceStandart" type="number" placeholder="1500">
+            </div>
+            <div class="form-group">
+              <label>Синяя зона (₽)</label>
+              <input class="inp" id="priceEconom" type="number" placeholder="1200">
+            </div>
+            <div class="form-group">
+              <label><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#b890ff;margin-right:6px;vertical-align:middle"></span>Левый диван (₽)</label>
+              <input class="inp" id="priceSofaLeft" type="number" placeholder="1000">
             </div>
             <div class="form-group" style="margin-bottom:0">
-              <label>Эконом (₽)</label>
-              <input class="inp" id="priceEconom" type="number" placeholder="800">
+              <label><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3fbfc0;margin-right:6px;vertical-align:middle"></span>Правый диван (₽)</label>
+              <input class="inp" id="priceSofaRight" type="number" placeholder="800">
             </div>
             <button class="btn-save-settings" onclick="savePrices()">💾 Сохранить</button>
           </div>
@@ -2315,6 +2540,23 @@
               </div>
             </div>
             <button class="btn-save-settings" onclick="changePassword()">💾 Сменить пароль</button>
+
+            <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
+              <div style="font-weight:600;margin-bottom:6px">☝️ Вход по Touch ID</div>
+              <div id="touchIdStatus" style="font-size:12px;color:var(--dim);margin-bottom:10px;line-height:1.5">Проверка поддержки...</div>
+              <button class="btn-save-settings" id="touchIdBindBtn" onclick="bindTouchId()" style="margin-top:0">☝️ Привязать Touch ID на этом устройстве</button>
+            </div>
+          </div>
+
+          <!-- Опасная зона: очистка тестовых данных -->
+          <div class="settings-card" style="border-color: rgba(232,83,72,0.4); margin-top:20px;">
+            <div class="settings-card-title" style="color:#e85348">⚠️ Опасная зона</div>
+            <p style="font-size:13px; color:var(--dim); margin:8px 0 14px; line-height:1.5;">
+              Удалить <b>все тестовые данные</b> по всем 3 шоу: брони, занятые места, лидов,
+              пользователей, отзывы, чаты и уведомления. Настройки шоу, цены, промокоды и пароль
+              <b>сохранятся</b>. Действие необратимо — используйте перед реальным запуском.
+            </p>
+            <button class="btn-save-settings" style="background:rgba(232,83,72,0.15); border:1px solid rgba(232,83,72,0.5); color:#e85348;" onclick="wipeTestData()">🗑 Очистить все тестовые данные</button>
           </div>
         </div>
       </div>
@@ -2389,8 +2631,33 @@
       <!-- Reviews (Секрет) -->
       <div class="section" id="sec-reviews">
         <div class="section-title">⭐ Отзывы — Шоу «Секрет»</div>
-        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Отзывы гостей о шоу. За каждый отзыв
-          пользователь получает промокод 15% на следующее шоу.</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Впишите отзывы гостей (собранные в соцсетях, лично) — они покажутся на сайте шоу.</div>
+
+        <div class="settings-card" style="max-width:640px;margin-bottom:20px">
+          <div class="settings-card-title">➕ Добавить отзыв</div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Имя гостя</label>
+              <input class="inp" id="revSecretName" placeholder="Анна">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Оценка</label>
+              <select class="inp" id="revSecretRating" style="min-width:110px">
+                <option value="5">★★★★★</option>
+                <option value="4">★★★★☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="1">★☆☆☆☆</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Текст отзыва</label>
+            <textarea class="inp" id="revSecretText" rows="3" placeholder="Невероятное шоу!" style="resize:vertical"></textarea>
+          </div>
+          <button class="btn-save-settings" onclick="addReview('secret')">➕ Добавить отзыв</button>
+        </div>
+
         <div id="reviewsList">
           <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
         </div>
@@ -2403,41 +2670,17 @@
           Текущий статус мест. Обновляется при переходе в раздел.
         </div>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;">
-          <span><span
-              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;opacity:0.25;margin-right:4px"></span>VIP
-            — свободно</span>
-          <span><span
-              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;opacity:0.25;margin-right:4px"></span>Стандарт
-            — свободно</span>
-          <span><span
-              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;opacity:0.25;margin-right:4px"></span>Эконом
-            — свободно</span>
-          <span><span
-              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;border:1.5px solid #fff;margin-right:4px"></span>✓
-            Продан</span>
-          <span><span
-              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;border:1.5px solid #ffcc44;margin-right:4px"></span>⏳
-            Ожидает</span>
-          <span><span
-              style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgba(201,162,39,0.35);margin-right:4px"></span>🕐
-            Бронь</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;margin-right:4px"></span>Красная · 1800 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;margin-right:4px"></span>Зелёная · 1500 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;margin-right:4px"></span>Синяя · 1200 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#b890ff;margin-right:4px"></span>Левый диван · 1000 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3fbfc0;margin-right:4px"></span>Правый диван · 800 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#fff;border:1.5px solid #3dbf6e;margin-right:4px"></span>✓ Продан</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;margin-right:4px"></span>⏳ Ожидает</span>
         </div>
         <div id="hallCounter" style="margin-bottom:12px;font-size:13px;font-weight:600"></div>
         <div class="hall-mini">
-          <svg id="adminHallSvg" viewBox="0 0 490 515" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <filter id="ag" x="-80%" y="-80%" width="260%" height="260%">
-                <feGaussianBlur stdDeviation="3" result="b" />
-                <feMerge>
-                  <feMergeNode in="b" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-            <rect x="110" y="14" width="270" height="44" rx="7" fill="rgba(201,162,39,0.08)"
-              stroke="rgba(201,162,39,0.45)" stroke-width="1.5" />
-            <text x="245" y="41" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif"
-              font-size="11" fill="rgba(201,162,39,0.5)" font-weight="600" letter-spacing="5">С Ц Е Н А</text>
+          <svg id="adminHallSvg" viewBox="0 0 1280 761" xmlns="http://www.w3.org/2000/svg">
             <g id="adminHall"></g>
           </svg>
         </div>
@@ -2452,8 +2695,10 @@
           <div class="ftab" onclick="filterMatveyBookings('pending_payment',this)">Ожидают оплаты</div>
           <div class="ftab" onclick="filterMatveyBookings('pending_confirmation',this)">Ждут подтверждения</div>
           <div class="ftab" onclick="filterMatveyBookings('confirmed',this)">Подтверждённые</div>
+          <div class="ftab" onclick="filterMatveyBookings('refunded',this)">Возвраты</div>
           <div class="ftab" onclick="filterMatveyBookings('cancelled',this)">Отменённые</div>
         </div>
+        <div style="margin-bottom:14px"><button class="btn-sm" onclick="exportBookings('matvey')" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.3);color:var(--gold);padding:8px 14px;border-radius:8px;cursor:pointer">📥 Экспорт списка</button></div>
         <div class="booking-list" id="matveyBookingList">
           <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка заявок...</div>
         </div>
@@ -2471,7 +2716,7 @@
             </div>
             <div class="form-group">
               <label>Дата</label>
-              <input class="inp" id="cfgMatDate" placeholder="18 октября 2026">
+              <input class="inp" id="cfgMatDate" placeholder="21 ноября 2026">
             </div>
             <div class="form-group">
               <label>Время</label>
@@ -2504,24 +2749,24 @@
           <div class="settings-card">
             <div class="settings-card-title">💰 Цены</div>
             <div class="form-group">
-              <label>Ряд 1-4 (₽)</label>
-              <input class="inp" id="priceMatFront" type="number" placeholder="1000">
+              <label>Красная зона (₽)</label>
+              <input class="inp" id="priceMatFront" type="number" placeholder="1700">
             </div>
             <div class="form-group">
-              <label>Ряд 5-7 (₽)</label>
-              <input class="inp" id="priceMatBack" type="number" placeholder="800">
+              <label>Зелёная зона (₽)</label>
+              <input class="inp" id="priceMatBack" type="number" placeholder="1400">
             </div>
             <div class="form-group">
-              <label>Столик (₽)</label>
-              <input class="inp" id="priceMatTable" type="number" placeholder="1000">
+              <label>Синяя зона (₽)</label>
+              <input class="inp" id="priceMatTable" type="number" placeholder="1100">
             </div>
             <div class="form-group">
-              <label>Диван (₽)</label>
-              <input class="inp" id="priceMatSofa" type="number" placeholder="4000">
+              <label>Красная зона (₽)</label>
+              <input class="inp" id="priceMatSofa" type="number" placeholder="1700">
             </div>
             <div class="form-group" style="margin-bottom:0">
-              <label>Комната Лампа (₽)</label>
-              <input class="inp" id="priceMatLampa" type="number" placeholder="2500">
+              <label>Красная зона (₽)</label>
+              <input class="inp" id="priceMatLampa" type="number" placeholder="1700">
             </div>
             <button class="btn-save-settings" onclick="saveMatveyPrices()">💾 Сохранить</button>
           </div>
@@ -2552,19 +2797,15 @@
           Кликните по месту, чтобы вручную изменить его статус (сбросить бронь или заблокировать).
         </div>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;">
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;opacity:0.25;margin-right:4px"></span>VIP — свободно</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;opacity:0.25;margin-right:4px"></span>Стандарт — свободно</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;opacity:0.25;margin-right:4px"></span>Эконом — свободно</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;border:1.5px solid #fff;margin-right:4px"></span>✓ Продан</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;border:1.5px solid #ffcc44;margin-right:4px"></span>⏳ Ожидает</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgba(201,162,39,0.35);margin-right:4px"></span>🕐 Временная бронь</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;margin-right:4px"></span>Красная · 1700 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;margin-right:4px"></span>Зелёная · 1400 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;margin-right:4px"></span>Синяя · 1100 ₽</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#fff;border:1.5px solid #3dbf6e;margin-right:4px"></span>✓ Продан</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;margin-right:4px"></span>⏳ Ожидает</span>
         </div>
         <div id="huliganHallCounter" style="margin-bottom:12px;font-size:13px;font-weight:600"></div>
         <div class="hall-mini" style="max-width:580px">
           <svg id="adminHuliganHallSvg" viewBox="0 0 580 410" xmlns="http://www.w3.org/2000/svg" style="background:#0d0d12;border-radius:16px;border:1px solid var(--border)">
-            <!-- Сцена -->
-            <path d="M 180 5 L 400 5 Q 408 5 408 12 L 408 30 Q 408 37 400 37 L 180 37 Q 172 37 172 30 L 172 12 Q 172 5 180 5 Z" fill="rgba(201,162,39,0.08)" stroke="rgba(201,162,39,0.45)" stroke-width="1.5" />
-            <text x="290" y="21" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-size="11" fill="rgba(201,162,39,0.5)" font-weight="600" letter-spacing="5">С Ц Е Н А</text>
             <g id="adminHuliganHall"></g>
           </svg>
         </div>
@@ -2578,9 +2819,9 @@
           Кликните по месту, чтобы вручную изменить его статус (сбросить бронь или заблокировать).
         </div>
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;">
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8c50dc;opacity:0.25;margin-right:4px"></span>Ряд 1-4 — свободно</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;opacity:0.25;margin-right:4px"></span>Ряд 5-7 — свободно</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e8c540;opacity:0.25;margin-right:4px"></span>Столы — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;opacity:0.25;margin-right:4px"></span>Синяя зона — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;opacity:0.25;margin-right:4px"></span>Зелёная зона — свободно</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;opacity:0.25;margin-right:4px"></span>Красная зона — свободно</span>
           <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;border:1.5px solid #fff;margin-right:4px"></span>✓ Продан</span>
           <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5a623;border:1.5px solid #ffcc44;margin-right:4px"></span>⏳ Ожидает</span>
           <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgba(201,162,39,0.35);margin-right:4px"></span>🕐 Временная бронь</span>
@@ -2597,33 +2838,101 @@
         <button class="btn-save-settings" onclick="loadAdminMatveyHall()">🔄 Обновить</button>
       </div>
 
-      <!-- Broadcasts -->
-      <div class="section" id="sec-broadcast">
-        <div class="section-title">📣 Рассылки — VK + Telegram</div>
-        <div style="font-size:13px;color:var(--dim);margin-bottom:14px">
-          Отправка идёт по всем пользователям из баз: `bot_users`, `ticket_users`, `ticket_bookings`, `huligan_bookings`.
+      <!-- Promo codes (Матвей) -->
+      <div class="section" id="sec-mat-promo">
+        <div class="section-title">🎫 Промокоды — Шоу «Спасти Матвея»</div>
+        <div class="promo-create">
+          <div style="font-size:14px;font-weight:600;color:var(--gold);margin-bottom:14px">Создать промокод</div>
+          <div class="promo-grid">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Код (латиница)</label>
+              <input class="inp" id="matNewPromoCode" placeholder="МАТВЕЙ2026" style="text-transform:uppercase">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Тип скидки</label>
+              <select class="inp" id="matNewPromoType" onchange="toggleMatveyPromoValue()">
+                <option value="percent">Процент (20%)</option>
+                <option value="fixed">Сумма (−500 ₽)</option>
+                <option value="free">Бесплатный (0 ₽)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0" id="matPromoValueRow">
+              <label>Значение</label>
+              <input class="inp" id="matNewPromoValue" type="number" placeholder="20">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Количество использований</label>
+              <select class="inp" id="matNewPromoUsesSelect" onchange="toggleMatveyPromoUsesCustom()">
+                <option value="-1">Безлимитно ∞</option>
+                <option value="1">1 раз</option>
+                <option value="3">3 раза</option>
+                <option value="5">5 раз</option>
+                <option value="10">10 раз</option>
+                <option value="20">20 раз</option>
+                <option value="custom">Указать своё...</option>
+              </select>
+              <input class="inp" id="matNewPromoUsesCustom" type="number" min="1" placeholder="Введите число" style="display:none;margin-top:8px">
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:12px;margin-bottom:0">
+            <label>Описание (необязательно)</label>
+            <input class="inp" id="matNewPromoDesc" placeholder="Для друзей">
+          </div>
+          <div class="promo-grid" style="margin-top:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Действует с (необязательно)</label>
+              <input class="inp" id="matNewPromoFrom" type="date">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Действует до (необязательно)</label>
+              <input class="inp" id="matNewPromoUntil" type="date">
+            </div>
+          </div>
+          <button class="btn-save-settings" onclick="createMatveyPromo()">+ Создать промокод</button>
         </div>
-        <div class="settings-card" style="max-width:760px">
-          <div class="form-group">
-            <label>Текст рассылки</label>
-            <textarea class="inp" id="broadcastMessage" rows="7" placeholder="Введите сообщение для рассылки..." style="resize:vertical"></textarea>
-          </div>
-          <div style="display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 16px">
-            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)">
-              <input type="checkbox" id="broadcastVk" checked> VK
-            </label>
-            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)">
-              <input type="checkbox" id="broadcastTg" checked> Telegram
-            </label>
-            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)">
-              <input type="checkbox" id="broadcastDryRun"> Только проверка (без отправки)
-            </label>
-          </div>
-          <button class="btn-save-settings" onclick="sendBroadcast()" style="max-width:300px">🚀 Отправить рассылку</button>
-          <div id="broadcastResult" style="margin-top:12px;font-size:12px;line-height:1.5;color:var(--dim)"></div>
+        <div class="promo-list" id="matveyPromoList">
+          <div class="empty-state"><span class="empty-icon">🎫</span>Промокодов пока нет</div>
         </div>
       </div>
 
+      <!-- Reviews (Матвей) -->
+      <div class="section" id="sec-mat-reviews">
+        <div class="section-title">⭐ Отзывы — Шоу «Спасти Матвея»</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Впишите отзывы гостей — они покажутся на сайте шоу.</div>
+        <div class="settings-card" style="max-width:640px;margin-bottom:20px">
+          <div class="settings-card-title">➕ Добавить отзыв</div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Имя гостя</label>
+              <input class="inp" id="revMatName" placeholder="Анна">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Оценка</label>
+              <select class="inp" id="revMatRating" style="min-width:110px">
+                <option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Текст отзыва</label>
+            <textarea class="inp" id="revMatText" rows="3" placeholder="Дети в восторге!" style="resize:vertical"></textarea>
+          </div>
+          <button class="btn-save-settings" onclick="addReview('matvey')">➕ Добавить отзыв</button>
+        </div>
+        <div class="review-list" id="matveyReviewsList">
+          <div class="empty-state"><span class="empty-icon">⭐</span>Отзывов пока нет</div>
+        </div>
+      </div>
+
+      <!-- Users (Матвей) -->
+      <div class="section" id="sec-mat-users">
+        <div class="section-title">👥 Пользователи — Шоу «Спасти Матвея»</div>
+        <div class="user-list" id="matveyUsersList">
+          <div class="empty-state"><span class="empty-icon">👥</span>Пользователей пока нет</div>
+        </div>
+      </div>
+
+      <!-- Broadcasts -->
       <!-- ══ ХУЛИgan ══ -->
 
       <!-- Заявки (ХУЛИgan) -->
@@ -2656,26 +2965,19 @@
                 </div>
               </div>
               <div class="form-group" style="margin-bottom:0">
+                <label>Телефон</label>
+                <input class="inp" id="hulManualPhone" placeholder="+7 (900) 000-00-00">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
                 <label>Цена (₽, пусто = стандартная)</label>
                 <input class="inp" id="hulManualPrice" type="number" min="0" placeholder="">
-              </div>
-              <div class="form-group" style="margin-bottom:0">
-                <label>VK ID покупателя (для уведомления)</label>
-                <input class="inp" id="hulManualVkId" type="number" placeholder="123456789">
-              </div>
-              <div class="form-group" style="margin-bottom:0">
-                <label>Telegram ID (chat_id)</label>
-                <input class="inp" id="hulManualTgId" type="number" placeholder="269357522">
-              </div>
-              <div class="form-group" style="margin-bottom:0">
-                <label>Telegram @username (опционально)</label>
-                <input class="inp" id="hulManualTgUsername" placeholder="@username">
               </div>
             </div>
             <button class="btn-save-settings" onclick="adminCreateHuliganTicket()" style="width:100%">🎟 Создать билет и выдать</button>
             <div id="hulManualCreateResult" style="margin-top:8px;font-size:12px"></div>
           </div>
         </details>
+        <div style="margin-bottom:14px"><button class="btn-sm" onclick="exportBookings('huligan')" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.3);color:var(--gold);padding:8px 14px;border-radius:8px;cursor:pointer">📥 Экспорт списка</button></div>
         <div id="huliganOrdersList">
           <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
         </div>
@@ -2693,7 +2995,27 @@
       <!-- Отзывы (ХУЛИgan) -->
       <div class="section" id="sec-hul-reviews">
         <div class="section-title">⭐ Отзывы — ХУЛИgan</div>
-        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Отзывы гостей о шоу ХУЛИgan.</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Впишите отзывы гостей — они покажутся на сайте шоу.</div>
+        <div class="settings-card" style="max-width:640px;margin-bottom:20px">
+          <div class="settings-card-title">➕ Добавить отзыв</div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label>Имя гостя</label>
+              <input class="inp" id="revHulName" placeholder="Анна">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label>Оценка</label>
+              <select class="inp" id="revHulRating" style="min-width:110px">
+                <option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Текст отзыва</label>
+            <textarea class="inp" id="revHulText" rows="3" placeholder="Огонь, ржали весь вечер!" style="resize:vertical"></textarea>
+          </div>
+          <button class="btn-save-settings" onclick="addReview('huligan')">➕ Добавить отзыв</button>
+        </div>
         <div id="huliganReviewsList">
           <div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>
         </div>
@@ -2744,6 +3066,23 @@
             <button class="btn-save-settings" onclick="saveHuliganSalesState()">⛔ Сохранить статус продаж</button>
           </div>
 
+          <div class="settings-card">
+            <div class="settings-card-title">💰 Цены по зонам</div>
+            <div class="form-group">
+              <label><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e85348;margin-right:6px;vertical-align:middle"></span>Красная зона (₽)</label>
+              <input class="inp" id="hulPriceVip" type="number" placeholder="1700">
+            </div>
+            <div class="form-group">
+              <label><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3dbf6e;margin-right:6px;vertical-align:middle"></span>Зелёная зона (₽)</label>
+              <input class="inp" id="hulPriceStd" type="number" placeholder="1400">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a8fd9;margin-right:6px;vertical-align:middle"></span>Синяя зона / диваны (₽)</label>
+              <input class="inp" id="hulPriceEco" type="number" placeholder="1100">
+            </div>
+            <button class="btn-save-settings" onclick="saveHuliganPrices()">💾 Сохранить цены</button>
+          </div>
+
           <div class="settings-card" style="grid-column:span 2">
             <div class="settings-card-title">🎟 Типы билетов</div>
             <div id="ticketTypesManager" style="margin-bottom:12px">
@@ -2759,11 +3098,11 @@
                 </div>
                 <div class="form-group" style="margin-bottom:0">
                   <label>Название</label>
-                  <input class="inp" id="newTypeName" placeholder="VIP">
+                  <input class="inp" id="newTypeName" placeholder="Красная зона">
                 </div>
                 <div class="form-group" style="margin-bottom:0">
                   <label>Цена (₽)</label>
-                  <input class="inp" id="newTypePrice" type="number" placeholder="3000">
+                  <input class="inp" id="newTypePrice" type="number" placeholder="1700">
                 </div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 110px;gap:8px;margin-bottom:12px;align-items:start">
@@ -2864,14 +3203,8 @@
 
   <!-- Unified Mobile bottom nav -->
   <div class="bottom-nav" id="bottomNav" style="display:none">
-    <div class="bnav-item active" onclick="showSection('dashboard')" data-bsec="dashboard">
-      <span class="bnav-icon">📊</span>Аналитика
-    </div>
-    <div class="bnav-item" onclick="showSection('scanner')" data-bsec="scanner">
-      <span class="bnav-icon">📷</span>Сканнер
-    </div>
-    <div class="bnav-item" onclick="showSection('chats')" data-bsec="chats">
-      <span class="bnav-icon">💬</span>Диалоги
+    <div class="bnav-item active" onclick="switchDirection('shows'); showSection('dashboard')" data-bsec="dashboard">
+      <span class="bnav-icon">📊</span>Обзор
     </div>
     <div class="bnav-item" onclick="switchShow('secret')" data-bsec="bookings">
       <span class="bnav-icon">🎭</span>Секрет
@@ -2879,8 +3212,14 @@
     <div class="bnav-item" onclick="switchShow('huligan')" data-bsec="hul-bookings">
       <span class="bnav-icon">😈</span>ХУЛИgan
     </div>
+    <div class="bnav-item" onclick="switchShow('matvey')" data-bsec="mat-bookings">
+      <span class="bnav-icon">🧸</span>Матвей
+    </div>
+    <div class="bnav-item" onclick="showSection('scanner')" data-bsec="scanner">
+      <span class="bnav-icon">📷</span>Сканер
+    </div>
     <div class="bnav-item" onclick="showSection('mobile-menu')" data-bsec="mobile-menu">
-      <span class="bnav-icon">🛠️</span>Меню
+      <span class="bnav-icon">🛠️</span>Ещё
     </div>
   </div>
 
@@ -2922,6 +3261,10 @@
     let activeChatSid = null;
     let chatsSearchQuery = '';
     let currentShow = 'secret';
+    // Инициализируем ДО первого использования в loadDashboard (иначе ReferenceError
+    // при автозагрузке дашборда — эти объекты объявлялись ниже по файлу).
+    window.allMatveyBookings = window.allMatveyBookings || {};
+    window.allHuliganBookings = window.allHuliganBookings || {};
 
     // ── Dashboard logic ──
     async function loadDashboard() {
@@ -3028,6 +3371,10 @@
         }
       }
 
+      // ── Разбивка по шоу за всё время ──
+      updateShowsOverview(allBookings, allHuliganOrders, allMatveyBookings);
+      loadOwnAnalytics();
+
       // Обновляем метрики на экране
       revEl.textContent = `${fmt(revenueToday)} ₽`;
       soldEl.textContent = `${ticketsToday} шт`;
@@ -3074,15 +3421,214 @@
           </div>
         `).join('');
       }
-      
-      // Load Metrika
-      loadYandexMetrika();
+    }
+
+    // Сводка по каждому шоу за всё время: продано (confirmed), выручка, ждут подтверждения.
+    // Разные шоу хранят цену/статусы в разных полях — нормализуем здесь.
+    function updateShowsOverview(secret, huligan, matvey) {
+      function agg(orders, priceOf, isPaid, isPending) {
+        let sold = 0, revenue = 0, pending = 0;
+        for (const o of Object.values(orders || {})) {
+          if (!o) continue;
+          if (isPending(o)) pending++;
+          if (isPaid(o)) { sold += seatCount(o); revenue += Number(priceOf(o) || 0); }
+        }
+        return { sold, revenue, pending };
+      }
+      function seatCount(o) { return Array.isArray(o.seats) && o.seats.length ? o.seats.length : 1; }
+
+      const sec = agg(secret,
+        o => o.discountedTotal != null ? o.discountedTotal : o.total,
+        o => o.status === 'confirmed',
+        o => o.status === 'pending_confirmation' || o.status === 'pending_payment' || o.status === 'refund_requested');
+      const hul = agg(huligan,
+        o => o.finalPrice != null ? o.finalPrice : o.originalPrice,
+        o => o.status === 'confirmed',
+        o => o.status === 'waiting_admin' || o.status === 'refund_requested');
+      const mat = agg(matvey,
+        o => o.totalPrice != null ? o.totalPrice : o.total,
+        o => o.status === 'confirmed',
+        o => o.status === 'pending_confirmation' || o.status === 'pending_payment');
+
+      function fill(prefix, d) {
+        const soldEl = document.getElementById(prefix + 'Sold');
+        const revEl = document.getElementById(prefix + 'Rev');
+        const badgeEl = document.getElementById(prefix + 'Pending');
+        if (soldEl) soldEl.textContent = d.sold;
+        if (revEl) revEl.textContent = fmt(d.revenue) + ' ₽';
+        if (badgeEl) badgeEl.textContent = d.pending > 0 ? d.pending + ' ждут' : '';
+      }
+      fill('ovSecret', sec);
+      fill('ovHul', hul);
+      fill('ovMat', mat);
+    }
+
+    // ── Своя аналитика: воронка продаж (analytics/funnel) ──
+    function analyticsDayKey(offset) {
+      const d = new Date(Date.now() + 3 * 3600 * 1000 - offset * 86400000);
+      return d.toISOString().slice(0, 10);
+    }
+    async function loadOwnAnalytics() {
+      const box = document.getElementById('funnelContent');
+      if (!box) return;
+      const period = document.getElementById('funnelPeriod')?.value || 'today';
+      const days = period === 'today' ? 1 : parseInt(period);
+      // Собираем список дней
+      const dayKeys = [];
+      for (let i = 0; i < days; i++) dayKeys.push(analyticsDayKey(i));
+
+      // Тянем funnel по всем 3 шоу и суммируем шаги
+      const STEPS = [
+        { key: 'visit', label: 'Зашли на сайт', icon: '👀' },
+        { key: 'seats', label: 'Выбирают место', icon: '🪑' },
+        { key: 'contacts', label: 'Вводят контакты', icon: '📝' },
+        { key: 'payment', label: 'Дошли до оплаты', icon: '💳' }
+      ];
+      const totals = { visit: 0, seats: 0, contacts: 0, payment: 0 };
+      const funnelRaw = await fbGet('analytics/funnel') || {};
+      for (const show of ['secret', 'huligan', 'matvey']) {
+        const showData = funnelRaw[show] || {};
+        for (const dk of dayKeys) {
+          const dd = showData[dk] || {};
+          for (const s of STEPS) totals[s.key] += Number(dd[s.key] || 0);
+        }
+      }
+
+      const top = totals.visit || 0;
+      if (top === 0) {
+        box.innerHTML = `<div class="empty-state" style="padding:20px 0;"><span class="empty-icon">📊</span>Пока нет данных за период.<br><span style="font-size:11px;opacity:0.7">Появятся, когда люди начнут заходить на сайты шоу.</span></div>`;
+        return;
+      }
+      box.innerHTML = STEPS.map(function (s, i) {
+        const val = totals[s.key];
+        const pctOfTop = top ? Math.round(val / top * 100) : 0;
+        const prev = i > 0 ? totals[STEPS[i - 1].key] : val;
+        const conv = prev ? Math.round(val / prev * 100) : 100;
+        return `
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>${s.icon} ${s.label}</span>
+              <span><b style="color:var(--gold)">${val}</b>${i > 0 ? ` <span style="color:var(--dim);font-size:11px">(${conv}% от пред.)</span>` : ''}</span>
+            </div>
+            <div style="height:8px;background:rgba(255,255,255,0.05);border-radius:5px;overflow:hidden">
+              <div style="height:100%;width:${pctOfTop}%;background:linear-gradient(90deg,#c9a228,#e0b94a);border-radius:5px"></div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Финансы: доход, расходы, чистая прибыль ──
+    const EXP_CAT_ICON = { 'Аренда': '🏠', 'Реклама': '📣', 'Оборудование': '🔊', 'Зарплаты': '👥', 'Реквизит': '🎩', 'Прочее': '📦' };
+    const SHOW_LABEL = { secret: '🎭 Секрет', huligan: '😈 ХУЛИgan', matvey: '🧸 Матвей' };
+
+    // Грязный доход по шоу (оплаченные/подтверждённые брони), поля цены разные у шоу
+    function showRevenue(orders, priceOf) {
+      let sum = 0;
+      for (const o of Object.values(orders || {})) {
+        if (o && o.status === 'confirmed') sum += Number(priceOf(o) || 0);
+      }
+      return sum;
+    }
+
+    async function loadFinances() {
+      // Доходы (из уже загруженных броней или подтягиваем)
+      const [sec, hul, mat, expensesRaw] = await Promise.all([
+        Object.keys(allBookings).length ? Promise.resolve(allBookings) : fbGet('ticket_bookings'),
+        Object.keys(allHuliganOrders).length ? Promise.resolve(allHuliganOrders) : fbGet('huligan_bookings'),
+        Object.keys(window.allMatveyBookings).length ? Promise.resolve(window.allMatveyBookings) : fbGet('matvey_bookings'),
+        fbGet('finances/expenses')
+      ]);
+      const revenue = {
+        secret: showRevenue(sec, o => o.discountedTotal != null ? o.discountedTotal : o.total),
+        huligan: showRevenue(hul, o => o.finalPrice != null ? o.finalPrice : o.originalPrice),
+        matvey: showRevenue(mat, o => o.totalPrice != null ? o.totalPrice : o.total)
+      };
+      const expenses = expensesRaw || {};
+
+      // Расходы по шоу
+      const expBy = { secret: 0, huligan: 0, matvey: 0 };
+      for (const e of Object.values(expenses)) {
+        if (e && expBy[e.show] != null) expBy[e.show] += Number(e.amount || 0);
+      }
+
+      const totalRev = revenue.secret + revenue.huligan + revenue.matvey;
+      const totalExp = expBy.secret + expBy.huligan + expBy.matvey;
+      const profit = totalRev - totalExp;
+
+      // Итоговые метрики
+      const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = fmt(v) + ' ₽'; };
+      setTxt('finRevenue', totalRev);
+      setTxt('finExpenses', totalExp);
+      const profitEl = document.getElementById('finProfit');
+      if (profitEl) { profitEl.textContent = fmt(profit) + ' ₽'; profitEl.style.color = profit >= 0 ? 'var(--gold)' : '#e85348'; }
+
+      // Разбивка по шоу
+      const grid = document.getElementById('finByShow');
+      if (grid) {
+        grid.innerHTML = ['secret', 'huligan', 'matvey'].map(function (s) {
+          const rev = revenue[s], exp = expBy[s], prof = rev - exp;
+          return `
+            <div class="show-ov-card" style="cursor:default">
+              <div class="show-ov-head"><span class="show-ov-name">${SHOW_LABEL[s]}</span></div>
+              <div style="display:grid;gap:6px;font-size:13px">
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Доход</span><b style="color:#3dbf6e">${fmt(rev)} ₽</b></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Расходы</span><b style="color:#e85348">${fmt(exp)} ₽</b></div>
+                <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:6px"><span>Чистыми</span><b style="color:${prof >= 0 ? 'var(--gold)' : '#e85348'}">${fmt(prof)} ₽</b></div>
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      // Список расходов
+      const list = document.getElementById('expensesList');
+      if (list) {
+        const items = Object.entries(expenses).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+        if (!items.length) {
+          list.innerHTML = `<div class="empty-state"><span class="empty-icon">💸</span>Расходов пока нет</div>`;
+        } else {
+          list.innerHTML = items.map(([id, e]) => `
+            <div class="booking-card" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+              <div style="flex:1">
+                <div style="font-weight:600">${EXP_CAT_ICON[e.category] || '📦'} ${esc(e.category || 'Прочее')} · <span style="color:#e85348">−${fmt(e.amount)} ₽</span></div>
+                <div style="font-size:12px;color:var(--dim);margin-top:3px">${SHOW_LABEL[e.show] || e.show} · ${e.date || '—'}${e.comment ? ' · ' + esc(e.comment) : ''}</div>
+              </div>
+              <button class="btn-sm btn-sm-del" onclick="deleteExpense('${id}')">🗑</button>
+            </div>`).join('');
+        }
+      }
+    }
+
+    async function addExpense() {
+      const amount = parseInt(document.getElementById('expAmount').value) || 0;
+      if (amount <= 0) return toast('Введите сумму расхода');
+      const exp = {
+        show: document.getElementById('expShow').value,
+        amount: amount,
+        category: document.getElementById('expCategory').value,
+        comment: document.getElementById('expComment').value.trim(),
+        date: document.getElementById('expDate').value || new Date().toISOString().slice(0, 10),
+        createdAt: Date.now()
+      };
+      const id = 'exp_' + Date.now().toString(36);
+      await fbPut(`finances/expenses/${id}`, exp);
+      toast('💾 Расход добавлен');
+      document.getElementById('expAmount').value = '';
+      document.getElementById('expComment').value = '';
+      await loadFinances();
+    }
+
+    async function deleteExpense(id) {
+      if (!confirm('Удалить этот расход?')) return;
+      await fbDelete(`finances/expenses/${id}`);
+      toast('🗑 Расход удалён');
+      loadFinances();
     }
 
     async function refreshDashboard() {
       toast('🔄 Обновляем показатели дашборда...');
       allBookings = {};
       allHuliganOrders = {};
+      window.allMatveyBookings = {};
       metrikaDataCache = {};
       await loadDashboard();
     }
@@ -3366,10 +3912,6 @@
             if (s.contact?.phone) {
               actionsEl.innerHTML += `<a class="btn-confirm" href="tel:${s.contact.phone}" style="padding: 6px 12px; font-size:12px; text-decoration:none; display:inline-block;">📞 Позвонить</a> &nbsp;`;
             }
-            if (tgName) {
-              const cleanTg = tgName.replace(/^@/, '');
-              actionsEl.innerHTML += `<a class="btn-view-ticket" href="https://t.me/${cleanTg}" target="_blank" style="padding: 6px 12px; font-size:12px; text-decoration:none; display:inline-block;">✈️ TG</a>`;
-            }
           }
 
           // Отображение квиза
@@ -3446,38 +3988,37 @@
       const showNameEl = document.getElementById('mobileMenuShowName');
       if (!grid || !showNameEl) return;
 
-      const isSecret = currentShow === 'secret';
-      showNameEl.textContent = isSecret ? '«Секрет»' : '«ХУЛИgan»';
+      // Префикс секций и название текущего шоу
+      const showCfg = {
+        secret:  { name: '«Секрет»',  p: { bookings:'bookings', hall:'hall', settings:'settings', promo:'promo', reviews:'reviews', users:'users' } },
+        huligan: { name: '«ХУЛИgan»', p: { bookings:'hul-bookings', hall:'hul-hall', settings:'hul-settings', promo:'hul-promo', reviews:'hul-reviews', users:'hul-users' } },
+        matvey:  { name: '«Матвей»',  p: { bookings:'mat-bookings', hall:'mat-hall', settings:'mat-settings', promo:'mat-promo', reviews:'mat-reviews', users:'mat-users' } }
+      };
+      const cur = showCfg[currentShow] || showCfg.secret;
+      showNameEl.textContent = cur.name;
 
-      let items = [];
-      if (isSecret) {
-        items = [
-          { icon: '👥', label: 'Пользователи', sec: 'users' },
-          { icon: '⭐', label: 'Отзывы', sec: 'reviews' },
-          { icon: '🎫', label: 'Промокоды', sec: 'promo' },
-          { icon: '🗺', label: 'Схема зала', sec: 'hall' },
-          { icon: '⚙️', label: 'Настройки', sec: 'settings' },
-          { icon: '📣', label: 'Рассылки', sec: 'broadcast' }
-        ];
-      } else {
-        items = [
-          { icon: '👥', label: 'Пользователи', sec: 'hul-users' },
-          { icon: '⭐', label: 'Отзывы', sec: 'hul-reviews' },
-          { icon: '🎫', label: 'Промокоды', sec: 'hul-promo' },
-          { icon: '⚙️', label: 'Настройки', sec: 'hul-settings' },
-          { icon: '📣', label: 'Рассылки', sec: 'broadcast' }
-        ];
-      }
+      const showItems = [
+        { icon: '📋', label: 'Заявки', sec: cur.p.bookings },
+        { icon: '🗺', label: 'Схема зала', sec: cur.p.hall },
+        { icon: '⚙️', label: 'Настройки', sec: cur.p.settings },
+        { icon: '🎫', label: 'Промокоды', sec: cur.p.promo },
+        { icon: '⭐', label: 'Отзывы', sec: cur.p.reviews }
+      ];
 
-      // Добавим глобальную плитку в конец для обоих шоу!
-      items.push({ icon: '🪄', label: 'Цены & ИИ', sec: 'private-config' });
+      // Другие направления
+      const otherItems = [
+        { icon: '💍', label: 'Частные события', sec: 'private-config' }
+      ];
 
-      grid.innerHTML = items.map(it => `
+      const btn = it => `
         <button onclick="showSection('${it.sec}')" style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:inherit; cursor:pointer;">
           <span style="font-size:24px">${it.icon}</span>
           <span style="font-size:12px; font-weight:600">${it.label}</span>
-        </button>
-      `).join('');
+        </button>`;
+
+      grid.innerHTML = showItems.map(btn).join('') +
+        `<div style="grid-column:span 2;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);opacity:.7;margin:8px 0 2px">Другие направления</div>` +
+        otherItems.map(btn).join('');
     }
 
     // ── Private Config (Цены & ИИ) logic ──
@@ -4106,6 +4647,96 @@
     let _loginAttempts = 0;
     let _loginLockedUntil = 0;
 
+    // ══════ Вход по Touch ID (WebAuthn + шифрование пароля) ══════
+    const TID_CRED = 'k_tid_cred';   // id credential (base64)
+    const TID_ENC = 'k_tid_enc';     // зашифрованный пароль {iv, data} (base64)
+
+    function b64e(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+    function b64d(s) { return Uint8Array.from(atob(s), c => c.charCodeAt(0)); }
+
+    // Показываем/прячем кнопки Touch ID в зависимости от поддержки и наличия привязки
+    async function touchIdInit() {
+      const statusEl = document.getElementById('touchIdStatus');
+      const bindBtn = document.getElementById('touchIdBindBtn');
+      const loginBtn = document.getElementById('touchIdLoginBtn');
+      const supported = window.PublicKeyCredential && typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable === 'function';
+      const available = supported ? await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(() => false) : false;
+      const bound = !!localStorage.getItem(TID_CRED) && !!localStorage.getItem(TID_ENC);
+
+      if (loginBtn) loginBtn.style.display = (available && bound) ? '' : 'none';
+      if (statusEl) {
+        statusEl.textContent = !available ? '⚠️ Устройство не поддерживает Touch ID / Face ID для сайтов.'
+          : bound ? '✅ Touch ID привязан на этом устройстве. Вход по отпечатку доступен.'
+            : 'Привяжите Touch ID, чтобы входить по отпечатку (пароль останется резервным).';
+      }
+      if (bindBtn) { bindBtn.style.display = available ? '' : 'none'; bindBtn.textContent = bound ? '☝️ Перепривязать Touch ID' : '☝️ Привязать Touch ID на этом устройстве'; }
+    }
+
+    // Получить AES-ключ из WebAuthn PRF (или фолбэк на детерминированный из rawId)
+    async function tidDeriveKey(assertion) {
+      const prf = assertion.getClientExtensionResults?.().prf?.results?.first;
+      let raw;
+      if (prf) { raw = prf; }
+      else { raw = assertion.rawId; } // фолбэк: сам ключ credential как секрет (не покидает устройство)
+      const hash = await crypto.subtle.digest('SHA-256', raw);
+      return crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+    }
+
+    async function bindTouchId() {
+      const pass = String(window._adminPass || '');
+      if (!pass) return toast('Сначала войдите паролем');
+      try {
+        const cred = await navigator.credentials.create({
+          publicKey: {
+            challenge: crypto.getRandomValues(new Uint8Array(32)),
+            rp: { name: 'KOSTYUK PROJECT Admin' },
+            user: { id: new TextEncoder().encode('kostyuk-admin'), name: 'admin', displayName: 'Администратор' },
+            pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+            authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
+            extensions: { prf: { eval: { first: new TextEncoder().encode('kostyuk-admin-prf') } } },
+            timeout: 60000
+          }
+        });
+        if (!cred) return toast('Отменено');
+        // Ключ для шифрования — из PRF или rawId
+        const key = await tidDeriveKey(cred);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const enc = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(pass));
+        localStorage.setItem(TID_CRED, b64e(cred.rawId));
+        localStorage.setItem(TID_ENC, JSON.stringify({ iv: b64e(iv), data: b64e(enc) }));
+        toast('☝️ Touch ID привязан!');
+        touchIdInit();
+      } catch (e) {
+        toast('Не удалось привязать Touch ID: ' + (e.message || e.name));
+      }
+    }
+
+    async function loginWithTouchId() {
+      const credId = localStorage.getItem(TID_CRED);
+      const encRaw = localStorage.getItem(TID_ENC);
+      if (!credId || !encRaw) return toast('Touch ID не привязан на этом устройстве');
+      try {
+        const assertion = await navigator.credentials.get({
+          publicKey: {
+            challenge: crypto.getRandomValues(new Uint8Array(32)),
+            allowCredentials: [{ type: 'public-key', id: b64d(credId) }],
+            userVerification: 'required',
+            extensions: { prf: { eval: { first: new TextEncoder().encode('kostyuk-admin-prf') } } },
+            timeout: 60000
+          }
+        });
+        if (!assertion) return toast('Отменено');
+        const key = await tidDeriveKey(assertion);
+        const { iv, data } = JSON.parse(encRaw);
+        const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64d(iv) }, key, b64d(data));
+        const pass = new TextDecoder().decode(dec);
+        document.getElementById('loginPwd').value = pass;
+        doLogin();
+      } catch (e) {
+        toast('Touch ID не сработал. Войдите паролем.');
+      }
+    }
+
     async function doLogin() {
       const now = Date.now();
       if (_loginLockedUntil > now) {
@@ -4164,9 +4795,11 @@
         document.getElementById('cfgSalesPaused').checked = cfg.show.salesPaused === true;
       }
       if (cfg.prices) {
-        document.getElementById('priceVip').value = cfg.prices.vip || 1400;
-        document.getElementById('priceStandart').value = cfg.prices.standart || 1100;
-        document.getElementById('priceEconom').value = cfg.prices.econom || 800;
+        document.getElementById('priceVip').value = cfg.prices.vip || 1800;
+        document.getElementById('priceStandart').value = cfg.prices.standart || 1500;
+        document.getElementById('priceEconom').value = cfg.prices.econom || 1200;
+        document.getElementById('priceSofaLeft').value = cfg.prices.sofa_left || 1000;
+        document.getElementById('priceSofaRight').value = cfg.prices.sofa_right || 800;
       }
       if (cfg.payment) {
         document.getElementById('paymentSbp').value = cfg.payment.sbp || '';
@@ -4191,6 +4824,22 @@
     }
 
     // ── Show switcher ──
+    // Переключение НАПРАВЛЕНИЙ (Авторские шоу / Частные события / Школа)
+    function switchDirection(dir) {
+      document.querySelectorAll('.dir-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.dir === dir);
+      });
+      document.getElementById('dirShows').style.display = dir === 'shows' ? '' : 'none';
+      document.getElementById('dirPrivate').style.display = dir === 'private' ? '' : 'none';
+      document.getElementById('dirSchool').style.display = dir === 'school' ? '' : 'none';
+
+      // Открываем первую осмысленную секцию направления
+      if (dir === 'shows') showSection('dashboard');
+      else if (dir === 'private') showSection('private-config');
+      // school — пока заглушка, секции нет
+    }
+    window.switchDirection = switchDirection;
+
     function switchShow(show) {
       currentShow = show;
       // Update all show tabs (sidebar + mobile)
@@ -4201,6 +4850,10 @@
       document.getElementById('navSecret').style.display = show === 'secret' ? '' : 'none';
       document.getElementById('navHuligan').style.display = show === 'huligan' ? '' : 'none';
       document.getElementById('navMatvey').style.display = show === 'matvey' ? '' : 'none';
+      // Обновляем метку выбранного шоу
+      const showLabels = { secret: '🎭 Секрет — управление', huligan: '😈 ХУЛИgan — управление', matvey: '🧸 Матвей — управление' };
+      const labelEl = document.getElementById('currentShowLabel');
+      if (labelEl) labelEl.textContent = showLabels[show] || '';
       // Toggle mobile bottom navs
       if (window.innerWidth <= 600) {
         const bottomNav = document.getElementById('bottomNav');
@@ -4224,6 +4877,7 @@
       
       // Load data on demand
       if (sec === 'dashboard') loadDashboard();
+      if (sec === 'finances') loadFinances();
       if (sec === 'chats') loadChatsList();
       if (sec === 'mobile-menu') renderMobileMenu();
       if (sec === 'hall') loadAdminHall();
@@ -4240,6 +4894,9 @@
       if (sec === 'mat-bookings') loadMatveyOrders();
       if (sec === 'mat-settings') loadMatveySettings();
       if (sec === 'mat-hall') loadAdminMatveyHall();
+      if (sec === 'mat-promo') loadMatveyPromos();
+      if (sec === 'mat-reviews') loadMatveyReviews();
+      if (sec === 'mat-users') loadMatveyUsers();
     }
 
     // ── ХУЛИgan: Bookings ──
@@ -4265,7 +4922,7 @@
         return;
       }
 
-      const TYPE_NAMES = { vip: 'VIP', std: 'Стандарт', eco: 'Эконом' };
+      const TYPE_NAMES = { vip: 'Красная зона', std: 'Зелёная зона', eco: 'Синяя зона' };
       const STATUS_LABEL = {
         new: 'Не оплачен',
         waiting_admin: 'Ожидает подтверждения',
@@ -4286,14 +4943,8 @@
       const items = Object.entries(orders).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
 
       list.innerHTML = items.map(([id, o]) => {
-        const vkLink = o.vkUserId
-          ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${o.vkUserId}" target="_blank">💬 ВК</a>`
-          : '';
-        const tgLink = o.tgUserId
-          ? `<a class="btn-vk-dm" href="tg://user?id=${o.tgUserId}" target="_blank" style="background:rgba(74,143,217,0.15);border-color:rgba(74,143,217,0.4);color:#4a8fd9">✈️ TG</a>`
-          : o.tgUsername
-            ? `<a class="btn-vk-dm" href="https://t.me/${String(o.tgUsername).replace(/^@/,'')}" target="_blank" style="background:rgba(74,143,217,0.15);border-color:rgba(74,143,217,0.4);color:#4a8fd9">✈️ TG</a>`
-            : '';
+        const vkLink = '';  // боты убраны
+        const tgLink = '';
         const contactLine = [
           o.tgUserId ? `<span style="font-size:12px">TG ID: <code>${o.tgUserId}</code></span>` : '',
           o.tgUsername ? `<span style="font-size:12px">@${String(o.tgUsername).replace(/^@/,'')}</span>` : '',
@@ -4418,8 +5069,8 @@
       const b = window.allHuliganBookings[bookingId];
       if (b && Array.isArray(b.seats)) {
         for (const s of b.seats) {
-          const k = `${s.tableId || s.table}_${s.seatIdx || s.seatNum}`;
-          await fbDelete(`huligan_seats/${k}`);
+          const k = normalizeHuliganSeatKey(s);
+          if (k) await fbDelete(`huligan_seats/${k}`);
         }
       }
       await fbDelete(`huligan_bookings/${bookingId}`);
@@ -4436,7 +5087,7 @@
         list.innerHTML = `<div class="empty-state"><span class="empty-icon">👥</span>Пользователей пока нет</div>`;
         return;
       }
-      const TYPE_NAMES = { vip: 'VIP', std: 'Стандарт', eco: 'Эконом' };
+      const TYPE_NAMES = { vip: 'Красная зона', std: 'Зелёная зона', eco: 'Синяя зона' };
       // Group by vkUserId or name to avoid duplicates
       const seen = new Set();
       const users = [];
@@ -4452,7 +5103,7 @@
       }
       list.innerHTML = users.map(u => {
         const name = u.vkName || u.name || '—';
-        const vkLink = u.vkUserId ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${u.vkUserId}" target="_blank">💬 Написать</a>` : '';
+        const vkLink = '';  // боты убраны
         const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ru-RU') : '—';
         return `
       <div class="user-card">
@@ -4481,9 +5132,7 @@
         const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
         const name = r.name || '—';
         const vkProfileUrl = r.vkUserId ? `https://vk.com/id${r.vkUserId}` : null;
-        const vkReplyBtn = r.vkUserId
-          ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${r.vkUserId}" target="_blank">💬 Ответить</a>`
-          : '';
+        const vkReplyBtn = '';  // боты убраны
         const publishText = [
           `✨ Отзыв о шоу «ХУЛИГАН GAN»`,
           ``,
@@ -4531,6 +5180,12 @@
         document.getElementById('hulPaymentCard').value = cfg.payment.card || '';
         document.getElementById('hulPaymentHolder').value = cfg.payment.cardHolder || '';
       }
+      const hp = cfg.prices || {};
+      if (document.getElementById('hulPriceVip')) {
+        document.getElementById('hulPriceVip').value = hp.vip || 1700;
+        document.getElementById('hulPriceStd').value = hp.std || 1400;
+        document.getElementById('hulPriceEco').value = hp.eco || 1100;
+      }
       renderSalesStateSummary('huligan');
       await loadHuliganTicketTypes(cfg.ticketTypes);
     }
@@ -4543,6 +5198,14 @@
         address: document.getElementById('hulCfgAddress').value.trim(),
       });
       toast('💾 Настройки ХУЛИgan сохранены');
+    }
+    async function saveHuliganPrices() {
+      await fbPatch('huligan_config/prices', {
+        vip: parseInt(document.getElementById('hulPriceVip').value) || 1700,
+        std: parseInt(document.getElementById('hulPriceStd').value) || 1400,
+        eco: parseInt(document.getElementById('hulPriceEco').value) || 1100,
+      });
+      toast('💾 Цены ХУЛИgan сохранены');
     }
     async function saveHuliganSalesState() {
       const paused = document.getElementById('hulSalesPaused').checked === true;
@@ -4805,6 +5468,27 @@
       sel.innerHTML = sorted.map(([k, t]) => `<option value="${k}">${t.name} — ${t.price} ₽</option>`).join('') || '<option value="">Нет типов</option>';
     }
 
+
+    function buildHuliganSeatKey(tableValue, seatValue) {
+      const tableText = String(tableValue ?? '').trim();
+      const seatText = String(seatValue ?? '').trim();
+      const tableNum = (tableText.match(/\d+/) || [])[0];
+      const seatNum = (seatText.match(/\d+/) || [])[0];
+      if (!tableText && !seatText) return '';
+      if (/^c_\d+$/i.test(tableText)) return tableText.toLowerCase();
+      if (/^t\d+$/i.test(tableText) && seatNum) return `${tableText.toLowerCase()}_${seatNum}`;
+      if (/стуль/i.test(tableText) && seatNum) return `c_${seatNum}`;
+      if ((/^стол/i.test(tableText) || /^\d+$/.test(tableText)) && tableNum && seatNum) return `t${tableNum}_${seatNum}`;
+      return `${tableText || '0'}_${seatText || '0'}`;
+    }
+
+    function normalizeHuliganSeatKey(seat) {
+      if (!seat || typeof seat !== 'object') return '';
+      const direct = String(seat.key || '').trim();
+      if (direct) return direct;
+      return buildHuliganSeatKey(seat.tableId ?? seat.table, seat.seatIdx ?? seat.seatNum);
+    }
+
     async function adminCreateHuliganTicket() {
       const name = document.getElementById('hulManualName').value.trim();
       if (!name) return toast('Введите имя');
@@ -4813,13 +5497,13 @@
       const priceVal = document.getElementById('hulManualPrice').value;
       const finalPrice = priceVal !== '' ? Number(priceVal) : undefined;
       
-      const tableVal = document.getElementById('hulManualTable').value;
-      const seatVal = document.getElementById('hulManualSeat').value;
+      const tableVal = document.getElementById('hulManualTable').value.trim();
+      const seatVal = document.getElementById('hulManualSeat').value.trim();
+      if ((tableVal === '') !== (seatVal === '')) return toast('Введите и стол, и место');
+      const manualSeatKey = tableVal !== '' && seatVal !== '' ? buildHuliganSeatKey(tableVal, seatVal) : '';
+      if (tableVal !== '' && !manualSeatKey) return toast('Введите корректный стол и место');
 
-      const vkUserId = document.getElementById('hulManualVkId').value;
-      const tgUserId = document.getElementById('hulManualTgId').value;
-      const tgUsernameRaw = document.getElementById('hulManualTgUsername').value.trim().replace(/\s+/g, '');
-      const tgUsername = tgUsernameRaw ? (tgUsernameRaw.startsWith('@') ? tgUsernameRaw : `@${tgUsernameRaw}`) : '';
+      const phone = (document.getElementById('hulManualPhone')?.value || '').trim();
       const res = document.getElementById('hulManualCreateResult');
       res.style.color = 'var(--dim)'; res.textContent = 'Создаём...';
       try {
@@ -4828,22 +5512,20 @@
           headers: adminHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({
             action: 'admin_create_booking',
-            name, ticketType,
+            name, ticketType, phone,
             finalPrice: finalPrice != null ? finalPrice : undefined,
-            vkUserId: vkUserId ? Number(vkUserId) : null,
-            tgUserId: tgUserId ? Number(tgUserId) : null,
-            tgUsername: tgUsername || null,
-            sendNotification: !!(vkUserId || tgUserId || tgUsername)
+            sendNotification: false
           })
         });
         const data = await r.json();
         if (data.ok) {
           // If seat specified, save it to the booking and block it in huligan_seats
-          if (tableVal !== '' && seatVal !== '') {
-            const seatKey = `${tableVal}_${seatVal}`;
-            const seatsPayload = [{ table: Number(tableVal), seatNum: Number(seatVal), key: seatKey, price: finalPrice || 0 }];
+          if (manualSeatKey) {
+            const tableNum = Number(tableVal);
+            const seatNum = Number(seatVal);
+            const seatsPayload = [{ table: `Стол ${tableNum}`, seatNum: `Место ${seatNum}`, key: manualSeatKey, price: finalPrice || 0 }];
             await fbPatch(`huligan_bookings/${data.bookingId}`, { seats: seatsPayload });
-            await fbPut(`huligan_seats/${seatKey}`, { status: 'taken', bookingId: data.bookingId });
+            await fbPut(`huligan_seats/${manualSeatKey}`, { status: 'taken', bookingId: data.bookingId });
           }
 
           res.style.color = 'var(--green)';
@@ -4858,45 +5540,6 @@
       } catch { res.style.color = 'var(--red)'; res.textContent = '❌ Ошибка сети'; }
     }
 
-    async function sendBroadcast() {
-      const message = (document.getElementById('broadcastMessage')?.value || '').trim();
-      const useVk = !!document.getElementById('broadcastVk')?.checked;
-      const useTg = !!document.getElementById('broadcastTg')?.checked;
-      const dryRun = !!document.getElementById('broadcastDryRun')?.checked;
-      const resultEl = document.getElementById('broadcastResult');
-      if (!message) return toast('Введите текст рассылки');
-      if (!useVk && !useTg) return toast('Выберите хотя бы один канал');
-      resultEl.style.color = 'var(--dim)';
-      resultEl.textContent = dryRun ? 'Проверяем аудиторию...' : 'Отправляем рассылку...';
-      try {
-        const r = await fetch('/api/broadcast', {
-          method: 'POST',
-          headers: adminHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({
-            message,
-            channels: { vk: useVk, tg: useTg },
-            dryRun
-          })
-        });
-        const data = await r.json();
-        if (!r.ok || !data?.ok) {
-          resultEl.style.color = 'var(--red)';
-          resultEl.textContent = `❌ ${data?.error || 'Ошибка рассылки'}`;
-          return;
-        }
-        resultEl.style.color = 'var(--green)';
-        resultEl.innerHTML = [
-          dryRun ? '✅ Проверка завершена (без отправки).' : '✅ Рассылка завершена.',
-          `VK: ${data.sent?.vk || 0}/${data.total?.vk || 0} · ошибок: ${data.errors?.vk || 0}`,
-          `TG: ${data.sent?.tg || 0}/${data.total?.tg || 0} · ошибок: ${data.errors?.tg || 0}`
-        ].join('<br>');
-        toast(dryRun ? 'Проверка аудитории выполнена' : 'Рассылка отправлена');
-      } catch {
-        resultEl.style.color = 'var(--red)';
-        resultEl.textContent = '❌ Ошибка сети';
-      }
-    }
-
     // ── Users (Секрет) ──
     async function loadUsers() {
       const list = document.getElementById('usersList');
@@ -4908,7 +5551,7 @@
       const items = Object.values(users).sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
       list.innerHTML = items.map(u => {
         const name = u.name || [u.firstName, u.lastName].filter(Boolean).join(' ') || '—';
-        const vkLink = u.vkId ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${u.vkId}" target="_blank">💬 Написать</a>` : '';
+        const vkLink = '';  // боты убраны
         const dateStr = u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('ru-RU') : '—';
         return `
       <div class="user-card">
@@ -4923,6 +5566,26 @@
     }
 
     // ── Reviews (Секрет) ──
+    // Ручное добавление отзыва в админке (собранного в соцсетях/лично)
+    async function addReview(show) {
+      // Префикс полей формы по шоу: revSecret* / revHul* / revMat*
+      const pref = show === 'huligan' ? 'revHul' : show === 'matvey' ? 'revMat' : 'revSecret';
+      const name = document.getElementById(pref + 'Name').value.trim();
+      const text = document.getElementById(pref + 'Text').value.trim();
+      const rating = parseInt(document.getElementById(pref + 'Rating').value) || 5;
+      if (!name) return toast('Введите имя гостя');
+      if (!text) return toast('Введите текст отзыва');
+      const path = show === 'huligan' ? 'huligan_reviews' : show === 'matvey' ? 'matvey_reviews' : 'ticket_reviews';
+      const id = 'rev_' + Date.now().toString(36);
+      await fbPut(`${path}/${id}`, { name, text, rating, manual: true, createdAt: Date.now() });
+      toast('⭐ Отзыв добавлен');
+      document.getElementById(pref + 'Name').value = '';
+      document.getElementById(pref + 'Text').value = '';
+      if (show === 'huligan') await loadHuliganReviews();
+      else if (show === 'matvey') await loadMatveyReviews();
+      else await loadReviews();
+    }
+
     async function loadReviews() {
       const list = document.getElementById('reviewsList');
       const reviews = await fbGet('ticket_reviews');
@@ -4932,15 +5595,13 @@
       }
       const items = Object.entries(reviews).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
       list.innerHTML = await Promise.all(items.map(async ([id, r]) => {
-        const booking = await fbGet(`ticket_bookings/${r.bookingId}`);
-        const name = booking?.name || r.bookingId || '—';
+        const booking = r.bookingId ? await fbGet(`ticket_bookings/${r.bookingId}`) : null;
+        const name = r.name || booking?.name || r.bookingId || '—';
         const starsStr = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
         const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
         const vkUserId = booking?.vkUserId;
         const vkProfileUrl = vkUserId ? `https://vk.com/id${vkUserId}` : null;
-        const vkReplyBtn = vkUserId
-          ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${vkUserId}" target="_blank">💬 Ответить</a>`
-          : '';
+        const vkReplyBtn = '';  // боты убраны
         // Текст для публикации ВКонтакте
         const publishText = [
           `✨ Отзыв о Шоу «Секрет»`,
@@ -4999,16 +5660,42 @@
 
     function renderBookings() {
       const list = document.getElementById('bookingList');
+      const q = (document.getElementById('bookingSearch')?.value || '').trim().toLowerCase();
       let entries = Object.entries(allBookings)
         .map(([id, b]) => ({ id, ...b }))
         .filter(b => currentFilter === 'all' || b.status === currentFilter)
+        .filter(b => !q || (b.name || '').toLowerCase().includes(q) || (b.phone || '').toLowerCase().includes(q))
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
       if (!entries.length) {
-        list.innerHTML = `<div class="empty-state"><span class="empty-icon">📭</span>Заявок нет</div>`;
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">📭</span>${q ? 'Ничего не найдено' : 'Заявок нет'}</div>`;
         return;
       }
       list.innerHTML = entries.map(b => bookingCardHtml(b)).join('');
+    }
+
+    // Экспорт списка покупателей (скачивается CSV для печати/сверки на входе)
+    function exportBookings(show) {
+      const src = show === 'huligan' ? window.allHuliganBookings
+        : show === 'matvey' ? window.allMatveyBookings : allBookings;
+      const rows = [['Имя', 'Телефон', 'Места', 'Сумма', 'Статус', 'Дата']];
+      const priceOf = show === 'huligan' ? (o => o.finalPrice != null ? o.finalPrice : o.originalPrice)
+        : show === 'matvey' ? (o => o.totalPrice != null ? o.totalPrice : o.total)
+        : (o => o.discountedTotal != null ? o.discountedTotal : o.total);
+      Object.values(src || {}).forEach(b => {
+        if (!b || b.status === 'cancelled' || b.status === 'refunded') return;
+        const seats = Array.isArray(b.seats) ? b.seats.map(s => s.label || (s.tableId != null ? `Стол ${s.tableId} м.${(s.seatIdx || 0) + 1}` : '')).filter(Boolean).join('; ') : '';
+        rows.push([b.name || '', b.phone || b.telegram || '', seats, priceOf(b) || 0, b.status || '', b.createdAt ? new Date(b.createdAt).toLocaleDateString('ru-RU') : '']);
+      });
+      if (rows.length === 1) return toast('Нет покупателей для экспорта');
+      const csv = '﻿' + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Покупатели_${show}_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('📥 Список выгружен');
     }
 
     const STATUS_LABELS = {
@@ -5019,7 +5706,7 @@
       cancelled: ['pill-cancelled', '✗ Отменён'],
       refunded: ['pill-refunded', '↩ Возврат'],
     };
-    const ZONE_LABELS = { vip: 'VIP', standart: 'Стандарт', econom: 'Эконом' };
+    const ZONE_LABELS = { vip: 'Красная зона', standart: 'Зелёная зона', econom: 'Синяя зона' };
 
     function bookingCardHtml(b) {
       const [pillClass, pillText] = STATUS_LABELS[b.status] || ['pill-cancelled', '?'];
@@ -5029,9 +5716,7 @@
       const promo = b.promoCode ? `<span>Промокод: <b>${esc(b.promoCode)}</b></span>` : '';
       const createdStr = b.createdAt ? new Date(b.createdAt).toLocaleString('ru-RU') : '—';
       const safeId = esc(b.id);
-      const vkBtn = b.vkUserId
-        ? `<a class="btn-vk-dm" href="https://vk.com/im?sel=${encodeURIComponent(b.vkUserId)}" target="_blank">💬 Написать в ВК</a>`
-        : '';
+      const vkBtn = '';  // боты убраны
       const reasonHtml = (b.cancelReason || b.refundReason)
         ? `<div style="font-size:12px;color:var(--dim);margin-top:6px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px">💬 ${esc(b.cancelReason || b.refundReason)}</div>`
         : '';
@@ -5056,7 +5741,7 @@
         <div>
           <div class="bk-id">${safeId}</div>
           <div class="bk-name">${esc(b.name) || '—'}</div>
-          <div class="bk-phone">${esc(b.phone) || '—'}</div>
+          <div class="bk-phone">${b.phone ? `<a href="tel:${esc(b.phone)}" style="color:#3dbf6e;text-decoration:none">📞 ${esc(b.phone)}</a>` : '—'}</div>
         </div>
         <span class="status-pill ${pillClass}">${pillText}</span>
       </div>
@@ -5135,26 +5820,54 @@
     async function cancelBooking(id) {
       const b = allBookings[id];
       if (!b) return;
-      const newStatus = (b.status === 'confirmed' || b.status === 'refund_requested') ? 'refunded' : 'cancelled';
+      const isRefund = (b.status === 'confirmed' || b.status === 'refund_requested');
+
+      // Возврат оплаченной брони — через сервер (реальный возврат денег T-Bank Cancel).
+      if (isRefund) {
+        if (!confirm(`Оформить ВОЗВРАТ по заказу ${id}?\n\nДеньги вернутся покупателю через T-Bank, билет аннулируется, место освободится.`)) return;
+        const reason = prompt('Причина возврата (необязательно):') || '';
+        try {
+          const r = await fetch('/api/book', {
+            method: 'POST',
+            headers: adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ action: 'refund', bookingId: id, reason: reason.trim() })
+          });
+          const j = await r.json();
+          if (!r.ok || !j.ok) {
+            const detail = j.detail?.message || j.error || 'попробуйте позже';
+            alert('Не удалось оформить возврат: ' + detail);
+            return;
+          }
+          allBookings[id].status = 'refunded';
+          allBookings[id].ticketLinkVersion = Number(b.ticketLinkVersion || 1) + 1;
+          toast('↩ Возврат оформлен, деньги возвращены');
+          renderBookings();
+        } catch (e) {
+          alert('Ошибка сети при возврате. Попробуйте ещё раз.');
+        }
+        return;
+      }
+
+      // Обычная отмена неоплаченной брони — деньги не списывались, возвращать нечего.
       const currentVersion = Number(b.ticketLinkVersion || 1);
       await fbPatch(`ticket_bookings/${id}`, {
-        status: newStatus,
+        status: 'cancelled',
         ticketLinkVersion: currentVersion + 1,
         ticketRevokedAt: Date.now()
       });
       for (const s of (b.seats || [])) {
-        await fbPut(`ticket_seats/${s.tableId}_${s.seatIdx}`, { status: 'available' });
+        await fbPut(`ticket_seats/${s.key || (s.tableId + '_' + s.seatIdx)}`, { status: 'available' });
       }
       try {
         await fetch('/api/notify', {
           method: 'POST',
           headers: adminHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ bookingId: id, event: 'admin_booking_update', status: newStatus })
+          body: JSON.stringify({ bookingId: id, event: 'admin_booking_update', status: 'cancelled' })
         });
       } catch (e) { }
-      allBookings[id].status = newStatus;
+      allBookings[id].status = 'cancelled';
       allBookings[id].ticketLinkVersion = currentVersion + 1;
-      toast(newStatus === 'refunded' ? '↩ Возврат оформлен' : '✗ Бронь отменена');
+      toast('✗ Бронь отменена');
       renderBookings();
     }
 
@@ -5163,9 +5876,9 @@
       if (!b) return;
       const name = b.name || id;
       if (!confirm(`Удалить заявку «${name}» полностью?\n\nЭто действие нельзя отменить.`)) return;
-      // Освобождаем места
+      // Освобождаем места (единый формат ключа: s.key = 't19_93')
       for (const s of (b.seats || [])) {
-        await fbPut(`ticket_seats/${s.tableId}_${s.seatIdx}`, { status: 'available' });
+        await fbPut(`ticket_seats/${s.key || (s.tableId + '_' + s.seatIdx)}`, { status: 'available' });
       }
       // Удаляем бронь
       await fbDelete(`ticket_bookings/${id}`);
@@ -5198,9 +5911,11 @@
     }
     async function savePrices() {
       await fbPatch('ticket_config/prices', {
-        vip: parseInt(document.getElementById('priceVip').value) || 1400,
-        standart: parseInt(document.getElementById('priceStandart').value) || 1100,
-        econom: parseInt(document.getElementById('priceEconom').value) || 800,
+        vip: parseInt(document.getElementById('priceVip').value) || 1800,
+        standart: parseInt(document.getElementById('priceStandart').value) || 1500,
+        econom: parseInt(document.getElementById('priceEconom').value) || 1200,
+        sofa_left: parseInt(document.getElementById('priceSofaLeft').value) || 1000,
+        sofa_right: parseInt(document.getElementById('priceSofaRight').value) || 800,
       });
       toast('💾 Цены сохранены');
     }
@@ -5229,6 +5944,33 @@
       document.getElementById('newPwd2').value = '';
     }
 
+    // Очистка всех тестовых данных (брони/места/лиды/пользователи/отзывы/чаты/уведомления).
+    // Настройки, цены, промокоды, пароль НЕ трогаются. Двойное подтверждение от случайного клика.
+    async function wipeTestData() {
+      if (!confirm('Удалить ВСЕ тестовые данные по всем 3 шоу?\n\nБрони, места, лиды, пользователи, отзывы, чаты, уведомления будут стёрты навсегда.\nНастройки, цены и промокоды сохранятся.')) return;
+      const word = prompt('Это необратимо. Введите слово УДАЛИТЬ (заглавными), чтобы подтвердить:');
+      if (word !== 'УДАЛИТЬ') return toast('Отменено — данные не тронуты');
+
+      const nodes = [
+        'ticket_bookings', 'ticket_seats', 'ticket_users', 'ticket_reviews',
+        'huligan_bookings', 'huligan_seats', 'huligan_reviews',
+        'matvey_bookings', 'matvey_seats', 'matvey_users', 'matvey_reviews',
+        'private_orders', 'bot_users', 'admin_notifications',
+        'ticket_reminders', 'ticket_checkin'
+      ];
+      toast('🧹 Очищаем данные...');
+      let ok = 0, fail = 0;
+      for (const path of nodes) {
+        try { await fbDelete(path); ok++; }
+        catch (e) { fail++; console.error('wipe', path, e); }
+      }
+      // Сбрасываем кэш в памяти, чтобы экраны показали пусто
+      allBookings = {}; allHuliganOrders = {};
+      window.allMatveyBookings = {}; window.allHuliganBookings = {};
+      toast(fail ? `Готово: очищено ${ok}, ошибок ${fail}` : `✅ Все тестовые данные удалены (${ok} узлов). Чистый лист.`);
+      loadDashboard();
+    }
+
     // ── Promo codes (Секрет) ──
     function togglePromoUsesCustom() {
       const sel = document.getElementById('newPromoUsesSelect').value;
@@ -5251,12 +5993,16 @@
       const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
       if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
       if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
-      
-      // ── No password persistence in browser storage ──
-    (async () => {
-      // Всегда требуем новый ввод пароля после перезагрузки страницы.
-      // Это снижает риск кражи пароля из sessionStorage/XSS.
-    })();
+      await fbPut(`ticket_promo/${code}`, promoData);
+      toast(`🎫 Промокод ${code} создан`);
+      document.getElementById('newPromoCode').value = '';
+      document.getElementById('newPromoDesc').value = '';
+      document.getElementById('newPromoFrom').value = '';
+      document.getElementById('newPromoUntil').value = '';
+      document.getElementById('newPromoUsesSelect').value = '-1';
+      document.getElementById('newPromoUsesCustom').style.display = 'none';
+      loadPromos();
+    }
 
     // ── Interactive Seating Override ──
     async function manageSeatStatus(key, show) {
@@ -5274,6 +6020,150 @@
         toast(`🔒 Место ${key} заблокировано`);
       }
       if (show === 'secret') loadAdminHall(); else loadAdminMatveyHall();
+    }
+
+    // ── Матвей: Промокоды ──
+    function toggleMatveyPromoUsesCustom() {
+      const sel = document.getElementById('matNewPromoUsesSelect').value;
+      document.getElementById('matNewPromoUsesCustom').style.display = sel === 'custom' ? '' : 'none';
+    }
+    function toggleMatveyPromoValue() {
+      const type = document.getElementById('matNewPromoType').value;
+      document.getElementById('matPromoValueRow').style.display = type === 'free' ? 'none' : '';
+    }
+    async function createMatveyPromo() {
+      const code = document.getElementById('matNewPromoCode').value.trim().toUpperCase();
+      if (!code) return toast('Введите код промокода');
+      const type = document.getElementById('matNewPromoType').value;
+      const value = type === 'free' ? 0 : (parseInt(document.getElementById('matNewPromoValue').value) || 0);
+      const usesSelVal = document.getElementById('matNewPromoUsesSelect').value;
+      const uses = usesSelVal === 'custom' ? (parseInt(document.getElementById('matNewPromoUsesCustom').value) || 1) : parseInt(usesSelVal);
+      const desc = document.getElementById('matNewPromoDesc').value.trim();
+      const fromVal = document.getElementById('matNewPromoFrom').value;
+      const untilVal = document.getElementById('matNewPromoUntil').value;
+      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
+      if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
+      if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
+      await fbPut(`matvey_promo/${code}`, promoData);
+      toast(`🎫 Промокод ${code} создан`);
+      document.getElementById('matNewPromoCode').value = '';
+      document.getElementById('matNewPromoDesc').value = '';
+      document.getElementById('matNewPromoFrom').value = '';
+      document.getElementById('matNewPromoUntil').value = '';
+      document.getElementById('matNewPromoUsesSelect').value = '-1';
+      document.getElementById('matNewPromoUsesCustom').style.display = 'none';
+      loadMatveyPromos();
+    }
+    async function loadMatveyPromos() {
+      const data = await fbGet('matvey_promo') || {};
+      const list = document.getElementById('matveyPromoList');
+      if (!list) return;
+      const items = Object.entries(data).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+      if (!items.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">🎫</span>Промокодов пока нет</div>`;
+        return;
+      }
+      const nowTs = Date.now();
+      list.innerHTML = items.map(([code, p]) => {
+        const typeLabel = p.type === 'percent' ? `−${p.value}%` : p.type === 'fixed' ? `−${fmt(p.value)} ₽` : 'Бесплатно';
+        const usesLabel = p.usesLeft === -1 ? '∞' : p.usesLeft;
+        const expired = p.validUntil && p.validUntil < nowTs;
+        const notStarted = p.validFrom && p.validFrom > nowTs;
+        const dateRange = p.validFrom && p.validUntil
+          ? `📅 ${fmtShortDate(p.validFrom)} — ${fmtShortDate(p.validUntil)}`
+          : p.validFrom ? `📅 с ${fmtShortDate(p.validFrom)}`
+            : p.validUntil ? `📅 до ${fmtShortDate(p.validUntil)}` : '';
+        const statusBadge = expired ? ` <span style="color:#e85348;font-size:11px;font-weight:600">● истёк</span>`
+          : notStarted ? ` <span style="color:#c9a228;font-size:11px;font-weight:600">● не начался</span>` : '';
+        return `
+      <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
+        <div style="flex:1">
+          <div class="promo-code">${code}${statusBadge}</div>
+          <div class="promo-desc">${p.description || typeLabel} · ${usesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+        </div>
+        <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
+                onclick="toggleMatveyPromo('${code}',${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
+        <button class="btn-sm btn-sm-del" onclick="deleteMatveyPromo('${code}')">🗑</button>
+      </div>`;
+      }).join('');
+    }
+    async function toggleMatveyPromo(code, newVal) {
+      await fbPatch(`matvey_promo/${code}`, { active: newVal });
+      toast(newVal ? '✅ Промокод активирован' : '⛔ Промокод деактивирован');
+      loadMatveyPromos();
+    }
+    async function deleteMatveyPromo(code) {
+      await fbDelete(`matvey_promo/${code}`);
+      toast('🗑 Промокод удалён');
+      loadMatveyPromos();
+    }
+
+    // ── Матвей: Отзывы ──
+    async function loadMatveyReviews() {
+      const list = document.getElementById('matveyReviewsList');
+      if (!list) return;
+      list.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>`;
+      const reviews = await fbGet('matvey_reviews');
+      if (!reviews || !Object.keys(reviews).length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">⭐</span>Отзывов пока нет</div>`;
+        return;
+      }
+      const items = Object.entries(reviews).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+      list.innerHTML = items.map(([id, r]) => {
+        const starsStr = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
+        const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
+        const name = r.name || '—';
+        const promoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${r.promoCode}</div>` : '';
+        return `
+      <div class="review-card">
+        <div class="review-stars">${starsStr} <span style="font-size:13px;color:var(--dim)">(${r.rating || 5}/5)</span></div>
+        <div class="review-text">«${esc(r.text)}»</div>
+        ${promoInfo}
+        <div class="review-meta" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px">
+          <span style="color:var(--dim);font-size:12px">${esc(name)} · ${dateStr}</span>
+          <button class="btn-sm" onclick="deleteReview('${id}','${r.bookingId || ''}','matvey')" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
+        </div>
+      </div>`;
+      }).join('');
+    }
+
+    // ── Матвей: Пользователи ──
+    async function loadMatveyUsers() {
+      const list = document.getElementById('matveyUsersList');
+      if (!list) return;
+      list.innerHTML = `<div class="empty-state"><span class="empty-icon">⏳</span>Загрузка...</div>`;
+      const orders = await fbGet('matvey_bookings');
+      if (!orders || !Object.keys(orders).length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">👥</span>Пользователей пока нет</div>`;
+        return;
+      }
+      // Уникальные покупатели по телефону/имени
+      const seen = new Set();
+      const users = [];
+      for (const [id, o] of Object.entries(orders)) {
+        if (!o) continue;
+        const key = (o.phone || '') + '_' + (o.name || '');
+        if (seen.has(key)) continue;
+        seen.add(key);
+        users.push({ ...o, bookingId: id });
+      }
+      if (!users.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-icon">👥</span>Пользователей пока нет</div>`;
+        return;
+      }
+      list.innerHTML = users.map(u => {
+        const name = u.name || '—';
+        const contact = u.phone || u.telegram || '—';
+        const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ru-RU') : '—';
+        return `
+      <div class="user-card">
+        <div class="user-avatar" style="display:flex;align-items:center;justify-content:center;font-size:18px">🧸</div>
+        <div style="flex:1">
+          <div class="user-name">${esc(name)}</div>
+          <div class="user-meta">${esc(contact)} · ${dateStr}</div>
+        </div>
+      </div>`;
+      }).join('');
     }
 
     // ── Спасти Матвея: Bookings ──
@@ -5324,14 +6214,16 @@
         pending_payment: '💳 Ожидает оплаты',
         pending_confirmation: '⏳ Ждет подтверждения',
         confirmed: '✓ Подтверждён',
-        cancelled: '❌ Отменён'
+        cancelled: '❌ Отменён',
+        refunded: '↩ Возврат оформлен'
       };
 
       const STATUS_COLOR = {
         pending_payment: '#ffb000',
         pending_confirmation: '#f5a623',
         confirmed: '#00c864',
-        cancelled: '#e85348'
+        cancelled: '#e85348',
+        refunded: '#7cc8ff'
       };
 
       list.innerHTML = items.map(([id, o]) => {
@@ -5344,9 +6236,13 @@
         const confirmBtn = (o.status === 'pending_confirmation' || o.status === 'pending_payment')
           ? `<button class="btn-confirm" onclick="confirmMatvey('${id}')">✅ Подтвердить оплату</button>`
           : '';
-        const cancelBtn = (o.status !== 'cancelled')
+        const refundBtn = (o.status === 'confirmed')
+          ? `<button class="btn-cancel" style="background:rgba(124,200,255,0.12);border-color:rgba(124,200,255,0.4);color:#7cc8ff" onclick="refundMatvey('${id}')">↩ Оформить возврат</button>`
+          : '';
+        const cancelBtn = (o.status !== 'cancelled' && o.status !== 'refunded' && o.status !== 'confirmed')
           ? `<button class="btn-cancel" onclick="cancelMatvey('${id}')">❌ Отменить заказ</button>`
           : '';
+        const deleteBtn = `<button class="btn-sm btn-sm-del" onclick="deleteMatvey('${id}')" style="margin-left:auto">🗑 Удалить</button>`;
 
         return `
           <div class="booking-card" style="border-left:3px solid ${STATUS_COLOR[o.status] || '#444'}">
@@ -5363,7 +6259,7 @@
               &nbsp;·&nbsp; Сумма: <strong style="color:var(--text)">${o.totalPrice || o.total || '—'} ₽</strong>
             </div>
             ${o.comment ? `<div style="font-size:12px;color:var(--dim);margin-top:6px">💬 ${esc(o.comment)}</div>` : ''}
-            <div style="margin-top:10px;display:flex;gap:8px">${confirmBtn}${cancelBtn}</div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">${confirmBtn}${refundBtn}${cancelBtn}${deleteBtn}</div>
           </div>
         `;
       }).join('');
@@ -5405,6 +6301,32 @@
       loadMatveyOrders();
     }
 
+    async function refundMatvey(id) {
+      const reason = prompt(`Причина возврата для ${id} (необязательно):`) || '';
+      if (!confirm(`Оформить возврат по заказу ${id}? Места будут освобождены.`)) return;
+      const b = window.allMatveyBookings[id];
+      if (!b) return;
+      await fbPatch(`matvey_bookings/${id}`, { status: 'refunded', refundedAt: Date.now(), refundReason: reason.trim() });
+      const seatList = Array.isArray(b.seats) ? b.seats : [];
+      for (const s of seatList) {
+        if (s.key) await fbDelete(`matvey_seats/${s.key}`);
+      }
+      toast('↩ Возврат оформлен');
+      loadMatveyOrders();
+    }
+
+    async function deleteMatvey(id) {
+      if (!confirm(`Удалить заказ ${id} полностью?\n\nЭто действие нельзя отменить.`)) return;
+      const b = window.allMatveyBookings[id];
+      const seatList = b && Array.isArray(b.seats) ? b.seats : [];
+      for (const s of seatList) {
+        if (s.key) await fbDelete(`matvey_seats/${s.key}`);
+      }
+      await fbDelete(`matvey_bookings/${id}`);
+      toast('🗑 Заказ удалён');
+      loadMatveyOrders();
+    }
+
     // ── Спасти Матвея: Settings ──
     async function loadMatveySettings() {
       const cfg = await fbGet('matvey_config') || {};
@@ -5413,8 +6335,8 @@
       const payment = cfg.payment || {};
 
       document.getElementById('cfgMatTitle').value = show.title || 'Спасти Матвея';
-      document.getElementById('cfgMatDate').value = show.date || '18 октября 2026';
-      document.getElementById('cfgMatTime').value = show.time || '18:00';
+      document.getElementById('cfgMatDate').value = show.date || '21 ноября 2026';
+      document.getElementById('cfgMatTime').value = show.time || '15:00';
       document.getElementById('cfgMatVenue').value = show.venue || 'ЛАМПА · Ярославль';
       document.getElementById('cfgMatAddress').value = show.address || 'Ярославль, ул. Нахимсона, 21';
 
@@ -5428,11 +6350,11 @@
           : `<span style="color:#00c864;font-weight:600">✅ Продажи открыты</span>`;
       }
 
-      document.getElementById('priceMatFront').value = prices.front || 1000;
-      document.getElementById('priceMatBack').value = prices.back || 800;
-      document.getElementById('priceMatTable').value = prices.table || 1000;
-      document.getElementById('priceMatSofa').value = prices.sofa || 4000;
-      document.getElementById('priceMatLampa').value = prices.lampa || 2500;
+      document.getElementById('priceMatFront').value = prices.row_front || prices.front || 1700;
+      document.getElementById('priceMatBack').value = prices.row_back || prices.back || 1400;
+      document.getElementById('priceMatTable').value = prices.table || 1100;
+      document.getElementById('priceMatSofa').value = prices.sofa || 1700;
+      document.getElementById('priceMatLampa').value = prices.lampa || 1700;
 
       document.getElementById('paymentMatSbp').value = payment.sbp || '+7 (909) 276-33-86';
       document.getElementById('paymentMatCard').value = payment.card || '';
@@ -5463,12 +6385,13 @@
     }
 
     async function saveMatveyPrices() {
+      // Ключи совпадают с ZONES на витрине (row_front/row_back/table/sofa/lampa)
       await fbPatch('matvey_config/prices', {
-        front: parseInt(document.getElementById('priceMatFront').value) || 1000,
-        back: parseInt(document.getElementById('priceMatBack').value) || 800,
-        table: parseInt(document.getElementById('priceMatTable').value) || 1000,
-        sofa: parseInt(document.getElementById('priceMatSofa').value) || 4000,
-        lampa: parseInt(document.getElementById('priceMatLampa').value) || 2500,
+        row_front: parseInt(document.getElementById('priceMatFront').value) || 1700,
+        row_back: parseInt(document.getElementById('priceMatBack').value) || 1400,
+        table: parseInt(document.getElementById('priceMatTable').value) || 1100,
+        sofa: parseInt(document.getElementById('priceMatSofa').value) || 1700,
+        lampa: parseInt(document.getElementById('priceMatLampa').value) || 1700,
       });
       toast('💾 Цены обновлены');
     }
@@ -5484,11 +6407,11 @@
 
     // ── Спасти Матвея: Seating Chart ──
     const MATVEY_ZONES = {
-      row_front: { color: '#8c50dc', label: 'Ряды 1-4' },
-      row_back: { color: '#3dbf6e', label: 'Ряды 5-7' },
-      table: { color: '#e8c540', label: 'Столик' },
-      sofa: { color: '#ff7ebb', label: 'Диван' },
-      lampa: { color: '#ff9f43', label: 'Зона Лампа' }
+      row_front: { color: '#e85348', label: 'Красная зона' },
+      row_back: { color: '#3dbf6e', label: 'Зелёная зона' },
+      table: { color: '#4a8fd9', label: 'Синяя зона' },
+      sofa: { color: '#e85348', label: 'Красная зона' },
+      lampa: { color: '#e85348', label: 'Красная зона' }
     };
 
     async function loadAdminMatveyHall() {
@@ -5697,16 +6620,7 @@
       if (document.getElementById('sec-hul-bookings').classList.contains('active')) loadHuliganOrders();
       if (document.getElementById('sec-mat-bookings').classList.contains('active')) loadMatveyOrders();
     }, 30000);
-      await fbPut(`ticket_promo/${code}`, promoData);
-      toast(`🎫 Промокод ${code} создан`);
-      document.getElementById('newPromoCode').value = '';
-      document.getElementById('newPromoDesc').value = '';
-      document.getElementById('newPromoFrom').value = '';
-      document.getElementById('newPromoUntil').value = '';
-      document.getElementById('newPromoUsesSelect').value = '-1';
-      document.getElementById('newPromoUsesCustom').style.display = 'none';
-      loadPromos();
-    }
+
     async function loadPromos() {
       const data = await fbGet('ticket_promo') || {};
       const list = document.getElementById('promoList');
@@ -5756,11 +6670,11 @@
       { id: 1, cx: 130, cy: 120, zone: 'vip', n: 8, big: true },
       { id: 2, cx: 252, cy: 114, zone: 'vip', n: 8, big: true },
       { id: 3, cx: 370, cy: 120, zone: 'vip', n: 8, big: true },
-      { id: 6, cx: 55, cy: 207, zone: 'standart', n: 4, big: false },
-      { id: 4, cx: 168, cy: 205, zone: 'vip', n: 8, big: true },
-      { id: 5, cx: 296, cy: 205, zone: 'vip', n: 8, big: true },
-      { id: 7, cx: 438, cy: 207, zone: 'standart', n: 4, big: false },
-      { id: 8, cx: 100, cy: 289, zone: 'standart', n: 4, big: false },
+      { id: 4, cx: 55, cy: 207, zone: 'vip', n: 4, big: false },
+      { id: 6, cx: 168, cy: 205, zone: 'vip', n: 8, big: true },
+      { id: 7, cx: 296, cy: 205, zone: 'vip', n: 8, big: true },
+      { id: 8, cx: 438, cy: 207, zone: 'vip', n: 4, big: false },
+      { id: 5, cx: 100, cy: 289, zone: 'standart', n: 4, big: false },
       { id: 9, cx: 207, cy: 287, zone: 'standart', n: 4, big: false },
       { id: 10, cx: 307, cy: 287, zone: 'standart', n: 4, big: false },
       { id: 11, cx: 408, cy: 293, zone: 'standart', n: 4, big: false },
@@ -5808,9 +6722,44 @@
       return pts;
     }
 
+    // Точная геометрия зала «Секрет» — идентична сайту (concerts/secret).
+    // Координаты в системе viewBox 0 0 1280 761.
+    const SECRET_TABLES8 = [
+      { id: 1, cx: 575.5, cy: 197.4, zone: 'vip', seats: [[575.4,149.4],[609,162.6],[624.6,197.4],[609,231],[575.4,246.6],[541.8,231],[527.4,197.4],[541.8,163.8]] },
+      { id: 2, cx: 744.8, cy: 197.4, zone: 'vip', seats: [[744.6,149.4],[778.2,163.8],[793.8,197.4],[778.2,229.8],[744.6,246.6],[711,231],[696.6,197.4],[711,163.8]] },
+      { id: 3, cx: 907.1, cy: 197.2, zone: 'vip', seats: [[906.6,149.4],[941.4,163.8],[954.6,197.4],[940.2,231],[906.6,245.4],[874.2,231],[858.6,197.4],[874.2,162.6]] },
+      { id: 6, cx: 647.1, cy: 351.2, zone: 'vip', seats: [[647.4,303],[681,318.6],[694.2,351],[680.7,385.2],[646.2,399],[613.8,384.6],[599.4,351],[613.8,317.4]] },
+      { id: 7, cx: 815.9, cy: 351.8, zone: 'vip', seats: [[815.4,303],[850.2,318.6],[863.4,351],[849,385.8],[815.4,400.2],[783,385.8],[767.4,351],[783,318.6]] }
+    ];
+    const SECRET_TABLE8_STARTS = { 1: 1, 2: 9, 3: 17, 6: 33, 7: 41 };
+    const SECRET_TABLES4 = [
+      { id: 4,  cx: 491.4, cy: 292.2, zone: 'vip', seats: [[491.4,259.8],[523.8,292.2],[491.4,324.6],[459,292.2]] },
+      { id: 8,  cx: 979.2, cy: 299.7, zone: 'vip', seats: [[979.8,267],[1011,299.4],[978.6,331.8],[947.4,300.6]] },
+      { id: 5,  cx: 491.1, cy: 402.6, zone: 'standart', seats: [[491.4,370.2],[522.6,402.6],[491.4,435],[459,402.6]] },
+      { id: 9,  cx: 935.7, cy: 402.6, zone: 'standart', seats: [[935.4,370.2],[967.8,402.6],[935.4,435],[904.2,402.6]] },
+      { id: 10, cx: 1046.4, cy: 402, zone: 'standart', seats: [[1047,370.2],[1078.2,401.4],[1045.8,435],[1014.6,401.4]] },
+      { id: 11, cx: 491.1, cy: 512.4, zone: 'standart', seats: [[491.4,479.4],[522.6,513],[491.4,544.2],[459,513]] },
+      { id: 12, cx: 603, cy: 511.8, zone: 'standart', seats: [[603,479.4],[635.4,511.8],[603,544.2],[570.6,511.8]] },
+      { id: 13, cx: 714, cy: 512.7, zone: 'standart', seats: [[714.6,480.6],[745.8,513],[713.4,544.2],[682.2,513]] },
+      { id: 14, cx: 826.5, cy: 512.1, zone: 'standart', seats: [[826.2,479.4],[858.6,513],[826.2,544.2],[795,511.8]] },
+      { id: 15, cx: 939.3, cy: 511.8, zone: 'standart', seats: [[939,479.4],[971.4,511.8],[939,544.2],[907.8,511.8]] }
+    ];
+    const SECRET_TABLE4_STARTS = { 4: 25, 5: 29, 8: 49, 9: 53, 10: 57, 11: 61, 12: 65, 13: 69, 14: 73, 15: 77 };
+    const SECRET_TABLES_RECT = [
+      { id: 16, cx: 318.6, cy: 656.4, zone: 'econom', chairs: [[351,640.2],[351,672.6],[286.2,672.6],[286.2,640.2]] },
+      { id: 17, cx: 441.6, cy: 656.4, zone: 'econom', chairs: [[473.4,640.2],[474.6,672.6],[409.8,672.6],[409.8,640.2]] },
+      { id: 18, cx: 563.4, cy: 656.4, zone: 'econom', chairs: [[595.8,640.2],[595.8,672.6],[531,672.6],[531,641.4]] },
+      { id: 19, cx: 687, cy: 656.4, zone: 'econom', chairs: [[719.4,640.2],[719.4,672.6],[654.6,672.6],[654.6,640.2]] }
+    ];
+    const SECRET_RECT_STARTS = { 16: 81, 17: 85, 18: 89, 19: 93 };
+    const SECRET_LEFT_SOFA_CHAIRS = [ {x:371.4,y:394.2,s:1},{x:331.8,y:340.2,s:2},{x:304.2,y:299.4,s:3},{x:305.4,y:251.4,s:4},{x:305.4,y:198.6,s:5} ];
+    const SECRET_RIGHT_SOFA_CHAIRS = [ {x:1129.8,y:279,s:6},{x:1129.8,y:239.4,s:7},{x:1128.6,y:198.6,s:8},{x:1102.2,y:171,s:9},{x:1069.8,y:112.2,s:10} ];
+    const SECRET_ZONE_COLORS = { vip: '#e85348', standart: '#3dbf6e', econom: '#4a8fd9', sofa_left: '#b890ff', sofa_right: '#3fbfc0' };
+
     async function loadAdminHall() {
       const g = document.getElementById('adminHall');
-      g.innerHTML = '<text x="245" y="260" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="12" font-family="Inter,sans-serif">Загрузка...</text>';
+      if (!g) return;
+      g.innerHTML = '<text x="640" y="380" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="20" font-family="Inter,sans-serif">Загрузка...</text>';
 
       const [seatsRaw, bookingsRaw] = await Promise.all([
         fbGet('ticket_seats'),
@@ -5820,100 +6769,101 @@
       const bookings = bookingsRaw || {};
       const now = Date.now();
 
-      // Строим карту: ключ места → данные брони
+      // Карта: варианты ключа места → данные брони. Брони могут хранить место
+      // с key ('t{id}_{num}') или с tableId/seatIdx — учитываем оба формата.
       const seatInfo = {};
       for (const [bookingId, bk] of Object.entries(bookings)) {
         if (!bk.seats) continue;
         const st = bk.status;
         if (st !== 'confirmed' && st !== 'pending_confirmation') continue;
         for (const s of bk.seats) {
-          const k = `${s.tableId}_${s.seatIdx}`;
-          seatInfo[k] = { bookingStatus: st, name: bk.name || '?', bookingId };
+          const rec = { bookingStatus: st, name: bk.name || '?', bookingId };
+          if (s.key) seatInfo[s.key] = rec;
+          if (s.tableId != null && s.seatIdx != null) {
+            seatInfo[`${s.tableId}_${s.seatIdx}`] = rec;
+            seatInfo[`t${s.tableId}_${s.seatIdx}`] = rec;
+          }
         }
       }
 
       g.innerHTML = '';
       let totalConfirmed = 0, totalPending = 0;
 
-      for (const tbl of TABLES) {
-        const z = ZONE_COLORS[tbl.zone];
-        const tr = tbl.big ? 22 : 14;
+      // Сцена
+      const stage = svgEl('rect', { x: 555, y: 40, width: 170, height: 44, rx: 10, fill: 'rgba(201,162,39,0.08)', stroke: 'rgba(201,162,39,0.4)', 'stroke-width': 1.5 });
+      g.appendChild(stage);
+      const stageTxt = svgEl('text', { x: 640, y: 62, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: 'rgba(201,162,39,0.6)', 'font-size': 14, 'font-weight': 700, 'font-family': 'Inter,sans-serif', 'letter-spacing': 4 });
+      stageTxt.textContent = 'СЦЕНА'; g.appendChild(stageTxt);
 
-        // Все столы: рисуем места с реальным статусом
-        const pts = adminSeatPos(tbl.cx, tbl.cy, tbl.n, tbl.big, tbl.zone);
-        const sr = tbl.big ? 9 : 8;
+      // Диваны (боксы) с цветом зоны — левый фиолетовый, правый бирюзовый
+      [{ x: 250, y: 170, w: 70, h: 260, label: 'ЛЕВЫЙ ДИВАН', color: '184,144,255' },
+       { x: 1155, y: 90, w: 70, h: 250, label: 'ПРАВЫЙ ДИВАН', color: '63,191,192' }].forEach(function(b){
+        const box = svgEl('rect', { x: b.x, y: b.y, width: b.w, height: b.h, rx: 12, fill: `rgba(${b.color},0.10)`, stroke: `rgba(${b.color},0.4)`, 'stroke-width': 1 });
+        g.appendChild(box);
+        const t = svgEl('text', { x: b.x + b.w/2, y: b.y + b.h/2, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: `rgba(${b.color},0.95)`, 'font-size': 15, 'font-weight': 700, 'font-family': 'Inter,sans-serif', transform: `rotate(-90 ${b.x + b.w/2} ${b.y + b.h/2})`, 'letter-spacing': 1.5 });
+        t.textContent = b.label; g.appendChild(t);
+      });
+      const bar = svgEl('rect', { x: 1050, y: 640, width: 150, height: 90, rx: 12, fill: 'rgba(255,255,255,0.03)', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': 1 });
+      g.appendChild(bar);
+      const barTxt = svgEl('text', { x: 1125, y: 685, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.3)', 'font-size': 14, 'font-weight': 700, 'font-family': 'Inter,sans-serif', 'letter-spacing': 3 });
+      barTxt.textContent = 'БАР'; g.appendChild(barTxt);
 
-        for (let si = 0; si < pts.length; si++) {
-          const key = `${tbl.id}_${si}`;
-          const info = seatInfo[key];
-          const rawS = seats[key];
-          const pt = pts[si];
+      // Рисуем одно место с реальным статусом
+      function drawSeat(x, y, zone, keyVariants, seatNum, r) {
+        let info = null, rawS = null;
+        for (const k of keyVariants) { if (!info && seatInfo[k]) info = seatInfo[k]; if (!rawS && seats[k]) rawS = seats[k]; }
+        let eff;
+        if (info?.bookingStatus === 'confirmed') { eff = 'confirmed'; totalConfirmed++; }
+        else if (info?.bookingStatus === 'pending_confirmation') { eff = 'pending'; totalPending++; }
+        else if (rawS?.status === 'reserved' && rawS.reservedAt && (now - rawS.reservedAt) < 600000) eff = 'reserved';
+        else eff = 'available';
 
-          // Определяем статус
-          let eff;
-          if (info?.bookingStatus === 'confirmed') {
-            eff = 'confirmed'; totalConfirmed++;
-          } else if (info?.bookingStatus === 'pending_confirmation') {
-            eff = 'pending'; totalPending++;
-          } else if (rawS?.status === 'reserved' && rawS.reservedAt && (now - rawS.reservedAt) < 600000) {
-            eff = 'reserved';
-          } else {
-            eff = 'available';
-          }
-
-          const dot = svgEl('circle', { cx: pt.x.toFixed(1), cy: pt.y.toFixed(1), r: sr });
-          if (eff === 'confirmed') {
-            dot.setAttribute('fill', z);
-            dot.setAttribute('stroke', '#ffffff');
-            dot.setAttribute('stroke-width', '1.5');
-            if (info?.name) dot.setAttribute('title', `✓ ${info.name}`);
-          } else if (eff === 'pending') {
-            dot.setAttribute('fill', '#f5a623');
-            dot.setAttribute('stroke', '#ffcc44');
-            dot.setAttribute('stroke-width', '1.5');
-            if (info?.name) dot.setAttribute('title', `⏳ ${info.name}`);
-          } else if (eff === 'reserved') {
-            dot.setAttribute('fill', 'rgba(201,162,39,0.35)');
-            dot.setAttribute('stroke', 'rgba(201,162,39,0.65)');
-            dot.setAttribute('stroke-width', '1');
-          } else {
-            dot.setAttribute('fill', z);
-            dot.setAttribute('opacity', '0.18');
-          }
-          dot.style.cursor = 'pointer';
-          dot.addEventListener('click', () => manageSeatStatus(key, 'secret'));
-          g.appendChild(dot);
-
-          // Инициалы на проданных местах
-          if (info) {
-            const ini = (info.name || '').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
-            const t = svgEl('text', {
-              x: pt.x.toFixed(1), y: pt.y.toFixed(1),
-              'text-anchor': 'middle', 'dominant-baseline': 'central',
-              fill: '#fff', 'font-size': tbl.big ? 6 : 5,
-              'font-family': 'Inter,sans-serif', 'font-weight': '700',
-              'pointer-events': 'none'
-            });
-            t.textContent = ini;
-            g.appendChild(t);
-          }
-        }
-
-        // Круг стола
-        const tc = svgEl('circle', {
-          cx: tbl.cx, cy: tbl.cy, r: tr,
-          fill: 'rgba(255,255,255,0.03)', stroke: 'rgba(255,255,255,0.1)', 'stroke-width': 1
-        });
-        g.appendChild(tc);
-        // Номер стола
-        const lbl = svgEl('text', {
-          x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle',
-          'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.35)',
-          'font-size': tbl.big ? 10 : 8, 'font-family': 'Inter,sans-serif'
-        });
-        lbl.textContent = tbl.id;
-        g.appendChild(lbl);
+        const z = SECRET_ZONE_COLORS[zone] || '#888';
+        const dot = svgEl('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: r });
+        if (eff === 'confirmed') { dot.setAttribute('fill', z); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '1.5'); }
+        else if (eff === 'pending') { dot.setAttribute('fill', '#f5a623'); dot.setAttribute('stroke', '#ffcc44'); dot.setAttribute('stroke-width', '1.5'); }
+        else if (eff === 'reserved') { dot.setAttribute('fill', 'rgba(201,162,39,0.35)'); dot.setAttribute('stroke', 'rgba(201,162,39,0.65)'); dot.setAttribute('stroke-width', '1'); }
+        else { dot.setAttribute('fill', z); dot.setAttribute('opacity', '0.18'); }
+        dot.style.cursor = 'pointer';
+        const primaryKey = keyVariants[0];
+        dot.addEventListener('click', () => manageSeatStatus(primaryKey, 'secret'));
+        if (info?.name) dot.setAttribute('title', `${eff === 'confirmed' ? '✓' : '⏳'} ${info.name} (место ${seatNum})`);
+        g.appendChild(dot);
+        // Номер места
+        const t = svgEl('text', { x: x.toFixed(1), y: y.toFixed(1), 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: info ? '#fff' : 'rgba(255,255,255,0.55)', 'font-size': r > 9 ? 8 : 7, 'font-family': 'Inter,sans-serif', 'font-weight': 600, 'pointer-events': 'none' });
+        t.textContent = seatNum; g.appendChild(t);
       }
+
+      // Столы на 8 мест
+      for (const tbl of SECRET_TABLES8) {
+        const tc = svgEl('circle', { cx: tbl.cx, cy: tbl.cy, r: 30, fill: 'rgba(232,83,72,0.10)', stroke: 'rgba(232,83,72,0.4)', 'stroke-width': 1 });
+        g.appendChild(tc);
+        const lbl = svgEl('text', { x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.4)', 'font-size': 14, 'font-weight': 700, 'font-family': 'Inter,sans-serif' });
+        lbl.textContent = tbl.id; g.appendChild(lbl);
+        const start = SECRET_TABLE8_STARTS[tbl.id];
+        tbl.seats.forEach(function(p, i){ const num = start + i; drawSeat(p[0], p[1], tbl.zone, [`t${tbl.id}_${num}`, `${tbl.id}_${num}`, `${tbl.id}_${i}`], num, 11); });
+      }
+      // Столы на 4 места
+      for (const tbl of SECRET_TABLES4) {
+        const tc = svgEl('circle', { cx: tbl.cx, cy: tbl.cy, r: 16, fill: 'rgba(255,255,255,0.03)', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': 1 });
+        g.appendChild(tc);
+        const lbl = svgEl('text', { x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.35)', 'font-size': 10, 'font-family': 'Inter,sans-serif' });
+        lbl.textContent = tbl.id; g.appendChild(lbl);
+        const start = SECRET_TABLE4_STARTS[tbl.id];
+        tbl.seats.forEach(function(p, i){ const num = start + i; drawSeat(p[0], p[1], tbl.zone, [`t${tbl.id}_${num}`, `${tbl.id}_${num}`, `${tbl.id}_${i}`], num, 9); });
+      }
+      // Прямоугольные столики (эконом)
+      for (const tbl of SECRET_TABLES_RECT) {
+        const rc = svgEl('rect', { x: tbl.cx - 18, y: tbl.cy - 32, width: 36, height: 64, rx: 4, fill: 'rgba(74,143,217,0.10)', stroke: 'rgba(74,143,217,0.35)', 'stroke-width': 1 });
+        g.appendChild(rc);
+        const lbl = svgEl('text', { x: tbl.cx, y: tbl.cy, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.35)', 'font-size': 9, 'font-family': 'Inter,sans-serif' });
+        lbl.textContent = tbl.id; g.appendChild(lbl);
+        const start = SECRET_RECT_STARTS[tbl.id];
+        tbl.chairs.forEach(function(p, i){ const num = start + i; drawSeat(p[0], p[1], tbl.zone, [`t${tbl.id}_${num}`, `${tbl.id}_${num}`, `${tbl.id}_${i}`], num, 9); });
+      }
+      // Стулья у диванов
+      SECRET_LEFT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_left', [`dl_${ch.s}`], ch.s, 9); });
+      SECRET_RIGHT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_right', [`dr_${ch.s}`], ch.s, 9); });
 
       // Счётчик
       const counter = document.getElementById('hallCounter');
@@ -5945,8 +6895,8 @@
         if (st !== 'confirmed' && st !== 'pending_confirmation' && st !== 'waiting_admin') continue;
         const mappedStatus = st === 'confirmed' ? 'confirmed' : 'pending_confirmation';
         for (const s of bk.seats) {
-          const k = `${s.tableId || s.table || '0'}_${s.seatIdx || s.seatNum || '0'}`;
-          seatInfo[k] = { bookingStatus: mappedStatus, name: bk.name || '?', bookingId };
+          const k = normalizeHuliganSeatKey(s);
+          if (k) seatInfo[k] = { bookingStatus: mappedStatus, name: bk.name || '?', bookingId };
         }
       }
 
@@ -6016,24 +6966,21 @@
       }
 
       function getFillAndStroke(eff, defaultColor) {
-        if (eff === 'confirmed') return { fill: defaultColor, stroke: '#ffffff', strokeWidth: '1.5' };
+        // confirmed (продан) — цвет зоны + белая обводка; pending — жёлтый; reserved — золотистый;
+        // свободно — ЯРКИЙ цвет зоны (как на сайте), чтобы зона читалась.
+        if (eff === 'confirmed') return { fill: defaultColor, stroke: '#ffffff', strokeWidth: '2' };
         if (eff === 'pending') return { fill: '#f5a623', stroke: '#ffcc44', strokeWidth: '1.5' };
-        if (eff === 'reserved') return { fill: 'rgba(201,162,39,0.35)', stroke: 'rgba(201,162,39,0.65)', strokeWidth: '1' };
-        return { fill: defaultColor, stroke: 'rgba(255,255,255,0.22)', strokeWidth: '0.8', opacity: '0.18' };
+        if (eff === 'reserved') return { fill: 'rgba(201,162,39,0.45)', stroke: 'rgba(201,162,39,0.75)', strokeWidth: '1' };
+        return { fill: defaultColor, stroke: 'rgba(255,255,255,0.25)', strokeWidth: '0.8', opacity: '0.85' };
       }
 
-      // Draw Left Sofa
-      const slEff = getSeatEff('sl_0');
-      const slStyle = getFillAndStroke(slEff, 'rgba(60,60,75,0.85)');
+      // Draw Left Sofa (фон-декорация; места c_1-5 кликаются отдельно)
       const leftSofa = svgEl('path', {
         d: 'M 50 100 Q 50 95 45 95 L 30 95 Q 25 95 25 100 L 25 275 Q 25 280 30 280 L 75 280 Q 80 280 80 275 L 80 250 Q 80 245 75 245 L 55 245 Q 50 245 50 240 Z',
-        fill: slStyle.fill,
-        stroke: slStyle.stroke,
-        'stroke-width': slStyle.strokeWidth,
-        opacity: slStyle.opacity || '1'
+        fill: 'rgba(74,143,217,0.10)',
+        stroke: 'rgba(74,143,217,0.35)',
+        'stroke-width': 1
       });
-      leftSofa.style.cursor = 'pointer';
-      leftSofa.addEventListener('click', () => manageSeatStatus('sl_0', 'huligan'));
       g.appendChild(leftSofa);
 
       const leftSofaText = svgEl('text', {
@@ -6052,18 +6999,13 @@
       });
       g.appendChild(leftSofaText);
 
-      // Draw Right Sofa
-      const srEff = getSeatEff('sr_0');
-      const srStyle = getFillAndStroke(srEff, 'rgba(60,60,75,0.85)');
+      // Draw Right Sofa (фон-декорация; места cr_29-33 кликаются отдельно)
       const rightSofa = svgEl('path', {
         d: 'M 505 110 Q 500 110 500 105 L 500 85 Q 500 80 505 80 L 550 80 Q 555 80 555 85 L 555 185 Q 555 190 550 190 L 535 190 Q 530 190 530 185 L 530 120 Q 530 115 525 115 Z',
-        fill: srStyle.fill,
-        stroke: srStyle.stroke,
-        'stroke-width': srStyle.strokeWidth,
-        opacity: srStyle.opacity || '1'
+        fill: 'rgba(74,143,217,0.10)',
+        stroke: 'rgba(74,143,217,0.35)',
+        'stroke-width': 1
       });
-      rightSofa.style.cursor = 'pointer';
-      rightSofa.addEventListener('click', () => manageSeatStatus('sr_0', 'huligan'));
       g.appendChild(rightSofa);
 
       const rightSofaText = svgEl('text', {
@@ -6275,6 +7217,38 @@
         if (info && info.name) dot.setAttribute('title', `✓ ${info.name}`);
       });
 
+      // Места правого дивана (5 синих, econom) — те же координаты, что на сайте
+      const rightChairs = [
+        { num: 29, x: 490, y: 105 },
+        { num: 30, x: 490, y: 140 },
+        { num: 31, x: 490, y: 175 },
+        { num: 32, x: 490, y: 210 },
+        { num: 33, x: 468, y: 240 }
+      ];
+      rightChairs.forEach(ch => {
+        const key = `cr_${ch.num}`;
+        const eff = getSeatEff(key);
+        const style = getFillAndStroke(eff, colors.econom);
+        const dot = svgEl('circle', {
+          cx: ch.x.toFixed(1), cy: ch.y.toFixed(1), r: 6.0,
+          fill: style.fill, stroke: style.stroke, 'stroke-width': style.strokeWidth,
+          opacity: style.opacity || '1'
+        });
+        dot.style.cursor = 'pointer';
+        dot.addEventListener('click', () => manageSeatStatus(key, 'huligan'));
+        g.appendChild(dot);
+        const t = svgEl('text', {
+          x: ch.x.toFixed(1), y: ch.y.toFixed(1),
+          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          fill: '#fff', 'font-size': '6.5', 'font-weight': '700', 'font-family': 'Inter, sans-serif',
+          'pointer-events': 'none'
+        });
+        t.textContent = ch.num;
+        g.appendChild(t);
+        const info = seatInfo[key];
+        if (info && info.name) dot.setAttribute('title', `✓ ${info.name}`);
+      });
+
       // Счётчик
       const counter = document.getElementById('huliganHallCounter');
       if (counter) {
@@ -6299,28 +7273,73 @@
 
     // ── Delete review ──
     async function deleteReview(reviewId, bookingId, show) {
-      if (!confirm('Удалить этот отзыв? Действие необратимо.')) return;
+      if (!confirm("Удалить этот отзыв? Действие необратимо.")) return;
+      const normalizedShow = String(show || "secret").toLowerCase();
+      const bookingKey = bookingId || "none";
+
+      async function deleteViaAdminProxy() {
+        const reviewCollection = normalizedShow === "huligan" ? "huligan_reviews"
+          : normalizedShow === "matvey" ? "matvey_reviews"
+          : "ticket_reviews";
+        const deletePath = reviewCollection + "/" + reviewId;
+        const deleteResponse = await fetch("/api/admin-proxy?path=" + encodeURIComponent(deletePath), {
+          method: "DELETE",
+          headers: adminHeaders()
+        });
+        const deleteData = await deleteResponse.json().catch(() => ({}));
+        if (!deleteResponse.ok || deleteData.error) {
+          throw new Error(deleteData.error || "Ошибка удаления");
+        }
+
+        if (bookingKey !== "none") {
+          const bookingCollection = normalizedShow === "huligan" ? "huligan_bookings"
+            : normalizedShow === "matvey" ? "matvey_bookings"
+            : "ticket_bookings";
+          const patch = normalizedShow === "huligan" || normalizedShow === "matvey"
+            ? { reviewed: false, reviewPromoCode: null }
+            : { reviewPromoIssued: false, reviewPromoCode: null };
+          const patchPath = bookingCollection + "/" + bookingKey;
+          const patchResponse = await fetch("/api/admin-proxy?path=" + encodeURIComponent(patchPath), {
+            method: "PATCH",
+            headers: adminHeaders({ "Content-Type": "application/json" }),
+            body: JSON.stringify(patch)
+          });
+          const patchData = await patchResponse.json().catch(() => ({}));
+          if (!patchResponse.ok || patchData.error) {
+            throw new Error(patchData.error || "Отзыв удален, но флаг брони не сброшен");
+          }
+        }
+      }
+
       try {
-        const r = await fetch('/api/notify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("/api/notify", {
+          method: "POST",
+          headers: adminHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({
-            event: 'delete_review',
-            bookingId: bookingId || 'none',
-            reviewId, show,
-            adminPassword: window._adminPass
+            event: "delete_review",
+            bookingId: bookingKey,
+            reviewId,
+            show: normalizedShow
           })
         });
-        const data = await r.json();
-        if (data.ok) {
-          toast('✅ Отзыв удалён');
-          if (show === 'huligan') loadHuliganReviews();
-          else loadReviews();
-        } else {
-          toast(data.error || 'Ошибка удаления');
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) {
+          const isLocalDev = ["localhost", "127.0.0.1"].includes(location.hostname);
+          if (!isLocalDev) throw new Error(data.error || "Ошибка удаления");
+          await deleteViaAdminProxy();
         }
-      } catch {
-        toast('Ошибка. Попробуйте ещё раз.');
+
+        toast("✅ Отзыв удалён");
+        if (normalizedShow === "huligan") loadHuliganReviews();
+        else if (normalizedShow === "matvey") loadMatveyReviews();
+        else loadReviews();
+      } catch (error) {
+        const message = String(error && error.message || "");
+        if (message === "Forbidden" || message === "Unauthorized") {
+          toast("Сессия админки устарела. Обновите страницу и войдите паролем ещё раз.");
+        } else {
+          toast(message || "Ошибка. Попробуйте ещё раз.");
+        }
       }
     }
 
@@ -6332,12 +7351,15 @@
         if (bottomNav) bottomNav.style.display = 'flex';
       }
       initAdmin(cfg);
+      touchIdInit();  // обновить статус Touch ID в настройках
     }
 
     // ── No password persistence in browser storage ──
     (async () => {
       // Всегда требуем новый ввод пароля после перезагрузки страницы.
       // Это снижает риск кражи пароля из sessionStorage/XSS.
+      touchIdInit();  // показать кнопку «Войти по Touch ID», если привязка есть
+
     })();
 
     // Auto refresh every 30s for active section

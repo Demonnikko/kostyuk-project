@@ -38,21 +38,31 @@ function readAdminPass(req, body) {
 
 // ── Firebase helpers ──
 
+async function readFirebaseJson(response) {
+  const data = await response.json().catch(() => null);
+  if (!response.ok || (data && typeof data === 'object' && data.error)) {
+    throw new Error(`Firebase request failed (${response.status})`);
+  }
+  return data;
+}
+
 async function fbGet(path) {
   const r = await fetch(`${FB_URL}/${path}.json${FIREBASE_SECRET}`);
-  return await r.json();
+  return await readFirebaseJson(r);
 }
 
 async function fbPut(path, data) {
-  await fetch(`${FB_URL}/${path}.json${FIREBASE_SECRET}`, {
+  const r = await fetch(`${FB_URL}/${path}.json${FIREBASE_SECRET}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
+  await readFirebaseJson(r);
 }
 
 async function fbDelete(path) {
-  await fetch(`${FB_URL}/${path}.json${FIREBASE_SECRET}`, { method: 'DELETE' });
+  const r = await fetch(`${FB_URL}/${path}.json${FIREBASE_SECRET}`, { method: 'DELETE' });
+  await readFirebaseJson(r);
 }
 
 // ── Хеширование паролей (scrypt, встроен в Node.js) ──

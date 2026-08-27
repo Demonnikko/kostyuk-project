@@ -10,15 +10,26 @@ function isValidTempBookingId(v) {
   return /^TEMP-[A-Z0-9_-]{6,80}$/i.test(String(v || ''));
 }
 
+const SPECIAL_SEAT_KEYS = new Set([
+  'sl_0', 'sr_0', 'bar_0', 'dl_0', 'dr_0', 'lampa',
+  'dl_1', 'dl_2', 'dl_3', 'dl_4', 'dl_5',
+  'dr_6', 'dr_7', 'dr_8', 'dr_9', 'dr_10'
+]);
+
 function normalizeSeat(raw) {
   const key = String(raw?.key || '').trim();
-  if (key === 'sl_0' || key === 'sr_0' || key === 'bar_0' || key === 'dl_0' || key === 'dr_0' || key === 'lampa') {
+  if (SPECIAL_SEAT_KEYS.has(key)) {
     return { tableId: 0, seatIdx: 0, key };
   }
   const tableId = Number(raw?.tableId);
   const seatIdx = Number(raw?.seatIdx);
   if (!Number.isInteger(tableId) || tableId < 1 || tableId > 100) return null;
-  if (!Number.isInteger(seatIdx) || seatIdx < 0 || seatIdx > 30) return null;
+  if (!Number.isInteger(seatIdx) || seatIdx < 0 || seatIdx > 100) return null;
+  // ВАЖНО: клиент формирует ключ как 't{tableId}_{seatIdx}' (напр. t19_93).
+  // Сохраняем именно его — иначе резервация (seats.js) писала бы '19_93',
+  // а покупка (book.js по s.key) — 't19_93', создавая ДВЕ записи одного места
+  // и позволяя продать его дважды. Ключ строго валидируем от Firebase-инъекции.
+  if (/^t\d{1,3}_\d{1,4}$/.test(key)) return { tableId, seatIdx, key };
   return { tableId, seatIdx, key: `${tableId}_${seatIdx}` };
 }
 
@@ -44,17 +55,22 @@ export default async (req, res) => {
     await runSecretAutoCleanup().catch(() => {});
     const type = req.query?.type || '';
 
-    // ?type=reviews — публичные отзывы
+    // ?type=reviews — публичные отзывы (по шоу: secret по умолчанию, huligan/matvey)
     if (type === 'reviews') {
-      const reviews = await fbGet('ticket_reviews') || {};
-      const bookings = await fbGet('ticket_bookings') || {};
+      const showParam = req.query?.section || req.query?.show || 'secret';
+      const node = showParam === 'huligan' ? 'huligan_reviews'
+        : showParam === 'matvey' ? 'matvey_reviews' : 'ticket_reviews';
+      const bookingsNode = showParam === 'huligan' ? 'huligan_bookings'
+        : showParam === 'matvey' ? 'matvey_bookings' : 'ticket_bookings';
+      const reviews = await fbGet(node) || {};
+      const bookings = await fbGet(bookingsNode) || {};
       const items = Object.values(reviews)
         .filter(r => r && r.text && r.rating)
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
         .slice(0, 20)
         .map(r => {
           const b = bookings[r.bookingId] || {};
-          return { rating: r.rating, text: r.text, name: r.name || b.name || 'Гость', createdAt: r.createdAt || null, vkUserId: r.vkUserId || b.vkUserId || null };
+          return { rating: r.rating, text: r.text, name: r.name || b.name || 'Гость', createdAt: r.createdAt || null };
         });
       return res.status(200).json(items);
     }
@@ -110,6 +126,7 @@ export default async (req, res) => {
         const hulCfg = await fbGet('huligan_config') || {};
         return res.status(200).json({
           huliganShow: hulCfg.show || null,
+          prices: hulCfg.prices || null,
           metrics: {
             yandexCounterId: String(process.env.YM_HULIGAN_COUNTER_ID || '').trim()
           }
@@ -165,6 +182,7 @@ export default async (req, res) => {
       if (!isValidTempBookingId(tempBookingId)) return res.status(400).json({ error: 'Only TEMP bookings allowed' });
       const now = Date.now();
 
+      const conflicts = [];
       const seatUpdates = [];
       for (const s of seatList) {
         const { data: cur, etag } = await fbGetWithETag(`${dbPath}/${s.key}`);

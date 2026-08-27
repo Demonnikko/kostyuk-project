@@ -16,6 +16,7 @@
   <meta property="twitter:image" content="https://kostyuk.ru/concerts/images/matvey.jpg" />
 
   <meta charset="UTF-8" />
+  <meta name="theme-color" content="#030303">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Билеты на квест-спектакль «Спасти Матвея» | Детское шоу — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
   <meta name="description" content="Купить билеты на семейный квест-спектакль фокусов «Спасти Матвея» Дмитрия Костюка. Увлекательное интерактивное шоу иллюзий для всей семьи в Ярославле, Иваново, Костроме, Владимире, Вологде." />
@@ -35,7 +36,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="/ecosystem.css?v=4" />
+  <link rel="stylesheet" href="/ecosystem.css?v=39" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
@@ -44,18 +45,18 @@
       --violet: #8b5fe5;
       --violet-light: #c89cff;
       --violet-glow: #d4b5ff;
-      --gold: #ffb850;
-      --gold-light: #ffd698;
+      --gold: #d6ac45;
+      --gold-light: #f0d98b;
       --text: #f5edff;
       --muted: rgba(245, 237, 255, 0.6);
       --border: rgba(184, 144, 255, 0.28);
       /* Цвета зон зала */
-      --zone-front: #9B6BFF;
-      --zone-front-rgb: 155,107,255;
-      --zone-back: #7B4FBF;
-      --zone-back-rgb: 123,79,191;
-      --zone-table: #E8C540;
-      --zone-table-rgb: 232,197,64;
+      --zone-front: #e85348;
+      --zone-front-rgb: 232,83,72;
+      --zone-back: #3dbf6e;
+      --zone-back-rgb: 61,191,110;
+      --zone-table: #4a8fd9;
+      --zone-table-rgb: 74,143,217;
     }
     html, body {
       background: var(--bg);
@@ -123,6 +124,7 @@
     }
     .back-btn:hover { background: rgba(140, 80, 240, 0.2); transform: translateX(-3px); }
     .back-btn::before { content: '‹'; font-size: 18px; line-height: 1; }
+    .back-btn.is-hidden { transform: translateY(-140%); opacity: 0; pointer-events: none; }
 
     main { position: relative; z-index: 2; }
 
@@ -394,6 +396,78 @@
       line-height: 1.5;
       color: var(--muted);
     }
+    .level__play {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(184, 144, 255, 0.55);
+      background: linear-gradient(135deg, rgba(140, 80, 240, 0.35), rgba(184, 144, 255, 0.18));
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .level__play::after { content: '▸'; font-size: 13px; }
+    .level__play:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(140, 80, 240, 0.55), rgba(184, 144, 255, 0.3));
+      box-shadow: 0 8px 22px rgba(140, 80, 240, 0.35);
+    }
+    .level__play:active { transform: translateY(0) scale(0.97); }
+
+    /* Overlay для анимаций уровней */
+    .quest-fx {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(6, 3, 18, 0.94);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .quest-fx.is-open { display: flex; }
+    .quest-fx__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .quest-fx__label {
+      position: relative;
+      z-index: 2;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 8vw, 64px);
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      letter-spacing: 0.04em;
+      text-shadow: 0 4px 30px rgba(140, 80, 240, 0.6);
+      pointer-events: none;
+      padding: 0 20px;
+    }
+    .quest-fx__hint {
+      position: absolute;
+      bottom: max(28px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      pointer-events: none;
+    }
+
+    /* Текстовые отзывы гостей */
+    .reviews-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:28px; }
+    .review-item { background:#141018; border:1px solid rgba(184,144,255,.3); border-radius:18px; padding:22px 24px; text-align:left; }
+    .review-item__stars { color:#b890ff; font-size:16px; letter-spacing:2px; margin-bottom:10px; }
+    .review-item__text { color:#f5f0e5; font-size:15px; line-height:1.6; margin-bottom:12px; }
+    .review-item__name { color:#aaa69d; font-size:13px; font-weight:600; }
 
     /* Footer CTA */
     .footer-cta {
@@ -778,35 +852,54 @@
     .seat.taken { opacity: 0.18; cursor: not-allowed; }
     .seat.taken:hover { opacity: 0.18; }
   </style>
+  <link rel="stylesheet" href="/concerts/show-system.css?v=13" />
+  <link rel="stylesheet" href="/concerts/ticket-flow.css?v=1" />
+  <script src="/concerts/ticket-flow.js?v=1"></script>
 </head>
-<body>
+<body class="show-page show-page--matvey">
+  <a class="back-btn show-back-to-afisha" href="/concerts/" aria-label="Вернуться к афише шоу">К афише</a>
   <div class="magic-sparks-overlay"></div>
   <canvas id="magicCanvas"></canvas>
   <div class="cosmos"></div>
-  <a class="back-btn" href="/concerts">К афише</a>
 
   <main>
     <!-- HERO -->
     <section class="hero">
-      <div class="poster-wrap reveal">
-        <img loading="lazy" class="poster" src="/concerts/images/matvey.jpg" alt="Афиша Спасти Матвея" />
+      <div class="show-hero-shell">
+        <div class="poster-wrap reveal">
+          <img class="poster" src="/concerts/images/matvey.webp?v=6" width="640" height="960" loading="eager" fetchpriority="high" decoding="async" alt="Афиша магического квест-спектакля «Спасти Матвея»" />
+        </div>
+        <div class="show-hero-copy">
+          <div class="eyebrow reveal d-1">Магический квест-спектакль</div>
+          <h1 class="title reveal d-1">СПАСТИ МАТВЕЯ</h1>
+          <div class="subtitle reveal d-2">Исход решаешь ты</div>
+          <div class="show-next-date reveal d-2">
+            <small>Ближайший показ</small>
+            <strong>21 ноября · 15:00</strong>
+            <span>ЛАМПА · Ярославль</span>
+          </div>
+          <div class="meta reveal d-3">
+            <span class="meta__item"><strong>6+</strong></span>
+            <span class="meta__item">1,5 часа</span>
+            <span class="meta__item">8 уровней</span>
+            <span class="meta__item">Для семьи</span>
+          </div>
+          <button class="buy-cta reveal d-4" onclick="openMatveyModal()">Купить билет</button>
+          <div class="show-hero-note">Выбор даты и места откроется здесь · бронь без звонка</div>
+        </div>
       </div>
-      <div class="eyebrow reveal d-1">Магический квест-спектакль</div>
-      <h1 class="title reveal d-1">СПАСТИ МАТВЕЯ</h1>
-      <div class="subtitle reveal d-2">Исход решаешь ты</div>
+    </section>
 
-      <div class="meta reveal d-3">
-        <span class="meta__item"><strong>6+</strong></span>
-        <span class="meta__item">1,5 часа</span>
-        <span class="meta__item">7 уровней</span>
-        <span class="meta__item">Для семьи</span>
+    <section class="show-ecosystem-quick" aria-labelledby="matveyMoreTitle">
+      <div class="show-ecosystem-quick__title"><small>Экосистема KOSTYUK PROJECT</small><h2 id="matveyMoreTitle">Магия продолжается</h2></div>
+      <div class="show-ecosystem-quick__links">
+        <a href="/events/"><span><strong>Пригласить иллюзиониста</strong><small>На свадьбу, юбилей или корпоратив</small></span><i>↗</i></a>
+        <a href="/school/"><span><strong>Школа фокусов</strong><small>Для детей 7–13 лет в Ярославле</small></span><i>↗</i></a>
       </div>
-
-      <button class="buy-cta reveal d-4" onclick="openMatveyModal()">Купить билет</button>
     </section>
 
     <!-- ABOUT -->
-    <section class="section">
+    <section class="section" id="about">
       <span class="section__eyebrow">О спектакле</span>
       <h2 class="section__title">Поход в музей превращается в квест</h2>
       <p class="section__text">
@@ -820,50 +913,91 @@
       </p>
 
       <div class="section__quote">
-        Семь сложных уровней. От разминирования до управления снежной стихией. Финал зависит от тебя.
+        Восемь уровней. Финал зависит от тебя.
       </div>
     </section>
+
+    <section class="section" id="reviewsSection" style="display:none">
+      <span class="section__eyebrow">Родители</span>
+      <h2 class="section__title">Что говорят о шоу</h2>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </section>
+
+    <section class="section show-sales-section" aria-labelledby="matveyFitTitle">
+      <span class="section__eyebrow">Перед покупкой</span>
+      <h2 class="section__title" id="matveyFitTitle">Семейное приключение, в котором дети решают</h2>
+      <div class="show-sales-grid">
+        <article class="show-sales-card">
+          <span class="show-sales-card__label">Для кого</span>
+          <h3>Для семей с детьми 6+</h3>
+          <p>Подойдёт детям, которым хочется участвовать, разгадывать и влиять на историю, а родителям — прожить приключение вместе.</p>
+        </article>
+        <article class="show-sales-card">
+          <span class="show-sales-card__label">Что почувствуете</span>
+          <h3>Ребёнок становится героем</h3>
+          <p>Зрители помогают пройти восемь уровней и решают судьбу Матвея — это общее семейное воспоминание, а не просмотр со стороны.</p>
+        </article>
+        <article class="show-sales-card show-sales-card--action">
+          <span class="show-sales-card__label">Ближайший показ</span>
+          <h3>21 ноября · Ярославль</h3>
+          <p>Выберите соседние места заранее, чтобы вся ваша спасательная команда была вместе.</p>
+          <button class="show-sales-card__cta" type="button" onclick="openMatveyModal()">Выбрать места</button>
+        </article>
+      </div>
+    </section>
+
+    <aside class="show-visit-strip" aria-label="Информация о посещении спектакля Спасти Матвея">
+      <div class="show-visit-strip__heading"><small>Перед визитом</small><strong>Всё важное в одном месте</strong></div>
+      <div class="show-visit-strip__item"><span>Площадка</span><strong>ЛАМПА · Ярославль, ул. Нахимсона, 21</strong><a href="https://yandex.ru/maps/?text=Ярославль%2C%20улица%20Нахимсона%2C%2021" target="_blank" rel="noopener">Открыть в Картах ↗</a></div>
+      <div class="show-visit-strip__item"><span>Формат</span><strong>Семейный квест-спектакль</strong></div>
+      <div class="show-visit-strip__item"><span>Возраст и время</span><strong>6+ · 1,5 часа</strong></div>
+    </aside>
 
     <!-- LEVELS -->
     <section class="section">
       <span class="section__eyebrow">Что предстоит</span>
-      <h2 class="section__title">7 уровней квеста</h2>
+      <h2 class="section__title">8 уровней квеста</h2>
 
       <div class="levels">
         <div class="level">
           <div class="level__num">01</div>
-          <div class="level__title">Зов из музея</div>
-          <div class="level__desc">Матвей исчезает в одном из залов. На связи остаётся только цифровое эхо.</div>
+          <div class="level__title">Запуск шкалы</div>
+          <button class="level__play" type="button" data-quest="scale">Нажми меня</button>
         </div>
         <div class="level">
           <div class="level__num">02</div>
-          <div class="level__title">Разминирование</div>
-          <div class="level__desc">Один неверный шаг — и комната взрывается. Голос зала направляет руку.</div>
+          <div class="level__title">Тишина</div>
+          <button class="level__play" type="button" data-quest="silence">Нажми меня</button>
         </div>
         <div class="level">
           <div class="level__num">03</div>
-          <div class="level__title">Карты Духа</div>
-          <div class="level__desc">Колода живёт своей жизнью. Угадай — и пройдёшь дальше.</div>
+          <div class="level__title">Карта на скорость (скрытая угроза)</div>
+          <button class="level__play" type="button" data-quest="card">Нажми меня</button>
         </div>
         <div class="level">
           <div class="level__num">04</div>
-          <div class="level__title">Лабиринт времени</div>
-          <div class="level__desc">Прошлое и будущее меняются местами. Спаси воспоминания Матвея.</div>
+          <div class="level__title">Разум и сердце</div>
+          <button class="level__play" type="button" data-quest="mindheart">Нажми меня</button>
         </div>
         <div class="level">
           <div class="level__num">05</div>
-          <div class="level__title">Снежная стихия</div>
-          <div class="level__desc">Управляй погодой на сцене. Сила мысли — реальная или нет?</div>
+          <div class="level__title">Чувство</div>
+          <button class="level__play" type="button" data-quest="feeling">Нажми меня</button>
         </div>
         <div class="level">
           <div class="level__num">06</div>
-          <div class="level__title">Голос Духа</div>
-          <div class="level__desc">Лицом к лицу с антагонистом. Только слова зрителей помогут.</div>
+          <div class="level__title">Предсказание</div>
+          <button class="level__play" type="button" data-quest="cube">Нажми меня</button>
         </div>
         <div class="level">
           <div class="level__num">07</div>
-          <div class="level__title">Финал</div>
-          <div class="level__desc">Спаси Матвея. Или потеряй его. Финал зависит от зала.</div>
+          <div class="level__title">Снежный шторм</div>
+          <button class="level__play" type="button" data-quest="snow">Нажми меня</button>
+        </div>
+        <div class="level">
+          <div class="level__num">08</div>
+          <div class="level__title">Триумф мастера</div>
+          <button class="level__play" type="button" data-quest="fireworks">Нажми меня</button>
         </div>
       </div>
     </section>
@@ -896,7 +1030,6 @@
         <div class="modal__sub" id="step2Date">&mdash;</div>
         <div class="steps"><div class="step done"></div><div class="step active"></div><div class="step"></div></div>
         <div class="hall-wrap">
-          <div class="stage-label">&mdash; Сцена &mdash;</div>
           <svg class="hall-svg" id="hallSvg" viewBox="0 0 580 410" xmlns="http://www.w3.org/2000/svg" aria-label="Схема зала шоу Спасти Матвея">
             <defs>
               <linearGradient id="stageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -919,11 +1052,9 @@
             <g id="hallG"></g>
           </svg>
           <div class="legend">
-            <span><span class="ldot" style="background:var(--zone-front);box-shadow:0 0 6px var(--zone-front)"></span>Ряды 1–4 (ближе к сцене)</span>
-            <span><span class="ldot" style="background:var(--zone-back);box-shadow:0 0 6px var(--zone-back)"></span>Ряды 5–7</span>
-            <span><span class="ldot" style="background:var(--zone-table);box-shadow:0 0 6px var(--zone-table)"></span>Столики</span>
-            <span><span class="ldot" style="background:#ff4f64;box-shadow:0 0 6px #ff4f64"></span>Диваны</span>
-            <span><span class="ldot" style="background:#ff9f43;box-shadow:0 0 6px #ff9f43"></span>Зона Лампа</span>
+            <span><span class="ldot" style="background:var(--zone-table);box-shadow:0 0 6px var(--zone-table)"></span>Синяя зона · 1100 ₽</span>
+            <span><span class="ldot" style="background:var(--zone-back);box-shadow:0 0 6px var(--zone-back)"></span>Зелёная зона · 1400 ₽</span>
+            <span><span class="ldot" style="background:var(--zone-front);box-shadow:0 0 6px var(--zone-front)"></span>Красная зона · 1700 ₽</span>
           </div>
         </div>
         <div class="cart" id="cartBox">
@@ -932,21 +1063,32 @@
         </div>
         <div class="modal__nav">
           <button class="btn-secondary" onclick="goToStep(1)">Назад</button>
-          <button class="btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Оформить бронь</button>
+          <button class="btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Продолжить</button>
         </div>
       </div>
 
       <!-- ШАГ 3: ФОРМА -->
       <div id="step3" style="display:none">
         <div class="modal__title">Контакты</div>
-        <div class="modal__sub">Менеджер свяжется для подтверждения</div>
+        <div class="modal__sub">Укажите данные покупателя — они войдут в заказ</div>
         <div class="steps"><div class="step done"></div><div class="step done"></div><div class="step active"></div></div>
         <div class="summary" id="summaryBox"></div>
         <form id="bookingFormEl" onsubmit="return submitMatveyBooking(event)">
 
           <label class="field">
+            <span class="field__label">Ваше имя *</span>
+            <input class="field__input" type="text" name="name" required placeholder="Как к вам обращаться" />
+          </label>
+
+          <label class="field">
             <span class="field__label">Телефон *</span>
             <input class="field__input" type="tel" name="phone" required placeholder="+7 999 123-45-67" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Email *</span>
+            <input class="field__input" type="email" name="email" required placeholder="you@example.com" />
+            <span style="font-size:11px; margin-top:4px; display:block; color:var(--muted);">Билет придёт на эту почту</span>
           </label>
 
           <label class="field">
@@ -959,28 +1101,36 @@
             <textarea class="field__textarea" name="comment" placeholder="Например: ребёнку 7 лет, нужно близко к сцене"></textarea>
           </label>
 
-          <button class="modal__submit" type="submit" id="bookingSubmit">Забронировать</button>
+          <div class="modal__nav">
+            <button type="button" class="btn-secondary" onclick="goToStep(2)">Назад</button>
+            <button class="btn-primary" type="submit" id="bookingSubmit">Проверить заказ</button>
+          </div>
         </form>
+      </div>
+
+      <div id="stepPayment" style="display:none">
+        <div class="modal__title">Проверьте заказ</div>
+        <div class="modal__sub" id="paymentSum">Все данные перед переходом к оплате</div>
+        <div class="steps"><div class="step done"></div><div class="step done"></div><div class="step active"></div></div>
+        <div class="ticket-review" id="paymentSummary"></div>
+        <p class="payment-pending" id="paymentPendingStatus" hidden></p>
+        <div class="modal__nav">
+          <button class="btn-secondary" type="button" onclick="goToStep(3)">Назад</button>
+          <button class="btn-primary" id="tbankPayBtn" type="button" onclick="initTbankPaymentMatvey()">Оплатить онлайн (Т-Банк)</button>
+        </div>
       </div>
 
       <div id="bookingSuccess" style="display:none">
         <div class="modal__success">
           <div class="modal__success-icon">✨</div>
-          <h3>Заявка принята</h3>
-          <p>Менеджер Екатерина свяжется с вами,<br>чтобы подтвердить дату и места.</p>
-          <button class="modal__submit" onclick="closeMatveyModal()" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
+          <h3>Оплата прошла успешно</h3>
+          <p>Ваш билет готов.</p>
+          <a id="ticketOpenLink" href="#" target="_blank" rel="noopener" class="modal__submit" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;text-align:center;text-decoration:none;">Открыть билет</a>
+          <button class="btn-secondary" onclick="closeMatveyModal()" style="margin-top:12px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
         </div>
       </div>
     </div>
   </div>
-
-  <section class="kp-ecosystem-promo" aria-label="Другие проекты Дмитрия Костюка">
-    <div class="kp-ecosystem-promo__head"><div><small>Ещё в KOSTYUK PROJECT</small><h2>Магия может стать частью вашей истории</h2></div><p>Билеты на авторское шоу — главное здесь. Для личного праздника или обучения ребёнка выберите соседнее направление.</p></div>
-    <div class="kp-ecosystem-promo__grid">
-      <a class="kp-promo-card" href="/events/"><span class="kp-promo-card__label">Частные события</span><h3>Пригласите Дмитрия на ваш праздник</h3><p>Персональное выступление для свадьбы, юбилея, корпоратива или семейного вечера.</p><span class="kp-promo-card__action">Выбрать выступление <i>↗</i></span></a>
-      <a class="kp-promo-card" href="/school/"><span class="kp-promo-card__label">Дети 7–13 лет</span><h3>Первая школа фокусов в Ярославле</h3><p>Уверенность, речь и артистизм ребёнка через искусство иллюзии.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
-    </div>
-  </section>
 
   <script>
     window.addEventListener('load', function() {
@@ -1002,7 +1152,12 @@
     function openMatveyModal() {
       bookingModal.classList.add('show');
       document.body.style.overflow = 'hidden';
-      goToStep(1);
+      if (SHOWS.length === 1 && !booking.date) {
+        booking.date = SHOWS[0];
+        var nextBtn = document.getElementById('step1Next');
+        if (nextBtn) nextBtn.disabled = false;
+      }
+      goToStep(SHOWS.length === 1 ? 2 : 1);
     }
     function closeMatveyModal() {
       bookingModal.classList.remove('show');
@@ -1010,6 +1165,9 @@
       setTimeout(function() {
         booking.date = null; booking.selected = [];
         var f = document.getElementById('bookingFormEl'); if(f) f.reset();
+        var paymentStatus=document.getElementById('paymentPendingStatus'); if(paymentStatus) paymentStatus.hidden=true;
+        var paymentButton=document.getElementById('tbankPayBtn'); if(paymentButton){paymentButton.disabled=false;paymentButton.textContent='Оплатить онлайн (Т-Банк)';}
+        booking.lastDraft=null;
         goToStep(1);
         document.getElementById('step1Next').disabled = true;
       }, 300);
@@ -1020,30 +1178,47 @@
     document.addEventListener('keydown', function(e) { if(e.key==='Escape'&&bookingModal.classList.contains('show')) closeMatveyModal(); });
 
     function goToStep(n) {
-      ['step1','step2','step3','bookingSuccess'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+      ['step1','step2','step3','stepPayment','bookingSuccess'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
       booking.step=n;
+      if(window.KTrack){ if(n===2)KTrack.step('matvey','seats'); else if(n===3)KTrack.step('matvey','contacts'); else if(n===4)KTrack.step('matvey','payment'); }
       if(n===1){document.getElementById('step1').style.display='';renderDates();}
-      else if(n===2){document.getElementById('step2').style.display='';document.getElementById('step2Date').textContent=booking.date?booking.date.date+' · '+booking.date.time:'—';renderHall();renderCart();}
+      else if(n===2){document.getElementById('step2').style.display='';document.getElementById('step2Date').textContent=booking.date?booking.date.date+' · '+booking.date.time:'—';loadMatveyPrices().then(function(){renderHall();renderCart();});renderHall();renderCart();}
       else if(n===3){document.getElementById('step3').style.display='';renderSummary();}
+      else if(n===4){document.getElementById('stepPayment').style.display='';document.getElementById('paymentSum').textContent=booking.lastDraft?'Заказ '+booking.lastDraft.id:'Все данные перед переходом к оплате';TicketFlowCore.renderReview(document.getElementById('paymentSummary'),booking.lastDraft||{});}
+      else if(n===5){document.getElementById('bookingSuccess').style.display='';}
     }
     window.goToStep = goToStep;
 
-    // Зоны зала
+    // Зоны зала (цены по умолчанию — фолбэк; актуальные тянутся из админки)
     var ZONES = {
-      row_front: { color:'#9B6BFF', rgb:'155,107,255', label:'Ряды 1–4 (ближе к сцене)', price:1800 },
-      row_back:  { color:'#7B4FBF', rgb:'123,79,191',  label:'Ряды 5–7',              price:1200 },
-      table:     { color:'#E8C540', rgb:'232,197,64',  label:'Столики (места 1–4)',    price:1500 },
-      sofa:      { color:'#ff4f64', rgb:'255,79,100',  label:'Диваны',                price:4000 },
-      lampa:     { color:'#ff9f43', rgb:'255,159,67',  label:'Зона Лампа',            price:2500 }
+      row_front: { color:'#e85348', rgb:'232,83,72',  label:'Красная зона', price:1700 },
+      row_back:  { color:'#3dbf6e', rgb:'61,191,110', label:'Зелёная зона', price:1400 },
+      table:     { color:'#4a8fd9', rgb:'74,143,217', label:'Синяя зона', price:1100 },
+      sofa:      { color:'#e85348', rgb:'232,83,72',  label:'Красная зона', price:1700 },
+      lampa:     { color:'#e85348', rgb:'232,83,72',  label:'Красная зона', price:1700 }
     };
 
-    var DEMO_TAKEN = new Set([
-      'r1_3', 'r1_8',
-      'r2_5', 'r2_6',
-      'r3_2', 'r3_9',
-      'r5_4', 'r5_9',
-      't1_2', 't3_4'
-    ]);
+    // Тянем актуальные цены из админки (matvey_config/prices) и вписываем в ZONES.
+    // Один раз за сессию; при ошибке остаются дефолтные цены (фолбэк).
+    var matveyPricesLoaded = false;
+    async function loadMatveyPrices() {
+      if (matveyPricesLoaded) return;
+      try {
+        var r = await fetch('/api/matvey-seats?type=config');
+        if (!r.ok) { matveyPricesLoaded = true; return; }
+        var cfg = await r.json();
+        var p = cfg && cfg.prices;
+        if (p && typeof p === 'object') {
+          ['row_front','row_back','table','sofa','lampa'].forEach(function(z){
+            var v = Number(p[z]);
+            if (isFinite(v) && v >= 0 && ZONES[z]) ZONES[z].price = v;
+          });
+        }
+        matveyPricesLoaded = true;
+      } catch (e) { console.error('Error loading matvey prices:', e); }
+    }
+
+    var DEMO_TAKEN = new Set([]); // очищено: все места свободны, занятость только из базы
 
     // Генерация мест (театральная схема ЛАМПА)
     var SEATS = [];
@@ -1127,13 +1302,13 @@
       key: 'dl_1',
       zone: 'sofa',
       label: 'Левый диван (целиком)',
-      price: 4000
+      price: 1700
     });
     SEATS.push({
       key: 'dr_1',
       zone: 'sofa',
       label: 'Правый диван (целиком)',
-      price: 4000
+      price: 1700
     });
 
     // Зона Лампа
@@ -1141,20 +1316,19 @@
       key: 'lampa',
       zone: 'lampa',
       label: 'Зона Лампа',
-      price: 2500
+      price: 1700
     });
 
-    var booking = {step:1, date:null, selected:[]};
+    var booking = {step:1, date:null, selected:[], tempBookingId:'TEMP-MTV-'+Math.random().toString(36).slice(2).toUpperCase()};
     var SHOWS = [
-      {date:'18 октября 2026', day:18, month:'ОКТ', time:'18:00', venue:'ЛАМПА · Ярославль'},
-      {date:'15 ноября 2026',  day:15, month:'НОЯ', time:'14:00', venue:'РУСЬ · Владимир'},
-      {date:'20 декабря 2026', day:20, month:'ДЕК', time:'18:00', venue:'ЛЕНКОМ · Вологда'}
+      {date:'21 ноября 2026', day:21, month:'НОЯ', time:'15:00', venue:'ЛАМПА · Ярославль'}
     ];
 
     function renderDates() {
       var grid=document.getElementById('dateGrid'); grid.innerHTML='';
       SHOWS.forEach(function(s){
-        var card=document.createElement('div'); card.className='date-card';
+        var card=document.createElement('button'); card.type='button'; card.className='date-card';
+        card.setAttribute('aria-label', s.date + ', ' + s.time + ', ' + s.venue);
         if(booking.date&&booking.date.date===s.date) card.classList.add('selected');
         card.innerHTML='<div class="date-card__day">'+s.day+'</div><div class="date-card__month">'+s.month+'</div><div class="date-card__time">'+s.time+'</div><div class="date-card__venue">'+s.venue+'</div>';
         card.onclick=function(){booking.date=s;document.getElementById('step1Next').disabled=false;renderDates();};
@@ -1322,8 +1496,8 @@
         var rect = svgEl('rect', {
           x: tx-9, y: tableTY-15,
           width: 18, height: 30, rx: 4,
-          fill: 'rgba(232,197,64,0.08)',
-          stroke: 'rgba(232,197,64,0.35)',
+          fill: 'rgba('+ZONES.table.rgb+',0.10)',
+          stroke: 'rgba('+ZONES.table.rgb+',0.45)',
           'stroke-width': 1
         });
         g.appendChild(rect);
@@ -1335,7 +1509,7 @@
           'font-size': '10',
           'font-weight': '700',
           'font-family': 'Inter, sans-serif',
-          fill: 'rgba(232,197,64,0.8)'
+          fill: ZONES.table.color
         });
         lbl.textContent = (ti+1);
         g.appendChild(lbl);
@@ -1377,10 +1551,30 @@
             'stroke-opacity': 0.55
           }));
         }
-        
+
+        var hitArea = svgEl('circle', {
+          cx: seat.x,
+          cy: seat.y,
+          r: sr + 9,
+          fill: 'transparent',
+          stroke: 'transparent',
+          'class': 'seat-hit',
+          role: 'button',
+          tabindex: isTaken ? -1 : 0,
+          'aria-label': seat.label + (isTaken ? ', занято' : ', ' + ZONES[seat.zone].price.toLocaleString('ru-RU') + ' рублей'),
+          'aria-pressed': isSelected ? 'true' : 'false',
+          style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        });
+
         if (!isTaken) {
-          c.addEventListener('click', function(){ toggleSeat(seat.key, seat.zone, seat.label); });
+          var handleSeatClick = function(){ toggleSeat(seat.key, seat.zone, seat.label); };
+          c.addEventListener('click', handleSeatClick);
+          hitArea.addEventListener('click', handleSeatClick);
+          hitArea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSeatClick(); }
+          });
         }
+        g.appendChild(hitArea);
         g.appendChild(c);
         
         // Цифра внутри кружка
@@ -1404,12 +1598,9 @@
     }
 
     function toggleSeat(key,zone,label) {
-      var idx=booking.selected.findIndex(function(x){return x.key===key;});
-      if(idx>=0){booking.selected.splice(idx,1);}
-      else{
-        if(booking.selected.length>=15){alert('Можно выбрать максимум 15 мест.');return;}
-        booking.selected.push({key:key,zone:zone,label:label,price:ZONES[zone].price});
-      }
+      try {
+        booking.selected=TicketFlowCore.toggleSelection(booking.selected,{key:key,zone:zone,label:label,price:ZONES[zone].price},10);
+      } catch(selectionError) { alert(selectionError.message); return; }
       renderHall(); renderCart();
       document.getElementById('step2Next').disabled=booking.selected.length===0;
     }
@@ -1443,34 +1634,86 @@
     async function submitMatveyBooking(e) {
       e.preventDefault();
       var btn=document.getElementById('bookingSubmit');
-      btn.disabled=true; btn.textContent='Отправляем...';
+      btn.disabled=true; btn.textContent='Оформление...';
       var form=e.target; var data=new FormData(form);
-      var seatsInfo=booking.selected.map(function(s){return s.label;}).join(', ');
-      var total=booking.selected.reduce(function(a,s){return a+s.price;},0);
+      var bookingId='MAT-'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();
       var payload={
-        show:'matvey',
+        bookingId:bookingId,
         eventDate:booking.date?booking.date.date+' '+booking.date.time:'',
-        seats:seatsInfo, ticketCount:booking.selected.length, totalPrice:total,
-        name:data.get('name')||'', phone:data.get('phone')||'',
-        telegram:data.get('telegram')||'', comment:data.get('comment')||'',
-        source:'web'
+        seats:booking.selected.map(function(s){return {key:s.key, zone:s.zone};}),
+        name:data.get('name')||'', phone:data.get('phone')||'', email:data.get('email')||'',
+        tempBookingId:booking.tempBookingId
       };
       try{
-        var r=await fetch('/api/lead-concert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        var r=await fetch('/api/matvey',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
         var json=await r.json();
         if(json&&json.ok){
-          ['step1','step2','step3'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
-          document.getElementById('bookingSuccess').style.display='';
-        }else{alert('Не удалось отправить заявку. Попробуйте позже.');btn.disabled=false;btn.textContent='Забронировать';}
-      }catch(err){alert('Ошибка сети. Попробуйте ещё раз.');btn.disabled=false;btn.textContent='Забронировать';}
+          localStorage.setItem('matvey_last_booking_id',json.bookingId);
+          localStorage.setItem('matvey_last_client_key',json.clientKey);
+          booking.lastBookingId=json.bookingId;
+          booking.lastClientKey=json.clientKey;
+          booking.lastDraft=TicketFlowCore.buildDraft({
+            id:json.bookingId, show:'Спасти Матвея', date:booking.date,
+            selected:booking.selected, total:json.discountedTotal,
+            contact:{name:data.get('name')||'',phone:data.get('phone')||'',email:data.get('email')||''}
+          });
+          btn.disabled=false; btn.textContent='Проверить заказ';
+          goToStep(4);
+        }else{alert('Не удалось оформить бронирование: '+(json.error||'попробуйте позже.'));btn.disabled=false;btn.textContent='Проверить заказ';}
+      }catch(err){alert('Ошибка сети. Попробуйте ещё раз.');btn.disabled=false;btn.textContent='Проверить заказ';}
       return false;
     }
     window.submitMatveyBooking = submitMatveyBooking;
+
+    async function initTbankPaymentMatvey(){
+      var btn=document.getElementById('tbankPayBtn');
+      if(!btn)return;
+      btn.disabled=true; btn.textContent='Инициализация...';
+      try{
+        var r=await fetch('/api/matvey',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'tbank_init',bookingId:booking.lastBookingId,clientKey:booking.lastClientKey})});
+        var json=await r.json();
+        if(json&&json.paymentUrl){window.location.href=json.paymentUrl;}
+        else{alert('Не удалось запустить онлайн-оплату: '+(json.error||'попробуйте позже.'));btn.disabled=false;btn.textContent='Оплатить онлайн (Т-Банк)';}
+      }catch(e){alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');btn.disabled=false;btn.textContent='Оплатить онлайн (Т-Банк)';}
+    }
+    window.initTbankPaymentMatvey=initTbankPaymentMatvey;
+
+    document.addEventListener('DOMContentLoaded',function(){
+      var params=new URLSearchParams(window.location.search);
+      var payStatus=params.get('pay');
+      if(payStatus==='success'){
+        booking.selected=[];
+        openMatveyModal();
+        goToStep(5);
+        window.history.replaceState({},document.title,window.location.pathname);
+        var lastId=localStorage.getItem('matvey_last_booking_id');
+        var lastKey=localStorage.getItem('matvey_last_client_key');
+        var linkEl=document.getElementById('ticketOpenLink');
+        if(lastId&&linkEl){
+          (function tryFetch(attempt){
+            fetch('/api/matvey?action=ticket_link&id='+encodeURIComponent(lastId)+'&clientKey='+encodeURIComponent(lastKey||''))
+              .then(function(r){return r.json();})
+              .then(function(j){if(j&&j.url){linkEl.href=j.url;}else if(attempt<4){setTimeout(function(){tryFetch(attempt+1);},1500);}else{linkEl.style.display='none';}})
+              .catch(function(){if(attempt<4){setTimeout(function(){tryFetch(attempt+1);},1500);}else{linkEl.style.display='none';}});
+          })(0);
+        }
+      }else if(payStatus==='fail'){
+        alert('Платеж был отклонен или отменен. Вы можете попробовать заново выбрать места и оплатить.');
+        window.history.replaceState({},document.title,window.location.pathname);
+      }
+    });
 
     // Скрипт интерактивного волшебного холста для шоу СПАСТИ МАТВЕЯ
     (function() {
       const canvas = document.getElementById('magicCanvas');
       if (!canvas) return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const touchDevice = window.matchMedia('(pointer: coarse)').matches;
+      if (reduceMotion || touchDevice || window.innerWidth < 821) {
+        canvas.remove();
+        return;
+      }
       const ctx = canvas.getContext('2d');
 
       let particles = [];
@@ -1599,11 +1842,6 @@
   </script>
 
   <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
-  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
-    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-      <path d="M21.9 2.1c-.2-.2-.5-.2-.8-.1L1.8 9.7c-.3.1-.5.4-.5.7 0 .3.2.6.5.7l5.3 1.9 2.2 6.7c.1.3.3.5.6.5.1 0 .2 0 .3-.1l3.2-2.6 4.6 3.4c.2.1.4.1.6 0 .2-.1.3-.3.3-.5L22.5 2.7c0-.3-.4-.5-.6-.6zM8.5 12.1l9.4-6.3-7.7 7.6c-.1.1-.2.2-.2.4l-.5 2.7-1-3.9c0-.3 0-.5.1-.6z"/>
-    </svg>
-  </a>
   <style>
   </style>
 
@@ -1626,5 +1864,44 @@
   <noscript><div><img src="https://mc.yandex.ru/watch/107696179" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
 
+  <!-- STICKY CTA -->
+  <div id="stickyCta" style="position:fixed;bottom:-100px;left:0;right:0;padding:15px 20px;z-index:99;transition:bottom .3s ease;display:flex;justify-content:space-between;align-items:center;margin:0 auto;">
+    <div>
+      <div style="font-weight:600;font-size:16px;">Спасти Матвея</div>
+      <div style="color:var(--gold);font-size:14px;opacity:.8;">Билеты от 1100 ₽</div>
+    </div>
+    <button class="buy-cta" style="margin:0;padding:12px 24px;font-size:15px;" onclick="openMatveyModal()">Купить билет</button>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', function() {
+      var sticky = document.getElementById('stickyCta');
+      var footerCta = document.querySelector('.footer-cta');
+      var hideNearBottom = footerCta && footerCta.getBoundingClientRect().top < window.innerHeight;
+      sticky.style.bottom = window.scrollY > 500 && !hideNearBottom ? '0px' : '-110px';
+    });
+  </script>
+
+<script src="/ecosystem.js?v=11" data-root="/" data-section="shows" defer></script>
+  <script src="/concerts/show-ambient.js?v=1" defer></script>
+  <script src="/concerts/show-nav.js?v=1" defer></script>
+  <script src="/concerts/matvey-quest.js?v=2" defer></script>
+  <script src="/concerts/track.js?v=1"></script>
+  <script>window.addEventListener('load',function(){ if(window.KTrack) KTrack.step('matvey','visit'); });</script>
+  <script>
+    (function(){
+      function esc(s){ var d=document.createElement('div'); d.textContent=String(s==null?'':s); return d.innerHTML; }
+      fetch('/api/seats?type=reviews&show=matvey').then(function(r){ return r.ok?r.json():[]; }).then(function(items){
+        if(!Array.isArray(items) || !items.length) return;
+        var box=document.getElementById('reviewsGrid'), sec=document.getElementById('reviewsSection'); if(!box) return;
+        box.innerHTML = items.map(function(rv){
+          var rating=Math.max(1,Math.min(5,rv.rating||5));
+          var stars='★'.repeat(rating)+'☆'.repeat(5-rating);
+          return '<div class="review-item"><div class="review-item__stars">'+stars+'</div><div class="review-item__text">«'+esc(rv.text)+'»</div><div class="review-item__name">— '+esc(rv.name||'Гость')+'</div></div>';
+        }).join('');
+        if(sec) sec.style.display='';
+      }).catch(function(){});
+    })();
+  </script>
 </body>
 </html>

@@ -289,8 +289,21 @@ function classifyStatus(status) {
   return 'ok';
 }
 
+function extractBookingIdFromScan(rawText) {
+  const text = safeString(rawText, 500);
+  if (!text) return text;
+  // QR теперь кодирует ссылку на страницу билета (ticket.html?id=...&tk=...),
+  // а не голый bookingId — вытаскиваем id из query-параметра, если это URL.
+  try {
+    const url = new URL(text);
+    const idParam = url.searchParams.get('id');
+    if (idParam) return idParam;
+  } catch { /* не URL — используем как есть (ручной ввод номера брони) */ }
+  return text;
+}
+
 async function resolveBookingFromText(rawText, showHint) {
-  const query = safeString(rawText, 120).toUpperCase();
+  const query = safeString(extractBookingIdFromScan(rawText), 120).toUpperCase();
   if (!query) return null;
 
   const canUseAsBookingId = BOOKING_ID_RE.test(query);

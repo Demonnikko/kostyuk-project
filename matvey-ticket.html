@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Ваш билет — Спасти Матвея</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0a0420; --surface:#1a0d47; --violet:#8b5fe5; --violet-light:#c89cff; --gold:#ffd166; --cream:#f5edff; --muted:rgba(245,237,255,.55); --line:rgba(212,181,255,.3); }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--bg); color:var(--cream); font-family:'Nunito',sans-serif; min-height:100vh; }
+  body { display:flex; align-items:center; justify-content:center; padding:24px; padding-top:calc(24px + env(safe-area-inset-top)); padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+  .ticket { width:100%; max-width:420px; background:radial-gradient(140% 100% at 30% 0%, #4a2a8f 0%, #2d1466 45%, #1a0d47 100%); border:1px solid var(--line); border-radius:24px; overflow:hidden; }
+  .ticket__header { padding:28px 28px 20px; text-align:center; }
+  .ticket__badge { display:inline-block; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#0a0420; background:var(--gold); padding:7px 18px; border-radius:999px; margin-bottom:14px; }
+  .ticket__show { font-weight:800; font-size:30px; color:#fff; margin:0; }
+  .ticket__show em { font-style:normal; color:var(--gold); }
+  .ticket__body { padding:8px 28px 24px; }
+  .ticket__row { display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid rgba(212,181,255,.14); font-size:15px; }
+  .ticket__row:last-child { border-bottom:none; }
+  .ticket__row span:first-child { color:var(--muted); }
+  .ticket__row span:last-child { font-weight:700; text-align:right; }
+  .ticket__qr { display:flex; flex-direction:column; align-items:center; padding:20px 28px 32px; gap:12px; }
+  .ticket__qr img { width:200px; height:200px; background:#fff; border-radius:14px; padding:12px; box-shadow:0 0 0 1px rgba(212,181,255,.6); }
+  .ticket__qr-hint { font-size:13px; color:var(--muted); text-align:center; }
+  .ticket__id { font-family:monospace; font-size:14px; color:var(--violet-light); letter-spacing:.05em; }
+  .state { text-align:center; padding:60px 24px; color:var(--muted); }
+  .state.error { color:var(--cream); }
+  .state h2 { color:var(--gold); margin-bottom:8px; }
+</style>
+</head>
+<body>
+  <div id="root" class="state"><p>Загрузка билета…</p></div>
+  <script>
+    function esc(s){var d=document.createElement('div');d.textContent=String(s==null?'':s);return d.innerHTML;}
+    function renderError(t,x){document.getElementById('root').innerHTML='<div class="state error"><h2>'+esc(t)+'</h2><p>'+esc(x)+'</p></div>';}
+    function renderTicket(id,data){
+      var b=data.booking||{};
+      var seats=Array.isArray(b.seats)?b.seats.join(', '):'—';
+      var qrUrl='https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data='+encodeURIComponent(window.location.href);
+      document.getElementById('root').outerHTML=
+        '<div class="ticket">'+
+          '<div class="ticket__header"><div class="ticket__badge">Пропуск в квест</div><h1 class="ticket__show">Спасти <em>Матвея</em></h1></div>'+
+          '<div class="ticket__body">'+
+            '<div class="ticket__row"><span>Гость</span><span>'+esc(b.name||'—')+'</span></div>'+
+            '<div class="ticket__row"><span>Места</span><span>'+esc(seats)+'</span></div>'+
+            '<div class="ticket__row"><span>Сумма</span><span>'+esc(b.total||0)+' ₽</span></div>'+
+          '</div>'+
+          '<div class="ticket__qr"><img src="'+qrUrl+'" alt="QR-код билета" /><div class="ticket__id">'+esc(id)+'</div><div class="ticket__qr-hint">Покажите этот QR-код на входе</div></div>'+
+        '</div>';
+    }
+    (function init(){
+      var p=new URLSearchParams(window.location.search);
+      var id=p.get('id'), tk=p.get('tk');
+      if(!id||!tk){renderError('Билет не найден','Ссылка неполная. Проверьте, что открыли её целиком из письма.');return;}
+      fetch('/api/matvey?action=ticket_data&id='+encodeURIComponent(id)+'&tk='+encodeURIComponent(tk))
+        .then(function(r){return r.json().then(function(j){return {status:r.status,body:j};});})
+        .then(function(res){
+          if(res.status!==200||!res.body||!res.body.ok){
+            if(res.status===409)return renderError('Оплата ещё обрабатывается','Билет появится сразу после подтверждения оплаты. Обновите страницу через минуту.');
+            if(res.status===410)return renderError('Билет отменён','Этот билет был аннулирован. Свяжитесь с организатором.');
+            if(res.status===403)return renderError('Ссылка недействительна','Возможно, она устарела. Запросите новую у организатора.');
+            return renderError('Билет не найден',(res.body&&res.body.error)||'Попробуйте открыть ссылку ещё раз.');
+          }
+          renderTicket(id,res.body);
+        })
+        .catch(function(){renderError('Ошибка сети','Не удалось загрузить билет. Проверьте соединение и обновите страницу.');});
+    })();
+  </script>
+</body>
+</html>

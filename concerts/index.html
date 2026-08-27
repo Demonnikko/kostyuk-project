@@ -16,15 +16,14 @@
   <meta property="twitter:image" content="https://kostyuk.ru/images/afisha/secret.jpg" />
 
   <meta charset="UTF-8" />
+  <meta name="theme-color" content="#030303">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Афиша шоу иллюзиониста Дмитрия Костюка | Билеты — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
   <meta name="description" content="Афиша и покупка билетов на авторские иллюзионные шоу Дмитрия Костюка (Секрет, ХУЛИgan, Спасти Матвея) в Ярославле, Иваново, Костроме, Владимире, Вологде." />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/images/kp-favicon.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
-  <link rel="preload" as="image" href="/concerts/images/secret.jpg" />
-  <link rel="preload" as="image" href="/concerts/images/huligan.jpg" />
-  <link rel="preload" as="image" href="/concerts/images/matvey.jpg" />
+  <link rel="preload" as="image" href="/concerts/images/secret.webp?v=7" type="image/webp" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -39,16 +38,16 @@
   }
   </script>
   <link rel="stylesheet" href="/vendor/fonts/fonts.css" />
-  <link rel="stylesheet" href="/ecosystem.css?v=4" />
+  <link rel="stylesheet" href="/ecosystem.css?v=39" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg: #050510;
-      --bg2: #0a0a18;
-      --text: #f0f0f5;
-      --muted: #8a8a98;
-      --gold: #cba128;
-      --gold2: #e7c776;
+      --bg: #030303;
+      --bg2: #0a0a0c;
+      --text: #f5f0e5;
+      --muted: #aaa69d;
+      --gold: #d6ac45;
+      --gold2: #f0d98b;
       --gold3: #fff0c2;
     }
     html {
@@ -73,7 +72,7 @@
       overflow: hidden;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 20% 0%, rgba(203, 161, 40, 0.08) 0%, transparent 45%),
+        radial-gradient(ellipse at 20% 0%, rgba(214, 172, 69, 0.08) 0%, transparent 45%),
         radial-gradient(ellipse at 80% 30%, rgba(255, 110, 0, 0.06) 0%, transparent 45%),
         radial-gradient(ellipse at 50% 90%, rgba(110, 80, 220, 0.06) 0%, transparent 50%);
     }
@@ -121,7 +120,7 @@
       inset: 0;
       z-index: -2;
       background:
-        url('images/huligan.jpg') center 30% / cover no-repeat;
+        url('images/huligan.webp') center 30% / cover no-repeat;
       transform: scale(1.05);
       filter: saturate(0.6) brightness(0.35);
       transition: transform 8s ease;
@@ -134,8 +133,8 @@
       inset: 0;
       z-index: -1;
       background:
-        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(203,161,40,0.07) 0%, transparent 70%),
-        linear-gradient(to bottom, rgba(5,5,16,0.55) 0%, rgba(5,5,16,0.3) 40%, rgba(5,5,16,0.75) 80%, #050510 100%);
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(214,172,69,0.07) 0%, transparent 70%),
+        linear-gradient(to bottom, rgba(3,3,3,0.55) 0%, rgba(3,3,3,0.3) 40%, rgba(3,3,3,0.75) 80%, #030303 100%);
     }
     .hero-inner {
       position: relative;
@@ -148,8 +147,8 @@
       gap: 10px;
       padding: 8px 18px;
       border-radius: 999px;
-      background: rgba(203, 161, 40, 0.08);
-      border: 1px solid rgba(203, 161, 40, 0.32);
+      background: rgba(214, 172, 69, 0.08);
+      border: 1px solid rgba(214, 172, 69, 0.32);
       font-size: 10.5px;
       letter-spacing: 0.42em;
       text-transform: uppercase;
@@ -182,7 +181,7 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 80px rgba(203, 161, 40, 0.25);
+      text-shadow: 0 0 80px rgba(214, 172, 69, 0.25);
     }
     h1 .word--italic {
       font-style: italic;
@@ -193,7 +192,7 @@
       margin: 0 auto 36px;
       font-size: clamp(15px, 2.2vw, 18px);
       line-height: 1.65;
-      color: rgba(240, 240, 245, 0.72);
+      color: rgba(245, 240, 229, 0.72);
     }
     /* Мини-плашки трёх шоу под заголовком */
     .hero-shows-hint {
@@ -262,10 +261,10 @@
     /* Карточка шоу */
     .show {
       position: relative;
-      display: block;
+      display: flex;
+      flex-direction: column;
       border-radius: 28px;
       overflow: hidden;
-      aspect-ratio: 2 / 3.05;
       background: var(--bg2);
       isolation: isolate;
       cursor: pointer;
@@ -287,11 +286,12 @@
     }
     .show:hover::before { opacity: 0.85; }
 
-    /* Афиша */
+    /* Афиша — показывается целиком, ничего не обрезается */
     .show__poster {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2 / 3;
       object-fit: cover;
       transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
       z-index: 0;
@@ -309,25 +309,30 @@
       pointer-events: none;
     }
 
-    /* Затемнение снизу */
-    .show__overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.65) 70%, rgba(0,0,0,0.97) 100%);
-      pointer-events: none;
-    }
+    /* Афиша уже содержит свой заголовок — дублирующий заголовок и подзаголовок не нужны */
+    .show__overlay { display: none; }
+    .show__title,
+    .show__sub { display: none; }
 
-    /* Контент карточки */
+    /* Инфо-полоса под афишей — растянута по ширине */
     .show__content {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
+      position: relative;
       z-index: 3;
-      padding: 24px 20px 22px;
+      padding: 16px 18px 18px;
       color: #fff;
+      background: var(--bg2);
+      display: grid;
+      gap: 14px;
+      text-align: left;
+    }
+    /* Верхняя строка: жанр слева, статус справа */
+    .show__content .show__badge {
+      grid-row: 1;
+      justify-self: start;
+      margin: 0;
     }
     @media (min-width: 480px) {
-      .show__content { padding: 30px 28px 28px; }
+      .show__content { padding: 20px 22px 22px; }
     }
     .show__badge {
       display: inline-block;
@@ -382,6 +387,13 @@
       font-weight: 900;
       transition: transform 0.3s ease;
     }
+    /* Кнопка на всю ширину полосы */
+    .show__content .show__cta {
+      justify-content: center;
+      width: 100%;
+      padding: 15px 22px;
+      font-size: 12px;
+    }
     .show:hover .show__cta {
       padding-right: 28px;
       background: #fff;
@@ -392,7 +404,7 @@
 
     /* SECRET — Cinzel, торжественный и загадочный */
     .show--secret {
-      --c1: rgba(203, 161, 40, 0.55);
+      --c1: rgba(214, 172, 69, 0.55);
       --c2: rgba(20, 18, 80, 0.55);
       --frame: rgba(231, 199, 118, 0.28);
       --badge: #e7c776;
@@ -427,9 +439,9 @@
     .show--huligan {
       --c1: rgba(255, 110, 0, 0.55);
       --c2: rgba(168, 24, 0, 0.55);
-      --frame: rgba(255, 144, 0, 0.32);
-      --badge: #FFB347;
-      --badge-border: rgba(255, 144, 0, 0.6);
+      --frame: rgba(255, 110, 0, 0.42);
+      --badge: #ff6e00;
+      --badge-border: rgba(255, 110, 0, 0.68);
       --title-font: 'Cinzel', serif;
       --sub-font: 'Inter', sans-serif;
     }
@@ -441,6 +453,10 @@
     .show--huligan .show__cta {
       background: linear-gradient(135deg, #FF9000 0%, #FF6A00 100%);
       color: #1a0800;
+    }
+    .show--huligan:hover .show__poster {
+      transform: none;
+      filter: brightness(1.05);
     }
 
     /* MATVEY — Cormorant Garamond, театральный, сказочный */
@@ -454,13 +470,16 @@
       --sub-font: 'Inter', sans-serif;
     }
     .show--matvey .show__badge {
-      font-style: italic;
-      text-transform: none; /* Убираем жесткий капслок для сказочного стиля */
-      font-size: 15px;
-      letter-spacing: 0.05em;
+      font-size: 13px;
+      letter-spacing: 0.16em;
     }
     .show--matvey .show__cta {
       background: linear-gradient(135deg, #c89cff 0%, #8b5fe5 100%);
+      color: #fff;
+    }
+    /* hover не должен перекрашивать фиолетовую кнопку в белый — иначе белый текст исчезает */
+    .show--matvey:hover .show__cta {
+      background: linear-gradient(135deg, #d4b0ff 0%, #9b6ff0 100%);
       color: #fff;
     }
 
@@ -477,7 +496,7 @@
       background: rgba(14, 14, 26, 0.92);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(203, 161, 40, 0.32);
+      border: 1px solid rgba(214, 172, 69, 0.32);
       border-radius: 999px;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
       width: min(94vw, 440px);
@@ -538,7 +557,6 @@
     .d-3 { transition-delay: 0.44s; }
     .d-4 { transition-delay: 0.6s; }
 
-    }
     .project-switcher__list b {
       display: flex;
       justify-content: space-between;
@@ -565,155 +583,366 @@
       }
       .header-phone-text { display: none; }
     }
+
+    /* ==== CONCERTS HUB — единый язык KOSTYUK PROJECT ==== */
+    .concert-ambience {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 44% 32% at 50% -4%, rgba(231,199,118,.16), transparent 72%),
+        radial-gradient(ellipse 28% 55% at 8% 24%, rgba(214,172,69,.07), transparent 76%),
+        radial-gradient(ellipse 28% 55% at 92% 24%, rgba(214,172,69,.07), transparent 76%),
+        linear-gradient(180deg, #050505 0%, #080706 48%, #050505 100%);
+    }
+    .concert-ambience::before,
+    .concert-ambience::after {
+      content: '';
+      position: absolute;
+      top: -22%;
+      width: 34vw;
+      height: 82vh;
+      opacity: .16;
+      filter: blur(24px);
+      background: linear-gradient(180deg, rgba(255,230,164,.45), transparent 76%);
+      clip-path: polygon(45% 0, 58% 0, 100% 100%, 0 100%);
+      animation: stageLight 12s ease-in-out infinite alternate;
+    }
+    .concert-ambience::before { left: 7%; transform: rotate(9deg); }
+    .concert-ambience::after { right: 7%; transform: rotate(-9deg); animation-delay: -6s; }
+    @keyframes stageLight { to { opacity: .27; filter: blur(30px); } }
+
+    .brand-bar__identity img {
+      object-fit: contain;
+      background: #080808;
+    }
+    .brand-bar__actions { display: flex; align-items: center; gap: 8px; }
+    .brand-bar__phone {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(255,255,255,.055);
+      font-size: 11px;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+    }
+    .brand-bar .brand-bar__cta { border-radius: 999px; }
+
+    .concerts-intro {
+      position: relative;
+      z-index: 2;
+      min-height: 44svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 128px 24px 44px;
+      text-align: center;
+    }
+    .concerts-intro__eyebrow {
+      color: var(--gold2);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+    }
+    .concerts-intro h1 {
+      margin: 14px 0 0;
+      color: #f4f0e7;
+      font-size: clamp(46px, 8vw, 82px);
+      letter-spacing: .01em;
+      text-wrap: balance;
+    }
+    .concerts-intro__lead {
+      width: min(100%, 610px);
+      margin: 16px auto 0;
+      color: rgba(244,240,231,.66);
+      font-size: clamp(14px, 2vw, 17px);
+      line-height: 1.65;
+    }
+    .concerts-intro__link {
+      margin-top: 24px;
+      color: var(--gold2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .next-shows {
+      position: relative;
+      z-index: 2;
+      width: min(calc(100% - 32px), 1120px);
+      margin: 0 auto;
+      padding: 16px;
+      border: 1px solid rgba(231,199,118,.18);
+      border-radius: 20px;
+      background: linear-gradient(110deg, rgba(231,199,118,.075), rgba(255,255,255,.022) 44%, rgba(0,0,0,.24));
+    }
+    .next-shows__head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 4px 12px;
+    }
+    .next-shows__head span {
+      color: var(--gold2);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .next-shows__head strong { color: rgba(244,240,231,.55); font-size: 10px; font-weight: 500; }
+    .next-shows__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .next-show {
+      min-height: 96px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 13px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 14px;
+      background: rgba(7,7,8,.72);
+      transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    }
+    .next-show:hover { transform: translateY(-2px); border-color: var(--next-accent, rgba(231,199,118,.42)); background: rgba(255,255,255,.04); }
+    .next-show--huligan { --next-accent: rgba(255,144,0,.55); }
+    .next-show--secret { --next-accent: rgba(231,199,118,.55); }
+    .next-show--matvey { --next-accent: rgba(184,144,255,.55); }
+    .next-show__date { color: var(--gold2); font-size: 11px; font-weight: 800; line-height: 1.3; white-space: nowrap; }
+    .next-show__copy { display: grid; gap: 4px; min-width: 0; }
+    .next-show__copy strong { color: #f4f0e7; font: 700 16px/1.1 'Cinzel', serif; }
+    .next-show__copy small { color: rgba(244,240,231,.48); font-size: 9px; line-height: 1.35; }
+    .next-show__arrow { color: var(--gold2); font-size: 16px; }
+    .stage { padding-top: 28px; padding-bottom: 44px; }
+    .show { border: 1px solid rgba(231,199,118,.18); }
+    .show__content { display: flex; flex-direction: column; align-items: flex-start; }
+    .show__badge { margin-bottom: 12px; }
+    .show__title { margin-bottom: 8px; text-shadow: 0 3px 22px rgba(0,0,0,.95); }
+    .show__sub {
+      max-width: 30ch;
+      margin-bottom: 14px;
+      color: rgba(255,255,255,.72);
+      font-size: 11px;
+      font-style: normal;
+      line-height: 1.45;
+      letter-spacing: .02em;
+      text-transform: none;
+      text-shadow: 0 2px 14px rgba(0,0,0,.9);
+    }
+    .show__schedule {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      column-gap: 14px;
+      row-gap: 4px;
+      margin: 0;
+      width: 100%;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .show__schedule strong { grid-column: 1; grid-row: 1; }
+    .show__schedule span { grid-column: 2; grid-row: 1; text-align: right; }
+    .show__schedule em { grid-column: 1 / -1; grid-row: 2; margin: 0; justify-self: start; }
+    .show__schedule strong { color: #fff; font-size: 15px; line-height: 1.35; }
+    .show__schedule span { color: rgba(255,255,255,.7); font-size: 11px; letter-spacing: .04em; }
+    .show__schedule em {
+      width: max-content;
+      margin-top: 6px;
+      color: var(--gold2);
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .concerts-ecosystem {
+      position: relative;
+      z-index: 2;
+      width: min(calc(100% - 32px), 1120px);
+      display: grid;
+      grid-template-columns: minmax(240px, .48fr) minmax(0, 1.52fr);
+      align-items: center;
+      gap: 26px;
+      margin: 0 auto 64px;
+      padding: 14px;
+      border: 1px solid rgba(231,199,118,.18);
+      border-radius: 20px;
+      background: linear-gradient(110deg, rgba(231,199,118,.075), rgba(255,255,255,.025) 42%, rgba(0,0,0,.2));
+      box-shadow: 0 22px 60px rgba(0,0,0,.24);
+    }
+    .concerts-ecosystem__title {
+      padding: 2px 8px;
+    }
+    .concerts-ecosystem__title small {
+      display: block;
+      color: var(--gold2);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .concerts-ecosystem__title h2 {
+      margin-top: 6px;
+      color: #f4f0e7;
+      max-width: 12ch;
+      font-size: clamp(17px, 1.35vw, 20px) !important;
+      line-height: 1.08 !important;
+      text-align: left !important;
+      text-wrap: balance;
+    }
+    .concerts-ecosystem__links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .concerts-ecosystem__link {
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 16px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 14px;
+      color: #f4f0e7;
+      background: rgba(8,8,8,.72);
+      transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    }
+    .concerts-ecosystem__link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(231,199,118,.4);
+      background: rgba(231,199,118,.08);
+    }
+    .concerts-ecosystem__link span { display: grid; gap: 3px; }
+    .concerts-ecosystem__link strong { font-size: 13px; line-height: 1.25; }
+    .concerts-ecosystem__link small { color: rgba(244,240,231,.5); font-size: 10px; }
+    .concerts-ecosystem__link i { color: var(--gold2); font-size: 18px; font-style: normal; }
+
+    @media(max-width:700px) {
+      .brand-bar__phone { width: 44px; padding: 0; justify-content: center; }
+      .brand-bar__phone .header-phone-text { display: none; }
+      .brand-bar .brand-bar__cta { padding: 0 14px; }
+      .concerts-intro { min-height: 42svh; padding: 112px 18px 32px; }
+      .concerts-intro h1 { font-size: clamp(39px, 13vw, 58px); }
+      .next-shows { width: calc(100% - 32px); padding: 12px; border-radius: 17px; }
+      .next-shows__head { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .next-shows__grid { grid-template-columns: 1fr; }
+      .next-show { min-height: 76px; padding: 11px 12px; }
+      .stage { padding: 18px 16px 28px; overflow: hidden; }
+      .shows {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        overflow: visible;
+      }
+      .show { border-radius: 18px; }
+      .show:hover { transform: none; }
+      .show__frame { border-radius: 18px; }
+      .show__content { padding: 14px 16px 16px; }
+      .concerts-ecosystem {
+        width: calc(100% - 32px);
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin: 0 auto 42px;
+        padding: 12px;
+        border-radius: 17px;
+      }
+      .concerts-ecosystem__title { padding: 2px 4px 4px; }
+      .concerts-ecosystem__title h2 { font-size: 17px; }
+      .concerts-ecosystem__links { grid-template-columns: 1fr; }
+      .concerts-ecosystem__link { min-height: 56px; padding: 11px 13px; }
+    }
   </style>
 </head>
 <body>
-  <div class="cosmos"></div>
+  <div class="concert-ambience" aria-hidden="true"></div>
 
-  <header class="brand-bar" aria-label="Kostyuk Project">
-    <a class="brand-bar__identity" href="../index.html" aria-label="Kostyuk Project — на главную">
-      <img src="../images/kostyuk-project-logo-new.webp" alt="" width="48" height="48" style="border-radius: 10px; border: 1px solid rgba(210,169,63,0.3);">
-      <span><strong>BY KOSTYUK PROJECT</strong><small>АФИША</small></span>
-    </a>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <a href="tel:+79092763386" class="brand-bar__cta" style="padding: 10px 14px; font-size: 11px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; text-shadow: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-        <span class="header-phone-text">+7 (909) 276-33-86</span>
+  <section class="concerts-intro" id="top">
+    <p class="concerts-intro__eyebrow">KOSTYUK PROJECT · АФИША</p>
+    <h1>Авторские шоу</h1>
+    <p class="concerts-intro__lead">Три самостоятельных спектакля — с собственной историей, атмосферой и способом удивлять.</p>
+    <a class="concerts-intro__link" href="#shows">Выбрать спектакль ↓</a>
+  </section>
+
+  <section class="next-shows" aria-label="Ближайшие показы">
+    <div class="next-shows__head"><span>Ближайшие показы</span><strong>По дате — от ближайшего</strong></div>
+    <div class="next-shows__grid">
+      <a class="next-show next-show--huligan" href="/concerts/huligan/index.html">
+        <span class="next-show__date">19 сентября<br>18:00</span><span class="next-show__copy"><strong>ХУЛИgan</strong><small>Магический стендап · 16+</small></span><i class="next-show__arrow">→</i>
       </a>
-      <button class="brand-bar__cta" type="button" onclick="toggleProjectSwitcher(true)" aria-haspopup="dialog">Все проекты</button>
+      <a class="next-show next-show--secret" href="/concerts/secret/index.html">
+        <span class="next-show__date">31 октября<br>18:00</span><span class="next-show__copy"><strong>СЕКРЕТ</strong><small>Иллюзионный моноспектакль · 12+</small></span><i class="next-show__arrow">→</i>
+      </a>
+      <a class="next-show next-show--matvey" href="/concerts/matvey/index.html">
+        <span class="next-show__date">21 ноября<br>15:00</span><span class="next-show__copy"><strong>Спасти Матвея</strong><small>Семейный квест-спектакль · 6+</small></span><i class="next-show__arrow">→</i>
+      </a>
     </div>
-  </header>
+  </section>
 
-  <div class="project-switcher" id="projectSwitcher" aria-hidden="true">
-    <button class="project-switcher__backdrop" type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть меню"></button>
-    <section class="project-switcher__panel" role="dialog" aria-modal="true" aria-labelledby="projectSwitcherTitle">
-      <div class="project-switcher__head">
-        <div><span>KOSTYUK PROJECT</span><h2 id="projectSwitcherTitle">Выберите направление</h2></div>
-        <button type="button" onclick="toggleProjectSwitcher(false)" aria-label="Закрыть">×</button>
-      </div>
-      <div class="project-switcher__list">
-        <a class="switcher-item--shows is-current" href="#top" onclick="toggleProjectSwitcher(false)">
-          <span class="switcher-index">01</span>
-          <div class="switcher-badge">Вы здесь</div>
-          <strong style="margin-top: 10px;">Авторские шоу</strong>
-          <span>Афиша · билеты · гастроли</span>
-          <b>Активно <i>✓</i></b>
-        </a>
-        <a class="switcher-item--events" href="../events/index.html">
-          <span class="switcher-index">02</span>
-          <strong>Частные события</strong>
-          <span>Свадьбы · корпоративы · праздники</span>
-          <b>Выбрать выступление <i>↗</i></b>
-        </a>
-        <a class="switcher-item--school" href="../school/index.html">
-          <span class="switcher-index">03</span>
-          <strong>Школа фокусов</strong>
-          <span>Обучение детей 7–13 лет</span>
-          <b>Подробнее <i>↗</i></b>
-        </a>
-      </div>
-    </section>
-  </div>
-
-
-  <section class="stage">
+  <section class="stage" id="shows" aria-label="Афиша авторских шоу">
     <div class="shows">
-      <a class="show show--secret reveal d-2" href="/concerts/secret/index.html" onclick="return kpNavigate(event, '/concerts/secret/index.html')">
-        <img loading="lazy" class="show__poster" src="/concerts/images/secret.jpg" alt="Шоу Секрет" />
+      <a class="show show--secret" href="/concerts/secret/index.html" aria-label="Шоу Секрет — описание и билеты">
+        <img class="show__poster" src="/concerts/images/secret.webp?v=7" width="720" height="1080" loading="eager" fetchpriority="high" decoding="async" alt="Шоу Секрет" />
         <div class="show__frame"></div>
         <div class="show__overlay"></div>
         <div class="show__content">
-          <span class="show__badge">12+ · 2 часа</span>
-          <span class="show__cta">К афише</span>
+          <span class="show__badge">Моноспектакль · 12+</span>
+          <h2 class="show__title">СЕКРЕТ</h2>
+          <span class="show__sub">История, после которой остаётся вопрос к себе</span>
+          <span class="show__schedule"><strong>31 октября · 18:00</strong><span>ЛАМПА · Ярославль</span><em>Продажа открыта</em></span>
+          <span class="show__cta">О шоу и билеты</span>
         </div>
       </a>
 
-      <a class="show show--huligan reveal d-3" href="/concerts/huligan/index.html" onclick="return kpNavigate(event, '/concerts/huligan/index.html')">
-        <img loading="lazy" class="show__poster" src="/concerts/images/huligan.jpg" alt="Шоу ХУЛИgan" />
+      <a class="show show--huligan" href="/concerts/huligan/index.html" aria-label="Шоу Хулиган — описание и билеты">
+        <img class="show__poster" src="/concerts/images/huligan.webp?v=9" width="720" height="1080" loading="lazy" decoding="async" alt="Шоу ХУЛИgan" />
         <div class="show__frame"></div>
         <div class="show__overlay"></div>
         <div class="show__content">
-          <span class="show__badge">16+ · 1ч 20м</span>
-          <span class="show__cta">К афише</span>
+          <span class="show__badge">Магический стендап · 16+</span>
+          <h2 class="show__title">ХУЛИgan</h2>
+          <span class="show__sub">Юмор, импровизация и магия без приличных манер</span>
+          <span class="show__schedule"><strong>19 сентября · 18:00</strong><span>ЛАМПА · Ярославль</span><em>Продажа открыта</em></span>
+          <span class="show__cta">О шоу и билеты</span>
         </div>
       </a>
 
-      <a class="show show--matvey reveal d-4" href="/concerts/matvey/index.html" onclick="return kpNavigate(event, '/concerts/matvey/index.html')">
-        <img loading="lazy" class="show__poster" src="/concerts/images/matvey.jpg" alt="Спасти Матвея" />
+      <a class="show show--matvey" href="/concerts/matvey/index.html" aria-label="Спасти Матвея — описание и билеты">
+        <img class="show__poster" src="/concerts/images/matvey.webp?v=8" width="720" height="1080" loading="lazy" decoding="async" alt="Спасти Матвея" />
         <div class="show__frame"></div>
         <div class="show__overlay"></div>
         <div class="show__content">
-          <span class="show__badge">6+ · 1,5 часа</span>
-          <span class="show__cta">К афише</span>
+          <span class="show__badge">Семейный квест · 6+</span>
+          <h2 class="show__title">Спасти Матвея</h2>
+          <span class="show__sub">Семь уровней. Исход решает зал</span>
+          <span class="show__schedule"><strong>21 ноября · 15:00</strong><span>ЛАМПА · Ярославль</span><em>Продажа открыта</em></span>
+          <span class="show__cta">О шоу и билеты</span>
         </div>
       </a>
     </div>
   </section>
 
-  <section class="kp-ecosystem-promo" aria-labelledby="concertsMoreTitle">
-    <div class="kp-ecosystem-promo__head">
-      <div><small>Ещё в KOSTYUK PROJECT</small><h2 id="concertsMoreTitle">Унесите магию со сцены в свою жизнь</h2></div>
-      <p>Сначала выберите шоу и билеты. А для личного праздника или первых шагов ребёнка в искусстве иллюзии существуют ещё два направления.</p>
+  <section class="concerts-ecosystem" aria-labelledby="concertsMoreTitle">
+    <div class="concerts-ecosystem__title">
+      <small>Экосистема KOSTYUK PROJECT</small>
+      <h2 id="concertsMoreTitle">Магия продолжается</h2>
     </div>
-    <div class="kp-ecosystem-promo__grid">
-      <a class="kp-promo-card" href="/events/index.html"><span class="kp-promo-card__label">Частные события</span><h3>Иллюзионист на вашем празднике</h3><p>Свадьба, юбилей или корпоратив превращаются в персональную историю, созданную для ваших гостей.</p><span class="kp-promo-card__action">Пригласить Дмитрия <i>↗</i></span></a>
-      <a class="kp-promo-card" href="/school/index.html"><span class="kp-promo-card__label">Дети 7–13 лет · Ярославль</span><h3>Первая школа фокусов в Ярославле</h3><p>Настоящие фокусы становятся инструментом уверенности, речи и сценического мастерства.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
+    <div class="concerts-ecosystem__links">
+      <a class="concerts-ecosystem__link" href="/events/index.html"><span><strong>Пригласить иллюзиониста</strong><small>На свадьбу, юбилей или корпоратив</small></span><i>↗</i></a>
+      <a class="concerts-ecosystem__link" href="/school/index.html"><span><strong>Школа фокусов</strong><small>Для детей 7–13 лет в Ярославле</small></span><i>↗</i></a>
     </div>
   </section>
-
-
-  <!-- ===== KOSTYUK PORTAL ===== -->
-  <div id="kostyukPortal">
-    <div class="kp-vignette"></div>
-    <div class="kp-rays">
-      <div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div>
-      <div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div><div class="kp-ray"></div>
-    </div>
-    <div class="kp-ring-outer"></div>
-    <div class="kp-ring-inner"></div>
-    <div class="kp-core"></div>
-    <div class="kp-name" id="kpName"></div>
-  </div>
-
   <script>
-    // Инициализация портала
-    (function(){
-      var nameEl = document.getElementById('kpName');
-      'KOSTYUK PROJECT'.split('').forEach(function(ch, i){
-        var s = document.createElement('span');
-        s.textContent = ch === ' ' ? '\u00a0' : ch;
-        s.style.animationDelay = (0.45 + i * 0.07) + 's';
-        nameEl.appendChild(s);
-      });
-      var portal = document.getElementById('kostyukPortal');
-      for (var i = 0; i < 60; i++){
-        var st = document.createElement('div');
-        st.className = 'kp-star';
-        st.style.left = Math.random() * 100 + 'vw';
-        st.style.top  = Math.random() * 100 + 'vh';
-        st.style.animationDelay = (Math.random() * 0.8) + 's';
-        st.style.transform = 'scale(' + (0.5 + Math.random() * 1.5) + ')';
-        portal.appendChild(st);
-      }
-    })();
-
-    function kpNavigate(e, url) {
-      if (e) e.preventDefault();
-      var portal = document.getElementById('kostyukPortal');
-      if (portal) {
-        portal.classList.add('active');
-        setTimeout(function(){ window.location.href = url; }, 1750);
-      } else {
-        window.location.href = url;
-      }
-      return false;
-    }
-
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
-      }, 100);
-    });
     function toggleProjectSwitcher(open) {
       var switcher = document.getElementById('projectSwitcher');
       if (!switcher) return;
@@ -724,14 +953,49 @@
   </script>
 
   <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
-  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
-    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-      <path d="M21.9 2.1c-.2-.2-.5-.2-.8-.1L1.8 9.7c-.3.1-.5.4-.5.7 0 .3.2.6.5.7l5.3 1.9 2.2 6.7c.1.3.3.5.6.5.1 0 .2 0 .3-.1l3.2-2.6 4.6 3.4c.2.1.4.1.6 0 .2-.1.3-.3.3-.5L22.5 2.7c0-.3-.4-.5-.6-.6zM8.5 12.1l9.4-6.3-7.7 7.6c-.1.1-.2.2-.2.4l-.5 2.7-1-3.9c0-.3 0-.5.1-.6z"/>
-    </svg>
-  </a>
   <style>
     .tg-float {
       position: fixed;
       bottom: 24px;
       right: 24px;
       width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #090806;
+      background: linear-gradient(140deg, #f0d98b 0%, #d6ac45 100%);
+      border: 1px solid rgba(255, 240, 194, 0.65);
+      border-radius: 50%;
+      box-shadow: 0 12px 36px rgba(0,0,0,.5), 0 0 24px rgba(214,172,69,.2);
+      z-index: 9999;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .tg-float:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 16px 42px rgba(0,0,0,.55), 0 0 30px rgba(214,172,69,.3);
+    }
+    @media (max-width: 600px) {
+      .tg-float {
+        bottom: 18px;
+        right: 16px;
+        width: 50px;
+        height: 50px;
+      }
+      .tg-float svg { width: 23px; height: 23px; }
+    }
+  </style>
+
+  <!-- Yandex.Metrika counter -->
+  <script>
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j=0;j<e.length;j++){if(e[j].src===r){return;}}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+    ym(107696179,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/107696179" style="position:absolute;left:-9999px" alt="" /></div></noscript>
+<script src="/ecosystem.js?v=11" data-root="/" data-section="shows" defer></script>
+</body>
+</html>

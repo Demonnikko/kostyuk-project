@@ -1,12 +1,13 @@
 // Простой офлайн-кэш шелла
-const CACHE_NAME = 'kostyuk-ecosystem-v8';
+const CACHE_NAME = 'kostyuk-ecosystem-v29';
 const ASSETS = [
   '/',
   '/index.html',
   '/ecosystem.css',
   '/manifest.json',
   '/images/портрет.jpg',
-  '/images/kostyuk-project-logo.jpg',
+  '/images/brand/kostyuk-project-monogram-square-v1.png',
+  '/images/brand/kostyuk-author-shows-logo-v1.png',
   '/vendor/fonts/fonts.css',
   '/vendor/swiper/swiper-bundle.min.css',
   '/vendor/swiper/swiper-bundle.min.js',

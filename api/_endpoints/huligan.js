@@ -1,11 +1,26 @@
 import crypto from 'crypto';
+import https from 'https';
+import { RUSSIAN_CA_BUNDLE } from '../../shared/russianCaBundle.js';
+
+// securepay.tinkoff.ru использует сертификат «Минцифры России», которого нет
+// в стандартном доверенном хранилище Node.js — без явного CA fetch() падает
+// с SELF_SIGNED_CERT_IN_CHAIN на любой инфраструктуре вне России (Vercel и т.п.).
+const tbankHttpsAgent = new https.Agent({ ca: RUSSIAN_CA_BUNDLE });
+
 const FB_URL = process.env.FIREBASE_DB_URL || '';
 const VK_TOKEN = process.env.VK_TOKEN || '';
 const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID) || 196783025;
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
 const TICKET_LINK_SECRET = process.env.TICKET_LINK_SECRET || '';
-const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
+// На preview-деплоях (у каждого свой временный URL) используем VERCEL_URL
+// автоматически — иначе SuccessURL/NotificationURL для T-Bank всегда вели бы
+// на прод-домен, и вебхук об оплате никогда не находил бы preview-бронь.
+const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app');
 import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
+import {  sendEmail, buildTicketEmailHtml  } from '../../shared/email.js';
+import {  renderTicketImage  } from '../../shared/ticketImage.js';
 const MINI_APP_BASE = process.env.VK_TICKETS_MINI_APP_URL || 'https://vk.com/app54466228_-209268664';
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();
@@ -20,9 +35,9 @@ const TBANK_TERMINAL_KEY = String(process.env.TBANK_TERMINAL_KEY || '').trim();
 const TBANK_TERMINAL_PASSWORD = String(process.env.TBANK_TERMINAL_PASSWORD || '').trim();
 const TBANK_TERMINAL_KEY_TEST = String(process.env.TBANK_TERMINAL_KEY_TEST || '').trim();
 const TBANK_TERMINAL_PASSWORD_TEST = String(process.env.TBANK_TERMINAL_PASSWORD_TEST || '').trim();
-const TBANK_NOTIFY_URL = String(process.env.TBANK_HULIGAN_NOTIFY_URL || `${TICKET_PUBLIC_ORIGIN}/api/huligan/tbank/notify`).trim();
-const TBANK_SUCCESS_URL = String(process.env.TBANK_HULIGAN_SUCCESS_URL || `${TICKET_PUBLIC_ORIGIN}/huligan.html?pay=success`).trim();
-const TBANK_FAIL_URL = String(process.env.TBANK_HULIGAN_FAIL_URL || `${TICKET_PUBLIC_ORIGIN}/huligan.html?pay=fail`).trim();
+const TBANK_NOTIFY_URL = String(process.env.TBANK_HULIGAN_NOTIFY_URL || `${TICKET_PUBLIC_ORIGIN}/api/huligan?action=tbank_notify`).trim();
+const TBANK_SUCCESS_URL = String(process.env.TBANK_HULIGAN_SUCCESS_URL || `${TICKET_PUBLIC_ORIGIN}/concerts/huligan/index.html?pay=success`).trim();
+const TBANK_FAIL_URL = String(process.env.TBANK_HULIGAN_FAIL_URL || `${TICKET_PUBLIC_ORIGIN}/concerts/huligan/index.html?pay=fail`).trim();
 const TBANK_API_TEST_BASE = 'https://securepay.tinkoff.ru/v2';
 const TBANK_API_PROD_BASE = 'https://securepay.tinkoff.ru/v2';
 import {  runHuliganAutoCleanup  } from '../../shared/autoCleanup.js';
@@ -58,7 +73,7 @@ function verifyHuliganToken(token, bookingId) {
   } catch { return { ok: false }; }
 }
 
-const TYPE_NAMES = { vip: 'VIP', std: 'Стандарт', eco: 'Эконом' };
+const TYPE_NAMES = { vip: 'Красная зона', std: 'Зелёная зона', eco: 'Синяя зона' };
 const BOOKING_ID_RE = /^[A-Z0-9-]{4,40}$/i;
 
 function randomFromAlphabet(length, alphabet) {
@@ -82,6 +97,27 @@ function genAdminBookingId(prefix) {
 
 function genTicketNum() {
   return `HUL-${randomFromAlphabet(5, 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789')}`;
+}
+
+
+function buildHuliganSeatKey(tableValue, seatValue) {
+  const tableText = String(tableValue ?? '').trim();
+  const seatText = String(seatValue ?? '').trim();
+  const tableNum = (tableText.match(/\d+/) || [])[0];
+  const seatNum = (seatText.match(/\d+/) || [])[0];
+  if (!tableText && !seatText) return '0_0';
+  if (/^c_\d+$/i.test(tableText)) return tableText.toLowerCase();
+  if (/^t\d+$/i.test(tableText) && seatNum) return `${tableText.toLowerCase()}_${seatNum}`;
+  if (/стуль/i.test(tableText) && seatNum) return `c_${seatNum}`;
+  if ((/^стол/i.test(tableText) || /^\d+$/.test(tableText)) && tableNum && seatNum) return `t${tableNum}_${seatNum}`;
+  return `${tableText || '0'}_${seatText || '0'}`;
+}
+
+function normalizeHuliganSeatKey(seat) {
+  if (!seat || typeof seat !== 'object') return '0_0';
+  const direct = String(seat.key || '').trim();
+  if (direct) return direct;
+  return buildHuliganSeatKey(seat.tableId ?? seat.table, seat.seatIdx ?? seat.seatNum);
 }
 
 function parseIncomingBody(rawBody) {
@@ -202,24 +238,39 @@ function verifyTBankToken(payload, password) {
   return crypto.timingSafeEqual(a, b);
 }
 
+// Node fetch() (undici) не принимает https.Agent напрямую — используем
+// https.request() с явным CA-бандлом, чтобы securepay.tinkoff.ru прошёл
+// проверку сертификата на любой инфраструктуре (см. tbankHttpsAgent выше).
+function tbankHttpsPost(url, payload, timeoutMs) {
+  return new Promise((resolve) => {
+    const body = JSON.stringify(payload);
+    const req = https.request(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      agent: tbankHttpsAgent,
+      timeout: timeoutMs
+    }, (res) => {
+      let raw = '';
+      res.on('data', (chunk) => { raw += chunk; });
+      res.on('end', () => {
+        let data = {};
+        try { data = JSON.parse(raw); } catch { }
+        resolve({ httpOk: res.statusCode >= 200 && res.statusCode < 300, data });
+      });
+    });
+    req.on('timeout', () => req.destroy(new Error('Request timeout')));
+    req.on('error', (err) => {
+      resolve({ httpOk: false, data: { Success: false, Message: err?.message || 'Network error' } });
+    });
+    req.write(body);
+    req.end();
+  });
+}
+
 async function tbankApi(method, body, creds) {
   const payload = { ...(body || {}), TerminalKey: creds.terminalKey };
   payload.Token = buildTBankToken(payload, creds.password);
-  const { signal, clear } = withTimeout(9000);
-  try {
-    const r = await fetch(`${creds.apiBase}/${String(method || '').trim()}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal
-    });
-    clear();
-    const data = await r.json().catch(() => ({}));
-    return { httpOk: r.ok, data };
-  } catch (e) {
-    clear();
-    return { httpOk: false, data: { Success: false, Message: e?.message || 'Network error' } };
-  }
+  return tbankHttpsPost(`${creds.apiBase}/${String(method || '').trim()}`, payload, 9000);
 }
 
 function withTimeout(ms) {
@@ -512,7 +563,7 @@ async function findBookingByTBankOrderId(orderId) {
   return null;
 }
 
-async function confirmBookingAndNotify(bookingId, ignoredBooking, meta = {}) {
+export async function confirmBookingAndNotify(bookingId, ignoredBooking, meta = {}) {
   let ticketNumber = '';
   for (let attempt = 0; attempt < 3; attempt++) {
     const { data: booking, etag } = await fbGetWithETag(`huligan_bookings/${bookingId}`);
@@ -577,7 +628,7 @@ async function confirmBookingAndNotify(bookingId, ignoredBooking, meta = {}) {
 
       const seats = Array.isArray(booking.seats) ? booking.seats : [];
       await Promise.all(seats.map(async s => {
-        const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+        const seatKey = normalizeHuliganSeatKey(s);
         try {
           const { data: seatCur, etag: seatEtag } = await fbGetWithETag(`huligan_seats/${seatKey}`);
           if (seatCur) {
@@ -602,6 +653,38 @@ async function confirmBookingAndNotify(bookingId, ignoredBooking, meta = {}) {
           await markNotifyFlag(bookingId, patch, 'confirmedUserNotifiedAt');
         }
       }
+
+      if (patch.email) {
+        try {
+          const { token: hulToken } = makeHuliganToken(bookingId, patch.ticketLinkVersion || 1);
+          const ticketUrl = `${TICKET_PUBLIC_ORIGIN}/huligan-ticket.html?id=${encodeURIComponent(bookingId)}&tk=${encodeURIComponent(hulToken)}`;
+          const html = buildTicketEmailHtml({
+            name: patch.name,
+            showLabel: 'ХУЛИgan 16+',
+            dateLabel: patch.eventDate || '—',
+            seatsLabel: TYPE_NAMES[patch.ticketType] || patch.ticketType || '—',
+            ticketUrl
+          });
+          const [eventDatePart, eventTimePart] = String(patch.eventDate || '').split(/\s+(?=\d{1,2}:\d{2}$)/);
+          const ticketImage = await renderTicketImage('huligan', {
+            name: patch.name,
+            dateLabel: eventDatePart || patch.eventDate || '—',
+            timeLabel: eventTimePart || '',
+            venue: 'Арт-площадка «Лампа»',
+            zoneLabel: TYPE_NAMES[patch.ticketType] || patch.ticketType || '—',
+            amountLabel: `${Number(patch.finalPrice || 0)} ₽`,
+            bookingId,
+            ticketUrl
+          });
+          await sendEmail({
+            to: patch.email,
+            subject: 'Ваш билет на ХУЛИgan 16+',
+            html,
+            attachments: ticketImage ? [{ filename: `ticket-${bookingId}.png`, content: ticketImage }] : undefined
+          });
+        } catch (e) {}
+      }
+
       return { ok: true, ticketNumber };
     } catch (err) {
       if (err.message === 'ETAG_MISMATCH') continue;
@@ -1251,7 +1334,7 @@ export default async (req, res) => {
         await fbPatch(`huligan_bookings/${bookingId}`, { status: 'cancelled', cancelledAt: Date.now() });
         const seats = Array.isArray(booking.seats) ? booking.seats : [];
         await Promise.all(seats.map(s => {
-          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          const seatKey = normalizeHuliganSeatKey(s);
           return fbPut(`huligan_seats/${seatKey}`, { status: 'available' }).catch(() => {});
         })).catch(() => {});
       }
@@ -1306,14 +1389,35 @@ export default async (req, res) => {
 
       const reason = String(body?.reason || '').trim();
       if (status !== 'refunded') {
+        // Реальный возврат денег через T-Bank (Cancel по PaymentId).
+        // Если платежа не было — просто аннулируем билет/освобождаем место.
+        let refundInfo = { attempted: false };
+        const paymentId = String(booking?.tbank?.paymentId || '');
+        if (paymentId) {
+          const creds = getTBankCredentials();
+          if (creds.terminalKey && creds.password) {
+            const cancelRes = await tbankApi('Cancel', { PaymentId: paymentId }, creds);
+            refundInfo = {
+              attempted: true,
+              ok: Boolean(cancelRes.httpOk && cancelRes.data?.Success),
+              message: cancelRes.data?.Message || null,
+              tbankStatus: cancelRes.data?.Status || null
+            };
+            if (!refundInfo.ok) {
+              return res.status(502).json({ error: 'T-Bank refund failed', detail: refundInfo });
+            }
+          }
+        }
         await fbPatch(`huligan_bookings/${bookingId}`, {
           status: 'refunded',
           refundedAt: Date.now(),
-          refundReason: reason || null
+          refundReason: reason || null,
+          ticketLinkVersion: Number(booking.ticketLinkVersion || 1) + 1,
+          tbankRefund: refundInfo
         });
         const seats = Array.isArray(booking.seats) ? booking.seats : [];
         await Promise.all(seats.map(s => {
-          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          const seatKey = normalizeHuliganSeatKey(s);
           return fbPut(`huligan_seats/${seatKey}`, { status: 'available' }).catch(() => {});
         })).catch(() => {});
       }
@@ -1385,7 +1489,7 @@ export default async (req, res) => {
       const takenSeats = [];
 
       for (const s of seats) {
-        const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+        const seatKey = normalizeHuliganSeatKey(s);
         const seatData = await fbGet(`huligan_seats/${seatKey}`);
         if (!seatData) continue;
 
@@ -1408,13 +1512,13 @@ export default async (req, res) => {
 
       // Проверяем цены на сервере — клиент не должен сам устанавливать стоимость
       const cfg = await fbGet('huligan_config');
-      const prices = cfg?.prices || { vip: 1400, std: 1100, eco: 800 };
+      const prices = cfg?.prices || { vip: 1700, std: 1400, eco: 1100 };
       let expectedPrice = 0;
       if (seats.length > 0) {
         for (const s of seats) {
           const zone = String(s.zone || 'std').toLowerCase();
           const zoneKey = zone === 'standard' || zone === 'standart' || zone === 'std' ? 'std' : (zone === 'econom' || zone === 'eco' ? 'eco' : zone);
-          expectedPrice += Number(prices[zoneKey] || prices.std || 1100);
+          expectedPrice += Number(prices[zoneKey] || prices.std || 1400);
         }
       } else {
         const typeKey = String(data.ticketType);
@@ -1457,7 +1561,7 @@ export default async (req, res) => {
 
         // Резервируем места
         await Promise.all(seats.map(s => {
-          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          const seatKey = normalizeHuliganSeatKey(s);
           return fbPut(`huligan_seats/${seatKey}`, {
             status: 'reserved',
             bookingId: bookingIdNew,
@@ -1467,7 +1571,7 @@ export default async (req, res) => {
       } catch (err) {
         // Откат при сбое записи брони
         await Promise.all(seats.map(s => {
-          const seatKey = s.key || `${s.table || '0'}_${s.seatNum || '0'}`;
+          const seatKey = normalizeHuliganSeatKey(s);
           return fbPatch(`huligan_seats/${seatKey}`, { bookingId: tempBookingId || null, status: tempBookingId ? 'reserved' : null }).catch(() => {});
         })).catch(() => {});
         return res.status(500).json({ error: 'Internal server error' });

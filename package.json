@@ -4,9 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --test tests/concert-ticket-flow.test.mjs tests/concerts-ecosystem-layout.test.mjs"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@sparticuz/chromium": "^149.0.0",
+    "puppeteer-core": "^25.9.0",
+    "qrcode": "^1.5.4"
   }
 }

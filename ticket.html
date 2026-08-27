@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Ваш билет — Kostyuk Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #030303;
+    --surface: #0a0a0c;
+    --surface-2: #111114;
+    --gold: #d6ac45;
+    --gold-bright: #f0d98b;
+    --cream: #f5f0e5;
+    --muted: #aaa69d;
+    --line: rgba(214, 172, 69, .22);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    padding-top: calc(24px + env(safe-area-inset-top));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+  .ticket {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .ticket__header {
+    padding: 28px 28px 20px;
+    text-align: center;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ticket__badge {
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .ticket__show {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--gold-bright);
+    margin: 0;
+  }
+  .ticket__body { padding: 24px 28px; }
+  .ticket__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    font-size: 14px;
+  }
+  .ticket__row:last-child { border-bottom: none; }
+  .ticket__row span:first-child { color: var(--muted); }
+  .ticket__row span:last-child { font-weight: 600; text-align: right; }
+  .ticket__qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 28px 32px;
+    gap: 12px;
+  }
+  .ticket__qr img {
+    width: 200px;
+    height: 200px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .ticket__qr-hint {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .ticket__id {
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: .05em;
+  }
+  .state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--muted);
+  }
+  .state.error { color: var(--cream); }
+  .state h2 { color: var(--gold-bright); font-family: 'Cinzel', serif; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+  <div id="root" class="state"><p>Загрузка билета…</p></div>
+
+  <script>
+    function esc(s) {
+      var d = document.createElement('div');
+      d.textContent = String(s == null ? '' : s);
+      return d.innerHTML;
+    }
+
+    function formatSeats(seats) {
+      if (!Array.isArray(seats) || !seats.length) return '—';
+      return seats.map(function (s) {
+        if (s.key === 'dl_0' || (s.key && s.key.indexOf('dl_') === 0)) return 'Левый диван';
+        if (s.key === 'dr_0' || (s.key && s.key.indexOf('dr_') === 0)) return 'Правый диван';
+        if (s.key === 'lampa') return 'Зона Лампа';
+        return 'Стол ' + s.tableId + ', место ' + (Number(s.seatIdx) + 1);
+      }).join(', ');
+    }
+
+    function renderError(title, text) {
+      document.getElementById('root').innerHTML =
+        '<div class="state error"><h2>' + esc(title) + '</h2><p>' + esc(text) + '</p></div>';
+    }
+
+    function renderTicket(bookingId, data) {
+      var b = data.booking || {};
+      var qrData = encodeURIComponent(bookingId);
+      var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=' + qrData;
+
+      document.getElementById('root').outerHTML =
+        '<div class="ticket">' +
+          '<div class="ticket__header">' +
+            '<div class="ticket__badge">Электронный билет</div>' +
+            '<h1 class="ticket__show">СЕКРЕТ</h1>' +
+          '</div>' +
+          '<div class="ticket__body">' +
+            '<div class="ticket__row"><span>Покупатель</span><span>' + esc(b.name || '—') + '</span></div>' +
+            '<div class="ticket__row"><span>Места</span><span>' + esc(formatSeats(b.seats)) + '</span></div>' +
+            '<div class="ticket__row"><span>Сумма</span><span>' + esc(b.discountedTotal || b.total || 0) + ' ₽</span></div>' +
+          '</div>' +
+          '<div class="ticket__qr">' +
+            '<img src="' + qrUrl + '" alt="QR-код билета" />' +
+            '<div class="ticket__id">' + esc(bookingId) + '</div>' +
+            '<div class="ticket__qr-hint">Покажите этот QR-код на входе</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    (function init() {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id');
+      var tk = params.get('tk');
+
+      if (!id || !tk) {
+        renderError('Билет не найден', 'Ссылка неполная. Проверьте, что открыли её целиком из письма или сообщения.');
+        return;
+      }
+
+      fetch('/api/ticket-data?id=' + encodeURIComponent(id) + '&tk=' + encodeURIComponent(tk))
+        .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+        .then(function (res) {
+          if (res.status !== 200 || !res.body || !res.body.ok) {
+            var code = res.body && res.body.error;
+            if (res.status === 409) return renderError('Оплата ещё обрабатывается', 'Билет появится сразу после подтверждения оплаты. Обновите страницу через минуту.');
+            if (res.status === 410) return renderError('Билет отменён', 'Этот билет был аннулирован. Свяжитесь с организатором, если это ошибка.');
+            if (res.status === 403) return renderError('Ссылка недействительна', 'Возможно, она устарела. Запросите новую ссылку у организатора.');
+            return renderError('Билет не найден', code || 'Попробуйте открыть ссылку ещё раз.');
+          }
+          renderTicket(id, res.body);
+        })
+        .catch(function () {
+          renderError('Ошибка сети', 'Не удалось загрузить билет. Проверьте соединение и обновите страницу.');
+        });
+    })();
+  </script>
+</body>
+</html>

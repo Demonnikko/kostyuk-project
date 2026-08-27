@@ -4,9 +4,22 @@
  * Выполняет серверную проверку доступности мест и корректности цен.
  */
 import crypto from 'crypto';
+import https from 'https';
+import { RUSSIAN_CA_BUNDLE } from '../../shared/russianCaBundle.js';
+
+// securepay.tinkoff.ru использует сертификат «Минцифры России», которого нет
+// в стандартном доверенном хранилище Node.js — без явного CA fetch() падает
+// с SELF_SIGNED_CERT_IN_CHAIN на любой инфраструктуре вне России (Vercel и т.п.).
+const tbankHttpsAgent = new https.Agent({ ca: RUSSIAN_CA_BUNDLE });
+
 const FB_URL = process.env.FIREBASE_DB_URL || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
-const TICKET_PUBLIC_ORIGIN = process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app';
+// На preview-деплоях (у каждого свой временный URL) используем VERCEL_URL
+// автоматически — иначе SuccessURL/NotificationURL для T-Bank всегда вели бы
+// на прод-домен, и вебхук об оплате никогда не находил бы preview-бронь.
+const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : (process.env.TICKET_PUBLIC_ORIGIN || 'https://vk-tickets.vercel.app');
 const TELEGRAM_BOT_TOKEN = (process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '').trim();
 const TELEGRAM_SECRET_WEBAPP_URL = (process.env.TELEGRAM_SECRET_WEBAPP_URL || `${TICKET_PUBLIC_ORIGIN}/index.html`).trim();
 const TELEGRAM_ADMIN_CHAT_ID = String(process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.ADMIN_TELEGRAM_CHAT_ID || '').trim();
@@ -14,7 +27,7 @@ const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID || '196783025', 10) || 1967830
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 
 const BOOKING_ID_RE = /^[A-Z0-9-]{4,30}$/i;
-const VALID_ZONES = new Set(['vip', 'standart', 'econom', 'sofa', 'lampa']);
+const VALID_ZONES = new Set(['vip', 'standart', 'econom', 'sofa', 'sofa_left', 'sofa_right', 'lampa']);
 const MAX_SEATS_PER_BOOKING = 10;
 const NAME_MAX = 100;
 const PHONE_MIN_DIGITS = 10;
@@ -100,26 +113,48 @@ function verifyTBankToken(payload, password) {
   return crypto.timingSafeEqual(Buffer.from(received, 'utf8'), Buffer.from(calculated, 'utf8'));
 }
 
+// Node fetch() (undici) не принимает https.Agent напрямую — используем
+// https.request() с явным CA-бандлом, чтобы securepay.tinkoff.ru прошёл
+// проверку сертификата на любой инфраструктуре (см. tbankHttpsAgent выше).
+function tbankHttpsPost(url, payload) {
+  return new Promise((resolve) => {
+    const body = JSON.stringify(payload);
+    const req = https.request(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      agent: tbankHttpsAgent
+    }, (res) => {
+      let raw = '';
+      res.on('data', (chunk) => { raw += chunk; });
+      res.on('end', () => {
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          return resolve({ httpOk: false, status: res.statusCode });
+        }
+        try {
+          resolve({ httpOk: true, data: JSON.parse(raw) });
+        } catch (err) {
+          resolve({ httpOk: false, error: 'Invalid JSON from T-Bank' });
+        }
+      });
+    });
+    req.on('error', (err) => {
+      console.error('[tbankApi] request error:', err.message, 'cause:', err.cause);
+      resolve({ httpOk: false, error: err.message, cause: err.cause ? String(err.cause) : null });
+    });
+    req.write(body);
+    req.end();
+  });
+}
+
 async function tbankApi(method, body, creds) {
   const payload = { ...(body || {}), TerminalKey: creds.terminalKey };
   payload.Token = buildTBankToken(payload, creds.password);
-  
+
   const url = `${creds.apiBase}/${method}`;
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) return { httpOk: false, status: res.status };
-    const data = await res.json();
-    return { httpOk: true, data };
-  } catch (err) {
-    return { httpOk: false, error: err.message };
-  }
+  return tbankHttpsPost(url, payload);
 }
 
-async function confirmSecretBooking(bookingId, meta = {}) {
+export async function confirmSecretBooking(bookingId, meta = {}) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const { data: booking, etag } = await fbGetWithETag(`ticket_bookings/${bookingId}`);
     if (!booking) return { ok: false, error: 'Booking not found' };
@@ -183,7 +218,39 @@ async function confirmSecretBooking(bookingId, meta = {}) {
         const miniAppUrl = `${MINI_APP_BASE}?tab=tickets&bookingId=${encodeURIComponent(bookingId)}#my_tickets/${encodeURIComponent(bookingId)}`;
         await vkSend(Number(booking.vkUserId), `Ваша оплата успешно подтверждена! 🎉\nВот ваш электронный билет: ${miniAppUrl}`);
       }
-      
+
+      if (booking.email) {
+        try {
+          const { url: ticketUrl } = await buildTicketLink(bookingId, updatedBooking);
+          const html = buildTicketEmailHtml({
+            name: booking.name,
+            showLabel: 'Секрет',
+            dateLabel: booking.eventDate || '—',
+            seatsLabel: seatLines || '—',
+            ticketUrl
+          });
+          const [eventDatePart, eventTimePart] = String(booking.eventDate || '').split(/\s+(?=\d{1,2}:\d{2}$)/);
+          const seatsReadable = (seats || [])
+            .map(s => `Стол ${s.tableId}, место ${Number(s.seatIdx) + 1} (${String(s.zone || '').toUpperCase()})`)
+            .join(', ');
+          const ticketImage = await renderTicketImage('secret', {
+            name: booking.name,
+            dateLabel: eventDatePart || booking.eventDate || '—',
+            timeLabel: eventTimePart || '',
+            venue: 'Арт-площадка «Лампа»',
+            seatsLabel: seatsReadable || '—',
+            bookingId,
+            ticketUrl
+          });
+          await sendEmail({
+            to: booking.email,
+            subject: 'Ваш билет на шоу «Секрет»',
+            html,
+            attachments: ticketImage ? [{ filename: `ticket-${bookingId}.png`, content: ticketImage }] : undefined
+          });
+        } catch (e) {}
+      }
+
       return { ok: true };
     } catch (err) {
       if (err.message === 'ETAG_MISMATCH') continue;
@@ -193,14 +260,35 @@ async function confirmSecretBooking(bookingId, meta = {}) {
   return { ok: false, error: 'Concurrent modification' };
 }
 
-// Официальные цены зон (₽) — источник истины на сервере
-const ZONE_PRICES = {
-  vip: 1400,
-  standart: 1100,
-  econom: 800,
-  sofa: 4000,
-  lampa: 2500
+// Цены зон (₽) по умолчанию — фолбэк, если в БД пусто/недоступно.
+// Актуальные цены редактируются в админке (ticket_config/prices) и читаются
+// getZonePrices() ниже. sofa/lampa в форме админки нет — держим фолбэк на них.
+const ZONE_PRICES_FALLBACK = {
+  vip: 1800,
+  standart: 1500,
+  econom: 1200,
+  sofa_left: 1000,   // левый диван (обзор частично перекрыт колонной)
+  sofa_right: 800,   // правый диван (обзор хуже)
+  lampa: 1800
 };
+
+// Источник истины по ценам: ticket_config/prices из Firebase, поверх фолбэка.
+// Сервер остаётся авторитетом расчёта (клиенту не доверяем), но цену берёт
+// из админки, а не из хардкода. Пустая/битая запись → тихо падаем на фолбэк.
+async function getZonePrices() {
+  try {
+    const cfg = await fbGet('ticket_config/prices');
+    if (!cfg || typeof cfg !== 'object') return { ...ZONE_PRICES_FALLBACK };
+    const merged = { ...ZONE_PRICES_FALLBACK };
+    for (const zone of Object.keys(ZONE_PRICES_FALLBACK)) {
+      const v = Number(cfg[zone]);
+      if (Number.isFinite(v) && v >= 0) merged[zone] = v;
+    }
+    return merged;
+  } catch {
+    return { ...ZONE_PRICES_FALLBACK };
+  }
+}
 
 async function fbGet(path) {
   try {
@@ -258,6 +346,8 @@ async function fbPatch(path, data) {
 import {  setCors  } from '../../shared/cors.js';
 import {  isAdminAuthorized  } from '../../shared/adminAuth.js';
 import {  buildTicketLink  } from '../../shared/ticketAccess.js';
+import {  sendEmail, buildTicketEmailHtml  } from '../../shared/email.js';
+import {  renderTicketImage  } from '../../shared/ticketImage.js';
 import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
 import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
 
@@ -369,6 +459,55 @@ export default async (req, res) => {
     });
   }
 
+  // ── Возврат билета Секрета: T-Bank Cancel (возврат денег) + освобождение места ──
+  if (action === 'refund') {
+    if (!(await isAdminAuthorized(req, body))) return res.status(403).json({ error: 'Forbidden' });
+    const { bookingId } = body;
+    if (!bookingId) return res.status(400).json({ error: 'Missing bookingId' });
+    const booking = await fbGet(`ticket_bookings/${bookingId}`);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+    const st = String(booking.status || '').toLowerCase();
+    if (st === 'refunded') return res.status(200).json({ ok: true, idempotent: true });
+
+    // Реальный возврат денег через T-Bank (Cancel по PaymentId).
+    // Если платежа не было (adminCreated / бесплатный билет) — просто аннулируем.
+    let refundInfo = { attempted: false };
+    const paymentId = String(booking.tbank?.paymentId || '');
+    if (paymentId) {
+      const creds = getTBankCredentials();
+      if (creds.terminalKey && creds.password) {
+        const cancelRes = await tbankApi('Cancel', { PaymentId: paymentId }, creds);
+        refundInfo = {
+          attempted: true,
+          ok: Boolean(cancelRes.httpOk && cancelRes.data?.Success),
+          message: cancelRes.data?.Message || cancelRes.error || null,
+          tbankStatus: cancelRes.data?.Status || null
+        };
+        // Если банк отказал в возврате — не аннулируем билет, сообщаем админу.
+        if (!refundInfo.ok) {
+          return res.status(502).json({ error: 'T-Bank refund failed', detail: refundInfo });
+        }
+      }
+    }
+
+    const reason = String(body?.reason || '').trim();
+    const currentVersion = Number(booking.ticketLinkVersion || 1);
+    await fbPatch(`ticket_bookings/${bookingId}`, {
+      status: 'refunded',
+      refundedAt: Date.now(),
+      refundReason: reason || null,
+      ticketLinkVersion: currentVersion + 1,
+      ticketRevokedAt: Date.now(),
+      tbankRefund: refundInfo
+    });
+    // Освобождаем места (единый формат ключа: s.key = 't19_93')
+    const seats = Array.isArray(booking.seats) ? booking.seats : [];
+    await Promise.all(seats.map(s =>
+      fbPut(`ticket_seats/${s.key || `${s.tableId}_${s.seatIdx}`}`, { status: 'available' }).catch(() => {})
+    ));
+    return res.status(200).json({ ok: true, refund: refundInfo });
+  }
+
   // ── Prepare T-Bank payment link ──
   if (action === 'tbank_init') {
     if (await isSecretSalesPaused()) {
@@ -401,7 +540,8 @@ export default async (req, res) => {
 
     const initResult = await tbankApi('Init', initPayload, creds);
     if (!initResult.httpOk || !initResult.data?.Success) {
-      return res.status(500).json({ error: initResult.data?.Message || 'T-Bank Init failed' });
+      console.error('[tbank_init] failed:', JSON.stringify(initResult));
+      return res.status(500).json({ error: initResult.data?.Message || initResult.error || 'T-Bank Init failed' });
     }
 
     await fbPatch(`ticket_bookings/${bookingId}`, {
@@ -491,7 +631,8 @@ export default async (req, res) => {
     const now = Date.now();
     const newBookingId = genAdminBookingId();
     const clientKey = crypto.randomBytes(24).toString('hex');
-    const total = seats.reduce((sum, s) => sum + (ZONE_PRICES[s.zone] || 0), 0);
+    const zonePrices = await getZonePrices();
+    const total = seats.reduce((sum, s) => sum + (zonePrices[s.zone] || 0), 0);
     const discountedTotal = finalPrice != null ? Number(finalPrice) : total;
     const tgId = Number.isFinite(Number(recipientTgId)) && Number(recipientTgId) > 0 ? Number(recipientTgId) : null;
     const tgUsernameRaw = String(recipientTgUsername || '').trim().replace(/\s+/g, '');
@@ -507,8 +648,8 @@ export default async (req, res) => {
         tgUserId: tgId,
         tgUsername
       });
-      // Помечаем места как занятые
-      await Promise.all(seats.map(s => fbPut(`ticket_seats/${s.tableId}_${s.seatIdx}`, { status: 'taken', bookingId: newBookingId })));
+      // Помечаем места как занятые (единый формат ключа с фронтом: s.key = 't19_93')
+      await Promise.all(seats.map(s => fbPut(`ticket_seats/${s.key || `${s.tableId}_${s.seatIdx}`}`, { status: 'taken', bookingId: newBookingId })));
       // Генерируем HMAC-ссылку на билет
       const bookingForLink = { ticketLinkVersion: 1 };
       const { url: ticketUrl } = await buildTicketLink(newBookingId, bookingForLink);
@@ -529,7 +670,7 @@ export default async (req, res) => {
     }
   }
 
-  const { bookingId, name, phone, seats, tempBookingId, promoCode, vkUserId } = body || {};
+  const { bookingId, name, phone, email, seats, tempBookingId, promoCode, vkUserId, eventDate } = body || {};
   const trustedTgUserId = getTrustedTelegramUserId(body?.tgInitData);
 
   if (await isSecretSalesPaused()) {
@@ -548,19 +689,28 @@ export default async (req, res) => {
   if (digits.length < PHONE_MIN_DIGITS)
     return res.status(400).json({ error: 'Invalid phone' });
 
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail))
+    return res.status(400).json({ error: 'Invalid email' });
+
   if (!Array.isArray(seats) || seats.length === 0 || seats.length > MAX_SEATS_PER_BOOKING)
     return res.status(400).json({ error: 'Invalid seats' });
 
+  const SOFA_LEFT_KEYS = new Set(['dl_1', 'dl_2', 'dl_3', 'dl_4', 'dl_5']);
+  const SOFA_RIGHT_KEYS = new Set(['dr_6', 'dr_7', 'dr_8', 'dr_9', 'dr_10']);
   for (const s of seats) {
-    if (s.zone === 'sofa' || s.zone === 'lampa') {
-      if (s.key !== 'dl_0' && s.key !== 'dr_0' && s.key !== 'lampa') {
+    if (s.zone === 'sofa_left' || s.zone === 'sofa_right' || s.zone === 'lampa') {
+      const validKey = s.zone === 'sofa_left' ? SOFA_LEFT_KEYS.has(s.key)
+        : s.zone === 'sofa_right' ? SOFA_RIGHT_KEYS.has(s.key)
+        : s.key === 'lampa';
+      if (!validKey) {
         return res.status(400).json({ error: `Invalid special seat key: ${s.key}` });
       }
       continue;
     }
     if (!Number.isInteger(s.tableId) || s.tableId < 1 || s.tableId > 50)
       return res.status(400).json({ error: 'Invalid seat tableId' });
-    if (!Number.isInteger(s.seatIdx) || s.seatIdx < 0 || s.seatIdx > 20)
+    if (!Number.isInteger(s.seatIdx) || s.seatIdx < 0 || s.seatIdx > 100)
       return res.status(400).json({ error: 'Invalid seat index' });
     if (!VALID_ZONES.has(String(s.zone)))
       return res.status(400).json({ error: `Invalid zone: ${s.zone}` });
@@ -615,7 +765,8 @@ export default async (req, res) => {
     }
   }
 
-  const total = seats.reduce((sum, s) => sum + (ZONE_PRICES[s.zone] || 0), 0);
+  const zonePrices = await getZonePrices();
+  const total = seats.reduce((sum, s) => sum + (zonePrices[s.zone] || 0), 0);
   let discountedTotal = total;
   if (promoData) {
     if (promoData.type === 'free') discountedTotal = 0;
@@ -631,6 +782,8 @@ export default async (req, res) => {
     const booking = {
       name: cleanName,
       phone: digits,
+      email: cleanEmail,
+      eventDate: String(eventDate || '').trim().slice(0, 100),
       seats,
       total,
       discountedTotal,

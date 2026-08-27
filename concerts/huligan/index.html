@@ -5,20 +5,21 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kostyuk.ru/concerts/huligan/" />
-  <meta property="og:title" content="Шоу ХУЛИgan | Иллюзионный спектакль" />
-  <meta property="og:description" content="Дмитрий Костюк представляет шоу ХУЛИgan. Уникальные фокусы, драйв и невероятные иллюзии." />
+  <meta property="og:title" content="Шоу ХУЛИgan | Магический стендап 16+" />
+  <meta property="og:description" content="Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор." />
   <meta property="og:image" content="https://kostyuk.ru/concerts/images/huligan.jpg" />
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://kostyuk.ru/concerts/huligan/" />
-  <meta property="twitter:title" content="Шоу ХУЛИgan | Иллюзионный спектакль" />
-  <meta property="twitter:description" content="Дмитрий Костюк представляет шоу ХУЛИgan. Уникальные фокусы, драйв и невероятные иллюзии." />
+  <meta property="twitter:title" content="Шоу ХУЛИgan | Магический стендап 16+" />
+  <meta property="twitter:description" content="Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор." />
   <meta property="twitter:image" content="https://kostyuk.ru/concerts/images/huligan.jpg" />
 
   <meta charset="UTF-8" />
+  <meta name="theme-color" content="#030303">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Билеты на иллюзионное шоу «ХУЛИgan» | Дмитрий Костюк — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
-  <meta name="description" content="Купить билеты на шоу «ХУЛИgan» Дмитрия Костюка — драйвовый спектакль с масштабными иллюзиями." />
+  <meta name="description" content="Купить билеты на магический стендап «ХУЛИgan» Дмитрия Костюка — профессиональная иллюзия, импровизация и взрослый юмор 16+." />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kp-favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/kp-apple-touch.png" />
   <link rel="stylesheet" href="/vendor/fonts/fonts.css" />
@@ -27,7 +28,7 @@
     "@context": "https://schema.org",
     "@type": "Event",
     "name": "Иллюзионное шоу «ХУЛИgan» Дмитрия Костюка",
-    "description": "Театрально-иллюзионный спектакль фокусника Дмитрия Костюка ХУЛИgan.",
+    "description": "Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор 16+.",
     "url": "https://kostyuk.ru/concerts/huligan/",
     "performer": {
       "@type": "Person",
@@ -35,18 +36,18 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="/ecosystem.css?v=4" />
+  <link rel="stylesheet" href="/ecosystem.css?v=39" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg: #060616;
-      --bg2: #0e0c24;
-      --gold: #c9a228;
-      --gold2: #e8c540;
+      --bg: #030303;
+      --bg2: #0a0a0c;
+      --gold: #d6ac45;
+      --gold2: #f0d98b;
       --gold3: #fff0c2;
-      --text: #f0e6d0;
-      --muted: rgba(240, 230, 208, 0.6);
-      --border: rgba(201, 162, 39, 0.24);
+      --text: #f5f0e5;
+      --muted: rgba(245, 240, 229, 0.6);
+      --border: rgba(214, 172, 69, 0.22);
       --vip: #e85348;
       --vip-rgb: 232,83,72;
       --std: #3dbf6e;
@@ -118,7 +119,7 @@
     .q-mark {
       position: fixed;
       font-family: 'Cinzel', serif;
-      color: rgba(201, 162, 39, 0.06);
+      color: rgba(214, 172, 69, 0.06);
       animation: qFloat ease-in-out infinite;
       user-select: none;
       line-height: 1;
@@ -150,8 +151,9 @@
       cursor: pointer;
       transition: background 0.25s ease, transform 0.25s ease;
     }
-    .back-btn:hover { background: rgba(201, 162, 39, 0.15); transform: translateX(-3px); }
+    .back-btn:hover { background: rgba(214, 172, 69, 0.15); transform: translateX(-3px); }
     .back-btn::before { content: '‹'; font-size: 18px; line-height: 1; }
+    .back-btn.is-hidden { transform: translateY(-140%); opacity: 0; pointer-events: none; }
 
     main { position: relative; z-index: 2; }
 
@@ -174,7 +176,7 @@
       transform: translateX(-50%);
       width: 480px;
       height: 480px;
-      background: radial-gradient(circle, rgba(201, 162, 39, 0.45) 0%, rgba(201, 162, 39, 0.12) 40%, transparent 70%);
+      background: radial-gradient(circle, rgba(214, 172, 69, 0.45) 0%, rgba(214, 172, 69, 0.12) 40%, transparent 70%);
       filter: blur(40px);
       z-index: -1;
       animation: heroGlow 8s ease-in-out infinite alternate, secretGlowStart 3.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
@@ -193,8 +195,8 @@
       perspective: 1000px;
       /* Дорогая винтажная текстура обоев в темноте */
       background-image:
-        repeating-linear-gradient(45deg, rgba(201, 162, 39, 0.01) 0px, rgba(201, 162, 39, 0.01) 2px, transparent 2px, transparent 10px),
-        repeating-linear-gradient(-45deg, rgba(201, 162, 39, 0.01) 0px, rgba(201, 162, 39, 0.01) 2px, transparent 2px, transparent 10px),
+        repeating-linear-gradient(45deg, rgba(214, 172, 69, 0.01) 0px, rgba(214, 172, 69, 0.01) 2px, transparent 2px, transparent 10px),
+        repeating-linear-gradient(-45deg, rgba(214, 172, 69, 0.01) 0px, rgba(214, 172, 69, 0.01) 2px, transparent 2px, transparent 10px),
         linear-gradient(to bottom, #04040e, #070717);
     }
     .poster-wrap {
@@ -203,7 +205,8 @@
       will-change: transform;
     }
     .poster {
-      transform: translateZ(50px);
+      transform: none;
+      object-fit: contain;
       transition: box-shadow 0.3s ease;
     }
     /* Сценический холст для неоновых вспышек */
@@ -276,10 +279,11 @@
     .poster {
       width: 100%;
       height: auto;
+      object-fit: contain;
       border-radius: 16px;
       box-shadow:
         0 30px 80px rgba(0,0,0,0.75),
-        0 0 80px rgba(201, 162, 39, 0.3);
+        0 0 80px rgba(214, 172, 69, 0.3);
       display: block;
     }
 
@@ -289,7 +293,7 @@
       gap: 10px;
       padding: 8px 18px;
       border-radius: 999px;
-      background: rgba(201, 162, 39, 0.08);
+      background: rgba(214, 172, 69, 0.08);
       border: 1px solid var(--border);
       font-size: 10.5px;
       letter-spacing: 0.42em;
@@ -309,7 +313,7 @@
       background-clip: text;
       color: transparent;
       margin-bottom: 14px;
-      text-shadow: 0 0 60px rgba(201, 162, 39, 0.3);
+      text-shadow: 0 0 60px rgba(214, 172, 69, 0.3);
     }
     .subtitle {
       font-family: 'Cinzel', serif;
@@ -333,11 +337,11 @@
       font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(240, 230, 208, 0.85);
+      color: rgba(245, 240, 229, 0.85);
       padding: 7px 16px;
       border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(201, 162, 39, 0.06);
+      background: rgba(214, 172, 69, 0.06);
     }
     .meta__item strong { color: var(--gold2); font-weight: 700; }
 
@@ -353,14 +357,14 @@
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      box-shadow: 0 14px 40px rgba(201, 162, 39, 0.55), 0 0 0 1px rgba(255,255,255,0.15) inset;
+      box-shadow: 0 14px 40px rgba(214, 172, 69, 0.55), 0 0 0 1px rgba(255,255,255,0.15) inset;
       cursor: pointer;
       border: none;
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .buy-cta:hover {
       transform: translateY(-2px);
-      box-shadow: 0 18px 50px rgba(201, 162, 39, 0.7), 0 0 0 1px rgba(255,255,255,0.2) inset;
+      box-shadow: 0 18px 50px rgba(214, 172, 69, 0.7), 0 0 0 1px rgba(255,255,255,0.2) inset;
     }
 
     /* ====== SECTIONS ====== */
@@ -393,7 +397,7 @@
     .section__text {
       font-size: 16px;
       line-height: 1.75;
-      color: rgba(240, 230, 208, 0.85);
+      color: rgba(245, 240, 229, 0.85);
       margin-bottom: 18px;
       text-align: left;
     }
@@ -415,7 +419,7 @@
       font-family: 'Cinzel', serif;
       font-size: 80px;
       line-height: 1;
-      color: rgba(201, 162, 39, 0.3);
+      color: rgba(214, 172, 69, 0.3);
       position: absolute;
     }
     .section__quote::before { left: 0; top: -10px; }
@@ -464,7 +468,7 @@
       padding: 80px 20px 160px;
       text-align: center;
       background:
-        radial-gradient(circle at 50% 0%, rgba(201, 162, 39, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 50% 0%, rgba(214, 172, 69, 0.15) 0%, transparent 60%),
         transparent;
     }
     .footer-cta__title {
@@ -505,7 +509,7 @@
       border-radius: 24px;
       border: 1px solid var(--border);
       padding: 28px 22px 24px;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.85), 0 0 80px rgba(201, 162, 39, 0.2);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.85), 0 0 80px rgba(214, 172, 69, 0.2);
       position: relative;
       margin-bottom: 100px;
     }
@@ -524,7 +528,7 @@
       line-height: 1;
       z-index: 2;
     }
-    .modal__close:hover { background: rgba(201, 162, 39, 0.18); }
+    .modal__close:hover { background: rgba(214, 172, 69, 0.18); }
     .modal__title {
       font-family: 'Cinzel', serif;
       font-size: 26px;
@@ -580,9 +584,9 @@
     }
     .date-card:hover { border-color: var(--gold2); background: rgba(232, 197, 64, 0.08); }
     .date-card.selected {
-      background: linear-gradient(135deg, rgba(232, 197, 64, 0.2) 0%, rgba(201, 162, 39, 0.15) 100%);
+      background: linear-gradient(135deg, rgba(232, 197, 64, 0.2) 0%, rgba(214, 172, 69, 0.15) 100%);
       border-color: var(--gold2);
-      box-shadow: 0 0 0 1px var(--gold2), 0 8px 24px rgba(201, 162, 39, 0.25);
+      box-shadow: 0 0 0 1px var(--gold2), 0 8px 24px rgba(214, 172, 69, 0.25);
     }
     .date-card__day {
       font-family: 'Cinzel', serif;
@@ -909,6 +913,13 @@
     .d-3 { transition-delay: 0.45s; }
     .d-4 { transition-delay: 0.6s; }
 
+    /* Текстовые отзывы гостей */
+    .reviews-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:28px; }
+    .review-item { background:#111114; border:1px solid rgba(255,110,0,.28); border-radius:18px; padding:22px 24px; text-align:left; }
+    .review-item__stars { color:#ff9000; font-size:16px; letter-spacing:2px; margin-bottom:10px; }
+    .review-item__text { color:#f5f0e5; font-size:15px; line-height:1.6; margin-bottom:12px; }
+    .review-item__name { color:#aaa69d; font-size:13px; font-weight:600; }
+
     /* Видеоотзывы */
     .video-review-container {
       max-width: 720px;
@@ -917,7 +928,7 @@
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid var(--border);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(201, 162, 39, 0.15);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(214, 172, 69, 0.15);
       background: var(--bg2);
       position: relative;
       aspect-ratio: 16 / 9;
@@ -965,7 +976,7 @@
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.14em;
-      color: rgba(201, 162, 39, 0.9);
+      color: rgba(214, 172, 69, 0.9);
       line-height: 1;
     }
 
@@ -976,8 +987,8 @@
       width: 100%;
       border-radius: 18px;
       overflow: hidden;
-      border: 1px solid rgba(201, 162, 39, 0.22);
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 60px rgba(201, 162, 39, 0.12);
+      border: 1px solid rgba(214, 172, 69, 0.22);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 60px rgba(214, 172, 69, 0.12);
       background: var(--bg2);
       position: relative;
       aspect-ratio: 16 / 9;
@@ -1002,7 +1013,7 @@
     /* Индивидуальная касса: «Секрет» — холодная тайна, золото, дым и знак вопроса */
     .modal.show {
       background:
-        radial-gradient(circle at 50% 8%, rgba(201, 162, 39, 0.16), transparent 34%),
+        radial-gradient(circle at 50% 8%, rgba(214, 172, 69, 0.16), transparent 34%),
         radial-gradient(circle at 82% 20%, rgba(53, 90, 130, 0.22), transparent 38%),
         rgba(0, 0, 0, 0.9);
     }
@@ -1011,10 +1022,10 @@
         radial-gradient(circle at 50% -8%, rgba(255, 236, 175, 0.15), transparent 34%),
         radial-gradient(circle at 86% 18%, rgba(44, 68, 116, 0.25), transparent 42%),
         linear-gradient(180deg, rgba(10, 12, 30, 0.98) 0%, rgba(5, 5, 14, 0.99) 100%);
-      border-color: rgba(201, 162, 39, 0.42);
+      border-color: rgba(214, 172, 69, 0.42);
       box-shadow:
         0 32px 90px rgba(0, 0, 0, 0.9),
-        0 0 90px rgba(201, 162, 39, 0.16),
+        0 0 90px rgba(214, 172, 69, 0.16),
         inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     .modal__box::before {
@@ -1026,86 +1037,120 @@
       font-family: 'Cinzel', serif;
       font-size: 112px;
       line-height: 1;
-      color: rgba(201, 162, 39, 0.055);
+      color: rgba(214, 172, 69, 0.055);
       pointer-events: none;
     }
     .modal__box > * { position: relative; z-index: 1; }
     .hall-wrap {
       background:
-        radial-gradient(circle at 50% 0%, rgba(201, 162, 39, 0.11), transparent 38%),
+        radial-gradient(circle at 50% 0%, rgba(214, 172, 69, 0.11), transparent 38%),
         linear-gradient(180deg, rgba(16, 18, 38, 0.78), rgba(6, 6, 17, 0.9));
-      border-color: rgba(201, 162, 39, 0.32);
+      border-color: rgba(214, 172, 69, 0.32);
       box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.45), 0 20px 50px rgba(0, 0, 0, 0.35);
     }
     .btn-primary {
       background: linear-gradient(135deg, #fff1bd 0%, #d8b646 46%, #7a5418 100%);
       color: #080814;
-      box-shadow: 0 12px 34px rgba(201, 162, 39, 0.24);
+      box-shadow: 0 12px 34px rgba(214, 172, 69, 0.24);
     }
     .cart__chip {
-      background: rgba(201, 162, 39, 0.1);
-      border-color: rgba(201, 162, 39, 0.3);
+      background: rgba(214, 172, 69, 0.1);
+      border-color: rgba(214, 172, 69, 0.3);
     }
   </style>
+  <link rel="stylesheet" href="/concerts/show-system.css?v=14" />
+  <link rel="stylesheet" href="/concerts/ticket-flow.css?v=1" />
+  <script src="/concerts/ticket-flow.js?v=1"></script>
 </head>
-<body>
-  <div class="bg"></div>
-  <a class="back-btn" href="/concerts">К афише</a>
+<body class="show-page show-page--huligan">
+  <a class="back-btn show-back-to-afisha" href="/concerts/" aria-label="Вернуться к афише шоу">К афише</a>
 
   <main>
-    <section class="hero" id="secretHero">
-
-      <div class="poster-wrap reveal" id="secretPoster">
-        <img loading="lazy" class="poster" src="/concerts/images/huligan.jpg" alt="Афиша Шоу Секрет" />
+    <section class="hero" id="huliganHero">
+      <div class="show-hero-shell">
+        <div class="poster-wrap reveal" id="huliganPoster">
+          <img class="poster" src="/concerts/images/huligan.webp?v=9" width="540" height="652" loading="eager" fetchpriority="high" decoding="async" alt="Афиша магического стендапа «ХУЛИgan»" />
+        </div>
+        <div class="show-hero-copy">
+          <div class="eyebrow reveal d-1">Магический стендап</div>
+          <h1 class="title reveal d-1">ХУЛИ<span style="color:var(--show-accent)">gan</span></h1>
+          <div class="subtitle reveal d-2">Магия без приличных манер</div>
+          <div class="show-next-date reveal d-2">
+            <small>Ближайший показ</small>
+            <strong>19 сентября · 18:00</strong>
+            <span>ЛАМПА · Ярославль</span>
+          </div>
+          <div class="meta reveal d-3">
+            <span class="meta__item"><strong>16+</strong></span>
+            <span class="meta__item">1 час 20 минут</span>
+            <span class="meta__item">Живой диалог</span>
+          </div>
+          <button class="buy-cta reveal d-4" onclick="openBookingModal()">Купить билет</button>
+          <div class="show-hero-note">Выбор даты и места откроется здесь · безопасная оплата</div>
+        </div>
       </div>
-      <div class="eyebrow reveal d-1">Иллюзионное шоу</div>
-      <h1 class="title reveal d-1">ХУЛИ<span style="color:#FFE566">gan</span></h1>
-      <div class="subtitle reveal d-2">Шоу, которое вдохновляет</div>
-
-      <div class="meta reveal d-3">
-        <span class="meta__item"><strong>12+</strong></span>
-        <span class="meta__item">2 часа</span>
-        <span class="meta__item">Один артист</span>
-      </div>
-
-      <button class="buy-cta reveal d-4" onclick="openBookingModal()">Купить билет</button>
     </section>
 
-    <section class="section">
+    <section class="show-ecosystem-quick" aria-labelledby="huliganMoreTitle">
+      <div class="show-ecosystem-quick__title"><small>Экосистема KOSTYUK PROJECT</small><h2 id="huliganMoreTitle">Магия продолжается</h2></div>
+      <div class="show-ecosystem-quick__links">
+        <a href="/events/"><span><strong>Пригласить иллюзиониста</strong><small>На свадьбу, юбилей или корпоратив</small></span><i>↗</i></a>
+        <a href="/school/"><span><strong>Школа фокусов</strong><small>Для детей 7–13 лет в Ярославле</small></span><i>↗</i></a>
+      </div>
+    </section>
+
+    <section class="section" id="about">
       <span class="section__eyebrow">О шоу</span>
-      <h2 class="section__title">Один артист. Один секрет.</h2>
+      <h2 class="section__title">Магия с характером</h2>
       <p class="section__text">
-        «Секрет» — это не цирк и не просто шоу. Это исповедь с иллюзиями. Каждый номер — шаг,
-        каждый шаг — признание. Уникальные фокусы, выстроенный сюжет, свет, музыка. Смех. Удивление. Мысль.
-        Всё на одной сцене.
+        «ХУЛИgan» — магический стендап для тех, кому давно мало просто смотреть на фокусы.
+        Здесь профессиональная иллюзия встречается со взрослым юмором, импровизацией и прямым разговором со зрителем.
       </p>
       <p class="section__text">
-        Зритель уходит не просто с впечатлением «как это сделано» — он уходит с вопросом к самому себе.
-        Шоу о становлении личности через образ иллюзиониста, который не боится показать своё настоящее лицо.
+        Это не набор трюков по сценарию. Зал отвечает, Дмитрий подхватывает, а привычная граница между артистом
+        и публикой исчезает. Поэтому каждый показ получается живым и немного непредсказуемым.
       </p>
 
       <div class="section__quote">
-        Трюки, которые невозможно объяснить. Монологи, от которых мурашки.
+        Сначала вы смеётесь. Потом пытаетесь понять, как это вообще произошло.
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="reviewsSection" style="display:none">
       <span class="section__eyebrow">Зрители</span>
       <h2 class="section__title">Что говорят о шоу</h2>
-      <div class="card" style="padding: 40px 20px; text-align: center; border: 1px dashed rgba(255,255,255,0.2); background: rgba(0,0,0,0.3);">
-        <span style="font-size: 32px; margin-bottom: 15px; display: block;">🤫</span>
-        <p style="color: var(--dim); margin: 0;">Здесь скоро появятся первые отзывы зрителей о шоу «ХУЛИgan».</p>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </section>
+
+    <section class="section show-sales-section" aria-labelledby="huliganFitTitle">
+      <span class="section__eyebrow">Перед покупкой</span>
+      <h2 class="section__title" id="huliganFitTitle">Ваш вечер, если хочется живого шоу</h2>
+      <div class="show-sales-grid">
+        <article class="show-sales-card">
+          <span class="show-sales-card__label">Для кого</span>
+          <h3>Для свидания или компании 16+</h3>
+          <p>Для свидания, компании и тех, кто готов отвечать артисту.</p>
+        </article>
+        <article class="show-sales-card">
+          <span class="show-sales-card__label">Что почувствуете</span>
+          <h3>Смех, азарт и полное недоумение</h3>
+          <p>Смех, азарт и ощущение, что трюк происходит рядом с вами.</p>
+        </article>
+        <article class="show-sales-card show-sales-card--action">
+          <span class="show-sales-card__label">Ближайший показ</span>
+          <h3>19 сентября · Ярославль</h3>
+          <p>19 сентября · 18:00, ЛАМПА. Места лучше брать заранее.</p>
+          <button class="show-sales-card__cta" type="button" onclick="openBookingModal()">Выбрать места</button>
+        </article>
       </div>
     </section>
 
-    <section class="section">
-      <span class="section__eyebrow">Атмосфера</span>
-      <h2 class="section__title">Промо-ролик шоу</h2>
-      <div class="card" style="padding: 40px 20px; text-align: center; border: 1px dashed rgba(255,255,255,0.2); background: rgba(0,0,0,0.3);">
-        <span style="font-size: 32px; margin-bottom: 15px; display: block;">🎬</span>
-        <p style="color: var(--dim); margin: 0;">Промо-материалы находятся в стадии монтажа. Скоро мы покажем вам безумие на видео!</p>
-      </div>
-    </section>
+    <aside class="show-visit-strip" aria-label="Информация о посещении шоу Хулиган">
+      <div class="show-visit-strip__heading"><small>Перед визитом</small><strong>Всё важное в одном месте</strong></div>
+      <div class="show-visit-strip__item"><span>Площадка</span><strong>ЛАМПА · Ярославль, ул. Нахимсона, 21</strong><a href="https://yandex.ru/maps/?text=Ярославль%2C%20улица%20Нахимсона%2C%2021" target="_blank" rel="noopener">Открыть в Картах ↗</a></div>
+      <div class="show-visit-strip__item"><span>Формат</span><strong>Магический стендап</strong></div>
+      <div class="show-visit-strip__item"><span>Возраст и время</span><strong>16+ · 1 час 20 минут</strong></div>
+    </aside>
 
     <section class="section">
       <span class="section__eyebrow">Что внутри</span>
@@ -1114,23 +1159,23 @@
       <div class="features">
         <div class="feature">
           <div class="feature__num">01</div>
-          <div class="feature__title">Уникальные иллюзии</div>
-          <div class="feature__desc">Авторские трюки, которые не показывают другие артисты.</div>
+          <div class="feature__title">Магический стендап</div>
+          <div class="feature__desc">Фокусы и юмор работают вместе, а не сменяют друг друга.</div>
         </div>
         <div class="feature">
           <div class="feature__num">02</div>
-          <div class="feature__title">Сквозной сюжет</div>
-          <div class="feature__desc">Это не набор номеров — это история с началом и развязкой.</div>
+          <div class="feature__title">Импровизация</div>
+          <div class="feature__desc">Реакции зрителей становятся частью каждого номера.</div>
         </div>
         <div class="feature">
           <div class="feature__num">03</div>
-          <div class="feature__title">Свет и музыка</div>
-          <div class="feature__desc">Сценическое оформление профессионального уровня.</div>
+          <div class="feature__title">Иллюзия</div>
+          <div class="feature__desc">Профессиональные трюки, которые ломают привычную логику.</div>
         </div>
         <div class="feature">
           <div class="feature__num">04</div>
-          <div class="feature__title">Монологи</div>
-          <div class="feature__desc">Тексты, которые остаются с вами после финала.</div>
+          <div class="feature__title">Энергия зала</div>
+          <div class="feature__desc">Никакой четвёртой стены: шоу рождается здесь и сейчас.</div>
         </div>
       </div>
     </section>
@@ -1141,15 +1186,15 @@
       <div class="faq-list" style="display:flex; flex-direction:column; gap: 15px;">
         <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
           <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Есть ли строгий дресс-код? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
-          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Особо строгого дресс-кода нет, но мы рекомендуем стиль Smart Casual. Главное, чтобы вы чувствовали себя комфортно и стильно в атмосфере вечера.</div>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Да, дресс-код обязательный: приходите в костюме пчелы. Если костюма пчелы нет, можно в костюме бабочки. Особенно мужчинам.</div>
         </details>
         <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
           <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Можно ли сдать билет? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
-          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Да, возврат возможен. Полный возврат осуществляется не позднее, чем за 3 дня до начала шоу. При возврате день в день удерживается комиссия площадки.</div>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Да. Если шоу отменено или перенесено — возвращаем полную стоимость. Если зритель сам отказывается: за 10+ дней — 100%, за 5–10 дней — 50%, за 3–5 дней — 30%. Менее чем за 3 дня билет обычно не возвращается. При болезни зрителя или смерти близкого родственника вернём 100% при заявлении до дня шоу и подтверждающих документах.</div>
         </details>
         <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
           <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Есть ли возрастные ограничения? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
-          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Рекомендуемый возраст зрителей для шоу «ХУЛИgan» — 16+. Шоу содержит элементы триллера, немного мрачной эстетики и специфический юмор.</div>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">16+. Детям не рекомендуем: мата в программе нет, но отметка стоит честно — вдруг артисту захочется выругнуться. Не точно, но кто его знает. По сути это вечер, где Дмитрий будто пришёл к вам как свой: вы сидите за столом, едите, разговариваете, шутите, а между делом он показывает фокусы. Не пафосная сцена, а непринуждённая встреча хороших знакомых.</div>
         </details>
       </div>
     </section>
@@ -1218,11 +1263,9 @@
             <g id="hallG"></g>
           </svg>
           <div class="legend">
-            <span><span class="ldot" style="background:var(--vip);box-shadow:0 0 6px var(--vip)"></span>VIP</span>
-            <span><span class="ldot" style="background:var(--std);box-shadow:0 0 6px var(--std)"></span>Стандарт</span>
-            <span><span class="ldot" style="background:var(--eco);box-shadow:0 0 6px var(--eco)"></span>Эконом</span>
-            <span><span class="ldot" style="background:#ff4f64;box-shadow:0 0 6px #ff4f64"></span>Диваны</span>
-            <span><span class="ldot" style="background:#ff9f43;box-shadow:0 0 6px #ff9f43"></span>Зона Лампа</span>
+            <span><span class="ldot" style="background:var(--eco);box-shadow:0 0 6px var(--eco)"></span>Синяя зона · 1100 ₽</span>
+            <span><span class="ldot" style="background:var(--std);box-shadow:0 0 6px var(--std)"></span>Зелёная зона · 1400 ₽</span>
+            <span><span class="ldot" style="background:var(--vip);box-shadow:0 0 6px var(--vip)"></span>Красная зона · 1700 ₽</span>
           </div>
         </div>
 
@@ -1233,14 +1276,14 @@
 
         <div class="modal__nav">
           <button class="btn-secondary" onclick="goToStep(1)">Назад</button>
-          <button class="btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Оформить бронь</button>
+          <button class="btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Продолжить</button>
         </div>
       </div>
 
       <!-- ШАГ 3: ФОРМА -->
       <div id="step3" style="display:none">
         <div class="modal__title">Контактные данные</div>
-        <div class="modal__sub">Менеджер свяжется для подтверждения</div>
+        <div class="modal__sub">Укажите данные покупателя — они войдут в заказ</div>
 
         <div class="steps">
           <div class="step done"></div>
@@ -1264,6 +1307,12 @@
           </label>
 
           <label class="field">
+            <span class="field__label">Email *</span>
+            <input class="field__input" type="email" name="email" required placeholder="you@example.com" />
+            <span style="font-size: 11px; margin-top: 4px; display: block; color: var(--muted);">Билет придёт на эту почту</span>
+          </label>
+
+          <label class="field">
             <span class="field__label">Telegram (необязательно)</span>
             <input class="field__input" type="text" name="telegram" placeholder="@username" />
           </label>
@@ -1281,15 +1330,15 @@
 
           <div class="modal__nav">
             <button type="button" class="btn-secondary" onclick="goToStep(2)">Назад</button>
-            <button class="btn-primary" type="submit" id="bookingSubmit">Забронировать</button>
+            <button class="btn-primary" type="submit" id="bookingSubmit">Проверить заказ</button>
           </div>
         </form>
       </div>
 
       <!-- ШАГ 4: ОПЛАТА -->
       <div id="stepPayment" style="display:none">
-        <div class="modal__title">Оплата билетов</div>
-        <div class="modal__sub" id="paymentSum">Сумма к оплате: 0 ₽</div>
+        <div class="modal__title">Проверьте заказ</div>
+        <div class="modal__sub" id="paymentSum">Все данные перед переходом к оплате</div>
 
         <div class="steps">
           <div class="step done"></div>
@@ -1297,12 +1346,11 @@
           <div class="step active"></div>
         </div>
 
-        <!-- Контейнер онлайн-оплаты через Т-Банк -->
-        <div id="tbankPaymentContainer" style="text-align:center; margin-top:20px; font-family:'Inter',sans-serif; line-height:1.6;">
-          <p style="font-size:14px; color:rgba(255,255,255,0.85); margin-bottom:20px;">
-            Для завершения покупки перейдите к безопасной оплате банковской картой или через СБП.
-          </p>
-          <button class="btn-primary" id="tbankPayBtn" onclick="initTbankPaymentHuligan()" style="background:#ffdd2d; color:#14082e; font-weight:700; width:100%;">Оплатить онлайн (Т-Банк)</button>
+        <div class="ticket-review" id="paymentSummary"></div>
+        <p class="payment-pending" id="paymentPendingStatus" hidden></p>
+        <div class="modal__nav">
+          <button class="btn-secondary" type="button" onclick="goToStep(3)">Назад</button>
+          <button class="btn-primary" id="tbankPayBtn" type="button" onclick="initTbankPaymentHuligan()">Оплатить онлайн (Т-Банк)</button>
         </div>
       </div>
 
@@ -1310,21 +1358,14 @@
       <div id="bookingSuccess" style="display:none">
         <div class="modal__success">
           <div class="modal__success-icon">✨</div>
-          <h3>Билет успешно куплен!</h3>
-          <p>Электронный билет с QR-кодом подтверждён.<br>Ссылка на билет придёт на указанные контакты.</p>
-          <button class="btn-primary" onclick="closeBookingModal()" style="margin-top:24px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
+          <h3>Оплата прошла успешно</h3>
+          <p>Ваш билет готов.</p>
+          <a id="ticketOpenLink" href="#" target="_blank" rel="noopener" class="btn-primary" style="margin-top:12px;max-width:220px;margin-left:auto;margin-right:auto;display:block;text-align:center;text-decoration:none;">Открыть билет</a>
+          <button class="btn-secondary" onclick="closeBookingModal()" style="margin-top:12px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
         </div>
       </div>
     </div>
   </div>
-
-  <section class="kp-ecosystem-promo" aria-label="Другие проекты Дмитрия Костюка">
-    <div class="kp-ecosystem-promo__head"><div><small>Ещё в KOSTYUK PROJECT</small><h2>Магия может стать частью вашей истории</h2></div><p>Билеты на авторское шоу — главное здесь. Для личного праздника или обучения ребёнка выберите соседнее направление.</p></div>
-    <div class="kp-ecosystem-promo__grid">
-      <a class="kp-promo-card" href="/events/"><span class="kp-promo-card__label">Частные события</span><h3>Пригласите Дмитрия на ваш праздник</h3><p>Персональное выступление для свадьбы, юбилея, корпоратива или семейного вечера.</p><span class="kp-promo-card__action">Выбрать выступление <i>↗</i></span></a>
-      <a class="kp-promo-card" href="/school/"><span class="kp-promo-card__label">Дети 7–13 лет</span><h3>Первая школа фокусов в Ярославле</h3><p>Уверенность, речь и артистизм ребёнка через искусство иллюзии.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
-    </div>
-  </section>
 
   <script>
     // Плавающие знаки вопроса
@@ -1357,25 +1398,43 @@
 
     // =============== ДАННЫЕ ЗАЛА ===============
     var ZONES = {
-      vip:      { color: '#e85348', rgb: '232,83,72',  label: 'VIP',      price: 2500 },
-      standart: { color: '#3dbf6e', rgb: '61,191,110', label: 'Стандарт', price: 1500 },
-      econom:   { color: '#4a8fd9', rgb: '74,143,217', label: 'Эконом',   price: 900  },
-      sofa:     { color: '#ff4f64', rgb: '255,79,100',  label: 'Диваны',   price: 4000 },
-      lampa:    { color: '#ff9f43', rgb: '255,159,67',  label: 'Зона Лампа', price: 2500 }
+      vip:      { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 },
+      standart: { color: '#3dbf6e', rgb: '61,191,110', label: 'Зелёная зона', price: 1400 },
+      econom:   { color: '#4a8fd9', rgb: '74,143,217', label: 'Синяя зона', price: 1100 },
+      sofa:     { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 },
+      lampa:    { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 }
     };
 
-    var DEMO_TAKEN = new Set([
-      't1_3', 't1_8',
-      't2_11', 't2_14',
-      't3_19', 't3_22',
-      't4_26', 't6_35', 't7_44', 't8_51',
-      't11_62', 't13_70', 't15_78',
-      't16_82', 't18_90'
-    ]);
+    var DEMO_TAKEN = new Set([]); // очищено: все места свободны, занятость только из базы
 
     var liveSeats = {};
+    // Тянем актуальные цены из админки (huligan_config/prices, ключи vip/std/eco)
+    // и вписываем в ZONES (vip/standart/econom). Один раз за сессию; фолбэк — дефолт.
+    var hulPricesLoaded = false;
+    async function loadHuliganPrices() {
+      if (hulPricesLoaded) return;
+      try {
+        var r = await fetch('/api/seats?type=config&section=huligan');
+        if (!r.ok) { hulPricesLoaded = true; return; }
+        var cfg = await r.json();
+        var p = cfg && cfg.prices;
+        if (p && typeof p === 'object') {
+          var map = { vip: 'vip', std: 'standart', eco: 'econom' };
+          Object.keys(map).forEach(function(srcKey){
+            var v = Number(p[srcKey]);
+            var zoneKey = map[srcKey];
+            if (isFinite(v) && v >= 0 && ZONES[zoneKey]) ZONES[zoneKey].price = v;
+          });
+          // sofa/lampa = как vip
+          if (ZONES.sofa) ZONES.sofa.price = ZONES.vip.price;
+          if (ZONES.lampa) ZONES.lampa.price = ZONES.vip.price;
+        }
+        hulPricesLoaded = true;
+      } catch (e) { console.error('Error loading huligan prices:', e); }
+    }
     async function loadLiveSeats() {
       try {
+        await loadHuliganPrices();
         var r = await fetch('/api/seats?show=huligan');
         var data = await r.json();
         liveSeats = data || {};
@@ -1486,21 +1545,30 @@
       });
     });
 
-    // --- 4. Диваны и Бар (Добавляем в SEATS для отслеживания выбора) ---
-    SEATS.push({
-      key: 'sl_0',
-      zone: 'sofa',
-      table: 'Левый',
-      seatIdx: 'целиком',
-      label: 'Левый диван (целиком)'
+    // --- 3b. Места правого дивана (5 синих мест, econom, 1100₽) — зеркально левым ---
+    var rightChairs = [
+      { num: 29, x: 490, y: 105 },
+      { num: 30, x: 490, y: 140 },
+      { num: 31, x: 490, y: 175 },
+      { num: 32, x: 490, y: 210 },
+      { num: 33, x: 468, y: 240 }
+    ];
+    rightChairs.forEach(function(ch) {
+      SEATS.push({
+        key: 'cr_' + ch.num,
+        x: ch.x,
+        y: ch.y,
+        zone: 'econom',
+        table: 'Правый диван',
+        seatIdx: ch.num,
+        seatNum: ch.num,
+        type: 'chair',
+        tableCx: ch.x,
+        tableCy: ch.y
+      });
     });
-    SEATS.push({
-      key: 'sr_0',
-      zone: 'sofa',
-      table: 'Правый',
-      seatIdx: 'целиком',
-      label: 'Правый диван (целиком)'
-    });
+
+    // --- 4. Бар (Добавляем в SEATS для отслеживания выбора) ---
     SEATS.push({
       key: 'bar_0',
       zone: 'econom',
@@ -1518,11 +1586,9 @@
       tempBookingId: 'TEMP-' + Math.random().toString(36).slice(2).toUpperCase()
     };
 
-    // === Даты шоу (демо) ===
+    // === Даты шоу ===
     var SHOWS = [
-      { date: '16 октября 2026', day: 16, month: 'ОКТ', time: '20:00', venue: 'ЛАМПА · Ярославль' },
-      { date: '13 ноября 2026',  day: 13, month: 'НОЯ', time: '19:30', venue: 'КВАРТАЛ · Кострома' },
-      { date: '18 декабря 2026', day: 18, month: 'ДЕК', time: '20:00', venue: 'СКЛАД · Иваново' }
+      { date: '19 сентября 2026', day: 19, month: 'СЕН', time: '18:00', venue: 'ЛАМПА · Ярославль' }
     ];
 
     // === Отрисовка зала ===
@@ -1540,8 +1606,10 @@
       if (!grid) return;
       grid.innerHTML = '';
       SHOWS.forEach(function(s, idx) {
-        var card = document.createElement('div');
+        var card = document.createElement('button');
+        card.type = 'button';
         card.className = 'date-card';
+        card.setAttribute('aria-label', s.date + ', ' + s.time + ', ' + s.venue);
         if (booking.date && booking.date.date === s.date) card.classList.add('selected');
         card.innerHTML =
           '<div class="date-card__day">' + s.day + '</div>' +
@@ -1605,23 +1673,15 @@
       g.appendChild(el('rect', { x: 82, y: 147, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
       g.appendChild(el('rect', { x: 82, y: 187, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
 
-      // 3. Диваны
+      // 3. Диваны (фон-декорация; места на них — c_1-5 и cr_29-33 — кликаются отдельно)
       // Left Sofa
-      var isSofaLeftSelected = booking.selected.some(function(x){return x.key==='sl_0';});
-      var isSofaLeftTaken = DEMO_TAKEN.has('sl_0') || (liveSeats['sl_0'] && (liveSeats['sl_0'].status === 'taken' || liveSeats['sl_0'].status === 'reserved'));
-      var leftSofaFill = isSofaLeftSelected ? '#fff' : (isSofaLeftTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
-      var leftSofaStroke = isSofaLeftSelected ? ZONES.sofa.color : (isSofaLeftTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
-      
       var leftSofa = el('path', {
         d: 'M 50 100 Q 50 95 45 95 L 30 95 Q 25 95 25 100 L 25 275 Q 25 280 30 280 L 75 280 Q 80 280 80 275 L 80 250 Q 80 245 75 245 L 55 245 Q 50 245 50 240 Z',
-        fill: leftSofaFill,
-        stroke: leftSofaStroke,
-        'stroke-width': isSofaLeftSelected ? 2 : 1,
-        style: isSofaLeftTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        fill: 'rgba(74,143,217,0.10)',
+        stroke: 'rgba(74,143,217,0.35)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
       });
-      if (!isSofaLeftTaken) {
-        leftSofa.addEventListener('click', function(){ toggleSeat('sl_0', 'sofa', 'Левый диван (целиком)', 'Левый', 'целиком'); });
-      }
       g.appendChild(leftSofa);
       
       // Text "ДИВАНЫ" inside Left Sofa
@@ -1632,7 +1692,7 @@
         'font-size': '9',
         'font-weight': '700',
         'font-family': 'Inter, sans-serif',
-        fill: isSofaLeftSelected ? '#14080a' : (isSofaLeftTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        fill: 'rgba(255,255,255,0.6)',
         'pointer-events': 'none'
       });
       ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
@@ -1641,23 +1701,15 @@
         leftSofaText.appendChild(tspan);
       });
       g.appendChild(leftSofaText);
-      
+
       // Right Sofa
-      var isSofaRightSelected = booking.selected.some(function(x){return x.key==='sr_0';});
-      var isSofaRightTaken = DEMO_TAKEN.has('sr_0') || (liveSeats['sr_0'] && (liveSeats['sr_0'].status === 'taken' || liveSeats['sr_0'].status === 'reserved'));
-      var rightSofaFill = isSofaRightSelected ? '#fff' : (isSofaRightTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
-      var rightSofaStroke = isSofaRightSelected ? ZONES.sofa.color : (isSofaRightTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
-      
       var rightSofa = el('path', {
         d: 'M 505 110 Q 500 110 500 105 L 500 85 Q 500 80 505 80 L 550 80 Q 555 80 555 85 L 555 185 Q 555 190 550 190 L 535 190 Q 530 190 530 185 L 530 120 Q 530 115 525 115 Z',
-        fill: rightSofaFill,
-        stroke: rightSofaStroke,
-        'stroke-width': isSofaRightSelected ? 2 : 1,
-        style: isSofaRightTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        fill: 'rgba(74,143,217,0.10)',
+        stroke: 'rgba(74,143,217,0.35)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
       });
-      if (!isSofaRightTaken) {
-        rightSofa.addEventListener('click', function(){ toggleSeat('sr_0', 'sofa', 'Правый диван (целиком)', 'Правый', 'целиком'); });
-      }
       g.appendChild(rightSofa);
       
       // Text "ДИВАНЫ" inside Right Sofa
@@ -1668,7 +1720,7 @@
         'font-size': '9',
         'font-weight': '700',
         'font-family': 'Inter, sans-serif',
-        fill: isSofaRightSelected ? '#14080a' : (isSofaRightTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        fill: 'rgba(255,255,255,0.6)',
         'pointer-events': 'none'
       });
       ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
@@ -1786,9 +1838,27 @@
           'stroke-width': isSelected ? 2 : 0.8,
           style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
         });
+        c.classList.add('seat');
+        if (isTaken) c.classList.add('taken');
+        if (isSelected) c.classList.add('selected');
+
+        var seatAriaLabel = seat.type === 'chair' ? 'Стул ' + seat.seatNum : 'Стол ' + seat.table + ', место ' + seat.seatNum;
+        var hitArea = el('circle', {
+          cx: seat.x.toFixed(1),
+          cy: seat.y.toFixed(1),
+          r: sr + 9,
+          fill: 'transparent',
+          stroke: 'transparent',
+          'class': 'seat-hit',
+          role: 'button',
+          tabindex: isTaken ? -1 : 0,
+          'aria-label': seatAriaLabel + (isTaken ? ', занято' : ', ' + ZONES[seat.zone].price.toLocaleString('ru-RU') + ' рублей'),
+          'aria-pressed': isSelected ? 'true' : 'false',
+          style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        });
 
         if (!isTaken) {
-          c.addEventListener('click', function() {
+          var handleSeatClick = function() {
             var label = '';
             if (seat.type === 'chair') {
               label = 'Стул ' + seat.seatNum;
@@ -1797,8 +1867,14 @@
               label = 'Стол ' + seat.table + ', Место ' + seat.seatNum;
               toggleSeat(seat.key, seat.zone, label, 'Стол ' + seat.table, 'Место ' + seat.seatNum);
             }
+          };
+          c.addEventListener('click', handleSeatClick);
+          hitArea.addEventListener('click', handleSeatClick);
+          hitArea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSeatClick(); }
           });
         }
+        g.appendChild(hitArea);
         g.appendChild(c);
 
         // Добавим номер места внутри кружка
@@ -1820,7 +1896,7 @@
     function toggleSeat(key, zone, label, table, seatIdx) {
       var idx = booking.selected.findIndex(function(x) { return x.key === key; });
       if (idx >= 0) {
-        booking.selected.splice(idx, 1);
+        booking.selected = TicketFlowCore.toggleSelection(booking.selected, { key: key }, 10);
         renderHall();
         renderCart();
         fetch('/api/seats', {
@@ -1834,10 +1910,6 @@
           })
         }).catch(function(e){ console.error('Release error:', e); });
       } else {
-        if (booking.selected.length >= 10) {
-          alert('Можно выбрать максимум 10 мест за одну бронь.');
-          return;
-        }
         var seatObj = {
           key: key,
           table: table,
@@ -1846,7 +1918,12 @@
           price: ZONES[zone].price,
           label: label
         };
-        booking.selected.push(seatObj);
+        try {
+          booking.selected = TicketFlowCore.toggleSelection(booking.selected, seatObj, 10);
+        } catch (selectionError) {
+          alert(selectionError.message);
+          return;
+        }
         renderHall();
         renderCart();
         fetch('/api/seats', {
@@ -1860,23 +1937,17 @@
           })
         })
         .then(function(r) {
-          if (r.status === 409) {
+          if (TicketFlowCore.shouldRollbackSeat(r.status)) {
             alert('Извините, это место только что было зарезервировано кем-то другим.');
             var rollbackIdx = booking.selected.findIndex(function(x) { return x.key === key; });
             if (rollbackIdx >= 0) booking.selected.splice(rollbackIdx, 1);
             loadLiveSeats();
             renderHall();
             renderCart();
-          } else if (!r.ok) {
-            throw new Error('Lock failed');
           }
         })
         .catch(function(err) {
-          console.error('Lock error:', err);
-          var rollbackIdx = booking.selected.findIndex(function(x) { return x.key === key; });
-          if (rollbackIdx >= 0) booking.selected.splice(rollbackIdx, 1);
-          renderHall();
-          renderCart();
+          console.warn('Seat sync is unavailable; the local selection is kept.', err);
         });
       }
     }
@@ -1900,7 +1971,7 @@
       booking.selected.forEach(function(s, idx) {
         var chip = document.createElement('div');
         chip.className = 'cart__chip';
-        chip.innerHTML = s.label + ' · стол ' + s.table + ' / м. ' + s.seatIdx + ' <span class="x" data-idx="' + idx + '">×</span>';
+        chip.innerHTML = s.label + ' · ' + s.price.toLocaleString('ru-RU') + ' ₽ <span class="x" role="button" aria-label="Убрать место" data-idx="' + idx + '">×</span>';
         chip.querySelector('.x').onclick = function(e) {
           e.stopPropagation();
           var removed = booking.selected.splice(idx, 1)[0];
@@ -2003,6 +2074,11 @@
         if (el) el.style.display = 'none';
       });
       booking.step = n;
+      if (window.KTrack) {
+        if (n === 2) KTrack.step('huligan', 'seats');
+        else if (n === 3) KTrack.step('huligan', 'contacts');
+        else if (n === 4 || n === 5) KTrack.step('huligan', 'payment');
+      }
       if (n === 1) {
         document.getElementById('step1').style.display = '';
         renderDates();
@@ -2017,8 +2093,10 @@
         renderSummary();
       } else if (n === 4) {
         document.getElementById('stepPayment').style.display = '';
-        document.getElementById('paymentSum').textContent = 'Сумма к оплате: ' + (booking.calculatedTotal || 0).toLocaleString('ru-RU') + ' ₽';
-        loadPaymentConfigHuligan();
+        document.getElementById('paymentSum').textContent = booking.lastDraft ? 'Заказ ' + booking.lastDraft.id : 'Все данные перед переходом к оплате';
+        TicketFlowCore.renderReview(document.getElementById('paymentSummary'), booking.lastDraft || {});
+      } else if (n === 5) {
+        document.getElementById('bookingSuccess').style.display = '';
       }
     }
     window.goToStep = goToStep;
@@ -2053,7 +2131,12 @@
     function openBookingModal() {
       bookingModal.classList.add('show');
       document.body.style.overflow = 'hidden';
-      goToStep(1);
+      if (SHOWS.length === 1 && !booking.date) {
+        booking.date = SHOWS[0];
+        var nextBtn = document.getElementById('step1Next');
+        if (nextBtn) nextBtn.disabled = false;
+      }
+      goToStep(SHOWS.length === 1 ? 2 : 1);
     }
     function closeBookingModal() {
       if (booking.selected.length > 0) {
@@ -2085,6 +2168,11 @@
         if (promoInp) promoInp.value = '';
         var promoStatus = document.getElementById('promoStatus');
         if (promoStatus) promoStatus.textContent = '';
+        var paymentStatus = document.getElementById('paymentPendingStatus');
+        if (paymentStatus) paymentStatus.hidden = true;
+        var paymentButton = document.getElementById('tbankPayBtn');
+        if (paymentButton) { paymentButton.disabled = false; paymentButton.textContent = 'Перейти к оплате'; }
+        booking.lastDraft = null;
         goToStep(1);
         document.getElementById('step1Next').disabled = true;
       }, 300);
@@ -2132,6 +2220,8 @@
           clientKey: clientKey,
           name: data.get('name') || '',
           phone: data.get('phone') || '',
+          email: data.get('email') || '',
+          eventDate: booking.date ? booking.date.date + ' ' + booking.date.time : '',
           telegram: data.get('telegram') || '',
           comment: data.get('comment') || '',
           createdAt: Date.now(),
@@ -2176,6 +2266,32 @@
     }
     window.submitHuliganBooking = submitHuliganBooking;
 
+    function submitTicketDraftHuligan(e) {
+      e.preventDefault();
+      var data = new FormData(e.target);
+      booking.lastDraft = TicketFlowCore.buildDraft({
+        id: 'HUL-' + Date.now().toString(36).toUpperCase(),
+        show: 'Хулиган',
+        date: booking.date,
+        selected: booking.selected,
+        total: booking.calculatedTotal,
+        contact: {
+          name: data.get('name') || '',
+          phone: data.get('phone') || '',
+          telegram: data.get('telegram') || '',
+          comment: data.get('comment') || ''
+        }
+      });
+      TicketFlowCore.storeDraft('kostyuk_ticket_draft_huligan', booking.lastDraft);
+      goToStep(4);
+      return false;
+    }
+    function showPaymentPendingHuligan() {
+      TicketFlowCore.showPaymentPending(document.getElementById('paymentPendingStatus'), document.getElementById('tbankPayBtn'));
+    }
+    window.submitTicketDraftHuligan = submitTicketDraftHuligan;
+    window.showPaymentPendingHuligan = showPaymentPendingHuligan;
+
     async function initTbankPaymentHuligan() {
       var btn = document.getElementById('tbankPayBtn');
       if (!btn) return;
@@ -2216,6 +2332,25 @@
         openBookingModal();
         goToStep(5);
         window.history.replaceState({}, document.title, window.location.pathname);
+
+        var lastId = localStorage.getItem('huligan_last_booking_id');
+        var lastKey = localStorage.getItem('huligan_last_client_key');
+        var linkEl = document.getElementById('ticketOpenLink');
+        if (lastId && linkEl) {
+          (function tryFetchTicketLink(attempt) {
+            fetch('/api/huligan?action=ticket_link&id=' + encodeURIComponent(lastId) + '&clientKey=' + encodeURIComponent(lastKey || ''))
+              .then(function(r) { return r.json(); })
+              .then(function(j) {
+                if (j && j.url) { linkEl.href = j.url; }
+                else if (attempt < 4) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
+                else { linkEl.style.display = 'none'; }
+              })
+              .catch(function() {
+                if (attempt < 4) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
+                else { linkEl.style.display = 'none'; }
+              });
+          })(0);
+        }
       } else if (payStatus === 'fail') {
         alert('Платеж был отклонен или отменен. Вы можете попробовать заново выбрать места и оплатить.');
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -2224,9 +2359,13 @@
 
     // Скрипт глитча и неоновых вспышек для шоу ХУЛИgan
     (function() {
-      const hero = document.getElementById('secretHero');
-      const poster = document.getElementById('secretPoster');
+      const hero = document.getElementById('huliganHero');
+      const poster = document.getElementById('huliganPoster');
       if (!hero || !poster) return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const touchDevice = window.matchMedia('(pointer: coarse)').matches;
+      if (reduceMotion || touchDevice || window.innerWidth < 821) return;
 
       // Создаем холст для вспышек и частиц
       const canvas = document.createElement('canvas');
@@ -2438,11 +2577,6 @@
   </script>
 
   <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
-  <a href="https://t.me/Dmitrokko" target="_blank" rel="noopener" class="tg-float" aria-label="Связаться в Telegram">
-    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-      <path d="M21.9 2.1c-.2-.2-.5-.2-.8-.1L1.8 9.7c-.3.1-.5.4-.5.7 0 .3.2.6.5.7l5.3 1.9 2.2 6.7c.1.3.3.5.6.5.1 0 .2 0 .3-.1l3.2-2.6 4.6 3.4c.2.1.4.1.6 0 .2-.1.3-.3.3-.5L22.5 2.7c0-.3-.4-.5-.6-.6zM8.5 12.1l9.4-6.3-7.7 7.6c-.1.1-.2.2-.2.4l-.5 2.7-1-3.9c0-.3 0-.5.1-.6z"/>
-    </svg>
-  </a>
   <style>
   </style>
 
@@ -2469,7 +2603,7 @@
   <div id="stickyCta" style="position: fixed; bottom: -100px; left: 0; right: 0; background: rgba(14,12,36,0.95); backdrop-filter: blur(10px); padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 99; transition: bottom 0.3s ease; display:flex; justify-content:space-between; align-items:center; max-width: 600px; margin: 0 auto; border-radius: 16px 16px 0 0;">
     <div>
       <div style="font-weight: 600; font-size: 16px;">Шоу ХУЛИgan</div>
-      <div style="color: var(--gold); font-size: 14px; opacity:0.8;">Билеты от 1500 ₽</div>
+      <div style="color: var(--gold); font-size: 14px; opacity:0.8;">Билеты от 1100 ₽</div>
     </div>
     <button class="buy-cta" style="margin:0; padding: 12px 24px; font-size: 15px;" onclick="openBookingModal()">Купить билет</button>
   </div>
@@ -2492,6 +2626,26 @@
           sticky.style.bottom = '-100px';
        }
     });
+  </script>
+<script src="/ecosystem.js?v=11" data-root="/" data-section="shows" defer></script>
+  <script src="/concerts/show-ambient.js?v=1" defer></script>
+  <script src="/concerts/show-nav.js?v=1" defer></script>
+  <script src="/concerts/track.js?v=1"></script>
+  <script>window.addEventListener('load',function(){ if(window.KTrack) KTrack.step('huligan','visit'); });</script>
+  <script>
+    (function(){
+      function esc(s){ var d=document.createElement('div'); d.textContent=String(s==null?'':s); return d.innerHTML; }
+      fetch('/api/seats?type=reviews&show=huligan').then(function(r){ return r.ok?r.json():[]; }).then(function(items){
+        if(!Array.isArray(items) || !items.length) return;
+        var box=document.getElementById('reviewsGrid'), sec=document.getElementById('reviewsSection'); if(!box) return;
+        box.innerHTML = items.map(function(rv){
+          var rating=Math.max(1,Math.min(5,rv.rating||5));
+          var stars='★'.repeat(rating)+'☆'.repeat(5-rating);
+          return '<div class="review-item"><div class="review-item__stars">'+stars+'</div><div class="review-item__text">«'+esc(rv.text)+'»</div><div class="review-item__name">— '+esc(rv.name||'Гость')+'</div></div>';
+        }).join('');
+        if(sec) sec.style.display='';
+      }).catch(function(){});
+    })();
   </script>
 </body>
 </html>
