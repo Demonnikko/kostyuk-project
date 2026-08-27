@@ -16,6 +16,8 @@ import { setCors } from '../../shared/cors.js';
 import { buildTicketLink } from '../../shared/ticketAccess.js';
 import { sendEmail, buildTicketEmailHtml } from '../../shared/email.js';
 import { renderTicketImage } from '../../shared/ticketImage.js';
+import { runMatveyAutoCleanup } from '../../shared/autoCleanup.js';
+import { isAdminAuthorized } from '../../shared/adminAuth.js';
 
 const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -264,6 +266,9 @@ export default async (req, res) => {
   setCors(req, res, { methods: 'POST, GET, OPTIONS' });
   if (req.method === 'OPTIONS') return res.status(200).end();
 
+  // Автоотмена зависших неоплаченных броней (>10 мин) + освобождение мест
+  await runMatveyAutoCleanup().catch(() => {});
+
   // ── GET: конфиг оплаты, статус брони, ссылка/данные билета ──
   if (req.method === 'GET') {
     const getAction = String(req.query?.action || '').trim();
@@ -317,6 +322,68 @@ export default async (req, res) => {
 
   const body = parseIncomingBody(req.body);
   const action = String(body?.action || req.query?.action || '').trim();
+
+  // ── refund: возврат денег через T-Bank Cancel + освобождение мест (только админ) ──
+  if (action === 'refund') {
+    if (!(await isAdminAuthorized(req, body))) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+    const { bookingId } = body;
+    if (!bookingId) return res.status(400).json({ error: 'Missing bookingId' });
+    const booking = await fbGet(`matvey_bookings/${bookingId}`);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+
+    const status = String(booking.status || '').toLowerCase();
+    if (status === 'cancelled' || status === 'returned') {
+      return res.status(409).json({ error: 'Booking already closed' });
+    }
+
+    const reason = String(body?.reason || '').trim();
+    if (status !== 'refunded') {
+      let refundInfo = { attempted: false };
+      const paymentId = String(booking?.tbank?.paymentId || '');
+      if (paymentId) {
+        const creds = getTBankCredentials();
+        if (creds.terminalKey && creds.password) {
+          const stateRes = await tbankApi('GetState', { PaymentId: paymentId }, creds);
+          const bankState = String(stateRes.data?.Status || '').toUpperCase();
+
+          const cancelRes = await tbankApi('Cancel', { PaymentId: paymentId }, creds);
+          refundInfo = {
+            attempted: true,
+            ok: Boolean(cancelRes.httpOk && cancelRes.data?.Success),
+            message: cancelRes.data?.Message || null,
+            details: cancelRes.data?.Details || null,
+            errorCode: cancelRes.data?.ErrorCode || null,
+            tbankStatus: cancelRes.data?.Status || null,
+            stateBefore: bankState || null
+          };
+          if (!refundInfo.ok) {
+            const alreadyBack = ['CANCELED', 'CANCELLED', 'REFUNDED', 'REVERSED', 'PARTIAL_REFUNDED'].includes(bankState);
+            if (!alreadyBack) {
+              return res.status(502).json({ error: 'T-Bank refund failed', detail: refundInfo });
+            }
+            refundInfo.ok = true;
+            refundInfo.idempotentBankState = bankState;
+          }
+        }
+      }
+      await fbPatch(`matvey_bookings/${bookingId}`, {
+        status: 'refunded',
+        refundedAt: Date.now(),
+        refundReason: reason || null,
+        ticketLinkVersion: Number(booking.ticketLinkVersion || 1) + 1,
+        tbankRefund: refundInfo
+      });
+      const seats = Array.isArray(booking.seats) ? booking.seats : [];
+      await Promise.all(seats.map(s => {
+        const key = s && s.key ? s.key : null;
+        return key ? fbPut(`matvey_seats/${key}`, { status: 'available' }).catch(() => {}) : Promise.resolve();
+      })).catch(() => {});
+    }
+
+    return res.status(200).json({ ok: true });
+  }
 
   // ── tbank_init: создать ссылку на оплату ──
   if (action === 'tbank_init') {

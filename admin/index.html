@@ -6306,16 +6306,26 @@
 
     async function refundMatvey(id) {
       const reason = prompt(`Причина возврата для ${id} (необязательно):`) || '';
-      if (!confirm(`Оформить возврат по заказу ${id}? Места будут освобождены.`)) return;
-      const b = window.allMatveyBookings[id];
-      if (!b) return;
-      await fbPatch(`matvey_bookings/${id}`, { status: 'refunded', refundedAt: Date.now(), refundReason: reason.trim() });
-      const seatList = Array.isArray(b.seats) ? b.seats : [];
-      for (const s of seatList) {
-        if (s.key) await fbDelete(`matvey_seats/${s.key}`);
+      if (!confirm(`Оформить возврат по заказу ${id}? Деньги вернутся через T-Bank, места освободятся.`)) return;
+      try {
+        const r = await fetch('/api/matvey', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({ action: 'refund', bookingId: id, reason: reason.trim() })
+        });
+        const data = await r.json();
+        if (data.ok) {
+          toast('↩ Возврат оформлен');
+          loadMatveyOrders();
+        } else {
+          const d = data.detail || {};
+          const extra = d.errorCode ? ` (код ${d.errorCode}${d.message ? ': ' + d.message : ''}${d.stateBefore ? ', статус: ' + d.stateBefore : ''})` : '';
+          console.warn('Matvey refund failed detail:', data);
+          toast('Ошибка: ' + (data.error || 'неизвестно') + extra);
+        }
+      } catch {
+        toast('Ошибка сети');
       }
-      toast('↩ Возврат оформлен');
-      loadMatveyOrders();
     }
 
     async function deleteMatvey(id) {

@@ -1,5 +1,6 @@
 import { fbGet, fbPut } from '../../shared/firebase.js';
 import { setCors } from '../../shared/cors.js';
+import { runMatveyAutoCleanup } from '../../shared/autoCleanup.js';
 
 const MAX_KEYS = 12;
 
@@ -12,6 +13,9 @@ function normalizeKey(raw) {
 export default async function handler(req, res) {
   setCors(req, res, { publicRead: req.method === 'GET', methods: 'GET, POST, OPTIONS' });
   if (req.method === 'OPTIONS') return res.status(200).end();
+
+  // Автоотмена зависших неоплаченных броней (>10 мин) + освобождение мест
+  await runMatveyAutoCleanup().catch(() => {});
 
   if (req.method === 'GET') {
     const type = req.query?.type || '';

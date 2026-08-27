@@ -2,11 +2,13 @@ import {  fbGet, fbPatch, fbPut  } from './firebase.js';
 
 const SECRET_RESERVE_MS = Number(process.env.SECRET_RESERVE_MS || process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const HULIGAN_RESERVE_MS = Number(process.env.HULIGAN_RESERVE_MS || 10 * 60 * 1000);
+const MATVEY_RESERVE_MS = Number(process.env.MATVEY_RESERVE_MS || 10 * 60 * 1000);
 const CLEANUP_INTERVAL_MS = Number(process.env.AUTO_CLEANUP_INTERVAL_MS || 45 * 1000);
 
 const _state = {
   secret: { lastRunAt: 0, running: false },
-  huligan: { lastRunAt: 0, running: false }
+  huligan: { lastRunAt: 0, running: false },
+  matvey: { lastRunAt: 0, running: false }
 };
 
 function nowTs() {
@@ -167,7 +169,77 @@ async function runHuliganAutoCleanup() {
   }
 }
 
+async function releaseMatveySeats(bookingIds) {
+  if (!bookingIds || !bookingIds.size) return 0;
+  const seats = await fbGet('matvey_seats') || {};
+  let released = 0;
+  const jobs = [];
+  for (const [seatKey, seatData] of Object.entries(seats)) {
+    const bid = String(seatData?.bookingId || '').trim();
+    if (!bid || !bookingIds.has(bid)) continue;
+    jobs.push(
+      fbPut(`matvey_seats/${seatKey}`, { status: 'available' })
+        .then(() => { released += 1; })
+        .catch(() => {})
+    );
+  }
+  if (jobs.length) await Promise.all(jobs);
+  return released;
+}
+
+async function runMatveyAutoCleanup() {
+  if (!canRun('matvey')) return { ok: true, skipped: true };
+  const st = _state.matvey;
+  st.running = true;
+  st.lastRunAt = nowTs();
+  try {
+    const bookings = await fbGet('matvey_bookings') || {};
+    const now = nowTs();
+    const expired = [];
+    for (const [id, b] of Object.entries(bookings)) {
+      const status = String(b?.status || '').toLowerCase();
+      const createdAt = Number(b?.createdAt || 0);
+      if (status !== 'pending_payment') continue;
+      if (!Number.isFinite(createdAt) || createdAt <= 0) continue;
+      if (Number(b?.paidAt || 0) > 0) continue;
+      if ((now - createdAt) < MATVEY_RESERVE_MS) continue;
+      if (hasActivePaymentHold(b, now)) continue;
+      expired.push(id);
+    }
+    if (!expired.length) return { ok: true, cancelled: 0, released: 0 };
+
+    const cancelledSet = new Set();
+    for (const id of expired) {
+      const latest = await fbGet(`matvey_bookings/${id}`);
+      if (!latest) continue;
+      const status = String(latest?.status || '').toLowerCase();
+      const createdAt = Number(latest?.createdAt || 0);
+      if (status !== 'pending_payment') continue;
+      if (!Number.isFinite(createdAt) || createdAt <= 0) continue;
+      if (Number(latest?.paidAt || 0) > 0) continue;
+      if ((now - createdAt) < MATVEY_RESERVE_MS) continue;
+      if (hasActivePaymentHold(latest, now)) continue;
+      await fbPatch(`matvey_bookings/${id}`, {
+        status: 'cancelled',
+        cancelledAt: now,
+        autoCancelledAt: now,
+        cancelReason: 'Автоотмена: истекло 10 минут на оплату',
+        ticketLinkVersion: Number(latest.ticketLinkVersion || 1) + 1
+      }).catch(() => {});
+      cancelledSet.add(id);
+    }
+
+    const released = await releaseMatveySeats(cancelledSet);
+    return { ok: true, cancelled: cancelledSet.size, released };
+  } catch {
+    return { ok: false };
+  } finally {
+    st.running = false;
+  }
+}
+
 export {
   runSecretAutoCleanup,
-  runHuliganAutoCleanup
+  runHuliganAutoCleanup,
+  runMatveyAutoCleanup
 };
