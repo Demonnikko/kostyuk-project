@@ -1116,6 +1116,8 @@ body {
 
 /* ===== Единый подвал экосистемы ===== */
 footer.kp-footer, .kp-footer {
+  position: relative;
+  z-index: 2;
   margin-top: 0;
   padding: 46px max(24px, calc((100vw - 1200px) / 2)) 40px;
   border-top: 1px solid rgba(255, 255, 255, .08);
