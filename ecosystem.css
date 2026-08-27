@@ -810,7 +810,13 @@ html { scroll-padding-top: 92px; }
 .kp-promo-card {
   min-height: 220px;
   border-radius: 20px;
-  background: radial-gradient(circle at 100% 0, rgba(214,172,69,.1), transparent 38%), rgba(14,14,16,.82);
+  border: 1px solid rgba(214,172,69,.28);
+  background: radial-gradient(circle at 100% 0, rgba(214,172,69,.14), transparent 42%), #16161a;
+  box-shadow: 0 24px 60px rgba(0,0,0,.45);
+}
+.kp-promo-card:hover {
+  border-color: rgba(214,172,69,.6);
+  background: radial-gradient(circle at 100% 0, rgba(214,172,69,.2), transparent 42%), #1c1c22;
 }
 
 footer {
