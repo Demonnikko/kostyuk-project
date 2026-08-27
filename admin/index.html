@@ -3,8 +3,18 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <title>Администратор — KOSTYUK PROJECT</title>
+
+  <!-- PWA: установка админки на телефон как приложение -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="KP Админ">
+  <link rel="apple-touch-icon" href="./admin-icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./admin-icon-192.png">
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -7631,6 +7641,16 @@
     }
   </script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script>
+    // Регистрируем service worker админки (нужен для установки PWA на телефон)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./admin-sw.js').catch(function (e) {
+          console.log('admin SW register failed:', e);
+        });
+      });
+    }
+  </script>
 </body>
 
 </html>
