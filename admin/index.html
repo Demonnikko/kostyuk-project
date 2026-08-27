@@ -5056,7 +5056,10 @@
           toast('↩ Возврат оформлен');
           loadHuliganOrders();
         } else {
-          toast('Ошибка: ' + (data.error || 'неизвестно'));
+          const d = data.detail || {};
+          const extra = d.errorCode ? ` (код ${d.errorCode}${d.message ? ': ' + d.message : ''}${d.stateBefore ? ', статус: ' + d.stateBefore : ''})` : '';
+          console.warn('Refund failed detail:', data);
+          toast('Ошибка: ' + (data.error || 'неизвестно') + extra);
         }
       } catch {
         toast('Ошибка сети');

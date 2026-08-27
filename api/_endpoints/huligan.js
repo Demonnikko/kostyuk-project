@@ -1396,15 +1396,28 @@ export default async (req, res) => {
         if (paymentId) {
           const creds = getTBankCredentials();
           if (creds.terminalKey && creds.password) {
+            // Узнаём текущий статус платежа в банке (для диагностики и выбора действия)
+            const stateRes = await tbankApi('GetState', { PaymentId: paymentId }, creds);
+            const bankState = String(stateRes.data?.Status || '').toUpperCase();
+
             const cancelRes = await tbankApi('Cancel', { PaymentId: paymentId }, creds);
             refundInfo = {
               attempted: true,
               ok: Boolean(cancelRes.httpOk && cancelRes.data?.Success),
               message: cancelRes.data?.Message || null,
-              tbankStatus: cancelRes.data?.Status || null
+              details: cancelRes.data?.Details || null,
+              errorCode: cancelRes.data?.ErrorCode || null,
+              tbankStatus: cancelRes.data?.Status || null,
+              stateBefore: bankState || null
             };
             if (!refundInfo.ok) {
-              return res.status(502).json({ error: 'T-Bank refund failed', detail: refundInfo });
+              // Идемпотентно: если платёж УЖЕ отменён/возвращён в банке — считаем успехом
+              const alreadyBack = ['CANCELED', 'CANCELLED', 'REFUNDED', 'REVERSED', 'PARTIAL_REFUNDED'].includes(bankState);
+              if (!alreadyBack) {
+                return res.status(502).json({ error: 'T-Bank refund failed', detail: refundInfo });
+              }
+              refundInfo.ok = true;
+              refundInfo.idempotentBankState = bankState;
             }
           }
         }
