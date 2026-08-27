@@ -799,6 +799,8 @@ html { scroll-padding-top: 92px; }
 }
 
 .kp-ecosystem-promo {
+  position: relative;
+  z-index: 2;
   margin-top: clamp(42px, 5.5vw, 72px);
   margin-bottom: clamp(58px, 7vw, 92px);
 }
