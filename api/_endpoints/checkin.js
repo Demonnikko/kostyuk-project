@@ -11,17 +11,29 @@ const BLOCKED_STATUSES = new Set(['cancelled', 'refunded', 'returned', 'deleted'
 const CONFIRMED_STATUS = 'confirmed';
 const BOOKING_ID_RE = /^[A-Z0-9_-]{3,60}$/i;
 
+const ALL_SHOWS = ['secret', 'huligan', 'matvey'];
+
 function normalizeShow(raw) {
   const v = String(raw || '').trim().toLowerCase();
   if (v === 'secret') return 'secret';
   if (v === 'huligan') return 'huligan';
+  if (v === 'matvey') return 'matvey';
   if (v === 'all') return 'all';
   if (v === 'auto' || !v) return 'auto';
   return null;
 }
 
 function showToBookingPath(show) {
-  return show === 'huligan' ? 'huligan_bookings' : 'ticket_bookings';
+  if (show === 'huligan') return 'huligan_bookings';
+  if (show === 'matvey') return 'matvey_bookings';
+  return 'ticket_bookings';
+}
+
+function showLabel(show) {
+  if (show === 'secret') return 'СЕКРЕТ';
+  if (show === 'huligan') return 'ХУЛИgan';
+  if (show === 'matvey') return 'Спасти Матвея';
+  return String(show || '');
 }
 
 function statusNorm(status) {
@@ -89,7 +101,8 @@ function parseTicketPayload(rawPayload) {
       const tk = safeString(url.searchParams.get('tk') || '', 800);
 
       let showFromUrl = '';
-      if (pathname.includes('huligan-ticket') || pathname.includes('/huligan')) showFromUrl = 'huligan';
+      if (pathname.includes('matvey-ticket') || pathname.includes('/matvey')) showFromUrl = 'matvey';
+      else if (pathname.includes('huligan-ticket') || pathname.includes('/huligan')) showFromUrl = 'huligan';
       else if (pathname.includes('ticket')) showFromUrl = 'secret';
 
       return {
@@ -111,6 +124,7 @@ function bookingView(show, bookingId, booking) {
   const seatCount = Array.isArray(booking?.seats) ? booking.seats.length : 0;
   return {
     show,
+    showLabel: showLabel(show),
     bookingId: String(bookingId || ''),
     status: String(booking?.status || ''),
     name: String(booking?.name || ''),
@@ -270,10 +284,10 @@ async function getBooking(show, bookingId) {
   return booking;
 }
 
-async function findHuliganByTicketNumber(ticketNumber) {
+async function findByTicketNumber(show, ticketNumber) {
   const norm = String(ticketNumber || '').trim().toUpperCase();
   if (!norm) return null;
-  const all = (await fbGet('huligan_bookings')) || {};
+  const all = (await fbGet(showToBookingPath(show))) || {};
   for (const [id, booking] of Object.entries(all)) {
     if (String(booking?.ticketNumber || '').trim().toUpperCase() === norm) {
       return { bookingId: id, booking };
@@ -307,7 +321,7 @@ async function resolveBookingFromText(rawText, showHint) {
   if (!query) return null;
 
   const canUseAsBookingId = BOOKING_ID_RE.test(query);
-  const preferredShows = showHint === 'auto' ? ['secret', 'huligan'] : [showHint];
+  const preferredShows = showHint === 'auto' ? ALL_SHOWS : [showHint];
 
   if (canUseAsBookingId) {
     for (const show of preferredShows) {
@@ -316,11 +330,12 @@ async function resolveBookingFromText(rawText, showHint) {
     }
   }
 
-  if (showHint === 'huligan' || showHint === 'auto') {
-    const found = await findHuliganByTicketNumber(query);
+  // Поиск по номеру билета (ticketNumber) во всех выбранных шоу
+  for (const show of preferredShows) {
+    const found = await findByTicketNumber(show, query);
     if (found) {
       return {
-        show: 'huligan',
+        show,
         bookingId: found.bookingId,
         booking: found.booking,
         sourceType: 'manual_ticket_number'
@@ -345,10 +360,13 @@ async function resolveScan(payloadRaw, showHint = 'auto') {
     let show = parsed.showFromUrl || '';
     if (!show || showHint !== 'auto') show = showHint === 'auto' ? show : showHint;
     if (!show || show === 'auto') {
-      // Fallback: пробуем сначала Секрет, потом Хулиган
-      const sBooking = await getBooking('secret', parsed.id);
-      if (sBooking) show = 'secret';
-      else show = 'huligan';
+      // Fallback: перебираем все шоу, пока не найдём бронь с таким id
+      show = '';
+      for (const s of ALL_SHOWS) {
+        const b = await getBooking(s, parsed.id);
+        if (b) { show = s; break; }
+      }
+      if (!show) show = 'secret';
     }
 
     const booking = await getBooking(show, parsed.id);
@@ -380,9 +398,10 @@ async function resolveScan(payloadRaw, showHint = 'auto') {
         };
       }
 
+      // ХУЛИgan и Матвей используют одинаковую HMAC-схему токена (payload.sig)
       const check = verifyHuliganToken(parsed.tk, parsed.id);
       if (!check.ok) {
-        return { ok: false, state: 'invalid', reason: check.code || 'huligan_token_invalid', show, bookingId: parsed.id, booking };
+        return { ok: false, state: 'invalid', reason: check.code || 'token_invalid', show, bookingId: parsed.id, booking };
       }
       const currentVersion = Number(booking.ticketLinkVersion || 1);
       const tokenVersion = Number(check.payload?.v || 1);
@@ -432,7 +451,7 @@ async function resolveScan(payloadRaw, showHint = 'auto') {
 }
 
 async function gatherStats(show) {
-  const shows = show === 'all' ? ['secret', 'huligan'] : [show];
+  const shows = show === 'all' ? ALL_SHOWS : [show];
   const result = { shows: {}, totalConfirmed: 0, totalCheckedIn: 0, totalPending: 0 };
 
   for (const s of shows) {
@@ -461,7 +480,7 @@ async function gatherStats(show) {
 }
 
 async function gatherHistory(show, limit) {
-  const shows = show === 'all' ? ['secret', 'huligan'] : [show];
+  const shows = show === 'all' ? ALL_SHOWS : [show];
   const all = [];
 
   for (const s of shows) {

@@ -1630,6 +1630,7 @@
                <option value="auto">Авто-определение</option>
                <option value="secret">Шоу СЕКРЕТ</option>
                <option value="huligan">Шоу ХУЛИgan</option>
+               <option value="matvey">Спасти Матвея</option>
              </select>
              <div>
                 <button class="btn btn-sm" id="btnStartScan" onclick="startScanner()" style="background:var(--gold); color:#000;">Начать скан</button>
@@ -1650,6 +1651,37 @@
           <h2 id="scanFeedbackTitle" style="margin-bottom: 10px;"></h2>
           <p id="scanFeedbackText" style="color:var(--dim); font-size: 16px; margin-bottom: 20px;"></p>
           <div id="scanFeedbackDetails" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; text-align:left; font-size: 14px; color: #ddd; max-width: 400px; margin: 0 auto;"></div>
+        </div>
+
+        <!-- Контроль зала: сколько куплено / прошло / ждём -->
+        <div class="card" style="padding: 18px; margin-bottom: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+            <div class="section-title" style="margin:0; font-size:16px;">🎟 Контроль зала</div>
+            <button class="btn btn-sm" onclick="loadScanStats()">↻ Обновить</button>
+          </div>
+          <div id="scanStatsCards" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center;">
+            <div style="background:rgba(255,255,255,.04); border-radius:10px; padding:14px;">
+              <div id="scanStatConfirmed" style="font-size:28px; font-weight:800; color:var(--gold);">—</div>
+              <div style="font-size:12px; color:var(--dim);">Куплено билетов</div>
+            </div>
+            <div style="background:rgba(61,191,110,.12); border-radius:10px; padding:14px;">
+              <div id="scanStatCheckedIn" style="font-size:28px; font-weight:800; color:var(--std);">—</div>
+              <div style="font-size:12px; color:var(--dim);">Прошли на вход</div>
+            </div>
+            <div style="background:rgba(255,255,255,.04); border-radius:10px; padding:14px;">
+              <div id="scanStatPending" style="font-size:28px; font-weight:800; color:#e8a838;">—</div>
+              <div style="font-size:12px; color:var(--dim);">Ещё не пришли</div>
+            </div>
+          </div>
+          <div id="scanStatsByShow" style="margin-top:12px; font-size:13px; color:#bbb;"></div>
+        </div>
+
+        <!-- Кто уже прошёл (последние проходы) -->
+        <div class="card" style="padding: 18px;">
+          <div class="section-title" style="margin:0 0 12px; font-size:16px;">✅ Кто прошёл</div>
+          <div id="scanHistoryList" style="display:flex; flex-direction:column; gap:8px; font-size:14px;">
+            <div style="color:var(--dim); text-align:center; padding:16px;">Нажмите «Обновить» выше, чтобы загрузить список</div>
+          </div>
         </div>
       </div>
 
@@ -4877,6 +4909,7 @@
       
       // Load data on demand
       if (sec === 'dashboard') loadDashboard();
+      if (sec === 'scanner') loadScanStats();
       if (sec === 'finances') loadFinances();
       if (sec === 'chats') loadChatsList();
       if (sec === 'mobile-menu') renderMobileMenu();
@@ -7383,6 +7416,66 @@
       if (document.getElementById('sec-hul-bookings').classList.contains('active')) loadHuliganOrders();
     }, 30000);
     // ── SCANNER LOGIC ──
+    // Разбирает места всех 3 шоу в человекочитаемый вид:
+    // t5_30 → «Стол 5, место 30», r1_3 → «Ряд 1, место 3»,
+    // dl_1/dr_1 → «Диван», lampa → «Лампа», bar_0 → «Бар».
+    function formatScanSeats(seats) {
+      if (!Array.isArray(seats) || !seats.length) return '';
+      return seats.map(s => {
+        const key = String(s.key || (s.tableId != null && s.seatIdx != null ? s.tableId + '_' + s.seatIdx : '')).trim();
+        let m;
+        if ((m = key.match(/^t(\d+)_(\d+)$/))) return `Стол ${m[1]}, место ${m[2]}`;
+        if ((m = key.match(/^r(\d+)_(\d+)$/))) return `Ряд ${m[1]}, место ${m[2]}`;
+        if (/^dl_/.test(key)) return 'Левый диван';
+        if (/^dr_/.test(key)) return 'Правый диван';
+        if (key === 'lampa') return 'Место «Лампа»';
+        if (/^bar_/.test(key)) return 'Барная стойка';
+        // запасной вариант — по table/seatNum/seatIdx
+        if (s.table && (s.seatNum != null || s.seatIdx != null)) return `${s.table}, место ${s.seatNum ?? s.seatIdx}`;
+        return key || 'Место';
+      }).join('<br>');
+    }
+
+    // Загружает контроль зала: статистику (куплено/прошло/ждём) и список прошедших
+    async function loadScanStats() {
+      try {
+        const [statsRes, histRes] = await Promise.all([
+          fetch('/api/checkin?action=stats&show=all', { headers: adminHeaders() }).then(r => r.json()),
+          fetch('/api/checkin?action=history&show=all&limit=60', { headers: adminHeaders() }).then(r => r.json())
+        ]);
+
+        if (statsRes && statsRes.ok) {
+          document.getElementById('scanStatConfirmed').innerText = statsRes.totalConfirmed ?? 0;
+          document.getElementById('scanStatCheckedIn').innerText = statsRes.totalCheckedIn ?? 0;
+          document.getElementById('scanStatPending').innerText = statsRes.totalPending ?? 0;
+          const labels = { secret: 'СЕКРЕТ', huligan: 'ХУЛИgan', matvey: 'Спасти Матвея' };
+          const byShow = Object.entries(statsRes.shows || {}).map(([s, v]) =>
+            `<b>${labels[s] || s}:</b> прошло ${v.checkedIn}/${v.confirmed}`
+          ).join(' &nbsp;·&nbsp; ');
+          document.getElementById('scanStatsByShow').innerHTML = byShow;
+        }
+
+        const list = document.getElementById('scanHistoryList');
+        if (histRes && histRes.ok && Array.isArray(histRes.items)) {
+          const admits = histRes.items.filter(e => e.type === 'admit');
+          if (!admits.length) {
+            list.innerHTML = `<div style="color:var(--dim); text-align:center; padding:16px;">Пока никто не прошёл</div>`;
+          } else {
+            const labels = { secret: 'СЕКРЕТ', huligan: 'ХУЛИgan', matvey: 'Матвей' };
+            list.innerHTML = admits.map(e => {
+              const t = e.ts ? new Date(e.ts).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
+              return `<div style="display:flex; justify-content:space-between; gap:10px; padding:8px 10px; background:rgba(61,191,110,.08); border-radius:8px;">
+                <span>✅ <b>${e.name || 'Гость'}</b> <span style="color:var(--dim)">· ${labels[e.show] || e.show} · ${e.ticketNumber || e.bookingId}</span></span>
+                <span style="color:var(--dim); white-space:nowrap;">${t}</span>
+              </div>`;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        console.warn('loadScanStats error', err);
+      }
+    }
+
     let html5QrcodeScanner = null;
     let scanCooldown = false;
     let scanAudioSuccess = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
@@ -7485,15 +7578,14 @@
            
            if (data.booking) {
               const b = data.booking;
-              let seatsHtml = '';
-              if (b.seats && b.seats.length > 0) {
-                 seatsHtml = b.seats.map(s => `Ряд ${s.row}, Место ${s.seat}`).join('<br>');
-              }
+              const seatsHtml = formatScanSeats(b.seats);
+              const showName = b.showLabel || (b.show === 'secret' ? 'СЕКРЕТ' : b.show === 'huligan' ? 'ХУЛИgan' : b.show === 'matvey' ? 'Спасти Матвея' : b.show);
               details.innerHTML = `
-                <div><strong>Шоу:</strong> ${b.show === 'secret' ? 'СЕКРЕТ' : 'ХУЛИgan'}</div>
+                <div><strong>Шоу:</strong> ${showName}</div>
                 <div><strong>Гость:</strong> ${b.name || 'Не указано'}</div>
-                <div><strong>Билет:</strong> ${b.ticketNumber || b.ticketType}</div>
-                ${seatsHtml ? `<div style="margin-top:10px; padding:10px; background:rgba(61,191,110,0.2); border-radius:4px; font-weight:bold; color:var(--std);">${seatsHtml}</div>` : ''}
+                <div><strong>Билет:</strong> ${b.ticketNumber || b.ticketType || '—'}</div>
+                ${b.phone ? `<div><strong>Телефон:</strong> ${b.phone}</div>` : ''}
+                ${seatsHtml ? `<div style="margin-top:10px; padding:10px; background:rgba(61,191,110,0.2); border-radius:6px; font-weight:bold; color:var(--std);">${seatsHtml}</div>` : ''}
               `;
            }
         } else if (data.state === 'duplicate') {
@@ -7522,6 +7614,8 @@
       }
       
       setTimeout(() => { scanCooldown = false; }, 2000);
+      // Обновляем счётчики и список прошедших после каждого скана
+      loadScanStats();
     }
   </script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
