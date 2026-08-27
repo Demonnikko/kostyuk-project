@@ -2364,17 +2364,23 @@
         var lastKey = localStorage.getItem('huligan_last_client_key');
         var linkEl = document.getElementById('ticketOpenLink');
         if (lastId && linkEl) {
+          // Билет подтверждается вебхуком T-Bank, который может прийти чуть позже
+          // редиректа. Держим кнопку в состоянии «готовится» и опрашиваем до ~30с.
+          var ticketReady = false;
+          var origText = linkEl.textContent;
+          linkEl.textContent = 'Билет готовится…';
+          linkEl.addEventListener('click', function(e) { if (!ticketReady) { e.preventDefault(); } });
           (function tryFetchTicketLink(attempt) {
             fetch('/api/huligan?action=ticket_link&id=' + encodeURIComponent(lastId) + '&clientKey=' + encodeURIComponent(lastKey || ''))
               .then(function(r) { return r.json(); })
               .then(function(j) {
-                if (j && j.url) { linkEl.href = j.url; }
-                else if (attempt < 4) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
-                else { linkEl.style.display = 'none'; }
+                if (j && j.url) { linkEl.href = j.url; linkEl.textContent = origText; ticketReady = true; }
+                else if (attempt < 20) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
+                else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
               })
               .catch(function() {
-                if (attempt < 4) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
-                else { linkEl.style.display = 'none'; }
+                if (attempt < 20) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
+                else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
               });
           })(0);
         }
