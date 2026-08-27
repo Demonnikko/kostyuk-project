@@ -628,7 +628,11 @@ body.show-page .footer-cta {
   background: radial-gradient(circle at 50% 0, var(--show-accent-soft), transparent 58%), rgba(255,255,255,.018);
 }
 
-body.show-page .kp-ecosystem-promo { display: none; }
+/* Промо-блок направлений показываем и на страницах шоу (насыщенный низ, как у events/school) */
+body.show-page .kp-ecosystem-promo {
+  width: min(calc(100% - 32px), 1160px);
+  margin: clamp(48px, 6vw, 80px) auto clamp(56px, 7vw, 88px);
+}
 
 /* Карточки дат — настоящие кнопки */
 body.show-page button.date-card {
