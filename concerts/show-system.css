@@ -251,11 +251,11 @@ body.show-page .poster {
 }
 body.show-page .poster-wrap:hover .poster { transform: scale(1.025) !important; }
 body.show-page--huligan .poster-wrap {
-  aspect-ratio: 1055 / 1491;
+  aspect-ratio: 2 / 3;
   background: #050505;
 }
 body.show-page--huligan .poster {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   background: #050505;
 }

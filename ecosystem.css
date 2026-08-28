@@ -728,20 +728,39 @@ html { scroll-padding-top: 92px; }
   border-color: rgba(203, 161, 40, 0.3);
 }
 
-/* Бегущая лента брендов «Нам доверяют» — работает на любой странице (шоу, events) */
-.brands { position: relative; overflow: hidden; }
+/* Лента брендов «Нам доверяют» — авто-бег + свайп пальцем на любой странице */
+.brands {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
+.brands__label { text-align: center; }
 .brands::before, .brands::after {
-  content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+  content: ''; position: absolute; top: 0; bottom: 0; width: 50px; z-index: 2; pointer-events: none;
 }
 .brands::before { left: 0;  background: linear-gradient(90deg, var(--kp-bg, #030303), transparent); }
 .brands::after  { right: 0; background: linear-gradient(-90deg, var(--kp-bg, #030303), transparent); }
+/* Прокручиваемая дорожка: можно двигать пальцем, авто-бег продолжается */
+.brands__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.brands__viewport::-webkit-scrollbar { display: none; }
 .brands__track {
   display: flex;
   width: max-content;
   will-change: transform;
-  animation: kpMarquee 24s linear infinite;
+  animation: kpMarquee 26s linear infinite;
 }
-.brands:hover .brands__track { animation-play-state: paused; }
+.brands:hover .brands__track,
+.brands__viewport:active .brands__track { animation-play-state: paused; }
 .brand-set { display: flex; align-items: center; }
 .brand-item { display: flex; align-items: center; justify-content: center; }
 @keyframes kpMarquee {
