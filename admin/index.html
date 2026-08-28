@@ -137,6 +137,75 @@
       transform: scale(.97);
     }
 
+    /* ==== ЕДИНАЯ СИСТЕМА КНОПОК (эргономика под палец, iPhone) ==== */
+    /* Базовая кнопка: всё что нажимается — выглядит и ведёт себя как кнопка */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform .12s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled, .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
+
+    /* Основная — золотая */
+    .btn--gold {
+      background: linear-gradient(135deg, #a87c14, #e8c540, #a87c14);
+      color: #09090f;
+      border: none;
+      font-weight: 700;
+      box-shadow: 0 4px 18px rgba(201, 162, 39, .32);
+    }
+    /* Подтвердить — зелёная */
+    .btn--green {
+      background: rgba(61, 191, 110, .14);
+      border-color: rgba(61, 191, 110, .45);
+      color: var(--green);
+    }
+    .btn--green:active { background: rgba(61, 191, 110, .24); }
+    /* Опасное действие — красная */
+    .btn--red {
+      background: rgba(232, 83, 72, .12);
+      border-color: rgba(232, 83, 72, .4);
+      color: var(--red);
+    }
+    .btn--red:active { background: rgba(232, 83, 72, .22); }
+    /* Второстепенная — золотой контур */
+    .btn--ghost {
+      background: rgba(201, 162, 39, .08);
+      border-color: rgba(201, 162, 39, .32);
+      color: var(--gold);
+    }
+    /* На всю ширину (удобно на телефоне) */
+    .btn--block { width: 100%; }
+    /* Компактная — но всё равно достаточно большая для пальца */
+    .btn--compact { min-height: 40px; padding: 9px 14px; font-size: 13px; border-radius: 10px; }
+
+    /* Существующие классы приводим к тем же правилам эргономики (высота/палец) */
+    .btn-primary { min-height: 50px; border-radius: 12px; }
+    .btn-confirm, .btn-cancel, .btn-view-ticket {
+      min-height: 44px; padding: 11px 16px; border-radius: 10px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 14px; transition: transform .12s ease, background .15s ease;
+    }
+    .btn-confirm:active, .btn-cancel:active, .btn-view-ticket:active { transform: scale(.97); }
+
     .login-hint {
       font-size: 12px;
       color: var(--dim);
@@ -737,13 +806,23 @@
     }
 
     .btn-sm {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 9px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
       font-family: 'Inter', sans-serif;
-      border: none;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      transition: transform .12s ease, background .15s ease;
     }
+    .btn-sm:active { transform: scale(.96); }
 
     .btn-sm-toggle {
       background: rgba(255, 255, 255, 0.06);
@@ -1349,7 +1428,7 @@
 
       .main-content {
         max-width: 100%;
-        padding: 16px 16px 80px;
+        padding: 16px 16px calc(90px + env(safe-area-inset-bottom, 0px));
       }
 
       .mobile-show-switcher {
@@ -1423,9 +1502,12 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--bg2);
+        background: rgba(14, 12, 32, 0.96);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border-top: 1px solid var(--border);
         z-index: 50;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
       }
 
       .bnav-item {
@@ -1433,20 +1515,26 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 8px 4px;
+        justify-content: center;
+        gap: 3px;
+        min-height: 56px;
+        padding: 8px 2px;
         font-size: 10px;
+        font-weight: 600;
         color: var(--dim);
         cursor: pointer;
-        transition: color .15s;
+        transition: color .15s, background .15s;
+        -webkit-tap-highlight-color: transparent;
       }
+      .bnav-item:active { background: rgba(201, 162, 39, .08); }
 
       .bnav-item.active {
         color: var(--gold);
       }
 
       .bnav-icon {
-        font-size: 20px;
-        margin-bottom: 2px;
+        font-size: 21px;
+        margin-bottom: 1px;
       }
     }
 
@@ -1650,8 +1738,8 @@
 
           <!-- Кнопки камеры -->
           <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
-            <button class="btn" id="btnStartScan" onclick="startScanner()" style="background:var(--gold); color:#000; min-width:170px; font-weight:700;">📷 Запустить камеру</button>
-            <button class="btn" id="btnStopScan" onclick="stopScanner()" style="display:none; background:#e85348; color:#fff; min-width:170px;">⏹ Остановить</button>
+            <button class="btn btn--gold" id="btnStartScan" onclick="startScanner()" style="min-width:180px;">📷 Запустить камеру</button>
+            <button class="btn btn--red" id="btnStopScan" onclick="stopScanner()" style="display:none; min-width:180px;">⏹ Остановить</button>
           </div>
 
           <!-- Ручной ввод -->
@@ -1659,7 +1747,7 @@
             <label style="display:block; font-size:12px; color:var(--dim); margin-bottom:6px; text-align:center;">Или введите номер билета вручную</label>
             <div style="display:flex; gap:8px; max-width:380px; margin:0 auto;">
               <input type="text" id="scannerInput" class="form-input" placeholder="Например, SEC-A1B2 или HUL-X..." style="flex:1;" onkeydown="if(event.key==='Enter'){manualScan();}">
-              <button class="btn" onclick="manualScan()" style="white-space:nowrap;">Проверить</button>
+              <button class="btn btn--ghost" onclick="manualScan()" style="white-space:nowrap;">Проверить</button>
             </div>
           </div>
         </div>
