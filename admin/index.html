@@ -1507,12 +1507,13 @@
       }
       .section-title > span { flex: 1 1 100%; }
 
-      /* Любые внутренние 2-колоночные сетки цен/настроек → 1 колонка на телефоне.
-         Убирает обрезание правой колонки за краем экрана. */
-      .config-tab-content > div[style*="grid"],
-      .settings-card > div[style*="grid-template-columns"],
-      .section [style*="repeat(2, 1fr)"],
-      .section [style*="repeat(auto-fit"] {
+      /* Любые внутренние сетки цен/настроек → 1 колонка на телефоне.
+         Убирает обрезание правой колонки и делает поля крупнее для пальца. */
+      #sec-private-config div[style*="grid"],
+      .config-tab-content div[style*="grid"],
+      .settings-card div[style*="grid-template-columns"],
+      .section div[style*="repeat(2, 1fr)"],
+      .section div[style*="repeat(auto-fit"] {
         grid-template-columns: 1fr !important;
       }
 
