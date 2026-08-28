@@ -703,11 +703,12 @@ body.show-page #stickyCta .buy-cta {
   body.show-page .hero { padding: 82px 18px 24px; }
   .show-hero-shell {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(210px, 36svh) auto;
+    grid-template-rows: auto auto;
     gap: 18px;
     justify-items: center;
   }
-  body.show-page .poster-wrap { width: auto; height: 100%; max-height: 330px; border-radius: 17px; }
+  /* Постер на мобильном: сохраняем пропорции 2/3, не растягиваем по высоте (иначе картинка режется/арка) */
+  body.show-page .poster-wrap { width: min(72vw, 300px); height: auto; max-height: none; aspect-ratio: 2 / 3; border-radius: 17px; }
   .show-hero-copy { width: min(100%, 560px); align-items: center; text-align: center; }
   body.show-page h1.title,
   body.show-page .subtitle { text-align: center; }
@@ -747,8 +748,8 @@ body.show-page #stickyCta .buy-cta {
 
 @media (max-width: 430px) {
   .show-header__projects { font-size: 10px; }
-  .show-hero-shell { grid-template-rows: minmax(180px, 33svh) auto; gap: 14px; }
-  body.show-page .poster-wrap { max-height: 285px; }
+  .show-hero-shell { grid-template-rows: auto auto; gap: 14px; }
+  body.show-page .poster-wrap { width: min(66vw, 260px); max-height: none; }
   body.show-page h1.title { font-size: clamp(36px, 11vw, 48px); }
   body.show-page--matvey h1.title { font-size: clamp(31px, 9.3vw, 42px); }
   .show-next-date span { font-size: 9px; }
