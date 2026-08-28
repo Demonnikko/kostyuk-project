@@ -1498,6 +1498,31 @@
         gap: 10px;
       }
 
+      /* ==== ОБЩИЕ МОБИЛЬНЫЕ ФИКСЫ ПЕРЕПОЛНЕНИЯ ==== */
+      /* Заголовок раздела с кнопкой действия — в колонку (кнопка под заголовком),
+         иначе на узком экране заголовок налезает вверх/на часы */
+      .section-title {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .section-title > span { flex: 1 1 100%; }
+
+      /* Любые внутренние 2-колоночные сетки цен/настроек → 1 колонка на телефоне.
+         Убирает обрезание правой колонки за краем экрана. */
+      .config-tab-content > div[style*="grid"],
+      .settings-card > div[style*="grid-template-columns"],
+      .section [style*="repeat(2, 1fr)"],
+      .section [style*="repeat(auto-fit"] {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Контроль зала (сканер): 3 карточки статистики остаются в ряд, но плотнее */
+      #scanStatsCards { gap: 8px !important; }
+
+      /* Ничего не должно вылезать по горизонтали */
+      .section, .settings-card, .card { max-width: 100% !important; }
+      input, select, textarea, .form-input { max-width: 100%; }
+
       .bottom-nav {
         display: flex;
         position: fixed;
