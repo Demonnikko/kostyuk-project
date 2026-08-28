@@ -390,8 +390,9 @@
       .block { padding: 16px 12px 16px 24px; }
       .block h3 { font-size: 16px; }
       .block p { font-size: 13px; }
-      .app-frame { width: 100%; max-width: 300px; height: auto; min-height: 460px; margin: 0 auto; }
-      .app-screen { max-height: 440px; }
+      /* Телефон-мокап: экран ровно вписан в рамку, контент скроллится внутри */
+      .app-frame { width: min(100%, 300px); height: 560px; min-height: 560px; max-height: 560px; margin: 0 auto; overflow: hidden; }
+      .app-screen { height: 100%; max-height: none; overflow-y: auto; }
       .app-info h2 { font-size: clamp(22px, 5vw, 30px); }
       .creator-photo img { height: auto; max-height: 280px; width: 100%; }
       .creator-photos { grid-template-columns: repeat(2,1fr); gap: 10px; }
@@ -429,8 +430,8 @@
       .block { padding: 14px 10px 14px 20px; }
       .block h3 { font-size: 15px; }
       .block p { font-size: 12px; }
-      .app-frame { max-width: 280px; min-height: 400px; }
-      .app-screen { max-height: 380px; padding: 10px; }
+      .app-frame { width: min(100%, 280px); height: 540px; min-height: 540px; max-height: 540px; }
+      .app-screen { height: 100%; max-height: none; padding: 12px; }
       .app-daily-item { font-size: 10px; padding: 6px 8px; }
       .app-mission { padding: 8px 10px; }
       .app-mission .title { font-size: 10px; }
@@ -775,9 +776,22 @@ body.school-page .app-frame {
   max-height: 600px !important;
   overflow: hidden !important;
 }
+/* Экран телефона ровно заполняет рамку, контент скроллится ВНУТРИ рамки */
 body.school-page .app-screen {
   min-width: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
   overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+/* На телефоне рамка ниже — чтобы влезала на экран без обрезания */
+@media (max-width: 600px) {
+  body.school-page .app-frame {
+    height: 540px !important;
+    min-height: 540px !important;
+    max-height: 540px !important;
+    width: min(100%, 280px) !important;
+  }
 }
 body.school-page .app-title-bar h3,
 body.school-page .app-profile-name,
