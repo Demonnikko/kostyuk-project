@@ -219,9 +219,9 @@ body.show-page .hero::before {
 }
 
 body.show-page .poster-wrap {
-  width: auto;
-  max-width: none;
-  height: min(66svh, 610px);
+  width: 100%;
+  max-width: 380px;
+  height: auto;
   aspect-ratio: 2 / 3;
   margin: 0;
   overflow: hidden;
