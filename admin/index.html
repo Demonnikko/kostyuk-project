@@ -1428,11 +1428,13 @@
 
       .main-content {
         max-width: 100%;
-        padding: 16px 16px calc(90px + env(safe-area-inset-bottom, 0px));
+        padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(90px + env(safe-area-inset-bottom, 0px));
       }
 
       .mobile-show-switcher {
         display: flex;
+        margin: 0 -16px 16px;
+        padding-bottom: 12px;
       }
 
       /* Split chats mobile view */
