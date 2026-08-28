@@ -833,7 +833,10 @@
       .show { border-radius: 18px; }
       .show:hover { transform: none; }
       .show__frame { border-radius: 18px; }
-      .show__content { padding: 14px 16px 16px; }
+      /* Отступ снизу + скругление кнопки, чтобы её углы не попадали в скруглённые
+         углы карточки (overflow:hidden) и не срезались «конусом» */
+      .show__content { padding: 14px 18px 30px; }
+      .show__content .show__cta { border-radius: 12px; margin-bottom: 4px; }
       .concerts-ecosystem {
         width: calc(100% - 32px);
         grid-template-columns: 1fr;
