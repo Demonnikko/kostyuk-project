@@ -38,7 +38,7 @@
   }
   </script>
   <link rel="stylesheet" href="/vendor/fonts/fonts.css" />
-  <link rel="stylesheet" href="/ecosystem.css?v=42" />
+  <link rel="stylesheet" href="/ecosystem.css?v=43" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
@@ -619,20 +619,7 @@
       background: #080808;
     }
     .brand-bar__actions { display: flex; align-items: center; gap: 8px; }
-    .brand-bar__phone {
-      min-height: 42px;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 10px 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 999px;
-      color: #fff;
-      background: rgba(255,255,255,.055);
-      font-size: 11px;
-      font-weight: 600;
-      backdrop-filter: blur(12px);
-    }
+    /* Телефон в шапке — единый стиль из ecosystem.css (не переопределяем) */
     .brand-bar .brand-bar__cta { border-radius: 999px; }
 
     .concerts-intro {
@@ -829,8 +816,6 @@
     .concerts-ecosystem__link i { color: var(--gold2); font-size: 18px; font-style: normal; }
 
     @media(max-width:700px) {
-      .brand-bar__phone { width: 44px; padding: 0; justify-content: center; }
-      .brand-bar__phone .header-phone-text { display: none; }
       .brand-bar .brand-bar__cta { padding: 0 14px; }
       .concerts-intro { min-height: 42svh; padding: 112px 18px 32px; }
       .concerts-intro h1 { font-size: clamp(39px, 13vw, 58px); }
@@ -891,21 +876,8 @@
 
   <section class="stage" id="shows" aria-label="Афиша авторских шоу">
     <div class="shows">
-      <a class="show show--secret" href="/concerts/secret/index.html" aria-label="Шоу Секрет — описание и билеты">
-        <img class="show__poster" src="/concerts/images/secret.webp?v=7" width="720" height="1080" loading="eager" fetchpriority="high" decoding="async" alt="Шоу Секрет" />
-        <div class="show__frame"></div>
-        <div class="show__overlay"></div>
-        <div class="show__content">
-          <span class="show__badge">Моноспектакль · 12+</span>
-          <h2 class="show__title">СЕКРЕТ</h2>
-          <span class="show__sub">История, после которой остаётся вопрос к себе</span>
-          <span class="show__schedule"><strong>31 октября · 18:00</strong><span>ЛАМПА · Ярославль</span><em>Продажа открыта</em></span>
-          <span class="show__cta">О шоу и билеты</span>
-        </div>
-      </a>
-
       <a class="show show--huligan" href="/concerts/huligan/index.html" aria-label="Шоу Хулиган — описание и билеты">
-        <img class="show__poster" src="/concerts/images/huligan.webp?v=9" width="720" height="1080" loading="lazy" decoding="async" alt="Шоу ХУЛИgan" />
+        <img class="show__poster" src="/concerts/images/huligan.webp?v=9" width="720" height="1080" loading="eager" fetchpriority="high" decoding="async" alt="Шоу ХУЛИgan" />
         <div class="show__frame"></div>
         <div class="show__overlay"></div>
         <div class="show__content">
@@ -913,6 +885,19 @@
           <h2 class="show__title">ХУЛИgan</h2>
           <span class="show__sub">Юмор, импровизация и магия без приличных манер</span>
           <span class="show__schedule"><strong>19 сентября · 18:00</strong><span>ЛАМПА · Ярославль</span><em>Продажа открыта</em></span>
+          <span class="show__cta">О шоу и билеты</span>
+        </div>
+      </a>
+
+      <a class="show show--secret" href="/concerts/secret/index.html" aria-label="Шоу Секрет — описание и билеты">
+        <img class="show__poster" src="/concerts/images/secret.webp?v=7" width="720" height="1080" loading="lazy" decoding="async" alt="Шоу Секрет" />
+        <div class="show__frame"></div>
+        <div class="show__overlay"></div>
+        <div class="show__content">
+          <span class="show__badge">Моноспектакль · 12+</span>
+          <h2 class="show__title">СЕКРЕТ</h2>
+          <span class="show__sub">История, после которой остаётся вопрос к себе</span>
+          <span class="show__schedule"><strong>31 октября · 18:00</strong><span>ЛАМПА · Ярославль</span><em>Продажа открыта</em></span>
           <span class="show__cta">О шоу и билеты</span>
         </div>
       </a>
@@ -996,6 +981,6 @@
     ym(107696179,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/107696179" style="position:absolute;left:-9999px" alt="" /></div></noscript>
-<script src="/ecosystem.js?v=11" data-root="/" data-section="shows" defer></script>
+<script src="/ecosystem.js?v=12" data-root="/" data-section="shows" defer></script>
 </body>
 </html>

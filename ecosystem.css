@@ -110,7 +110,9 @@ body { background: var(--kp-black); }
 .brand-bar__phone svg { color: var(--kp-gold); flex-shrink: 0; }
 @media (max-width: 720px) {
   .brand-bar__phone .header-phone-text { display: none; }
-  .brand-bar__phone { padding: 10px 12px; }
+  /* На телефоне — единый круглый значок телефона 44×44 на всех страницах */
+  .brand-bar__phone { width: 44px; height: 44px; padding: 0; justify-content: center; }
+  .brand-bar__phone svg { width: 16px; height: 16px; }
   .brand-bar__identity strong { font-size: 11px; letter-spacing: .08em; white-space: nowrap; }
   .brand-bar__identity strong span { display: none; }
   .brand-bar__identity small { font-size: 8.5px; }
