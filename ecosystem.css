@@ -1314,7 +1314,7 @@ body .section__text a, body p a:not([class]) {
   transition: color .25s ease;
 }
 body .section__text a:hover, body p a:not([class]):hover { color: var(--kp-gold-bright) !important; }
-body [class*="tag"]:not([class*="__"]), body [class*="chip"]:not([class*="__"]),
+body [class*="tag"]:not([class*="__"]):not(.stage), body [class*="chip"]:not([class*="__"]),
 body .show-hero__meta span, body .hero-age {
   border-radius: 999px !important;
 }
