@@ -70,12 +70,13 @@
       padding: 140px 24px 60px;
       background-color: var(--bg);
       background-image:
-        radial-gradient(ellipse 44% 30% at 50% 45%, rgba(214, 172, 69, 0.12) 0%, rgba(214, 172, 69, 0.035) 38%, transparent 72%),
-        linear-gradient(90deg, rgba(3, 3, 3, 0.97) 0%, rgba(3, 3, 3, 0.78) 36%, rgba(3, 3, 3, 0.70) 50%, rgba(3, 3, 3, 0.80) 64%, rgba(3, 3, 3, 0.97) 100%),
+        radial-gradient(ellipse 44% 30% at 50% 45%, rgba(214, 172, 69, 0.10) 0%, transparent 72%),
+        linear-gradient(90deg, rgba(3, 3, 3, 0.86) 0%, rgba(3, 3, 3, 0.32) 40%, rgba(3, 3, 3, 0.22) 50%, rgba(3, 3, 3, 0.36) 60%, rgba(3, 3, 3, 0.88) 100%),
+        linear-gradient(to bottom, rgba(3,3,3,0.5) 0%, transparent 30%, transparent 70%, #030303 100%),
         url('assets/logo/abracadabra-a-mark.png');
-      background-position: center center, center center, center 52%;
-      background-repeat: no-repeat, no-repeat, no-repeat;
-      background-size: auto, auto, min(960px, 74vw) auto;
+      background-position: center center, center center, center center, center 48%;
+      background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+      background-size: auto, auto, auto, min(780px, 88vw) auto;
     }
     .hero::before {
       content: '';
@@ -92,13 +93,13 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 36px 28px 34px;
-      border: 1px solid rgba(214, 172, 69, 0.14);
+      padding: 32px 26px 30px;
+      border: 1px solid rgba(214, 172, 69, 0.16);
       border-radius: 24px;
-      background: rgba(3, 3, 3, 0.40);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      background: rgba(3, 3, 3, 0.28);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
     }
     .hero-mark-wrap {
       width: 92px;
