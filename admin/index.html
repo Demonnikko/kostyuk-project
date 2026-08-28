@@ -7753,11 +7753,37 @@
   </script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <script>
-    // Регистрируем service worker админки (нужен для установки PWA на телефон)
+    // Регистрируем service worker админки с АВТООБНОВЛЕНИЕМ.
+    // PWA сама подхватывает свежую версию при каждом открытии — ничего нажимать не надо.
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./admin-sw.js').catch(function (e) {
+        navigator.serviceWorker.register('./admin-sw.js').then(function (reg) {
+          // Проверяем обновление сразу и потом периодически
+          reg.update();
+          setInterval(function () { reg.update(); }, 60 * 1000);
+
+          // Новый SW установился в фоне → просим его активироваться
+          reg.addEventListener('updatefound', function () {
+            var nw = reg.installing;
+            if (!nw) return;
+            nw.addEventListener('statechange', function () {
+              if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                // есть свежая версия — активируем её
+                nw.postMessage('skipWaiting');
+              }
+            });
+          });
+        }).catch(function (e) {
           console.log('admin SW register failed:', e);
+        });
+
+        // Когда новый SW взял управление — тихо перезагружаем страницу на свежую версию.
+        // reloadOnce защищает от бесконечной перезагрузки.
+        var reloadOnce = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function () {
+          if (reloadOnce) return;
+          reloadOnce = true;
+          location.reload();
         });
       });
     }
