@@ -16,8 +16,42 @@
 //
 // ПЕРЕД записью: локальный статик-сервер должен отдавать страницы (python3 -m http.server 8899).
 
-import { existsSync } from 'node:fs';
-import { fbPut, FB_URL } from '../shared/firebase.js';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+// Подгружаем локальные секреты (.env.local и т.п.) в process.env ДО импорта firebase.js,
+// как это делает server.js. Значения из шелла имеют приоритет. Секреты не логируются.
+(function loadLocalEnv() {
+  const dir = path.dirname(fileURLToPath(import.meta.url));
+  const root = path.join(dir, '..');
+  const shellKeys = new Set(Object.keys(process.env));
+  for (const fileName of ['.env', '.env.local', '.env.vercel.local']) {
+    const full = path.join(root, fileName);
+    if (!existsSync(full)) continue;
+    for (const line of readFileSync(full, 'utf8').split(/\r?\n/)) {
+      const t = line.trim();
+      if (!t || t.startsWith('#')) continue;
+      const clean = t.startsWith('export ') ? t.slice(7).trim() : t;
+      const eq = clean.indexOf('=');
+      if (eq <= 0) continue;
+      const key = clean.slice(0, eq).trim();
+      if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key) || shellKeys.has(key)) continue;
+      let val = clean.slice(eq + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      val = val.replace(/\\n/g, '').trim();
+      // Первое непустое значение побеждает: не даём более позднему файлу
+      // (напр. .env.vercel.local с FIREBASE_DB_URL="") затереть рабочее значение.
+      if (val === '' && process.env[key]) continue;
+      if (process.env[key] && process.env[key] !== '') continue;
+      process.env[key] = val;
+    }
+  }
+})();
+
+const { fbPut, FB_URL } = await import('../shared/firebase.js');
 
 const SHOWS = {
   secret: '/concerts/secret/',
