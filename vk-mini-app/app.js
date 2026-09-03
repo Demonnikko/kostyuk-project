@@ -7,6 +7,7 @@ import {
 import { SHOWS } from './lib/shows.js';
 import { createApiClient } from './lib/api.js';
 import { loadShowData } from './lib/show-data.js';
+import { createCheckout } from './lib/checkout.js';
 
 function showHref(locationLike, showId) {
   return buildLaunchHref(locationLike, showId);
@@ -77,8 +78,9 @@ function renderShow(root, show, state = { status: 'loading' }) {
       : `<p class="show-detail__notice">Дата уточняется.</p>`;
     const seatsHtml = summary
       ? `<p class="show-detail__seats">Свободно мест: <strong>${summary.free}</strong> из ${summary.total}</p>`
-      : `<p class="show-detail__notice">Схема мест загрузится при оформлении.</p>`;
-    detailHtml = `${scheduleHtml}${seatsHtml}`;
+      : '';
+    const buyHtml = `<button class="show-detail__buy" type="button" data-show-buy="${show.id}">Купить билет</button>`;
+    detailHtml = `${scheduleHtml}${seatsHtml}${buyHtml}`;
   }
 
   root.innerHTML = `
@@ -112,9 +114,28 @@ export function createShellController({
   logger = console,
   apiClient = createApiClient(),
   loadData = loadShowData,
+  checkoutFactory = createCheckout,
+  vkUserId = null,
+  bridge = null,
 }) {
   // Токен загрузки: защищает от гонки, если пользователь быстро переключил шоу.
   let loadToken = 0;
+  let checkoutCtrl = null;
+
+  function openCheckout(showId) {
+    // Монтируем поток покупки внутри текущего экрана шоу.
+    const container = document.createElement('div');
+    root.appendChild(container);
+    checkoutCtrl = checkoutFactory({
+      root: container,
+      showId,
+      client: apiClient,
+      vkUserId,
+      bridge,
+      onError: (e) => logger.error?.(e),
+    });
+    checkoutCtrl.start();
+  }
 
   async function loadAndRenderShow(show, { focusHeading }) {
     const token = ++loadToken;
@@ -150,6 +171,12 @@ export function createShellController({
   }
 
   function handleRouteClick(event) {
+    const buyControl = event.target.closest?.('[data-show-buy]');
+    if (buyControl) {
+      event.preventDefault();
+      openCheckout(buyControl.dataset.showBuy);
+      return;
+    }
     const retryControl = event.target.closest?.('[data-show-retry]');
     if (retryControl) {
       event.preventDefault();

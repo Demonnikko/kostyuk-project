@@ -264,3 +264,61 @@ h1 {
     animation: none;
   }
 }
+
+/* ── Экран покупки (выбор места + контакты) ── */
+.show-detail__buy {
+  margin-top: 18px;
+  min-height: 52px;
+  width: 100%;
+  color: #14080a;
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #f0d98b, #d6ac45);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.show-detail__buy:focus-visible { outline: 2px solid #f0d98b; outline-offset: 2px; }
+
+.checkout { margin-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+.checkout__map {
+  background: #0a0a0c;
+  border: 1px solid rgba(214,172,69,.22);
+  border-radius: 14px;
+  padding: 10px;
+}
+.seatmap__svg { width: 100%; height: auto; display: block; }
+.seatmap__hit { cursor: pointer; }
+.seatmap__hit[aria-disabled="true"] { cursor: not-allowed; }
+.checkout__status, .checkout__error { color: #aaa69d; text-align: center; padding: 24px 12px; }
+.checkout__error { color: #f5f0e5; border-left: 3px solid #e85348; background: #111114; text-align: left; border-radius: 8px; }
+
+.checkout__cart { background: #111114; border-radius: 12px; padding: 14px 16px; }
+.checkout__list { margin: 0 0 8px; padding-left: 18px; color: #f5f0e5; }
+.checkout__total { margin: 0; font-size: 16px; color: #f0d98b; }
+.checkout__total strong { color: #f5f0e5; }
+
+.checkout__form { display: flex; flex-direction: column; gap: 12px; }
+.checkout__form label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #aaa69d; }
+.checkout__form input {
+  min-height: 46px;
+  padding: 0 14px;
+  color: #f5f0e5;
+  font-size: 16px;
+  background: #0a0a0c;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 10px;
+}
+.checkout__form input:focus { outline: none; border-color: #d6ac45; }
+.checkout__pay {
+  min-height: 54px;
+  color: #14080a;
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #f0d98b, #d6ac45);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.checkout__pay:disabled { opacity: .55; cursor: default; }
+.checkout__note { margin: 0; font-size: 12px; color: #aaa69d; line-height: 1.4; }
