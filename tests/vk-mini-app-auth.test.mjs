@@ -252,3 +252,15 @@ test('API client normalizes request timeouts', async () => {
     return true;
   });
 });
+
+test('api client uses an absolute /api path as-is (does not prefix baseUrl)', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => { calls.push(url); return { ok: true, status: 200, async json() { return { ok: true }; } }; };
+  const { createApiClient } = await import('../vk-mini-app/lib/api.js');
+  const client = createApiClient({ baseUrl: '/api/vk-mini-app', fetchImpl });
+  await client.getJson('/api/seats?type=config&show=secret');
+  assert.equal(calls[0], '/api/seats?type=config&show=secret');
+  // relative ?query still attaches to baseUrl
+  await client.getJson('?action=layout&show=huligan');
+  assert.equal(calls[1], '/api/vk-mini-app?action=layout&show=huligan');
+});

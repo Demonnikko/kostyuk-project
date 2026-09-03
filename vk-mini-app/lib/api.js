@@ -10,8 +10,11 @@ export class ApiError extends Error {
 function requestUrl(baseUrl, path) {
   if (!path) return baseUrl;
   if (/^https?:\/\//i.test(path)) return path;
+  // Абсолютный путь от корня (например '/api/seats?...') используем как есть,
+  // не приклеивая к baseUrl — иначе получится '/api/vk-mini-app/api/seats'.
+  if (path.startsWith('/')) return path;
   if (path.startsWith('?')) return `${baseUrl}${path}`;
-  return `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+  return `${baseUrl.replace(/\/$/, '')}/${path}`;
 }
 
 export function createApiClient({
