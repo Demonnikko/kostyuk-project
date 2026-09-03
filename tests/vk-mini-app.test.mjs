@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
+import { createServer } from 'node:http';
+import { extname, join, normalize } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -139,106 +140,103 @@ test('all locally referenced posters and fonts exist in the deployment tree', as
   }
 });
 
-test('shell preserves VK context, renders routes, and focuses headings through browser history', async () => {
-  const { createShellController } = await import('../vk-mini-app/app.js');
-  const locationLike = {
-    pathname: '/vk-mini-app/',
-    search: '?vk_user_id=42&vk_platform=mobile_web&sign=signed',
-    hash: '#launch',
-  };
-  const listeners = new Map();
-  const documentLike = { activeElement: null };
-  const root = {
-    ownerDocument: documentLike,
-    innerHTML: '',
-    addEventListener(type, listener) {
-      listeners.set(type, listener);
-    },
-    querySelector(selector) {
-      if (selector !== 'h1') return null;
-      const title = this.innerHTML.match(/<h1>([^<]+)<\/h1>/)?.[1];
-      if (!title) return null;
-      return {
-        textContent: title,
-        setAttribute() {},
-        focus() {
-          documentLike.activeElement = this;
-        },
-      };
-    },
-    clickRoute(show) {
-      let prevented = false;
-      listeners.get('click')({
-        preventDefault() {
-          prevented = true;
-        },
-        target: {
-          closest(selector) {
-            assert.equal(selector, '[data-show-route]');
-            return { dataset: { showRoute: show || '' } };
-          },
-        },
-      });
-      assert.equal(prevented, true);
-    },
-  };
-  const eventTarget = {
-    addEventListener(type, listener) {
-      listeners.set(type, listener);
-    },
-    dispatch(type) {
-      listeners.get(type)();
-    },
-  };
-  const entries = [`${locationLike.pathname}${locationLike.search}${locationLike.hash}`];
-  let position = 0;
-  function applyHref(href) {
-    const url = new URL(href, 'https://mini-app.local');
-    locationLike.pathname = url.pathname;
-    locationLike.search = url.search;
-    locationLike.hash = url.hash;
+test('real browser preserves VK context, renders routes, and focuses headings through history', { timeout: 30_000 }, async (t) => {
+  const browserCandidates = [
+    process.env.CHROME_PATH,
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+  ].filter(Boolean);
+  const executablePath = browserCandidates.find(existsSync);
+  if (!executablePath) {
+    t.skip(`No local Chrome/Chromium executable found in: ${browserCandidates.join(', ')}`);
+    return;
   }
-  const historyLike = {
-    pushState(_state, _title, href) {
-      entries.splice(position + 1, entries.length, href);
-      position += 1;
-      applyHref(href);
-    },
-    back() {
-      position -= 1;
-      applyHref(entries[position]);
-      eventTarget.dispatch('popstate');
-    },
-    forward() {
-      position += 1;
-      applyHref(entries[position]);
-      eventTarget.dispatch('popstate');
-    },
+
+  const contentTypes = {
+    '.css': 'text/css; charset=utf-8',
+    '.html': 'text/html; charset=utf-8',
+    '.js': 'text/javascript; charset=utf-8',
+    '.ttf': 'font/ttf',
+    '.webp': 'image/webp',
   };
-  const shell = createShellController({ root, locationLike, historyLike, eventTarget });
-  const assertRoute = ({ show, heading }) => {
-    const params = new URLSearchParams(locationLike.search);
-    assert.equal(params.get('vk_user_id'), '42');
-    assert.equal(params.get('vk_platform'), 'mobile_web');
-    assert.equal(params.get('sign'), 'signed');
-    assert.equal(params.get('show'), show);
-    assert.equal(locationLike.hash, '#launch');
-    assert.match(root.innerHTML, new RegExp(`<h1>${heading}</h1>`));
-    assert.equal(documentLike.activeElement?.textContent, heading);
-  };
+  const server = createServer(async (request, response) => {
+    try {
+      const url = new URL(request.url, 'http://127.0.0.1');
+      const pathname = decodeURIComponent(url.pathname.endsWith('/') ? `${url.pathname}index.html` : url.pathname);
+      const filePath = normalize(join(projectRoot, pathname));
+      if (!filePath.startsWith(projectRoot)) throw new Error('Path outside project root');
+      const body = await readFile(filePath);
+      response.writeHead(200, { 'Content-Type': contentTypes[extname(filePath)] || 'application/octet-stream' });
+      response.end(body);
+    } catch {
+      response.writeHead(404).end('Not found');
+    }
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
 
-  shell.start();
-  assert.match(root.innerHTML, /<h1>Авторские шоу<\/h1>/);
+  const { default: puppeteer } = await import('puppeteer-core');
+  let browser;
+  try {
+    browser = await puppeteer.launch({ executablePath, headless: true });
+    const page = await browser.newPage();
+    const pageErrors = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    const port = server.address().port;
+    const launchUrl = `http://127.0.0.1:${port}/vk-mini-app/?vk_user_id=123&vk_app_id=54751520#launch`;
 
-  root.clickRoute('secret');
-  assertRoute({ show: 'secret', heading: 'Секрет' });
+    const readRouteState = () => page.evaluate(() => {
+      const heading = document.querySelector('h1');
+      const params = new URLSearchParams(window.location.search);
+      return {
+        heading: heading?.textContent,
+        focusedHeading: document.activeElement === heading,
+        hash: window.location.hash,
+        show: params.get('show'),
+        vkAppId: params.get('vk_app_id'),
+        vkUserId: params.get('vk_user_id'),
+      };
+    });
+    const waitForHeading = (heading) => page.waitForFunction(
+      (expected) => document.querySelector('h1')?.textContent === expected,
+      {},
+      heading,
+    );
+    const assertRoute = async ({ heading, show }) => {
+      assert.deepEqual(await readRouteState(), {
+        heading,
+        focusedHeading: true,
+        hash: '#launch',
+        show,
+        vkAppId: '54751520',
+        vkUserId: '123',
+      });
+    };
 
-  historyLike.back();
-  assertRoute({ show: null, heading: 'Авторские шоу' });
+    const launchResponse = await page.goto(launchUrl, { waitUntil: 'load' });
+    await page.waitForSelector('[data-show-route="secret"]', { timeout: 5_000 }).catch(async (error) => {
+      const heading = await page.$eval('h1', (element) => element.textContent).catch(() => null);
+      throw new Error(`${error.message}; HTTP ${launchResponse?.status()}; h1=${heading}; pageErrors=${pageErrors.join(' | ')}`);
+    });
+    await page.click('[data-show-route="secret"]');
+    await waitForHeading('Секрет');
+    await assertRoute({ heading: 'Секрет', show: 'secret' });
 
-  historyLike.forward();
-  assertRoute({ show: 'secret', heading: 'Секрет' });
+    await page.goBack({ waitUntil: 'load' });
+    await waitForHeading('Авторские шоу');
+    await assertRoute({ heading: 'Авторские шоу', show: null });
 
-  root.clickRoute(null);
-  assertRoute({ show: null, heading: 'Авторские шоу' });
+    await page.goForward({ waitUntil: 'load' });
+    await waitForHeading('Секрет');
+    await assertRoute({ heading: 'Секрет', show: 'secret' });
+
+    await page.click('.show-detail__back');
+    await waitForHeading('Авторские шоу');
+    await assertRoute({ heading: 'Авторские шоу', show: null });
+  } finally {
+    await browser?.close();
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
 });
