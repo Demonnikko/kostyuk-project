@@ -6,15 +6,13 @@ import {
 } from './lib/router.js';
 import { SHOWS } from './lib/shows.js';
 
-const app = document.querySelector('#app');
-
-function showHref(showId) {
-  return buildLaunchHref(window.location, showId);
+function showHref(locationLike, showId) {
+  return buildLaunchHref(locationLike, showId);
 }
 
-function renderCatalog() {
+function renderCatalog(root, locationLike) {
   const cards = Object.values(SHOWS).map((show) => `
-    <a class="show-card" href="${showHref(show.id)}" data-show-route="${show.id}">
+    <a class="show-card" href="${showHref(locationLike, show.id)}" data-show-route="${show.id}">
       <img class="show-card__poster" src="${show.poster}" alt="Афиша шоу «${show.title}»" />
       <span class="show-card__body">
         <h2>${show.title}</h2>
@@ -24,7 +22,7 @@ function renderCatalog() {
     </a>
   `).join('');
 
-  app.innerHTML = `
+  root.innerHTML = `
     <section class="catalog">
       <header class="catalog__header">
         <p class="eyebrow">Kostyuk Project</p>
@@ -36,8 +34,8 @@ function renderCatalog() {
   `;
 }
 
-function renderShow(show) {
-  app.innerHTML = `
+function renderShow(root, show) {
+  root.innerHTML = `
     <article class="show-detail">
       <button class="show-detail__back" type="button" data-show-route>← Все шоу</button>
       <img class="show-detail__poster" src="${show.poster}" alt="Афиша шоу «${show.title}»" />
@@ -49,11 +47,10 @@ function renderShow(show) {
       </div>
     </article>
   `;
-
 }
 
-function renderUnavailable() {
-  app.innerHTML = `
+function renderUnavailable(root) {
+  root.innerHTML = `
     <section class="state-view" data-state="unavailable" role="alert">
       <h1>Афиша временно недоступна</h1>
       <p>Попробуйте открыть приложение ещё раз немного позже.</p>
@@ -61,28 +58,54 @@ function renderUnavailable() {
   `;
 }
 
-function render({ focusHeading = false } = {}) {
-  const route = parseLaunchRoute(window.location);
-  const show = route.show ? SHOWS[route.show] : null;
-  show ? renderShow(show) : renderCatalog();
-  if (focusHeading) focusRouteHeading(app);
+export function createShellController({
+  root,
+  locationLike,
+  historyLike,
+  eventTarget,
+  logger = console,
+}) {
+  function render({ focusHeading = false } = {}) {
+    const route = parseLaunchRoute(locationLike);
+    const show = route.show ? SHOWS[route.show] : null;
+    show ? renderShow(root, show) : renderCatalog(root, locationLike);
+    if (focusHeading) focusRouteHeading(root);
+  }
+
+  function handleRouteClick(event) {
+    const routeControl = event.target.closest?.('[data-show-route]');
+    if (!routeControl) return;
+
+    event.preventDefault();
+    pushLaunchRoute(historyLike, locationLike, routeControl.dataset.showRoute || null);
+    render({ focusHeading: true });
+  }
+
+  function handlePopState() {
+    render({ focusHeading: true });
+  }
+
+  function start() {
+    try {
+      render();
+      root.addEventListener('click', handleRouteClick);
+      eventTarget.addEventListener('popstate', handlePopState);
+    } catch (error) {
+      logger.error(error);
+      renderUnavailable(root);
+      focusRouteHeading(root);
+    }
+  }
+
+  return { start };
 }
 
-function handleRouteClick(event) {
-  const routeControl = event.target.closest('[data-show-route]');
-  if (!routeControl) return;
-
-  event.preventDefault();
-  pushLaunchRoute(window.history, window.location, routeControl.dataset.showRoute || null);
-  render({ focusHeading: true });
-}
-
-try {
-  render();
-  app.addEventListener('click', handleRouteClick);
-  window.addEventListener('popstate', () => render({ focusHeading: true }));
-} catch (error) {
-  console.error(error);
-  renderUnavailable();
-  focusRouteHeading(app);
+if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+  const app = document.querySelector('#app');
+  createShellController({
+    root: app,
+    locationLike: window.location,
+    historyLike: window.history,
+    eventTarget: window,
+  }).start();
 }

@@ -106,7 +106,7 @@ test('moves focus to the route heading after dynamic navigation', async () => {
   assert.equal(focusRouteHeading({ querySelector: () => null }), false);
 });
 
-test('ships accessible loading and unavailable states plus route focus wiring', () => {
+test('ships accessible loading and unavailable states', () => {
   const html = readFileSync(join(appRoot, 'index.html'), 'utf8');
   const appSource = readFileSync(join(appRoot, 'app.js'), 'utf8');
 
@@ -114,8 +114,6 @@ test('ships accessible loading and unavailable states plus route focus wiring', 
   assert.match(html, /aria-label="Загрузка афиши"/);
   assert.doesNotMatch(html, /<main[^>]*aria-live=/);
   assert.match(appSource, /data-state="unavailable"[^>]*role="alert"/);
-  assert.match(appSource, /focusRouteHeading\(app\)/);
-  assert.match(appSource, /addEventListener\('popstate'/);
 });
 
 test('declares every VK safe-area inset', () => {
@@ -139,4 +137,108 @@ test('all locally referenced posters and fonts exist in the deployment tree', as
   for (const fontPath of fontPaths) {
     assert.equal(existsSync(join(appRoot, fontPath)), true, `${fontPath} must be deployed with the app`);
   }
+});
+
+test('shell preserves VK context, renders routes, and focuses headings through browser history', async () => {
+  const { createShellController } = await import('../vk-mini-app/app.js');
+  const locationLike = {
+    pathname: '/vk-mini-app/',
+    search: '?vk_user_id=42&vk_platform=mobile_web&sign=signed',
+    hash: '#launch',
+  };
+  const listeners = new Map();
+  const documentLike = { activeElement: null };
+  const root = {
+    ownerDocument: documentLike,
+    innerHTML: '',
+    addEventListener(type, listener) {
+      listeners.set(type, listener);
+    },
+    querySelector(selector) {
+      if (selector !== 'h1') return null;
+      const title = this.innerHTML.match(/<h1>([^<]+)<\/h1>/)?.[1];
+      if (!title) return null;
+      return {
+        textContent: title,
+        setAttribute() {},
+        focus() {
+          documentLike.activeElement = this;
+        },
+      };
+    },
+    clickRoute(show) {
+      let prevented = false;
+      listeners.get('click')({
+        preventDefault() {
+          prevented = true;
+        },
+        target: {
+          closest(selector) {
+            assert.equal(selector, '[data-show-route]');
+            return { dataset: { showRoute: show || '' } };
+          },
+        },
+      });
+      assert.equal(prevented, true);
+    },
+  };
+  const eventTarget = {
+    addEventListener(type, listener) {
+      listeners.set(type, listener);
+    },
+    dispatch(type) {
+      listeners.get(type)();
+    },
+  };
+  const entries = [`${locationLike.pathname}${locationLike.search}${locationLike.hash}`];
+  let position = 0;
+  function applyHref(href) {
+    const url = new URL(href, 'https://mini-app.local');
+    locationLike.pathname = url.pathname;
+    locationLike.search = url.search;
+    locationLike.hash = url.hash;
+  }
+  const historyLike = {
+    pushState(_state, _title, href) {
+      entries.splice(position + 1, entries.length, href);
+      position += 1;
+      applyHref(href);
+    },
+    back() {
+      position -= 1;
+      applyHref(entries[position]);
+      eventTarget.dispatch('popstate');
+    },
+    forward() {
+      position += 1;
+      applyHref(entries[position]);
+      eventTarget.dispatch('popstate');
+    },
+  };
+  const shell = createShellController({ root, locationLike, historyLike, eventTarget });
+  const assertRoute = ({ show, heading }) => {
+    const params = new URLSearchParams(locationLike.search);
+    assert.equal(params.get('vk_user_id'), '42');
+    assert.equal(params.get('vk_platform'), 'mobile_web');
+    assert.equal(params.get('sign'), 'signed');
+    assert.equal(params.get('show'), show);
+    assert.equal(locationLike.hash, '#launch');
+    assert.match(root.innerHTML, new RegExp(`<h1>${heading}</h1>`));
+    assert.equal(documentLike.activeElement?.textContent, heading);
+  };
+
+  shell.start();
+  assert.match(root.innerHTML, /<h1>Авторские шоу<\/h1>/);
+
+  root.clickRoute('secret');
+  assertRoute({ show: 'secret', heading: 'Секрет' });
+
+  historyLike.back();
+  assertRoute({ show: null, heading: 'Авторские шоу' });
+
+  historyLike.forward();
+  assertRoute({ show: 'secret', heading: 'Секрет' });
+
+  root.clickRoute(null);
+  assertRoute({ show: null, heading: 'Авторские шоу' });
 });
