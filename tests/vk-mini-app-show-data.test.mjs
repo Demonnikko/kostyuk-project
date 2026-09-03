@@ -6,6 +6,7 @@ import {
   normalizeSeats,
   extractShowConfig,
   loadShowData,
+  loadHallForBooking,
 } from '../vk-mini-app/lib/show-data.js';
 
 // Real config shapes captured from production endpoints (2026-09-03):
@@ -93,4 +94,45 @@ test('loadShowData rejects an unknown show id without calling the API', async ()
   assert.equal(result.ok, false);
   assert.equal(result.error.code, 'unknown_show');
   assert.equal(called, false);
+});
+
+test('loadHallForBooking merges DB layout with live occupancy', async () => {
+  const client = {
+    getJson: async (path) => {
+      if (path === '?action=layout&show=huligan') {
+        return { ok: true, show: 'huligan', layout: {
+          viewBox: '0 0 580 410',
+          zones: { vip: { price: 1700 } },
+          seats: [
+            { key: 't1_3', zone: 'vip', seatNum: 1 },
+            { key: 't1_4', zone: 'vip', seatNum: 2 },
+          ],
+        } };
+      }
+      if (path === SHOW_ENDPOINTS.huligan.seats) return { t1_3: { status: 'taken' } };
+      throw new Error('unexpected path ' + path);
+    },
+  };
+  const hall = await loadHallForBooking('huligan', client);
+  assert.equal(hall.ok, true);
+  assert.equal(hall.viewBox, '0 0 580 410');
+  assert.equal(hall.seats.length, 2);
+  assert.equal(hall.seats.find((s) => s.key === 't1_3').taken, true);
+  assert.equal(hall.seats.find((s) => s.key === 't1_4').taken, false);
+});
+
+test('loadHallForBooking reports layout_missing before export', async () => {
+  const client = { getJson: async (path) => {
+    if (path.includes('action=layout')) return { ok: false };
+    return {};
+  } };
+  const hall = await loadHallForBooking('secret', client);
+  assert.equal(hall.ok, false);
+  assert.equal(hall.error.code, 'layout_missing');
+});
+
+test('loadHallForBooking rejects an unknown show', async () => {
+  const hall = await loadHallForBooking('nope', { getJson: async () => ({}) });
+  assert.equal(hall.ok, false);
+  assert.equal(hall.error.code, 'unknown_show');
 });

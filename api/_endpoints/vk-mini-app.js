@@ -1,6 +1,9 @@
 import crypto from 'node:crypto';
 import { setCors } from '../../shared/cors.js';
 import { verifyVkLaunchParams, VK_APP_ID } from '../../shared/vkLaunchParams.js';
+import { fbGet } from '../../shared/firebase.js';
+
+const SHOW_IDS = new Set(['secret', 'huligan', 'matvey']);
 
 const SESSION_TTL_SECONDS = 300;
 
@@ -82,12 +85,31 @@ export function verifyVkSessionFromRequest(req, secret) {
 }
 
 export default async function handler(req, res) {
-  const isHealth = req.method === 'GET' && req.query?.action === 'health';
-  setCors(req, res, { publicRead: isHealth, methods: 'GET, POST, OPTIONS' });
+  const action = req.method === 'GET' ? (req.query?.action || '') : '';
+  const isHealth = req.method === 'GET' && action === 'health';
+  const isLayout = req.method === 'GET' && action === 'layout';
+  setCors(req, res, { publicRead: isHealth || isLayout, methods: 'GET, POST, OPTIONS' });
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (isHealth) {
     return res.status(200).json({ ok: true, service: 'vk-mini-app', appId: VK_APP_ID });
+  }
+  // Публичное чтение схемы зала из базы (единый источник, экспортируется скриптом).
+  // Без секретов. Занятость мест Mini App берёт отдельно из существующих seats-эндпоинтов.
+  if (isLayout) {
+    const show = String(req.query?.show || '').trim();
+    if (!SHOW_IDS.has(show)) {
+      return res.status(400).json({ ok: false, error: 'Unknown show' });
+    }
+    try {
+      const layout = await fbGet(`${show}_hall_layout`);
+      if (!layout || !Array.isArray(layout.seats)) {
+        return res.status(404).json({ ok: false, error: 'Layout not exported yet' });
+      }
+      return res.status(200).json({ ok: true, show, layout });
+    } catch (e) {
+      return res.status(502).json({ ok: false, error: 'Layout read failed' });
+    }
   }
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false, error: 'Method Not Allowed' });

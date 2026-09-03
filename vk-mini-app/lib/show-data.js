@@ -78,3 +78,35 @@ export async function loadShowData(showId, client) {
     };
   }
 }
+
+// Builds a seat catalog for the picker: the hall layout from DB (single source,
+// exported from the site) with live occupancy overlaid from the seats endpoint.
+// Returns { ok, showId, viewBox, zones, seats:[{...layout, taken}], error }.
+export async function loadHallForBooking(showId, client) {
+  const endpoints = SHOW_ENDPOINTS[showId];
+  if (!endpoints) {
+    return { ok: false, showId, error: { code: 'unknown_show' } };
+  }
+  try {
+    const [layoutResp, rawSeats] = await Promise.all([
+      client.getJson(`?action=layout&show=${encodeURIComponent(showId)}`),
+      client.getJson(endpoints.seats),
+    ]);
+    const layout = layoutResp && layoutResp.layout;
+    if (!layout || !Array.isArray(layout.seats)) {
+      return { ok: false, showId, error: { code: 'layout_missing' } };
+    }
+    const occupancy = normalizeSeats(rawSeats);
+    const seats = layout.seats.map((s) => ({
+      ...s,
+      taken: Boolean(occupancy[s.key] && occupancy[s.key].taken),
+    }));
+    return { ok: true, showId, viewBox: layout.viewBox, zones: layout.zones || {}, seats, error: null };
+  } catch (error) {
+    return {
+      ok: false,
+      showId,
+      error: { code: error?.code || 'request_failed', status: error?.status || 0, message: error?.message || 'Не удалось загрузить схему зала' },
+    };
+  }
+}

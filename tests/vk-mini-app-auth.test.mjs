@@ -193,6 +193,32 @@ test('verifyVkSessionFromRequest reads Bearer header', async () => {
   }
 });
 
+test('layout endpoint validates the show id', async () => {
+  const { default: handler } = await import('../api/_endpoints/vk-mini-app.js');
+  const res = createResponse();
+  await handler({ method: 'GET', query: { action: 'layout', show: 'not-a-show' }, headers: {} }, res);
+  assert.equal(res.statusCode, 400);
+  assert.equal(res.body.ok, false);
+});
+
+test('layout endpoint is a public GET and returns 404 when not exported yet', async () => {
+  // With no FIREBASE_DB_URL, fbGet resolves to null -> "not exported yet".
+  const prev = process.env.FIREBASE_DB_URL;
+  delete process.env.FIREBASE_DB_URL;
+  try {
+    const { default: handler } = await import('../api/_endpoints/vk-mini-app.js');
+    const res = createResponse();
+    await handler({ method: 'GET', query: { action: 'layout', show: 'huligan' }, headers: {} }, res);
+    assert.equal(res.statusCode, 404);
+    assert.equal(res.body.ok, false);
+    // Public read: must not leak secrets/tokens.
+    assert.doesNotMatch(JSON.stringify(res.body), /secret|token|auth=/i);
+  } finally {
+    if (prev === undefined) delete process.env.FIREBASE_DB_URL;
+    else process.env.FIREBASE_DB_URL = prev;
+  }
+});
+
 test('API client sends sessions, parses JSON, and normalizes HTTP failures', async () => {
   const calls = [];
   const fetchImpl = async (url, options) => {
