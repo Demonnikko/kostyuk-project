@@ -8,12 +8,12 @@
 // paymentUrl; success is NEVER inferred from returning to the app — the T-Bank
 // webhook remains the source of truth.
 
-import { loadHallForBooking } from './show-data.js';
-import { renderSeatMap, selectionTotal, seatLabel } from './seat-map.js';
+import { loadHallForBooking } from './show-data.js?v=2';
+import { renderSeatMap, selectionTotal, seatLabel } from './seat-map.js?v=2';
 import {
   buildCreateBookingRequest,
   buildTbankInitRequest,
-} from './booking.js';
+} from './booking.js?v=2';
 
 const RESERVE_SHOWS = new Set(['secret', 'huligan']); // matvey holds seats via its own create call
 

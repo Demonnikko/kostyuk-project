@@ -3,11 +3,11 @@ import {
   focusRouteHeading,
   parseLaunchRoute,
   pushLaunchRoute,
-} from './lib/router.js';
-import { SHOWS } from './lib/shows.js';
-import { createApiClient } from './lib/api.js';
-import { loadShowData } from './lib/show-data.js';
-import { createCheckout } from './lib/checkout.js';
+} from './lib/router.js?v=2';
+import { SHOWS } from './lib/shows.js?v=2';
+import { createApiClient } from './lib/api.js?v=2';
+import { loadShowData } from './lib/show-data.js?v=2';
+import { createCheckout } from './lib/checkout.js?v=2';
 
 function showHref(locationLike, showId) {
   return buildLaunchHref(locationLike, showId);
