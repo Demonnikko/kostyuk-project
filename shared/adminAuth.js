@@ -9,6 +9,10 @@ const LEGACY_PASS_PATH = 'ticket_config/adminPassword';
 const SCRYPT_KEYLEN = 64;
 const SCRYPT_COST = { N: 16384, r: 8, p: 1 };
 const ALLOW_ADMIN_PASSWORD_IN_BODY = String(process.env.ALLOW_ADMIN_PASSWORD_IN_BODY || '').trim().toLowerCase() === 'true';
+const AUTH_FAILURE_WINDOW_MS = 10 * 60 * 1000;
+const AUTH_MAX_FAILURES = 8;
+const AUTH_FAILURE_BUCKET_LIMIT = 2000;
+const authFailures = new Map();
 
 function headerString(req, key) {
   const value = req?.headers?.[key];
@@ -34,6 +38,42 @@ function readAdminPass(req, body) {
     return typeof body?.adminPassword === 'string' ? body.adminPassword : '';
   }
   return '';
+}
+
+function adminAttemptKey(req) {
+  const forwarded = headerString(req, 'x-real-ip')
+    || headerString(req, 'cf-connecting-ip')
+    || headerString(req, 'x-forwarded-for').split(',')[0];
+  const raw = forwarded || req?.socket?.remoteAddress || 'unknown';
+  return String(raw).trim().slice(0, 64) || 'unknown';
+}
+
+function pruneAuthFailures(now) {
+  for (const [key, state] of authFailures) {
+    if (state.resetAt <= now) authFailures.delete(key);
+  }
+  while (authFailures.size > AUTH_FAILURE_BUCKET_LIMIT) {
+    authFailures.delete(authFailures.keys().next().value);
+  }
+}
+
+function isAdminAttemptBlocked(key, now = Date.now()) {
+  const state = authFailures.get(key);
+  if (!state || state.resetAt <= now) {
+    if (state) authFailures.delete(key);
+    return false;
+  }
+  return state.failures >= AUTH_MAX_FAILURES;
+}
+
+function recordAdminFailure(key, now = Date.now()) {
+  pruneAuthFailures(now);
+  const previous = authFailures.get(key);
+  const state = !previous || previous.resetAt <= now
+    ? { failures: 0, resetAt: now + AUTH_FAILURE_WINDOW_MS }
+    : previous;
+  state.failures += 1;
+  authFailures.set(key, state);
 }
 
 // ── Firebase helpers ──
@@ -110,19 +150,53 @@ async function getAdminPassword() {
   return securePass && typeof securePass === 'string' ? securePass : null;
 }
 
+// Кэш успешных проверок пароля (см. isAdminAuthorized ниже). Объявлен здесь, чтобы
+// setAdminPassword мог его сбросить при смене пароля.
+const AUTH_OK_CACHE = new Map(); // passHash -> expiresAt
+const AUTH_OK_TTL_MS = 90 * 1000;
+
+function fastHash(s) {
+  return crypto.createHash('sha256').update(String(s)).digest('hex');
+}
+
 async function setAdminPassword(newPass) {
   const hashed = await hashPassword(newPass);
   await fbPut(SECURE_PASS_PATH, hashed);
   try { await fbDelete(LEGACY_PASS_PATH); } catch { }
+  // Сбрасываем кэш успешных проверок — старый пароль не должен работать после смены.
+  AUTH_OK_CACHE.clear();
 }
 
+// Кэш успешных проверок пароля ускоряет админку: без него каждый запрос читал бы
+// пароль из Firebase и гонял scrypt (~80-150мс) — при загрузке дашборда это несколько
+// запросов подряд. Кэшируем ТОЛЬКО успех, по быстрому хэшу присланного пароля, на
+// короткий TTL. Безопасно: неверный пароль всегда идёт полным путём; при смене пароля
+// кэш очищается (setAdminPassword) и старый хэш не совпадёт; TTL короткий.
 async function isAdminAuthorized(req, body) {
   const adminPass = readAdminPass(req, body);
   if (!adminPass) return false;
+  const attemptKey = adminAttemptKey(req);
+  if (isAdminAttemptBlocked(attemptKey)) return false;
+
+  // Быстрый путь: этот же пароль уже подтверждён недавно.
+  const passHash = fastHash(adminPass);
+  const cachedUntil = AUTH_OK_CACHE.get(passHash);
+  if (cachedUntil && cachedUntil > Date.now()) {
+    return true;
+  }
+  if (cachedUntil) AUTH_OK_CACHE.delete(passHash); // протух
+
   const storedPass = await getAdminPassword();
-  if (!storedPass || typeof storedPass !== 'string') return false;
+  if (!storedPass || typeof storedPass !== 'string') {
+    recordAdminFailure(attemptKey);
+    return false;
+  }
 
   const ok = await verifyPassword(adminPass, storedPass);
+  if (ok) AUTH_OK_CACHE.set(passHash, Date.now() + AUTH_OK_TTL_MS);
+
+  if (ok) authFailures.delete(attemptKey);
+  else recordAdminFailure(attemptKey);
 
   // Автомиграция: если пароль ещё plaintext — хешируем при успешном логине
   if (ok && !isHashedPassword(storedPass)) {
