@@ -1,17 +1,20 @@
-import { parseLaunchRoute } from './lib/router.js';
+import {
+  buildLaunchHref,
+  focusRouteHeading,
+  parseLaunchRoute,
+  pushLaunchRoute,
+} from './lib/router.js';
 import { SHOWS } from './lib/shows.js';
 
 const app = document.querySelector('#app');
 
 function showHref(showId) {
-  const url = new URL(window.location.href);
-  url.searchParams.set('show', showId);
-  return `${url.pathname}${url.search}`;
+  return buildLaunchHref(window.location, showId);
 }
 
 function renderCatalog() {
   const cards = Object.values(SHOWS).map((show) => `
-    <a class="show-card" href="${showHref(show.id)}">
+    <a class="show-card" href="${showHref(show.id)}" data-show-route="${show.id}">
       <img class="show-card__poster" src="${show.poster}" alt="Афиша шоу «${show.title}»" />
       <span class="show-card__body">
         <h2>${show.title}</h2>
@@ -36,7 +39,7 @@ function renderCatalog() {
 function renderShow(show) {
   app.innerHTML = `
     <article class="show-detail">
-      <button class="show-detail__back" type="button" data-back>← Все шоу</button>
+      <button class="show-detail__back" type="button" data-show-route>← Все шоу</button>
       <img class="show-detail__poster" src="${show.poster}" alt="Афиша шоу «${show.title}»" />
       <div class="show-detail__content">
         <p class="eyebrow">Авторское шоу</p>
@@ -47,31 +50,39 @@ function renderShow(show) {
     </article>
   `;
 
-  app.querySelector('[data-back]').addEventListener('click', () => {
-    window.history.pushState({}, '', window.location.pathname);
-    renderCatalog();
-  });
 }
 
 function renderUnavailable() {
   app.innerHTML = `
-    <section class="state-view" data-state="unavailable">
+    <section class="state-view" data-state="unavailable" role="alert">
       <h1>Афиша временно недоступна</h1>
       <p>Попробуйте открыть приложение ещё раз немного позже.</p>
     </section>
   `;
 }
 
-function render() {
+function render({ focusHeading = false } = {}) {
   const route = parseLaunchRoute(window.location);
   const show = route.show ? SHOWS[route.show] : null;
   show ? renderShow(show) : renderCatalog();
+  if (focusHeading) focusRouteHeading(app);
+}
+
+function handleRouteClick(event) {
+  const routeControl = event.target.closest('[data-show-route]');
+  if (!routeControl) return;
+
+  event.preventDefault();
+  pushLaunchRoute(window.history, window.location, routeControl.dataset.showRoute || null);
+  render({ focusHeading: true });
 }
 
 try {
   render();
-  window.addEventListener('popstate', render);
+  app.addEventListener('click', handleRouteClick);
+  window.addEventListener('popstate', () => render({ focusHeading: true }));
 } catch (error) {
   console.error(error);
   renderUnavailable();
+  focusRouteHeading(app);
 }
