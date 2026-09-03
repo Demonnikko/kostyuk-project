@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#030303" />
     <title>Авторские шоу</title>
-    <link rel="stylesheet" href="./styles.css?v=2" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
   </head>
   <body>
     <main id="app" class="app-shell">
@@ -15,6 +15,11 @@
       </section>
     </main>
     <noscript>Для просмотра афиши включите JavaScript.</noscript>
-    <script type="module" src="./app.js?v=2"></script>
+    <!-- VK Bridge: связь с VK. Обязателен VKWebAppInit, иначе VK показывает
+         «Приложение не инициализировано». Грузим ЛОКАЛЬНО (не с unpkg — тот
+         блокируется в РФ белыми списками, ради обхода которых и делается Mini App).
+         Даёт window.vkBridge. -->
+    <script src="../vendor/vk-bridge/vk-bridge.min.js?v=3"></script>
+    <script type="module" src="./app.js?v=3"></script>
   </body>
 </html>

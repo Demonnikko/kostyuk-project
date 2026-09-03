@@ -3,11 +3,11 @@ import {
   focusRouteHeading,
   parseLaunchRoute,
   pushLaunchRoute,
-} from './lib/router.js?v=2';
-import { SHOWS } from './lib/shows.js?v=2';
-import { createApiClient } from './lib/api.js?v=2';
-import { loadShowData } from './lib/show-data.js?v=2';
-import { createCheckout } from './lib/checkout.js?v=2';
+} from './lib/router.js?v=3';
+import { SHOWS } from './lib/shows.js?v=3';
+import { createApiClient } from './lib/api.js?v=3';
+import { loadShowData } from './lib/show-data.js?v=3';
+import { createCheckout } from './lib/checkout.js?v=3';
 
 function showHref(locationLike, showId) {
   return buildLaunchHref(locationLike, showId);
@@ -211,12 +211,39 @@ export function createShellController({
   return { start };
 }
 
+// Инициализация VK Bridge: VK показывает «Приложение не инициализировано», пока
+// приложение не отправит VKWebAppInit. Делаем это как можно раньше. Bridge может
+// прийти как window.vkBridge (наш локальный скрипт) — при запуске вне VK его нет,
+// тогда просто работаем как обычный веб.
+function getVkBridge() {
+  const b = typeof window !== 'undefined' ? (window.vkBridge || window.vkConnect) : null;
+  return b && typeof b.send === 'function' ? b : null;
+}
+
+// Достаёт vk_user_id из launch-параметров запуска (URL search). Это лишь метка;
+// доверенная проверка личности — через серверную сессию (VKWebAppInit + подпись).
+function readVkUserId(locationLike) {
+  try {
+    const search = (locationLike.search || '').replace(/^\?/, '');
+    const params = new URLSearchParams(search);
+    const id = Number(params.get('vk_user_id'));
+    return Number.isFinite(id) && id > 0 ? id : null;
+  } catch { return null; }
+}
+
 if (typeof document !== 'undefined' && typeof window !== 'undefined') {
   const app = document.querySelector('#app');
+  const bridge = getVkBridge();
+  // Сообщаем VK, что приложение готово. Не блокируем рендер, если Bridge недоступен.
+  if (bridge) {
+    try { bridge.send('VKWebAppInit', {}); } catch (e) { /* вне VK — игнорируем */ }
+  }
   createShellController({
     root: app,
     locationLike: window.location,
     historyLike: window.history,
     eventTarget: window,
+    vkUserId: readVkUserId(window.location),
+    bridge,
   }).start();
 }
