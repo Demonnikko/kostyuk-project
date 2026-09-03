@@ -18,6 +18,7 @@ const routes = {
   'ticket-data': () => import('./_endpoints/ticket-data.js'),
   'ticket-link': () => import('./_endpoints/ticket-link.js'),
   'track': () => import('./_endpoints/track.js'),
+  'vk-mini-app': () => import('./_endpoints/vk-mini-app.js'),
   'widget-image': () => import('./_endpoints/widget-image.js')
 };
 
