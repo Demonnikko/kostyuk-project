@@ -1023,7 +1023,12 @@
       closeQuiz();
       routeToMiniApp(buildVkPersonalChatUrl(msg));
     }
-    function routeToBotForPrivate() { openAssistant(); }
+    // Екатерина (AI-чат) временно заморожена — кнопки ведут напрямую в личку ВК Дмитрия.
+    function routeToBotForPrivate() {
+      var msg = 'Здравствуйте! Хочу узнать стоимость выступления иллюзиониста на частное мероприятие.';
+      var url = buildVkPersonalChatUrl(msg);
+      window.open(url, '_blank', 'noopener');
+    }
 
     // ===== AI ASSISTANT =====
     var assistantMessages = []; // history { role, content }
