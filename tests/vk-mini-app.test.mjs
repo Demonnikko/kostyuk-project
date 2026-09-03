@@ -185,18 +185,28 @@ test('real browser preserves VK context, renders routes, and focuses headings th
     const pageErrors = [];
     page.on('pageerror', (error) => pageErrors.push(error.message));
     const port = server.address().port;
-    const launchUrl = `http://127.0.0.1:${port}/vk-mini-app/?vk_user_id=123&vk_app_id=54751520#launch`;
+    const launchParams = {
+      vk_user_id: '123',
+      vk_app_id: '54751520',
+      vk_language: 'ru',
+      vk_platform: 'mobile_web',
+      vk_is_app_user: '1',
+      vk_are_notifications_enabled: '0',
+      sign: 'mF_9q2Kx7Vb4Nw1Ys8Ld5Rc0Ta3Ph6Gj9Hu2Ze7AiQA',
+    };
+    const launchSearch = new URLSearchParams(launchParams).toString();
+    const launchUrl = `http://127.0.0.1:${port}/vk-mini-app/?${launchSearch}#launch`;
 
     const readRouteState = () => page.evaluate(() => {
       const heading = document.querySelector('h1');
       const params = new URLSearchParams(window.location.search);
+      params.delete('show');
       return {
         heading: heading?.textContent,
         focusedHeading: document.activeElement === heading,
         hash: window.location.hash,
-        show: params.get('show'),
-        vkAppId: params.get('vk_app_id'),
-        vkUserId: params.get('vk_user_id'),
+        launchParams: Object.fromEntries(params),
+        show: new URLSearchParams(window.location.search).get('show'),
       };
     });
     const waitForHeading = (heading) => page.waitForFunction(
@@ -209,9 +219,8 @@ test('real browser preserves VK context, renders routes, and focuses headings th
         heading,
         focusedHeading: true,
         hash: '#launch',
+        launchParams,
         show,
-        vkAppId: '54751520',
-        vkUserId: '123',
       });
     };
 
@@ -235,6 +244,11 @@ test('real browser preserves VK context, renders routes, and focuses headings th
     await page.click('.show-detail__back');
     await waitForHeading('Авторские шоу');
     await assertRoute({ heading: 'Авторские шоу', show: null });
+
+    const directLaunchUrl = `http://127.0.0.1:${port}/vk-mini-app/?${launchSearch}&show=huligan#launch`;
+    await page.goto(directLaunchUrl, { waitUntil: 'load' });
+    await waitForHeading('Хулиган');
+    await assertRoute({ heading: 'Хулиган', show: 'huligan' });
   } finally {
     await browser?.close();
     await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));

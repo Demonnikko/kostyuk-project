@@ -87,7 +87,7 @@ export function createShellController({
 
   function start() {
     try {
-      render();
+      render({ focusHeading: parseLaunchRoute(locationLike).show !== null });
       root.addEventListener('click', handleRouteClick);
       eventTarget.addEventListener('popstate', handlePopState);
     } catch (error) {
