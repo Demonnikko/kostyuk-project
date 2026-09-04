@@ -1,10 +1,30 @@
 // Read-only data layer for the three author shows.
-// Reads REAL data from the existing production endpoints — no invented schemas,
-// no second source of truth. Each show maps to its current contracts:
-//   secret  : GET /api/seats?type=config&show=secret , GET /api/seats?show=secret
-//   huligan : GET /api/seats?type=config&section=huligan , GET /api/seats?show=huligan
-//   matvey  : GET /api/matvey-seats?type=config , GET /api/matvey-seats
-// Occupancy statuses come straight from the server ('taken' / 'reserved' / 'available').
+//
+// БЕЛЫЕ СПИСКИ: под белыми списками домен kostyukproject.ru недоступен, поэтому
+// схему зала (layout) и конфиг (цены/дата) грузим из СТАТИЧНЫХ файлов бандла
+// (data/*.json на vk-apps.ru — белый список пускает). Они выгружены с боевого
+// сервера — тот же источник, что рисует сайт. Живую занятость мест (кто занял)
+// пытаемся получить с сервера best-effort: если запрос не дошёл (белые списки),
+// показываем места свободными — реальная занятость проверится на сервере при
+// оформлении брони (через api.vk.ru). Так схема зала видна ВСЕГДА, а не ошибка.
+
+// Грузит статичный JSON из бандла (относительно index.html). Never throws.
+async function loadLocalJson(path, fetchImpl = globalThis.fetch) {
+  try {
+    const res = await fetchImpl(path, { headers: { Accept: 'application/json' } });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+// Ключи локальных файлов, выгруженных с боевого сервера.
+const LOCAL_DATA = Object.freeze({
+  secret:  { layout: './data/layout-secret.json',  config: './data/config-secret.json' },
+  huligan: { layout: './data/layout-huligan.json', config: './data/config-huligan.json' },
+  matvey:  { layout: './data/layout-matvey.json',  config: './data/config-matvey.json' },
+});
 
 export const SHOW_ENDPOINTS = Object.freeze({
   secret: {
@@ -56,27 +76,24 @@ export async function loadShowData(showId, client) {
   if (!endpoints) {
     return { ok: false, showId, config: null, seats: {}, error: { code: 'unknown_show' } };
   }
+  // Конфиг (цены/дата/площадка) — из статичного файла бандла (белые списки).
+  const local = LOCAL_DATA[showId];
+  const rawConfig = local ? await loadLocalJson(local.config) : null;
+  // Занятость — best-effort с сервера.
+  let seats = {};
   try {
-    const [rawConfig, rawSeats] = await Promise.all([
-      client.getJson(endpoints.config),
-      client.getJson(endpoints.seats),
-    ]);
-    return {
-      ok: true,
-      showId,
-      config: extractShowConfig(showId, rawConfig),
-      seats: normalizeSeats(rawSeats),
-      error: null,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      showId,
-      config: null,
-      seats: {},
-      error: { code: error?.code || 'request_failed', status: error?.status || 0, message: error?.message || 'Не удалось загрузить данные шоу' },
-    };
+    const rawSeats = await client.getJson(endpoints.seats);
+    seats = normalizeSeats(rawSeats);
+  } catch {
+    seats = {};
   }
+  return {
+    ok: true,
+    showId,
+    config: extractShowConfig(showId, rawConfig),
+    seats,
+    error: null,
+  };
 }
 
 // Builds a seat catalog for the picker: the hall layout from DB (single source,
@@ -84,29 +101,28 @@ export async function loadShowData(showId, client) {
 // Returns { ok, showId, viewBox, zones, seats:[{...layout, taken}], error }.
 export async function loadHallForBooking(showId, client) {
   const endpoints = SHOW_ENDPOINTS[showId];
-  if (!endpoints) {
+  const local = LOCAL_DATA[showId];
+  if (!endpoints || !local) {
     return { ok: false, showId, error: { code: 'unknown_show' } };
   }
-  try {
-    const [layoutResp, rawSeats] = await Promise.all([
-      client.getJson(`?action=layout&show=${encodeURIComponent(showId)}`),
-      client.getJson(endpoints.seats),
-    ]);
-    const layout = layoutResp && layoutResp.layout;
-    if (!layout || !Array.isArray(layout.seats)) {
-      return { ok: false, showId, error: { code: 'layout_missing' } };
-    }
-    const occupancy = normalizeSeats(rawSeats);
-    const seats = layout.seats.map((s) => ({
-      ...s,
-      taken: Boolean(occupancy[s.key] && occupancy[s.key].taken),
-    }));
-    return { ok: true, showId, viewBox: layout.viewBox, zones: layout.zones || {}, seats, error: null };
-  } catch (error) {
-    return {
-      ok: false,
-      showId,
-      error: { code: error?.code || 'request_failed', status: error?.status || 0, message: error?.message || 'Не удалось загрузить схему зала' },
-    };
+  // Схема зала — из статичного файла бандла (работает под белыми списками).
+  const layoutFile = await loadLocalJson(local.layout);
+  const layout = layoutFile && layoutFile.layout;
+  if (!layout || !Array.isArray(layout.seats)) {
+    return { ok: false, showId, error: { code: 'layout_missing' } };
   }
+  // Занятость — best-effort с сервера. Под белыми списками запрос не дойдёт —
+  // тогда все места считаем свободными (реальная проверка при оформлении брони).
+  let occupancy = {};
+  try {
+    const rawSeats = await client.getJson(endpoints.seats);
+    occupancy = normalizeSeats(rawSeats);
+  } catch {
+    occupancy = {};
+  }
+  const seats = layout.seats.map((s) => ({
+    ...s,
+    taken: Boolean(occupancy[s.key] && occupancy[s.key].taken),
+  }));
+  return { ok: true, showId, viewBox: layout.viewBox, zones: layout.zones || {}, seats, error: null };
 }
