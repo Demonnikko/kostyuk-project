@@ -383,3 +383,14 @@ h1 {
 .show-screen__title { margin: 0; font-size: 30px; }
 .show-screen__desc { margin: 0; color: #aaa69d; font-size: 15px; line-height: 1.5; }
 .show-screen__checkout { margin-top: 4px; }
+
+/* --- Полная страница шоу (site/*.html) в iframe --- */
+.show-fullpage { position: fixed; inset: 0; display: flex; flex-direction: column; background: #030303; }
+.show-fullpage__back {
+  position: absolute; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 10px; z-index: 10;
+  min-height: 40px; padding: 8px 14px; border-radius: 20px;
+  background: rgba(10,10,12,.82); backdrop-filter: blur(8px);
+  border: 1px solid rgba(214,172,69,.35); color: #f0d98b;
+  font: 600 14px/1 'Inter', sans-serif; cursor: pointer;
+}
+.show-fullpage__frame { flex: 1; width: 100%; border: 0; background: #030303; }
