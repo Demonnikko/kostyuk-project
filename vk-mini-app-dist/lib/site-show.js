@@ -11,31 +11,34 @@ import { SHOWS } from './shows.js?v=3';
 import { createApiClient } from './api.js?v=3';
 import { createCheckout } from './checkout.js?v=3';
 
-// Каталог: карточки всех шоу. Без iframe, постеры — из бандла.
+// Каталог = реальная афиша сайта (site/afisha.html) в iframe из бандла.
+// Идентична сайту. Клик по шоу приходит из iframe через postMessage
+// ('kp-open-show'), который мы превращаем в onSelect.
 function renderCatalog({ doc, root, onSelect }) {
   const shell = doc.createElement('section');
-  shell.className = 'catalog';
-  const cards = Object.values(SHOWS).map((show) => `
-    <button class="show-card" type="button" data-show-route="${show.id}">
-      <img class="show-card__poster" src="${show.poster}" alt="Афиша шоу «${escapeHtml(show.title)}»" />
-      <span class="show-card__body">
-        <h2>${escapeHtml(show.title)}</h2>
-        <p>${escapeHtml(show.description)}</p>
-        <span class="show-card__action">Открыть шоу →</span>
-      </span>
-    </button>`).join('');
-  shell.innerHTML = `
-    <header class="catalog__header">
-      <p class="eyebrow">Kostyuk Project</p>
-      <h1>Авторские шоу</h1>
-      <p class="catalog__intro">Выберите историю, которую хотите увидеть на сцене.</p>
-    </header>
-    <div class="show-grid">${cards}</div>`;
-  shell.addEventListener('click', (event) => {
-    const card = event.target.closest?.('[data-show-route]');
-    if (card && onSelect) onSelect(card.dataset.showRoute);
-  });
+  shell.className = 'catalog-fullpage';
+  const frame = doc.createElement('iframe');
+  frame.className = 'catalog-fullpage__frame';
+  frame.title = 'Афиша авторских шоу';
+  frame.src = './site/afisha.html';
+  shell.append(frame);
   root.replaceChildren(shell);
+
+  function onMessage(e) {
+    const data = e && e.data;
+    if (data && data.type === 'kp-open-show' && data.show && onSelect) {
+      onSelect(data.show);
+    }
+  }
+  doc.defaultView.addEventListener('message', onMessage);
+  // Сохраняем для снятия слушателя при уходе с каталога.
+  frame._kpMessageHandler = onMessage;
+  return {
+    destroy() {
+      doc.defaultView.removeEventListener('message', frame._kpMessageHandler);
+      frame.remove();
+    },
+  };
 }
 
 function escapeHtml(v) {
@@ -110,7 +113,7 @@ export function mountSiteShow({ root, show = null, onBack, onSelect, bridge = nu
       ? renderFullPage({ doc, root, show, src: fullSrc, onBack })
       : renderShow({ doc, root, show, bridge, vkUserId, onBack, onError });
   } else {
-    renderCatalog({ doc, root, onSelect });
+    ctrl = renderCatalog({ doc, root, onSelect });
   }
   return {
     destroy() {

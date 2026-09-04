@@ -394,3 +394,7 @@ h1 {
   font: 600 14px/1 'Inter', sans-serif; cursor: pointer;
 }
 .show-fullpage__frame { flex: 1; width: 100%; border: 0; background: #030303; }
+
+/* --- Каталог = афиша сайта в iframe --- */
+.catalog-fullpage { position: fixed; inset: 0; background: #030303; }
+.catalog-fullpage__frame { width: 100%; height: 100%; border: 0; background: #030303; }
