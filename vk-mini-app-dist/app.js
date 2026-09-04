@@ -1,0 +1,286 @@
+import {
+  buildLaunchHref,
+  focusRouteHeading,
+  parseLaunchRoute,
+  pushLaunchRoute,
+} from './lib/router.js?v=3';
+import { SHOWS } from './lib/shows.js?v=3';
+import { createApiClient } from './lib/api.js?v=3';
+import { loadShowData } from './lib/show-data.js?v=3';
+import { createCheckout } from './lib/checkout.js?v=3';
+import { mountSiteShow } from './lib/site-show.js?v=6';
+
+function showHref(locationLike, showId) {
+  return buildLaunchHref(locationLike, showId);
+}
+
+function escapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Собирает читаемую строку расписания из реального конфига шоу.
+function scheduleLine(showConfig) {
+  const s = showConfig && showConfig.show;
+  if (!s) return '';
+  return [s.date, s.time, s.venue].filter(Boolean).map(escapeHtml).join(' · ');
+}
+
+// Считает свободные/всего места по реальной занятости с сервера.
+function seatSummary(seats) {
+  const values = Object.values(seats || {});
+  if (!values.length) return null;
+  const total = values.length;
+  const free = values.filter((x) => !x.taken).length;
+  return { total, free };
+}
+
+function renderCatalog(root, locationLike) {
+  const cards = Object.values(SHOWS).map((show) => `
+    <a class="show-card" href="${showHref(locationLike, show.id)}" data-show-route="${show.id}">
+      <img class="show-card__poster" src="${show.poster}" alt="Афиша шоу «${show.title}»" />
+      <span class="show-card__body">
+        <h2>${show.title}</h2>
+        <p>${show.description}</p>
+        <span class="show-card__action">Открыть шоу</span>
+      </span>
+    </a>
+  `).join('');
+
+  root.innerHTML = `
+    <section class="catalog">
+      <header class="catalog__header">
+        <p class="eyebrow">Kostyuk Project</p>
+        <h1>Авторские шоу</h1>
+        <p class="catalog__intro">Выберите историю, которую хотите увидеть на сцене.</p>
+      </header>
+      <div class="show-grid">${cards}</div>
+    </section>
+  `;
+}
+
+// state: { status: 'loading' | 'ready' | 'error', data?, error? }
+function renderShow(root, show, state = { status: 'loading' }) {
+  let detailHtml;
+  if (state.status === 'loading') {
+    detailHtml = `<p class="show-detail__notice" data-role="status" role="status">Загружаем расписание и места…</p>`;
+  } else if (state.status === 'error') {
+    detailHtml = `
+      <div class="show-detail__error" role="alert">
+        <p>Не удалось загрузить данные шоу.</p>
+        <button class="show-detail__retry" type="button" data-show-retry="${show.id}">Повторить</button>
+      </div>`;
+  } else {
+    const schedule = scheduleLine(state.data.config);
+    const summary = seatSummary(state.data.seats);
+    const scheduleHtml = schedule
+      ? `<p class="show-detail__schedule">${schedule}</p>`
+      : `<p class="show-detail__notice">Дата уточняется.</p>`;
+    const seatsHtml = summary
+      ? `<p class="show-detail__seats">Свободно мест: <strong>${summary.free}</strong> из ${summary.total}</p>`
+      : '';
+    const buyHtml = `<button class="show-detail__buy" type="button" data-show-buy="${show.id}">Купить билет</button>`;
+    detailHtml = `${scheduleHtml}${seatsHtml}${buyHtml}`;
+  }
+
+  root.innerHTML = `
+    <article class="show-detail">
+      <button class="show-detail__back" type="button" data-show-route>← Все шоу</button>
+      <img class="show-detail__poster" src="${show.poster}" alt="Афиша шоу «${escapeHtml(show.title)}»" />
+      <div class="show-detail__content">
+        <p class="eyebrow">Авторское шоу</p>
+        <h1>${escapeHtml(show.title)}</h1>
+        <p class="show-detail__description">${escapeHtml(show.description)}</p>
+        ${detailHtml}
+      </div>
+    </article>
+  `;
+}
+
+function renderUnavailable(root) {
+  root.innerHTML = `
+    <section class="state-view" data-state="unavailable" role="alert">
+      <h1>Афиша временно недоступна</h1>
+      <p>Попробуйте открыть приложение ещё раз немного позже.</p>
+    </section>
+  `;
+}
+
+export function createShellController({
+  root,
+  locationLike,
+  historyLike,
+  eventTarget,
+  logger = console,
+  apiClient = createApiClient(),
+  loadData = loadShowData,
+  checkoutFactory = createCheckout,
+  vkUserId = null,
+  bridge = null,
+  showPageFactory = mountSiteShow,
+}) {
+  // Токен загрузки: защищает от гонки, если пользователь быстро переключил шоу.
+  let loadToken = 0;
+  let checkoutCtrl = null;
+  let showPage = null;
+
+  function openCheckout(showId) {
+    const existing = root.querySelector('.site-checkout');
+    if (existing) { existing.showModal(); return; }
+    // Монтируем поток покупки внутри текущего экрана шоу.
+    const dialog = document.createElement('dialog');
+    dialog.className = 'site-checkout';
+    const close = document.createElement('button');
+    close.className = 'show-detail__back';
+    close.type = 'button';
+    close.textContent = '← К описанию шоу';
+    close.onclick = () => dialog.close();
+    const container = document.createElement('div');
+    dialog.append(close, container);
+    root.appendChild(dialog);
+    dialog.showModal();
+    checkoutCtrl = checkoutFactory({
+      root: container,
+      showId,
+      client: apiClient,
+      vkUserId,
+      bridge,
+      onError: (e) => logger.error?.(e),
+    });
+    checkoutCtrl.start();
+  }
+
+  async function loadAndRenderShow(show, { focusHeading }) {
+    const token = ++loadToken;
+    renderShow(root, show, { status: 'loading' });
+    if (focusHeading) focusRouteHeading(root);
+
+    const result = await loadData(show.id, apiClient);
+    if (token !== loadToken) return; // пользователь ушёл на другое шоу — игнорируем
+    // Проверяем, что маршрут всё ещё указывает на это шоу.
+    if (parseLaunchRoute(locationLike).show !== show.id) return;
+
+    if (result.ok) {
+      renderShow(root, show, { status: 'ready', data: result });
+    } else {
+      logger.error?.(result.error);
+      renderShow(root, show, { status: 'error', error: result.error });
+    }
+    // Повторный рендер заменил заголовок в DOM — возвращаем на него фокус,
+    // чтобы навигация оставалась доступной для скринридеров.
+    if (focusHeading) focusRouteHeading(root);
+  }
+
+  function render({ focusHeading = false } = {}) {
+    showPage?.destroy();
+    showPage = null;
+    ++loadToken;
+    const route = parseLaunchRoute(locationLike);
+    const show = route.show ? SHOWS[route.show] : null;
+    if (show) {
+      if (showPageFactory) {
+        showPage = showPageFactory({ root, show, bridge,
+          onBack: () => {
+            pushLaunchRoute(historyLike, locationLike, null);
+            render({ focusHeading: true });
+          },
+          onBuy: () => openCheckout(show.id),
+        });
+        if (focusHeading) focusRouteHeading(root);
+        return;
+      }
+      // fire-and-forget: рендерит loading сразу, затем данные/ошибку.
+      loadAndRenderShow(show, { focusHeading });
+    } else {
+      if (showPageFactory) {
+        showPage = showPageFactory({ root, bridge,
+          onSelect: (id) => {
+            pushLaunchRoute(historyLike, locationLike, id);
+            render({ focusHeading: true });
+          },
+        });
+      } else {
+        renderCatalog(root, locationLike);
+      }
+      if (focusHeading) focusRouteHeading(root);
+    }
+  }
+
+  function handleRouteClick(event) {
+    const buyControl = event.target.closest?.('[data-show-buy]');
+    if (buyControl) {
+      event.preventDefault();
+      openCheckout(buyControl.dataset.showBuy);
+      return;
+    }
+    const retryControl = event.target.closest?.('[data-show-retry]');
+    if (retryControl) {
+      event.preventDefault();
+      const show = SHOWS[retryControl.dataset.showRetry];
+      if (show) loadAndRenderShow(show, { focusHeading: false });
+      return;
+    }
+    const routeControl = event.target.closest?.('[data-show-route]');
+    if (!routeControl) return;
+
+    event.preventDefault();
+    pushLaunchRoute(historyLike, locationLike, routeControl.dataset.showRoute || null);
+    render({ focusHeading: true });
+  }
+
+  function handlePopState() {
+    render({ focusHeading: true });
+  }
+
+  function start() {
+    try {
+      render({ focusHeading: parseLaunchRoute(locationLike).show !== null });
+      root.addEventListener('click', handleRouteClick);
+      eventTarget.addEventListener('popstate', handlePopState);
+    } catch (error) {
+      logger.error(error);
+      renderUnavailable(root);
+      focusRouteHeading(root);
+    }
+  }
+
+  return { start };
+}
+
+// Инициализация VK Bridge: VK показывает «Приложение не инициализировано», пока
+// приложение не отправит VKWebAppInit. Делаем это как можно раньше. Bridge может
+// прийти как window.vkBridge (наш локальный скрипт) — при запуске вне VK его нет,
+// тогда просто работаем как обычный веб.
+function getVkBridge() {
+  const b = typeof window !== 'undefined' ? (window.vkBridge || window.vkConnect) : null;
+  return b && typeof b.send === 'function' ? b : null;
+}
+
+// Достаёт vk_user_id из launch-параметров запуска (URL search). Это лишь метка;
+// доверенная проверка личности — через серверную сессию (VKWebAppInit + подпись).
+function readVkUserId(locationLike) {
+  try {
+    const search = (locationLike.search || '').replace(/^\?/, '');
+    const params = new URLSearchParams(search);
+    const id = Number(params.get('vk_user_id'));
+    return Number.isFinite(id) && id > 0 ? id : null;
+  } catch { return null; }
+}
+
+if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+  const app = document.querySelector('#app');
+  const bridge = getVkBridge();
+  // Сообщаем VK, что приложение готово. Не блокируем рендер, если Bridge недоступен.
+  if (bridge) {
+    try { bridge.send('VKWebAppInit', {}); } catch (e) { /* вне VK — игнорируем */ }
+  }
+  createShellController({
+    root: app,
+    locationLike: window.location,
+    historyLike: window.history,
+    eventTarget: window,
+    vkUserId: readVkUserId(window.location),
+    bridge,
+  }).start();
+}
