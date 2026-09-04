@@ -1,0 +1,2793 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.kostyukproject.ru/concerts/huligan/" />
+  <meta property="og:title" content="Шоу ХУЛИgan | Магический стендап 16+" />
+  <meta property="og:description" content="Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор." />
+  <meta property="og:image" content="https://www.kostyukproject.ru/images/brand/kp-og-preview.png" />
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://www.kostyukproject.ru/concerts/huligan/" />
+  <meta property="twitter:title" content="Шоу ХУЛИgan | Магический стендап 16+" />
+  <meta property="twitter:description" content="Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор." />
+  <meta property="twitter:image" content="https://www.kostyukproject.ru/images/brand/kp-og-preview.png" />
+
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#030303">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Билеты на иллюзионное шоу «ХУЛИgan» | Дмитрий Костюк — Ярославль, Иваново, Кострома, Владимир, Вологда</title>
+  <meta name="description" content="Купить билеты на магический стендап «ХУЛИgan» Дмитрия Костюка — профессиональная иллюзия, импровизация и взрослый юмор 16+." />
+  
+  
+  <link rel="stylesheet" href="./fonts/fonts.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "Иллюзионное шоу «ХУЛИgan» Дмитрия Костюка",
+    "description": "Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор 16+.",
+    "url": "https://www.kostyukproject.ru/concerts/huligan/",
+    "performer": {
+      "@type": "Person",
+      "name": "Дмитрий Костюк"
+    }
+  }
+  </script>
+  <link rel="stylesheet" href="./css/ecosystem.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg: #030303;
+      --bg2: #0a0a0c;
+      --gold: #d6ac45;
+      --gold2: #f0d98b;
+      --gold3: #fff0c2;
+      --text: #f5f0e5;
+      --muted: rgba(245, 240, 229, 0.6);
+      --border: rgba(214, 172, 69, 0.22);
+      --vip: #e85348;
+      --vip-rgb: 232,83,72;
+      --std: #3dbf6e;
+      --std-rgb: 61,191,110;
+      --eco: #4a8fd9;
+      --eco-rgb: 74,143,217;
+    }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    /* Brick texture overlay */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image:
+        repeating-linear-gradient(0deg, transparent 0 40px, rgba(255, 110, 0, 0.3) 40px 41px),
+        repeating-linear-gradient(90deg, transparent 0 80px, rgba(255, 110, 0, 0.3) 80px 81px);
+      pointer-events: none;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ==== ФОН ==== */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: 
+        radial-gradient(ellipse at 50% 50%, transparent 10%, rgba(20, 18, 70, 0.7) 100%),
+        url('./images/huligan_bg_brick.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* Floating fire embers */
+    .embers {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .ember {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+      filter: blur(0.5px);
+      box-shadow: 0 0 8px var(--gold), 0 0 18px rgba(255, 60, 0, 0.7);
+      opacity: 0.7;
+      animation: rise linear infinite;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(100vh) translateX(0) scale(1); opacity: 0; }
+      10%  { opacity: 0.8; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-10vh) translateX(40px) scale(0.4); opacity: 0; }
+    }
+    /* Original placeholder */
+    .q-mark {
+      position: fixed;
+      font-family: 'Cinzel', serif;
+      color: rgba(214, 172, 69, 0.06);
+      animation: qFloat ease-in-out infinite;
+      user-select: none;
+      line-height: 1;
+      z-index: 0;
+      pointer-events: none;
+      font-weight: 700;
+    }
+    @keyframes qFloat {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50%      { transform: translateY(-22px) rotate(4deg); }
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px 10px 14px;
+      border-radius: 999px;
+      background: rgba(14, 12, 36, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+    .back-btn:hover { background: rgba(214, 172, 69, 0.15); transform: translateX(-3px); }
+    .back-btn::before { content: '‹'; font-size: 18px; line-height: 1; }
+    .back-btn.is-hidden { transform: translateY(-140%); opacity: 0; pointer-events: none; }
+
+    main { position: relative; z-index: 2; }
+
+    /* ====== HERO ====== */
+    .hero {
+      min-height: 100vh;
+      padding: 80px 20px 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(214, 172, 69, 0.45) 0%, rgba(214, 172, 69, 0.12) 40%, transparent 70%);
+      filter: blur(40px);
+      z-index: -1;
+      animation: heroGlow 8s ease-in-out infinite alternate, secretGlowStart 3.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+      pointer-events: none;
+    }
+    @keyframes secretGlowStart {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.6); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+    @keyframes heroGlow {
+      from { transform: translateX(-50%) scale(1); opacity: 0.6; }
+      to   { transform: translateX(-50%) scale(1.15); opacity: 1; }
+    }
+    /* 3D Параллакс для афиши */
+    .hero {
+      perspective: 1000px;
+      /* Дорогая винтажная текстура обоев в темноте */
+      background-image:
+        repeating-linear-gradient(45deg, rgba(214, 172, 69, 0.01) 0px, rgba(214, 172, 69, 0.01) 2px, transparent 2px, transparent 10px),
+        repeating-linear-gradient(-45deg, rgba(214, 172, 69, 0.01) 0px, rgba(214, 172, 69, 0.01) 2px, transparent 2px, transparent 10px),
+        linear-gradient(to bottom, #04040e, #070717);
+    }
+    .poster-wrap {
+      transform-style: preserve-3d;
+      transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1);
+      will-change: transform;
+    }
+    .poster {
+      transform: none;
+      object-fit: contain;
+      transition: box-shadow 0.3s ease;
+    }
+    /* Сценический холст для неоновых вспышек */
+    .strobe-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+    }
+    /* Глитч-эффект для постера и заголовка */
+    .poster-wrap.glitch {
+      animation: posterGlitch 0.25s steps(2) infinite;
+    }
+    .title.glitch {
+      animation: titleGlitch 0.2s steps(2) infinite;
+    }
+    @keyframes posterGlitch {
+      0% {
+        box-shadow: 6px -3px 0 rgba(255, 110, 0, 0.5), -6px 3px 0 rgba(255, 229, 102, 0.5);
+        transform: translate(2px, -1px) scale(1.02);
+      }
+      50% {
+        box-shadow: -6px 3px 0 rgba(255, 110, 0, 0.5), 6px -3px 0 rgba(255, 229, 102, 0.5);
+        transform: translate(-2px, 1px) scale(0.98);
+      }
+      100% {
+        box-shadow: 3px -1px 0 rgba(255, 110, 0, 0.5), -3px 1px 0 rgba(255, 229, 102, 0.5);
+        transform: translate(0, 0) scale(1);
+      }
+    }
+    @keyframes titleGlitch {
+      0% {
+        text-shadow: 4px -2px 0 #ff6e00, -4px 2px 0 #ffe566;
+        transform: skewX(-4deg) translate(1px, -1px);
+      }
+      50% {
+        text-shadow: -4px 2px 0 #ff6e00, 4px -2px 0 #ffe566;
+        transform: skewX(4deg) translate(-1px, 1px);
+      }
+      100% {
+        text-shadow: 1px -1px 0 #ff6e00, -1px 1px 0 #ffe566;
+        transform: skewX(0);
+      }
+    }
+    h1.title {
+      animation: secretTitleReveal 2.8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+      z-index: 11;
+      position: relative;
+    }
+    .eyebrow, .subtitle, .meta, .buy-cta {
+      z-index: 11;
+      position: relative;
+    }
+    @keyframes secretTitleReveal {
+      0% { transform: scale(0.92) translateZ(50px); filter: blur(4px); letter-spacing: 0.02em; }
+      100% { transform: scale(1) translateZ(0); filter: blur(0); letter-spacing: 0.04em; }
+    }
+
+    .poster-wrap {
+      max-width: 360px;
+      width: 100%;
+      margin-bottom: 36px;
+      position: relative;
+      animation: floatPoster 7s ease-in-out infinite alternate;
+    }
+    @keyframes floatPoster {
+      from { transform: translateY(0) rotate(-0.3deg); }
+      to   { transform: translateY(-10px) rotate(0.3deg); }
+    }
+    .poster {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 16px;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.75),
+        0 0 80px rgba(214, 172, 69, 0.3);
+      display: block;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(214, 172, 69, 0.08);
+      border: 1px solid var(--border);
+      font-size: 10.5px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    h1.title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(50px, 13vw, 110px);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      line-height: 0.95;
+      background: linear-gradient(135deg, #fff 0%, var(--gold3) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 14px;
+      text-shadow: 0 0 60px rgba(214, 172, 69, 0.3);
+    }
+    .subtitle {
+      font-family: 'Cinzel', serif;
+      font-style: normal;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: clamp(13px, 2vw, 16px);
+      color: var(--gold3);
+      max-width: 540px;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+    .meta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+    .meta__item {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 229, 0.85);
+      padding: 7px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(214, 172, 69, 0.06);
+    }
+    .meta__item strong { color: var(--gold2); font-weight: 700; }
+
+    .buy-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #FFE566 0%, #FF9000 100%);
+      color: #1a1500;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      box-shadow: 0 14px 40px rgba(214, 172, 69, 0.55), 0 0 0 1px rgba(255,255,255,0.15) inset;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .buy-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 50px rgba(214, 172, 69, 0.7), 0 0 0 1px rgba(255,255,255,0.2) inset;
+    }
+
+    /* ====== SECTIONS ====== */
+    .section {
+      padding: 90px 20px;
+      max-width: 880px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .section__eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 14px;
+      display: block;
+    }
+    .section__title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(30px, 5vw, 48px);
+      font-weight: 900;
+      margin-bottom: 28px;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 0%, var(--gold3) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.04em;
+    }
+    .section__text {
+      font-size: 16px;
+      line-height: 1.75;
+      color: rgba(245, 240, 229, 0.85);
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .section__quote {
+      font-family: 'Cinzel', serif;
+      font-style: normal;
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--gold3);
+      max-width: 680px;
+      margin: 50px auto;
+      padding: 30px;
+      position: relative;
+      line-height: 1.4;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .section__quote::before, .section__quote::after {
+      content: '"';
+      font-family: 'Cinzel', serif;
+      font-size: 80px;
+      line-height: 1;
+      color: rgba(214, 172, 69, 0.3);
+      position: absolute;
+    }
+    .section__quote::before { left: 0; top: -10px; }
+    .section__quote::after { right: 0; bottom: -50px; }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 40px;
+    }
+    .feature {
+      padding: 26px 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(40, 30, 100, 0.25) 0%, rgba(20, 8, 4, 0.45) 100%);
+      text-align: left;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .feature:hover {
+      border-color: rgba(232, 197, 64, 0.5);
+      transform: translateY(-4px);
+    }
+    .feature__num {
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--gold2);
+      margin-bottom: 8px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+    .feature__title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .feature__desc {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .footer-cta {
+      padding: 80px 20px 160px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(214, 172, 69, 0.15) 0%, transparent 60%),
+        transparent;
+    }
+    .footer-cta__title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+      letter-spacing: 0.06em;
+    }
+    .footer-cta__sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ===================== МОДАЛКА БРОНИ ===================== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9800;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(14px);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 30px 12px 30px;
+      overflow-y: auto;
+    }
+    .modal.show { display: flex; }
+    .modal__box {
+      width: 100%;
+      max-width: 620px;
+      background: linear-gradient(180deg, var(--bg2) 0%, #07061a 100%);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 28px 22px 24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.85), 0 0 80px rgba(214, 172, 69, 0.2);
+      position: relative;
+      margin-bottom: 100px;
+    }
+    .modal__close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+      z-index: 2;
+    }
+    .modal__close:hover { background: rgba(214, 172, 69, 0.18); }
+    .modal__title {
+      font-family: 'Cinzel', serif;
+      font-size: 26px;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 4px;
+      background: linear-gradient(135deg, #fff 0%, var(--gold3) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 0.04em;
+    }
+    .modal__sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-bottom: 22px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Шаги */
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .step {
+      width: 30px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.3s ease;
+    }
+    .step.active { background: var(--gold2); box-shadow: 0 0 10px rgba(232, 197, 64, 0.5); }
+    .step.done { background: rgba(232, 197, 64, 0.5); }
+
+    /* Дата шоу — выбор */
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .date-card {
+      padding: 16px 14px;
+      border-radius: 14px;
+      background: rgba(120, 30, 10, 0.22);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: center;
+    }
+    .date-card:hover { border-color: var(--gold2); background: rgba(232, 197, 64, 0.08); }
+    .date-card.selected {
+      background: linear-gradient(135deg, rgba(232, 197, 64, 0.2) 0%, rgba(214, 172, 69, 0.15) 100%);
+      border-color: var(--gold2);
+      box-shadow: 0 0 0 1px var(--gold2), 0 8px 24px rgba(214, 172, 69, 0.25);
+    }
+    .date-card__day {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--gold3);
+      line-height: 1;
+    }
+    .date-card__month {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .date-card__time {
+      font-size: 12px;
+      color: var(--gold2);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .date-card__venue {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Сцена */
+    .stage-label {
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      padding: 14px 0;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .stage-label::before, .stage-label::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 25%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold2), transparent);
+    }
+    .stage-label::before { left: 5%; }
+    .stage-label::after { right: 5%; }
+
+    /* SVG зал */
+    .hall-wrap {
+      background: linear-gradient(180deg, rgba(120, 30, 10, 0.22) 0%, rgba(20, 8, 4, 0.45) 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 10px 16px;
+      margin-bottom: 18px;
+    }
+    .hall-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      max-height: 480px;
+    }
+    /* Эффект свечения для сцены сверху */
+    .stage-glow {
+      fill: url(#stageGradient);
+    }
+
+    /* Места */
+    .seat {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .seat:hover {
+      filter: brightness(1.3);
+    }
+    .seat.taken {
+      cursor: not-allowed;
+      filter: grayscale(0.7) opacity(0.4);
+    }
+    .seat.selected {
+      filter: brightness(1.6) drop-shadow(0 0 4px currentColor);
+    }
+    .seat-ring {
+      fill: none;
+      stroke: var(--gold3);
+      stroke-width: 2;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .seat.selected + .seat-ring {
+      opacity: 1;
+      animation: ringPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%, 100% { stroke-opacity: 0.6; }
+      50%      { stroke-opacity: 1; }
+    }
+
+    /* Легенда */
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 12px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .ldot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* Корзина выбранных мест */
+    .cart {
+      background: linear-gradient(180deg, rgba(120, 30, 10, 0.25) 0%, rgba(40, 10, 5, 0.15) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      min-height: 56px;
+    }
+    .cart__empty {
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--muted);
+      padding: 8px 0;
+    }
+    .cart__list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cart__chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 110, 0, 0.15);
+      border: 1px solid rgba(255, 110, 0, 0.45);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold3);
+    }
+    .cart__chip .x {
+      font-size: 15px;
+      line-height: 1;
+      opacity: 0.7;
+      cursor: pointer;
+    }
+    .cart__chip .x:hover { opacity: 1; }
+    .cart__total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .cart__total-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .cart__total-val {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--gold2);
+    }
+
+    /* Кнопки навигации */
+    .modal__nav {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn-secondary, .btn-primary {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+    .btn-primary {
+      background: linear-gradient(135deg, #FFE566 0%, #FF9000 100%);
+      color: #1a1500;
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* Поля формы */
+    .field { display: block; margin-bottom: 14px; }
+    .field__label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 6px;
+    }
+    .field__input, .field__textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      transition: border-color 0.25s ease, background 0.25s ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field__input:focus, .field__textarea:focus {
+      outline: none;
+      border-color: var(--gold2);
+      background: rgba(0,0,0,0.6);
+    }
+    .field__textarea { resize: vertical; min-height: 70px; }
+
+    /* Summary в форме */
+    .summary {
+      background: rgba(232, 197, 64, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .summary__row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .summary__row:last-child { margin-bottom: 0; }
+    .summary__row span:first-child { color: var(--muted); }
+    .summary__row span:last-child { color: var(--gold3); font-weight: 600; }
+
+    .modal__success { text-align: center; padding: 30px 8px; }
+    .modal__success-icon { font-size: 64px; margin-bottom: 14px; }
+    .modal__success h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: var(--gold2);
+      letter-spacing: 0.04em;
+    }
+    .modal__success p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+    /* === Bottom nav === */
+    #kpBottomNav {
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      z-index: 9500;
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      background: rgba(14, 12, 36, 0.92);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      width: min(94vw, 440px);
+      justify-content: space-between;
+    }
+    .kp-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 8px 6px;
+      border-radius: 999px;
+      color: #c9c9d4;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      transition: color 0.25s ease, background 0.25s ease;
+    }
+    .kp-tab .kp-tab-icon {
+      width: 22px; height: 22px; object-fit: contain;
+      margin-bottom: 2px;
+      filter: grayscale(0.5) opacity(0.7) brightness(1.15);
+    }
+    .kp-tab:hover { color: var(--gold2); }
+    .kp-tab:hover .kp-tab-icon { filter: none; }
+    .kp-tab.active {
+      color: #1a1500;
+      background: linear-gradient(135deg, #FFE566 0%, #FF9000 100%);
+    }
+    .kp-tab.active .kp-tab-icon { filter: none; }
+    .kp-tab-wrap { flex: 1; display: flex; }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s ease, transform 1s cubic-bezier(0.2,0.8,0.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .d-1 { transition-delay: 0.15s; }
+    .d-2 { transition-delay: 0.3s; }
+    .d-3 { transition-delay: 0.45s; }
+    .d-4 { transition-delay: 0.6s; }
+
+    /* Текстовые отзывы гостей */
+    .reviews-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:28px; }
+    .review-item { background:#111114; border:1px solid rgba(255,110,0,.28); border-radius:18px; padding:22px 24px; text-align:left; }
+    .review-item__stars { color:#ff9000; font-size:16px; letter-spacing:2px; margin-bottom:10px; }
+    .review-item__text { color:#f5f0e5; font-size:15px; line-height:1.6; margin-bottom:12px; }
+    .review-item__name { color:#aaa69d; font-size:13px; font-weight:600; }
+
+    /* Видеоотзывы */
+    .video-review-container {
+      max-width: 720px;
+      margin: 40px auto 0;
+      width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(214, 172, 69, 0.15);
+      background: var(--bg2);
+      position: relative;
+      aspect-ratio: 16 / 9;
+      /* Фикс скругления углов для iframe в некоторых браузерах */
+      transform: translateZ(0);
+      will-change: transform;
+    }
+    .video-review-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Нижняя виньетка — кинематографическое затемнение (скрывает плашку VK) */
+    .video-corner-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      pointer-events: none;
+      z-index: 9;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      background: linear-gradient(
+        to top,
+        rgba(5, 3, 18, 0.97) 0%,
+        rgba(5, 3, 18, 0.7) 45%,
+        transparent 100%
+      );
+    }
+
+    /* Плашка возрастного ограничения поверх виньетки */
+    .video-age-badge {
+      position: absolute;
+      bottom: 13px;
+      right: 13px;
+      z-index: 11;
+      pointer-events: none;
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: rgba(214, 172, 69, 0.9);
+      line-height: 1;
+    }
+
+    /* Промо-видео */
+    .promo-video-container {
+      max-width: 720px;
+      margin: 40px auto 0;
+      width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(214, 172, 69, 0.22);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 60px rgba(214, 172, 69, 0.12);
+      background: var(--bg2);
+      position: relative;
+      aspect-ratio: 16 / 9;
+      transform: translateZ(0);
+    }
+    .promo-video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .modal__box { padding: 24px 16px 20px; }
+      .stage-label { font-size: 12px; letter-spacing: 0.24em; }
+      .hall-wrap { padding: 10px 6px 12px; }
+    }
+
+    /* Индивидуальная касса: «Секрет» — холодная тайна, золото, дым и знак вопроса */
+    .modal.show {
+      background:
+        radial-gradient(circle at 50% 8%, rgba(214, 172, 69, 0.16), transparent 34%),
+        radial-gradient(circle at 82% 20%, rgba(53, 90, 130, 0.22), transparent 38%),
+        rgba(0, 0, 0, 0.9);
+    }
+    .modal__box {
+      background:
+        radial-gradient(circle at 50% -8%, rgba(255, 236, 175, 0.15), transparent 34%),
+        radial-gradient(circle at 86% 18%, rgba(44, 68, 116, 0.25), transparent 42%),
+        linear-gradient(180deg, rgba(10, 12, 30, 0.98) 0%, rgba(5, 5, 14, 0.99) 100%);
+      border-color: rgba(214, 172, 69, 0.42);
+      box-shadow:
+        0 32px 90px rgba(0, 0, 0, 0.9),
+        0 0 90px rgba(214, 172, 69, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .modal__box::before {
+      content: '?';
+      position: absolute;
+      right: 28px;
+      top: 18px;
+      z-index: 0;
+      font-family: 'Cinzel', serif;
+      font-size: 112px;
+      line-height: 1;
+      color: rgba(214, 172, 69, 0.055);
+      pointer-events: none;
+    }
+    .modal__box > * { position: relative; z-index: 1; }
+    .hall-wrap {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(214, 172, 69, 0.11), transparent 38%),
+        linear-gradient(180deg, rgba(16, 18, 38, 0.78), rgba(6, 6, 17, 0.9));
+      border-color: rgba(214, 172, 69, 0.32);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.45), 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #fff1bd 0%, #d8b646 46%, #7a5418 100%);
+      color: #080814;
+      box-shadow: 0 12px 34px rgba(214, 172, 69, 0.24);
+    }
+    .cart__chip {
+      background: rgba(214, 172, 69, 0.1);
+      border-color: rgba(214, 172, 69, 0.3);
+    }
+  </style>
+  <link rel="stylesheet" href="./css/show-system.css" />
+  <link rel="stylesheet" href="./css/ticket-flow.css" />
+  <script src="./js/ticket-flow.js"></script>
+</head>
+<body class="show-page show-page--huligan">
+  <a class="back-btn show-back-to-afisha" href="/concerts/" aria-label="Вернуться к афише шоу">К афише</a>
+
+  <main>
+    <section class="hero" id="huliganHero">
+      <div class="show-hero-shell">
+        <div class="poster-wrap reveal" id="huliganPoster">
+          <img class="poster" src="./images/huligan.webp" width="540" height="652" loading="eager" fetchpriority="high" decoding="async" alt="Афиша магического стендапа «ХУЛИgan»" />
+        </div>
+        <div class="show-hero-copy">
+          <div class="eyebrow reveal d-1">Магический стендап</div>
+          <h1 class="title reveal d-1">ХУЛИ<span style="color:var(--show-accent)">gan</span></h1>
+          <div class="subtitle reveal d-2">Магия без приличных манер</div>
+          <div class="show-next-date reveal d-2">
+            <small>Ближайший показ</small>
+            <strong>19 сентября · 18:00</strong>
+            <span>ЛАМПА · Ярославль</span>
+          </div>
+          <div class="meta reveal d-3">
+            <span class="meta__item"><strong>16+</strong></span>
+            <span class="meta__item">1 час 20 минут</span>
+            <span class="meta__item">Живой диалог</span>
+          </div>
+          <button class="buy-cta reveal d-4" onclick="openBookingModal()">Купить билет</button>
+          <div class="show-hero-note">Выбор даты и места откроется здесь · безопасная оплата</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="show-ecosystem-quick" aria-labelledby="huliganMoreTitle">
+      <div class="show-ecosystem-quick__title"><small>Экосистема KOSTYUK PROJECT</small><h2 id="huliganMoreTitle">Магия продолжается</h2></div>
+      <div class="show-ecosystem-quick__links">
+        <a href="/events/"><span><strong>Пригласить иллюзиониста</strong><small>На свадьбу, юбилей или корпоратив</small></span><i>↗</i></a>
+        <a href="/school/"><span><strong>Школа фокусов</strong><small>Для детей 7–13 лет в Ярославле</small></span><i>↗</i></a>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <span class="section__eyebrow">О шоу</span>
+      <h2 class="section__title">Магия с характером</h2>
+      <p class="section__text">
+        «ХУЛИgan» — магический стендап для тех, кому давно мало просто смотреть на фокусы.
+        Здесь профессиональная иллюзия встречается со взрослым юмором, импровизацией и прямым разговором со зрителем.
+      </p>
+      <p class="section__text">
+        Это не набор трюков по сценарию. Зал отвечает, Дмитрий подхватывает, а привычная граница между артистом
+        и публикой исчезает. Поэтому каждый показ получается живым и немного непредсказуемым.
+      </p>
+
+      <div class="section__quote">
+        Сначала вы смеётесь. Потом пытаетесь понять, как это вообще произошло.
+      </div>
+    </section>
+
+    <section class="section" id="reviewsSection" style="display:none">
+      <span class="section__eyebrow">Зрители</span>
+      <h2 class="section__title">Что говорят о шоу</h2>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </section>
+
+    <section class="section show-sales-section" aria-labelledby="huliganFitTitle">
+      <span class="section__eyebrow">Перед покупкой</span>
+      <h2 class="section__title" id="huliganFitTitle">Ваш вечер, если хочется живого шоу</h2>
+      <div class="show-sales-grid">
+        <article class="show-sales-card">
+          <span class="show-sales-card__label">Для кого</span>
+          <h3>Для свидания или компании 16+</h3>
+          <p>Для свидания, компании и тех, кто готов отвечать артисту.</p>
+        </article>
+        <article class="show-sales-card">
+          <span class="show-sales-card__label">Что почувствуете</span>
+          <h3>Смех, азарт и полное недоумение</h3>
+          <p>Смех, азарт и ощущение, что трюк происходит рядом с вами.</p>
+        </article>
+        <article class="show-sales-card show-sales-card--action">
+          <span class="show-sales-card__label">Ближайший показ</span>
+          <h3>19 сентября · Ярославль</h3>
+          <p>19 сентября · 18:00, ЛАМПА. Места лучше брать заранее.</p>
+          <button class="show-sales-card__cta" type="button" onclick="openBookingModal()">Выбрать места</button>
+        </article>
+      </div>
+    </section>
+
+    <aside class="show-visit-strip" aria-label="Информация о посещении шоу Хулиган">
+      <div class="show-visit-strip__heading"><small>Перед визитом</small><strong>Всё важное в одном месте</strong></div>
+      <div class="show-visit-strip__item"><span>Площадка</span><strong>ЛАМПА · Ярославль, ул. Нахимсона, 21</strong><a href="https://yandex.ru/maps/?text=Ярославль%2C%20улица%20Нахимсона%2C%2021" target="_blank" rel="noopener">Открыть в Картах ↗</a></div>
+      <div class="show-visit-strip__item"><span>Формат</span><strong>Магический стендап</strong></div>
+      <div class="show-visit-strip__item"><span>Возраст и время</span><strong>16+ · 1 час 20 минут</strong></div>
+    </aside>
+
+    <section class="section">
+      <span class="section__eyebrow">Что внутри</span>
+      <h2 class="section__title">Из чего состоит шоу</h2>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature__num">01</div>
+          <div class="feature__title">Магический стендап</div>
+          <div class="feature__desc">Фокусы и юмор работают вместе, а не сменяют друг друга.</div>
+        </div>
+        <div class="feature">
+          <div class="feature__num">02</div>
+          <div class="feature__title">Импровизация</div>
+          <div class="feature__desc">Реакции зрителей становятся частью каждого номера.</div>
+        </div>
+        <div class="feature">
+          <div class="feature__num">03</div>
+          <div class="feature__title">Иллюзия</div>
+          <div class="feature__desc">Профессиональные трюки, которые ломают привычную логику.</div>
+        </div>
+        <div class="feature">
+          <div class="feature__num">04</div>
+          <div class="feature__title">Энергия зала</div>
+          <div class="feature__desc">Никакой четвёртой стены: шоу рождается здесь и сейчас.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="max-width: 800px; margin: 0 auto;">
+      <span class="section__eyebrow">FAQ</span>
+      <h2 class="section__title">Частые вопросы</h2>
+      <div class="faq-list" style="display:flex; flex-direction:column; gap: 15px;">
+        <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+          <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Есть ли строгий дресс-код? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Да, дресс-код обязательный: приходите в костюме пчелы. Если костюма пчелы нет, можно в костюме бабочки. Особенно мужчинам.</div>
+        </details>
+        <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+          <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Можно ли сдать билет? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">Да. Если шоу отменено или перенесено — возвращаем полную стоимость. Если зритель сам отказывается: за 10+ дней — 100%, за 5–10 дней — 50%, за 3–5 дней — 30%. Менее чем за 3 дня билет обычно не возвращается. При болезни зрителя или смерти близкого родственника вернём 100% при заявлении до дня шоу и подтверждающих документах.</div>
+        </details>
+        <details class="faq-item" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+          <summary style="font-size: 18px; font-weight: 600; outline: none; list-style: none; display: flex; justify-content: space-between; align-items:center;">Есть ли возрастные ограничения? <span style="color:var(--gold); font-size:24px; line-height:1;">+</span></summary>
+          <div style="margin-top: 15px; color: var(--dim); line-height: 1.5; font-size:15px;">16+. Детям не рекомендуем: мата в программе нет, но отметка стоит честно — вдруг артисту захочется выругнуться. Не точно, но кто его знает. По сути это вечер, где Дмитрий будто пришёл к вам как свой: вы сидите за столом, едите, разговариваете, шутите, а между делом он показывает фокусы. Не пафосная сцена, а непринуждённая встреча хороших знакомых.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="brands reveal" aria-label="Нам доверяют">
+      <p class="brands__label">Нам доверяют</p>
+      <div class="brands__viewport"><div class="brands__track">
+        <div class="brand-set">
+          <div class="brand-item"><img loading="lazy" src="./images/brands/gazprom.svg" alt="Газпром" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/magnit.svg" alt="Магнит" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/dixy.svg" alt="Дикси" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/danone.svg" alt="Danone" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/rosneft.svg" alt="Роснефть" class="brand-logo"></div>
+        </div>
+        <div class="brand-set" aria-hidden="true">
+          <div class="brand-item"><img loading="lazy" src="./images/brands/gazprom.svg" alt="" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/magnit.svg" alt="" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/dixy.svg" alt="" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/danone.svg" alt="" class="brand-logo"></div>
+          <div class="brand-item"><img loading="lazy" src="./images/brands/rosneft.svg" alt="" class="brand-logo"></div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <section class="footer-cta">
+      <div class="footer-cta__title">Готовы стать частью шоу?</div>
+      <div class="footer-cta__sub">Выберите дату, столик и оставьте бронь — мы свяжемся с вами.</div>
+      <button class="buy-cta" onclick="openBookingModal()">Купить билет</button>
+    </section>
+
+    <section class="kp-ecosystem-promo kp-ecosystem-promo--shows" aria-labelledby="huliganEcoTitle">
+      <div class="kp-ecosystem-promo__head">
+        <div><small>Ещё в KOSTYUK PROJECT</small><h2 id="huliganEcoTitle">Магия продолжается за пределами сцены</h2></div>
+        <p>ХУЛИgan — магический стендап на большой сцене. А если хочется пригласить иллюзиониста на своё событие или открыть магию ребёнку, рядом есть ещё два направления.</p>
+      </div>
+      <div class="kp-ecosystem-promo__grid">
+        <a class="kp-promo-card" href="/events/"><span class="kp-promo-card__label">Свадьба · юбилей · корпоратив</span><h3>Иллюзионист на ваше событие</h3><p>Личное выступление Дмитрия Костюка — камерная магия, которая станет главным впечатлением вашего праздника.</p><span class="kp-promo-card__action">Пригласить иллюзиониста <i>↗</i></span></a>
+        <a class="kp-promo-card" href="/school/"><span class="kp-promo-card__label">Дети 7–13 лет · Ярославль</span><h3>Первая школа фокусов в Ярославле</h3><p>Уверенность, речь и артистизм ребёнка через настоящее искусство иллюзии.</p><span class="kp-promo-card__action">Познакомиться со школой <i>↗</i></span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- =============== МОДАЛКА БРОНИ =============== -->
+  <div class="modal" id="bookingModal" role="dialog" aria-modal="true">
+    <div class="modal__box">
+      <button class="modal__close" onclick="closeBookingModal()" aria-label="Закрыть">×</button>
+
+      <!-- ШАГ 1: ВЫБОР ДАТЫ -->
+      <div id="step1">
+        <div class="modal__title">Выберите дату</div>
+        <div class="modal__sub">АРТ-ПЛОЩАДКА «ЛАМПА» · ЯРОСЛАВЛЬ</div>
+
+        <div class="steps">
+          <div class="step active"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+
+        <div class="date-grid" id="dateGrid">
+          <!-- даты заполняются JS -->
+        </div>
+
+        <div class="modal__nav">
+          <button class="btn-primary" id="step1Next" onclick="goToStep(2)" disabled>Выбрать места</button>
+        </div>
+      </div>
+
+      <!-- ШАГ 2: ВЫБОР МЕСТ -->
+      <div id="step2" style="display:none">
+        <div class="modal__title">Выберите место</div>
+        <div class="modal__sub" id="step2Date">—</div>
+
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step active"></div>
+          <div class="step"></div>
+        </div>
+
+        <div class="hall-wrap">
+          <svg class="hall-svg" id="hallSvg" viewBox="0 0 580 410" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="stageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(255,214,152,0.32)"/>
+                <stop offset="55%" stop-color="rgba(184,144,255,0.16)"/>
+                <stop offset="100%" stop-color="rgba(184,144,255,0)"/>
+              </linearGradient>
+            </defs>
+            <g id="hallG"></g>
+          </svg>
+          <div class="legend">
+            <span><span class="ldot" style="background:#f0913d;box-shadow:0 0 6px #f0913d"></span>Бар · 800 ₽</span>
+            <span><span class="ldot" style="background:#a06cf0;box-shadow:0 0 6px #a06cf0"></span>Фиолетовая · 900 ₽</span>
+            <span><span class="ldot" style="background:var(--eco);box-shadow:0 0 6px var(--eco)"></span>Синяя · 1100 ₽</span>
+            <span><span class="ldot" style="background:var(--std);box-shadow:0 0 6px var(--std)"></span>Зелёная · 1400 ₽</span>
+            <span><span class="ldot" style="background:var(--vip);box-shadow:0 0 6px var(--vip)"></span>Красная · 1700 ₽</span>
+          </div>
+        </div>
+
+        <div class="cart" id="cartBox">
+          <div class="cart__empty" id="cartEmpty">Тапните по месту, чтобы выбрать</div>
+          <div class="cart__list" id="cartList" style="display:none"></div>
+        </div>
+
+        <div class="modal__nav">
+          <button class="btn-secondary" onclick="goToStep(1)">Назад</button>
+          <button class="btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Продолжить</button>
+        </div>
+      </div>
+
+      <!-- ШАГ 3: ФОРМА -->
+      <div id="step3" style="display:none">
+        <div class="modal__title">Контактные данные</div>
+        <div class="modal__sub">Укажите данные покупателя — они войдут в заказ</div>
+
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step done"></div>
+          <div class="step active"></div>
+        </div>
+
+        <div class="summary" id="summaryBox">
+          <!-- заполняется JS -->
+        </div>
+
+        <form id="bookingFormEl" onsubmit="return submitHuliganBooking(event)">
+          <label class="field">
+            <span class="field__label">Ваше имя *</span>
+            <input class="field__input" type="text" name="name" required placeholder="Как к вам обращаться" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Телефон *</span>
+            <input class="field__input" type="tel" name="phone" required placeholder="+7 999 123-45-67" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Email *</span>
+            <input class="field__input" type="email" name="email" required placeholder="you@example.com" />
+            <span style="font-size: 11px; margin-top: 4px; display: block; color: var(--muted);">Билет придёт на эту почту</span>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Ник ВКонтакте (необязательно)</span>
+            <input class="field__input" type="text" name="vk" placeholder="vk.com/id или ник" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Промокод (при наличии)</span>
+            <input class="field__input" type="text" name="promoCode" id="promoCodeInput" placeholder="PROMO" oninput="applyPromoCodeHuligan()" style="text-transform: uppercase;" />
+            <span id="promoStatus" style="font-size: 11px; margin-top: 4px; display: block; font-weight: 500;"></span>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Комментарий</span>
+            <textarea class="field__textarea" name="comment" placeholder="Пожелания, вопросы"></textarea>
+          </label>
+
+          <div class="modal__nav">
+            <button type="button" class="btn-secondary" onclick="goToStep(2)">Назад</button>
+            <button class="btn-primary" type="submit" id="bookingSubmit">Проверить заказ</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ШАГ 4: ОПЛАТА -->
+      <div id="stepPayment" style="display:none">
+        <div class="modal__title">Проверьте заказ</div>
+        <div class="modal__sub" id="paymentSum">Все данные перед переходом к оплате</div>
+
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step done"></div>
+          <div class="step active"></div>
+        </div>
+
+        <div class="ticket-review" id="paymentSummary"></div>
+        <p class="payment-pending" id="paymentPendingStatus" hidden></p>
+        <div class="modal__nav">
+          <button class="btn-secondary" type="button" onclick="goToStep(3)">Назад</button>
+          <button class="btn-primary" id="tbankPayBtn" type="button" onclick="initTbankPaymentHuligan()">Оплатить онлайн (Т-Банк)</button>
+        </div>
+      </div>
+
+      <!-- УСПЕХ -->
+      <div id="bookingSuccess" style="display:none">
+        <div class="modal__success">
+          <div class="modal__success-icon">✨</div>
+          <h3>Оплата прошла успешно</h3>
+          <p style="margin-top:8px">Ваш билет отправлен на почту.<br><b style="color:var(--show-accent)">Проверьте почту</b> — если письма нет, загляните в папку <b>«Спам»</b>.</p>
+          <p style="font-size:13px;color:rgba(245,240,229,0.6);margin-top:10px">Билет с QR-кодом покажете на входе прямо с телефона.</p>
+          <button class="btn-primary" onclick="closeBookingModal()" style="margin-top:16px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">На главную</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Плавающие знаки вопроса
+    (function() {
+      for (var i = 0; i < 7; i++) {
+        var q = document.createElement('div');
+        q.className = 'q-mark';
+        q.textContent = '?';
+        q.style.left = Math.random() * 100 + 'vw';
+        q.style.top = Math.random() * 200 + 'vh';
+        q.style.fontSize = (60 + Math.random() * 160) + 'px';
+        q.style.animationDuration = (9 + Math.random() * 12) + 's';
+        q.style.animationDelay = (Math.random() * 4) + 's';
+        document.body.appendChild(q);
+      }
+    })();
+
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
+      }, 100);
+    });
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.section__title, .section__text, .feature, .footer-cta__title, .footer-cta__sub').forEach(function(el) {
+      el.classList.add('reveal');
+      obs.observe(el);
+    });
+
+    // =============== ДАННЫЕ ЗАЛА ===============
+    var ZONES = {
+      vip:      { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 },
+      standart: { color: '#3dbf6e', rgb: '61,191,110', label: 'Зелёная зона', price: 1400 },
+      econom:   { color: '#4a8fd9', rgb: '74,143,217', label: 'Синяя зона', price: 1100 },
+      divan:    { color: '#a06cf0', rgb: '160,108,240', label: 'Фиолетовая зона', price: 900 },
+      bar:      { color: '#f0913d', rgb: '240,145,61',  label: 'Оранжевая зона', price: 800 },
+      sofa:     { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 },
+      lampa:    { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 }
+    };
+
+    var DEMO_TAKEN = new Set([]); // очищено: все места свободны, занятость только из базы
+
+    var liveSeats = {};
+    // Тянем актуальные цены из админки (huligan_config/prices, ключи vip/std/eco)
+    // и вписываем в ZONES (vip/standart/econom). Один раз за сессию; фолбэк — дефолт.
+    var hulPricesLoaded = false;
+    async function loadHuliganPrices() {
+      if (hulPricesLoaded) return;
+      try {
+        var r = await fetch('/api/seats?type=config&section=huligan');
+        if (!r.ok) { hulPricesLoaded = true; return; }
+        var cfg = await r.json();
+        var p = cfg && cfg.prices;
+        if (p && typeof p === 'object') {
+          var map = { vip: 'vip', std: 'standart', eco: 'econom' };
+          Object.keys(map).forEach(function(srcKey){
+            var v = Number(p[srcKey]);
+            var zoneKey = map[srcKey];
+            if (isFinite(v) && v >= 0 && ZONES[zoneKey]) ZONES[zoneKey].price = v;
+          });
+          // sofa/lampa = как vip
+          if (ZONES.sofa) ZONES.sofa.price = ZONES.vip.price;
+          if (ZONES.lampa) ZONES.lampa.price = ZONES.vip.price;
+        }
+        hulPricesLoaded = true;
+      } catch (e) { console.error('Error loading huligan prices:', e); }
+    }
+    async function loadLiveSeats() {
+      try {
+        await loadHuliganPrices();
+        var r = await fetch('/api/seats?show=huligan');
+        var data = await r.json();
+        liveSeats = data || {};
+        renderHall();
+      } catch (e) {
+        console.error('Error loading live seats:', e);
+      }
+    }
+
+    var SEATS = [];
+
+    // --- 1. Столы кружки на 5 мест (Столы 1, 2, 3) ---
+    var tables5 = [
+      { id: 1, cx: 200, cy: 90, zone: 'vip' },
+      { id: 2, cx: 290, cy: 90, zone: 'vip' },
+      { id: 3, cx: 380, cy: 90, zone: 'vip' }
+    ];
+
+    tables5.forEach(function(tbl) {
+      var startSeat = (tbl.id - 1) * 8 + 3; // Table 1: 3-7, Table 2: 11-15, Table 3: 19-23
+      var r = 24;
+      var angles = [
+        -Math.PI / 12,       // 3/11/19 (top-right)
+        Math.PI / 4,         // 4/12/20 (bottom-right)
+        Math.PI / 2,         // 5/13/21 (bottom)
+        3 * Math.PI / 4,     // 6/14/22 (bottom-left)
+        13 * Math.PI / 12    // 7/15/23 (top-left)
+      ];
+      angles.forEach(function(a, idx) {
+        var sx = tbl.cx + Math.cos(a) * r;
+        var sy = tbl.cy + Math.sin(a) * r;
+        var seatNum = startSeat + idx;
+        SEATS.push({
+          key: 't' + tbl.id + '_' + seatNum,
+          x: sx,
+          y: sy,
+          zone: tbl.zone,
+          table: tbl.id,
+          seatIdx: seatNum,
+          seatNum: seatNum,
+          type: 'round5',
+          tableCx: tbl.cx,
+          tableCy: tbl.cy
+        });
+      });
+    });
+
+    // --- 2. Столы кружки на 4 места (Столы 4-12) ---
+    var tables4 = [
+      { id: 4, cx: 145, cy: 155, zone: 'standart' },
+      { id: 5, cx: 245, cy: 155, zone: 'standart' },
+      { id: 6, cx: 345, cy: 155, zone: 'standart' },
+      { id: 7, cx: 445, cy: 155, zone: 'standart' },
+      
+      { id: 8, cx: 195, cy: 220, zone: 'standart' },
+      { id: 9, cx: 295, cy: 220, zone: 'standart' },
+      { id: 10, cx: 395, cy: 220, zone: 'standart' },
+      
+      { id: 11, cx: 245, cy: 285, zone: 'econom' },
+      { id: 12, cx: 345, cy: 285, zone: 'econom' }
+    ];
+
+    tables4.forEach(function(tbl) {
+      var r = 16;
+      var offsets = [
+        { dx: 0, dy: -r, label: 25 },
+        { dx: r, dy: 0,  label: 26 },
+        { dx: 0, dy: r,  label: 27 },
+        { dx: -r, dy: 0, label: 28 }
+      ];
+      offsets.forEach(function(off) {
+        SEATS.push({
+          key: 't' + tbl.id + '_' + off.label,
+          x: tbl.cx + off.dx,
+          y: tbl.cy + off.dy,
+          zone: tbl.zone,
+          table: tbl.id,
+          seatIdx: off.label,
+          seatNum: off.label,
+          type: 'round4',
+          tableCx: tbl.cx,
+          tableCy: tbl.cy
+        });
+      });
+    });
+
+    // --- 3. Стулья у левой стены (Места 1, 2, 3, 4, 5) ---
+    var leftChairs = [
+      { num: 5, x: 74, y: 115 },
+      { num: 4, x: 74, y: 155 },
+      { num: 3, x: 74, y: 195 },
+      { num: 2, x: 74, y: 235 },
+      { num: 1, x: 96, y: 268 }
+    ];
+
+    leftChairs.forEach(function(ch) {
+      SEATS.push({
+        key: 'c_' + ch.num,
+        x: ch.x,
+        y: ch.y,
+        zone: 'econom',
+        table: 'Стул',
+        seatIdx: ch.num,
+        seatNum: ch.num,
+        type: 'chair',
+        tableCx: ch.x,
+        tableCy: ch.y
+      });
+    });
+
+    // --- 3b. Места правого дивана (5 синих мест, econom, 1100₽) — зеркально левым ---
+    var rightChairs = [
+      { num: 29, x: 490, y: 105 },
+      { num: 30, x: 490, y: 140 },
+      { num: 31, x: 490, y: 175 },
+      { num: 32, x: 490, y: 210 },
+      { num: 33, x: 468, y: 240 }
+    ];
+    rightChairs.forEach(function(ch) {
+      SEATS.push({
+        key: 'cr_' + ch.num,
+        x: ch.x,
+        y: ch.y,
+        zone: 'econom',
+        table: 'Правый диван',
+        seatIdx: ch.num,
+        seatNum: ch.num,
+        type: 'chair',
+        tableCx: ch.x,
+        tableCy: ch.y
+      });
+    });
+
+    // --- 4. Столы-диваны 13 и 14 (прямоугольные, по 4 места, фиолетовая зона 900₽) ---
+    //     Внизу по центру, между столами 11/12 и баром. Нумерация столов идёт подряд 1..14.
+    var divanTables = [
+      { id: 13, cx: 220, cy: 340 },
+      { id: 14, cx: 320, cy: 340 }
+    ];
+    divanTables.forEach(function(tbl) {
+      // Форм-фактор как у столов 16-19 на «Секрете»: вертикальный прямоугольник,
+      // 4 места по углам (право-верх, право-низ, лево-низ, лево-верх). Масштаб huligan (÷2.2 от секрета).
+      var offsets = [
+        { dx:  14.5, dy: -7.3 }, // право-верх
+        { dx:  14.5, dy:  7.3 }, // право-низ
+        { dx: -14.5, dy:  7.3 }, // лево-низ
+        { dx: -14.5, dy: -7.3 }  // лево-верх
+      ];
+      offsets.forEach(function(off, i) {
+        SEATS.push({
+          key: 't' + tbl.id + '_' + (i + 1),
+          x: tbl.cx + off.dx, y: tbl.cy + off.dy,
+          zone: 'divan',
+          table: tbl.id,
+          seatIdx: i + 1,
+          seatNum: i + 1,
+          type: 'divanSeat',
+          tableCx: tbl.cx, tableCy: tbl.cy
+        });
+      });
+    });
+
+    // --- 5. Барная стойка: 3 места В РЯД на самой стойке (как на эталоне), оранжевая зона 800₽ ---
+    var barSeats = [
+      { key: 'bar_1', x: 455, y: 340 },
+      { key: 'bar_2', x: 475, y: 340 },
+      { key: 'bar_3', x: 495, y: 340 }
+    ];
+    barSeats.forEach(function(b) {
+      SEATS.push({
+        key: b.key,
+        x: b.x, y: b.y,
+        zone: 'bar',
+        table: 'Бар',
+        seatIdx: b.key,
+        seatNum: b.key,
+        type: 'chair',
+        tableCx: b.x, tableCy: b.y
+      });
+    });
+
+    // --- 6. Сквозная нумерация мест 1..N (ТОЛЬКО видимый номер; ключи не трогаем,
+    //     чтобы не сломать уже проданные брони). Порядок: столы 1-12, столы 18-19, стулья, бар. ---
+    var SEAT_DISPLAY_NUM = {
+      't1_3':1,'t1_4':2,'t1_5':3,'t1_6':4,'t1_7':5,
+      't2_11':6,'t2_12':7,'t2_13':8,'t2_14':9,'t2_15':10,
+      't3_19':11,'t3_20':12,'t3_21':13,'t3_22':14,'t3_23':15,
+      't4_25':16,'t4_26':17,'t4_27':18,'t4_28':19,
+      't5_25':20,'t5_26':21,'t5_27':22,'t5_28':23,
+      't6_25':24,'t6_26':25,'t6_27':26,'t6_28':27,
+      't7_25':28,'t7_26':29,'t7_27':30,'t7_28':31,
+      't8_25':32,'t8_26':33,'t8_27':34,'t8_28':35,
+      't9_25':36,'t9_26':37,'t9_27':38,'t9_28':39,
+      't10_25':40,'t10_26':41,'t10_27':42,'t10_28':43,
+      't11_25':44,'t11_26':45,'t11_27':46,'t11_28':47,
+      't12_25':48,'t12_26':49,'t12_27':50,'t12_28':51,
+      't13_1':52,'t13_2':53,'t13_3':54,'t13_4':55,
+      't14_1':56,'t14_2':57,'t14_3':58,'t14_4':59,
+      'c_5':60,'c_4':61,'c_3':62,'c_2':63,'c_1':64,
+      'cr_29':65,'cr_30':66,'cr_31':67,'cr_32':68,'cr_33':69,
+      'bar_1':70,'bar_2':71,'bar_3':72
+    };
+    SEATS.forEach(function(s) {
+      if (SEAT_DISPLAY_NUM[s.key] != null) {
+        s.seatNum = SEAT_DISPLAY_NUM[s.key];
+        s.seatIdx = SEAT_DISPLAY_NUM[s.key];
+      }
+    });
+
+    // === Состояние брони ===
+    var booking = {
+      step: 1,
+      date: null,
+      selected: [],
+      promo: null,
+      tempBookingId: 'TEMP-' + Math.random().toString(36).slice(2).toUpperCase()
+    };
+
+    // === Даты шоу ===
+    var SHOWS = [
+      { date: '19 сентября 2026', day: 19, month: 'СЕН', time: '18:00', venue: 'ЛАМПА · Ярославль' }
+    ];
+
+    // === Отрисовка зала ===
+    var NS = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs) {
+      var n = document.createElementNS(NS, tag);
+      for (var k in attrs) {
+        n.setAttribute(k, attrs[k]);
+      }
+      return n;
+    }
+
+    function renderDates() {
+      var grid = document.getElementById('dateGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      SHOWS.forEach(function(s, idx) {
+        var card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'date-card';
+        card.setAttribute('aria-label', s.date + ', ' + s.time + ', ' + s.venue);
+        if (booking.date && booking.date.date === s.date) card.classList.add('selected');
+        card.innerHTML =
+          '<div class="date-card__day">' + s.day + '</div>' +
+          '<div class="date-card__month">' + s.month + '</div>' +
+          '<div class="date-card__time">' + s.time + '</div>' +
+          '<div class="date-card__venue">' + s.venue + '</div>';
+        card.onclick = function() {
+          booking.date = s;
+          document.getElementById('step1Next').disabled = false;
+          renderDates();
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    function renderHall() {
+      var g = document.getElementById('hallG');
+      if (!g) return;
+      g.innerHTML = '';
+
+      // 1. Отрисовка внешней рамки зала (золотая линия с вырезом под сцену)
+      var borderPath = el('path', {
+        d: 'M 15 15 L 160 15 Q 170 15 170 25 L 170 50 Q 170 60 180 60 L 400 60 Q 410 60 410 50 L 410 25 Q 410 15 420 15 L 565 15 Q 570 15 570 20 L 570 390 Q 570 395 565 395 L 15 395 Q 10 395 10 390 L 10 20 Q 10 15 15 15 Z',
+        fill: 'none',
+        stroke: 'rgba(255, 110, 0, 0.45)',
+        'stroke-width': 2
+      });
+      g.appendChild(borderPath);
+
+      // Сцена
+      var stageRect = el('rect', {
+        x: 180, y: 18, width: 220, height: 35, rx: 8,
+        fill: 'none',
+        stroke: 'rgba(255, 110, 0, 0.25)',
+        'stroke-width': 1
+      });
+      g.appendChild(stageRect);
+
+      var stageRectInner = el('rect', {
+        x: 184, y: 22, width: 212, height: 27, rx: 6,
+        fill: 'none',
+        stroke: 'rgba(255, 110, 0, 0.55)',
+        'stroke-width': 1.2
+      });
+      g.appendChild(stageRectInner);
+
+      var stageText = el('text', {
+        x: 290, y: 35,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '12',
+        'font-weight': '600',
+        'font-family': 'Inter, sans-serif',
+        fill: '#fff5eb',
+        'letter-spacing': '2'
+      });
+      stageText.textContent = 'СЦЕНА';
+      g.appendChild(stageText);
+
+      // 2. Декоративные квадраты по бокам (столики у стульев)
+      g.appendChild(el('rect', { x: 82, y: 147, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+      g.appendChild(el('rect', { x: 82, y: 187, width: 14, height: 14, rx: 3, fill: 'none', stroke: 'rgba(255,255,255,0.15)', 'stroke-width': 1 }));
+
+      // 3. Диваны (фон-декорация; места на них — c_1-5 и cr_29-33 — кликаются отдельно)
+      // Left Sofa
+      var leftSofa = el('path', {
+        d: 'M 50 100 Q 50 95 45 95 L 30 95 Q 25 95 25 100 L 25 275 Q 25 280 30 280 L 75 280 Q 80 280 80 275 L 80 250 Q 80 245 75 245 L 55 245 Q 50 245 50 240 Z',
+        fill: 'rgba(74,143,217,0.10)',
+        stroke: 'rgba(74,143,217,0.35)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
+      });
+      g.appendChild(leftSofa);
+      
+      // Text "ДИВАНЫ" inside Left Sofa
+      var leftSofaText = el('text', {
+        x: 37,
+        y: 155,
+        'text-anchor': 'middle',
+        'font-size': '9',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.6)',
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
+        var tspan = el('tspan', { x: 37, dy: i === 0 ? 0 : 12 });
+        tspan.textContent = char;
+        leftSofaText.appendChild(tspan);
+      });
+      g.appendChild(leftSofaText);
+
+      // Right Sofa
+      var rightSofa = el('path', {
+        d: 'M 505 110 Q 500 110 500 105 L 500 85 Q 500 80 505 80 L 550 80 Q 555 80 555 85 L 555 185 Q 555 190 550 190 L 535 190 Q 530 190 530 185 L 530 120 Q 530 115 525 115 Z',
+        fill: 'rgba(74,143,217,0.10)',
+        stroke: 'rgba(74,143,217,0.35)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
+      });
+      g.appendChild(rightSofa);
+      
+      // Text "ДИВАНЫ" inside Right Sofa
+      var rightSofaText = el('text', {
+        x: 542,
+        y: 110,
+        'text-anchor': 'middle',
+        'font-size': '9',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.6)',
+        'pointer-events': 'none'
+      });
+      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
+        var tspan = el('tspan', { x: 542, dy: i === 0 ? 0 : 12 });
+        tspan.textContent = char;
+        rightSofaText.appendChild(tspan);
+      });
+      g.appendChild(rightSofaText);
+
+      // 4. Барная стойка — теперь только ДЕКОРАЦИЯ (фон). Места бара (bar_1..3)
+      //    рисуются вместе с остальными кружками ниже и кликаются как обычные места.
+      var bar = el('path', {
+        d: 'M 440 380 Q 435 380 435 375 L 435 355 Q 435 350 440 350 L 515 350 Q 520 350 520 345 L 520 295 Q 520 290 525 290 L 550 290 Q 555 290 555 295 L 555 375 Q 555 380 550 380 Z',
+        fill: 'rgba(60,60,75,0.85)',
+        stroke: 'rgba(255,255,255,0.22)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
+      });
+      g.appendChild(bar);
+
+      var barText = el('text', {
+        x: 487,
+        y: 368,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-size': '11',
+        'font-weight': '700',
+        'font-family': 'Inter, sans-serif',
+        fill: 'rgba(255,255,255,0.7)',
+        'pointer-events': 'none'
+      });
+      barText.textContent = 'БАР';
+      g.appendChild(barText);
+
+      // 4b. Столы 13/14 — вертикальные прямоугольники (форм-фактор как столы 16-19 на «Секрете»)
+      divanTables.forEach(function(tbl) {
+        var z = ZONES.divan;
+        var rect = el('rect', {
+          x: tbl.cx - 8, y: tbl.cy - 14.5, width: 16, height: 29, rx: 4,
+          fill: 'rgba(' + z.rgb + ', 0.08)',
+          stroke: 'rgba(' + z.rgb + ', 0.35)',
+          'stroke-width': 1
+        });
+        g.appendChild(rect);
+        var lbl = el('text', {
+          x: tbl.cx, y: tbl.cy,
+          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          'font-size': '10', 'font-weight': '700', 'font-family': 'Inter, sans-serif',
+          fill: 'rgba(' + z.rgb + ', 0.9)'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      });
+
+      // 5. Отрисовка столов
+      // Столы на 5 мест
+      tables5.forEach(function(tbl) {
+        var z = ZONES[tbl.zone];
+        var circle = el('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: 16,
+          fill: 'rgba(' + z.rgb + ', 0.10)',
+          stroke: 'rgba(' + z.rgb + ', 0.45)',
+          'stroke-width': 1.3
+        });
+        g.appendChild(circle);
+
+        var lbl = el('text', {
+          x: tbl.cx, y: tbl.cy,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': '10',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: 'rgba(' + z.rgb + ', 0.85)'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      });
+
+      // Столы на 4 места
+      tables4.forEach(function(tbl) {
+        var z = ZONES[tbl.zone];
+        var circle = el('circle', {
+          cx: tbl.cx, cy: tbl.cy, r: 11,
+          fill: 'rgba(' + z.rgb + ', 0.10)',
+          stroke: 'rgba(' + z.rgb + ', 0.45)',
+          'stroke-width': 1.1
+        });
+        g.appendChild(circle);
+
+        var lbl = el('text', {
+          x: tbl.cx, y: tbl.cy,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': '9',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: 'rgba(' + z.rgb + ', 0.85)'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      });
+
+      // 6. Отрисовка стульев (кружков)
+      SEATS.forEach(function(seat) {
+        if (seat.key === 'sl_0' || seat.key === 'sr_0') return;
+
+        var z = ZONES[seat.zone];
+        var isTaken = DEMO_TAKEN.has(seat.key) || (liveSeats[seat.key] && (liveSeats[seat.key].status === 'taken' || liveSeats[seat.key].status === 'reserved'));
+        var isSelected = booking.selected.some(function(x) { return x.key === seat.key; });
+
+        var sr = 6.2;
+        if (seat.type === 'round4') {
+          sr = 5.2;
+        } else if (seat.type === 'chair') {
+          sr = 6.0;
+        } else if (seat.type === 'divanSeat') {
+          sr = 5.6;
+        }
+
+        var fill = isSelected ? '#fff' : (isTaken ? 'rgba(255,255,255,0.06)' : 'rgba(' + z.rgb + ',0.88)');
+        var stroke = isSelected ? z.color : (isTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
+
+        var c = el('circle', {
+          cx: seat.x.toFixed(1),
+          cy: seat.y.toFixed(1),
+          r: sr,
+          fill: fill,
+          stroke: stroke,
+          'stroke-width': isSelected ? 2 : 0.8,
+          style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        });
+        c.classList.add('seat');
+        if (isTaken) c.classList.add('taken');
+        if (isSelected) c.classList.add('selected');
+
+        var isBarSeat = seat.table === 'Бар';
+        var seatAriaLabel = isBarSeat ? 'Бар, место ' + seat.seatNum
+          : (seat.type === 'chair' ? 'Стул ' + seat.seatNum : 'Стол ' + seat.table + ', место ' + seat.seatNum);
+        var hitArea = el('circle', {
+          cx: seat.x.toFixed(1),
+          cy: seat.y.toFixed(1),
+          r: sr + 9,
+          fill: 'transparent',
+          stroke: 'transparent',
+          'class': 'seat-hit',
+          role: 'button',
+          tabindex: isTaken ? -1 : 0,
+          'aria-label': seatAriaLabel + (isTaken ? ', занято' : ', ' + ZONES[seat.zone].price.toLocaleString('ru-RU') + ' рублей'),
+          'aria-pressed': isSelected ? 'true' : 'false',
+          style: isTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        });
+
+        if (!isTaken) {
+          var handleSeatClick = function() {
+            var label = '';
+            if (isBarSeat) {
+              label = 'Бар, место ' + seat.seatNum;
+              toggleSeat(seat.key, seat.zone, label, 'Бар', 'Место ' + seat.seatNum);
+            } else if (seat.type === 'chair') {
+              label = 'Стул ' + seat.seatNum;
+              toggleSeat(seat.key, seat.zone, label, 'Стулья', 'Стул ' + seat.seatNum);
+            } else {
+              label = 'Стол ' + seat.table + ', Место ' + seat.seatNum;
+              toggleSeat(seat.key, seat.zone, label, 'Стол ' + seat.table, 'Место ' + seat.seatNum);
+            }
+          };
+          c.addEventListener('click', handleSeatClick);
+          hitArea.addEventListener('click', handleSeatClick);
+          hitArea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSeatClick(); }
+          });
+        }
+        g.appendChild(hitArea);
+        g.appendChild(c);
+
+        // Добавим номер места внутри кружка
+        var t = el('text', {
+          x: seat.x.toFixed(1),
+          y: seat.y.toFixed(1),
+          'text-anchor': 'middle',
+          'dominant-baseline': 'central',
+          'font-size': seat.type === 'round4' ? '5.5' : '6.5',
+          'font-weight': '700',
+          'font-family': 'Inter, sans-serif',
+          fill: isSelected ? '#14080a' : (isTaken ? 'rgba(255,255,255,0.15)' : '#fff'),
+          'pointer-events': 'none'
+        });
+        t.textContent = seat.seatNum;
+        g.appendChild(t);
+      });
+    }
+    function toggleSeat(key, zone, label, table, seatIdx) {
+      var idx = booking.selected.findIndex(function(x) { return x.key === key; });
+      if (idx >= 0) {
+        booking.selected = TicketFlowCore.toggleSelection(booking.selected, { key: key }, 10);
+        renderHall();
+        renderCart();
+        fetch('/api/seats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'release',
+            seats: [{ tableId: parseInt(table) || 0, seatIdx: parseInt(seatIdx) || 0, key: key }],
+            tempBookingId: booking.tempBookingId,
+            show: 'huligan'
+          })
+        }).catch(function(e){ console.error('Release error:', e); });
+      } else {
+        var seatObj = {
+          key: key,
+          table: table,
+          zone: zone,
+          seatIdx: seatIdx,
+          price: ZONES[zone].price,
+          label: label
+        };
+        try {
+          booking.selected = TicketFlowCore.toggleSelection(booking.selected, seatObj, 10);
+        } catch (selectionError) {
+          alert(selectionError.message);
+          return;
+        }
+        renderHall();
+        renderCart();
+        fetch('/api/seats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'reserve',
+            seats: [{ tableId: parseInt(table) || 0, seatIdx: parseInt(seatIdx) || 0, key: key }],
+            tempBookingId: booking.tempBookingId,
+            show: 'huligan'
+          })
+        })
+        .then(function(r) {
+          if (TicketFlowCore.shouldRollbackSeat(r.status)) {
+            alert('Извините, это место только что было зарезервировано кем-то другим.');
+            var rollbackIdx = booking.selected.findIndex(function(x) { return x.key === key; });
+            if (rollbackIdx >= 0) booking.selected.splice(rollbackIdx, 1);
+            loadLiveSeats();
+            renderHall();
+            renderCart();
+          }
+        })
+        .catch(function(err) {
+          console.warn('Seat sync is unavailable; the local selection is kept.', err);
+        });
+      }
+    }
+
+    function renderCart() {
+      var list = document.getElementById('cartList');
+      var empty = document.getElementById('cartEmpty');
+      var nextBtn = document.getElementById('step2Next');
+      if (booking.selected.length === 0) {
+        list.style.display = 'none';
+        empty.style.display = '';
+        nextBtn.disabled = true;
+        var oldTotal = document.querySelector('.cart__total');
+        if (oldTotal) oldTotal.remove();
+        return;
+      }
+      empty.style.display = 'none';
+      list.style.display = 'flex';
+      list.innerHTML = '';
+      var total = 0;
+      booking.selected.forEach(function(s, idx) {
+        var chip = document.createElement('div');
+        chip.className = 'cart__chip';
+        chip.innerHTML = s.label + ' · ' + s.price.toLocaleString('ru-RU') + ' ₽ <span class="x" role="button" aria-label="Убрать место" data-idx="' + idx + '">×</span>';
+        chip.querySelector('.x').onclick = function(e) {
+          e.stopPropagation();
+          var removed = booking.selected.splice(idx, 1)[0];
+          renderHall();
+          renderCart();
+          if (removed) {
+            fetch('/api/seats', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'release',
+                seats: [{ tableId: parseInt(removed.table) || 0, seatIdx: parseInt(removed.seatIdx) || 0, key: removed.key }],
+                tempBookingId: booking.tempBookingId,
+                show: 'huligan'
+              })
+            }).catch(function(e){ console.error('Release error:', e); });
+          }
+        };
+        list.appendChild(chip);
+        total += s.price;
+      });
+
+      var existing = document.querySelector('.cart__total');
+      if (existing) existing.remove();
+      var totalEl = document.createElement('div');
+      totalEl.className = 'cart__total';
+      totalEl.innerHTML =
+        '<span class="cart__total-label">Итого</span>' +
+        '<span class="cart__total-val">' + total.toLocaleString('ru-RU') + ' ₽</span>';
+      document.getElementById('cartBox').appendChild(totalEl);
+
+      nextBtn.disabled = false;
+    }
+
+    function renderSummary() {
+      var box = document.getElementById('summaryBox');
+      var total = booking.selected.reduce(function(acc, s) { return acc + s.price; }, 0);
+      var finalTotal = total;
+      var promoRow = '';
+      if (booking.promo) {
+        if (booking.promo.type === 'free') finalTotal = 0;
+        else if (booking.promo.type === 'percent') finalTotal = Math.round(total * (1 - booking.promo.value / 100));
+        else if (booking.promo.type === 'fixed') finalTotal = Math.max(0, total - booking.promo.value);
+        var discount = total - finalTotal;
+        promoRow = '<div class="summary__row" style="color:#ff6e00"><span>Скидка</span><span>-' + discount.toLocaleString('ru-RU') + ' ₽</span></div>';
+      }
+      var html = '';
+      if (booking.date) html += '<div class="summary__row"><span>Дата</span><span>' + booking.date.date + ' · ' + booking.date.time + '</span></div>';
+      html += '<div class="summary__row"><span>Билетов</span><span>' + booking.selected.length + ' шт</span></div>';
+      if (promoRow) html += promoRow;
+      html += '<div class="summary__row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span style="color:var(--gold2);text-transform:uppercase;font-size:11px;letter-spacing:0.16em">Итого</span><span style="font-family:Cinzel,serif;font-size:18px;font-weight:900;color:var(--gold2)">' + finalTotal.toLocaleString('ru-RU') + ' ₽</span></div>';
+      box.innerHTML = html;
+      booking.calculatedTotal = finalTotal;
+    }
+
+    var activePromoFetch = null;
+    function applyPromoCodeHuligan() {
+      var inp = document.getElementById('promoCodeInput');
+      var status = document.getElementById('promoStatus');
+      if (!inp || !status) return;
+      var code = inp.value.trim().toUpperCase();
+      if (!code) {
+        booking.promo = null;
+        status.textContent = '';
+        renderSummary();
+        return;
+      }
+      status.style.color = 'rgba(255,255,255,0.4)';
+      status.textContent = 'Проверка...';
+      var fetchId = Date.now();
+      activePromoFetch = fetchId;
+      fetch('/api/seats?type=promo&code=' + encodeURIComponent(code))
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (activePromoFetch !== fetchId) return;
+          if (res && res.active) {
+            booking.promo = res;
+            booking.promo.code = code;
+            status.style.color = '#ff6e00';
+            status.textContent = 'Промокод применен: ' + (res.description || 'Скидка');
+          } else {
+            booking.promo = null;
+            status.style.color = '#e85348';
+            status.textContent = 'Неверный или истекший промокод';
+          }
+          renderSummary();
+        })
+        .catch(function() {
+          if (activePromoFetch !== fetchId) return;
+          status.textContent = '';
+          booking.promo = null;
+          renderSummary();
+        });
+    }
+
+    // === Шаги ===
+    function goToStep(n) {
+      ['step1','step2','step3','stepPayment','bookingSuccess'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      booking.step = n;
+      if (window.KTrack) {
+        if (n === 2) KTrack.step('huligan', 'seats');
+        else if (n === 3) KTrack.step('huligan', 'contacts');
+        else if (n === 4 || n === 5) KTrack.step('huligan', 'payment');
+      }
+      if (n === 1) {
+        document.getElementById('step1').style.display = '';
+        renderDates();
+      } else if (n === 2) {
+        document.getElementById('step2').style.display = '';
+        document.getElementById('step2Date').textContent = booking.date ? booking.date.date + ' · ' + booking.date.time + ' · ' + booking.date.venue : '';
+        loadLiveSeats();
+        renderHall();
+        renderCart();
+      } else if (n === 3) {
+        document.getElementById('step3').style.display = '';
+        renderSummary();
+      } else if (n === 4) {
+        document.getElementById('stepPayment').style.display = '';
+        document.getElementById('paymentSum').textContent = booking.lastDraft ? 'Заказ ' + booking.lastDraft.id : 'Все данные перед переходом к оплате';
+        TicketFlowCore.renderReview(document.getElementById('paymentSummary'), booking.lastDraft || {});
+      } else if (n === 5) {
+        document.getElementById('bookingSuccess').style.display = '';
+      }
+    }
+    window.goToStep = goToStep;
+
+    async function loadPaymentConfigHuligan() {
+      var tbankContainer = document.getElementById('tbankPaymentContainer');
+      var sbpContainer = document.getElementById('sbpPaymentContainer');
+      if (!tbankContainer || !sbpContainer) return;
+
+      tbankContainer.style.display = 'none';
+      sbpContainer.style.display = 'none';
+
+      try {
+        var configRes = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'get_config' })
+        });
+        var config = await configRes.json();
+        if (config && config.tbank && config.tbank.enabled) {
+          tbankContainer.style.display = 'block';
+        } else {
+          sbpContainer.style.display = 'block';
+        }
+      } catch (err) {
+        sbpContainer.style.display = 'block';
+      }
+    }
+
+    // === Открытие/закрытие модалки ===
+    var bookingModal = document.getElementById('bookingModal');
+    function openBookingModal() {
+      bookingModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      if (SHOWS.length === 1 && !booking.date) {
+        booking.date = SHOWS[0];
+        var nextBtn = document.getElementById('step1Next');
+        if (nextBtn) nextBtn.disabled = false;
+      }
+      goToStep(SHOWS.length === 1 ? 2 : 1);
+    }
+    function closeBookingModal() {
+      if (booking.selected.length > 0) {
+        var seatsToRelease = booking.selected.map(function(s) {
+          return { tableId: parseInt(s.table) || 0, seatIdx: parseInt(s.seatIdx) || 0, key: s.key };
+        });
+        fetch('/api/seats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'release',
+            seats: seatsToRelease,
+            tempBookingId: booking.tempBookingId,
+            show: 'huligan'
+          })
+        }).catch(function(e){ console.error('Release all error:', e); });
+      }
+
+      bookingModal.classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(function() {
+        booking.date = null;
+        booking.selected = [];
+        booking.promo = null;
+        booking.tempBookingId = 'TEMP-' + Math.random().toString(36).slice(2).toUpperCase();
+        var f = document.getElementById('bookingFormEl');
+        if (f) f.reset();
+        var promoInp = document.getElementById('promoCodeInput');
+        if (promoInp) promoInp.value = '';
+        var promoStatus = document.getElementById('promoStatus');
+        if (promoStatus) promoStatus.textContent = '';
+        var paymentStatus = document.getElementById('paymentPendingStatus');
+        if (paymentStatus) paymentStatus.hidden = true;
+        var paymentButton = document.getElementById('tbankPayBtn');
+        if (paymentButton) { paymentButton.disabled = false; paymentButton.textContent = 'Перейти к оплате'; }
+        booking.lastDraft = null;
+        goToStep(1);
+        document.getElementById('step1Next').disabled = true;
+      }, 300);
+    }
+    window.openBookingModal = openBookingModal;
+    window.closeBookingModal = closeBookingModal;
+
+    bookingModal.addEventListener('click', function(e) {
+      if (e.target === bookingModal) closeBookingModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && bookingModal.classList.contains('show')) closeBookingModal();
+    });
+
+    // === Отправка ===
+    function getSource() {
+      return 'web';
+    }
+
+    async function submitHuliganBooking(e) {
+      e.preventDefault();
+      var btn = document.getElementById('bookingSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Оформление...';
+
+      var form = e.target;
+      var data = new FormData(form);
+      var bookingId = 'HL-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase();
+      var clientKey = 'CL-' + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      
+      var seatsPayload = booking.selected.map(function(s) {
+        var zoneKey = s.zone === 'standard' || s.zone === 'standart' ? 'std' : (s.zone === 'econom' ? 'eco' : s.zone);
+        return { table: s.table, zone: zoneKey, seatNum: s.seatIdx, price: s.price, key: s.key };
+      });
+
+      var originalPrice = booking.selected.reduce(function(acc, s) { return acc + s.price; }, 0);
+      var finalPrice = booking.calculatedTotal || originalPrice;
+
+      var payload = {
+        action: 'fb_put',
+        path: 'huligan_bookings/' + bookingId,
+        tempBookingId: booking.tempBookingId,
+        data: {
+          bookingId: bookingId,
+          clientKey: clientKey,
+          name: data.get('name') || '',
+          phone: data.get('phone') || '',
+          email: data.get('email') || '',
+          eventDate: booking.date ? booking.date.date + ' ' + booking.date.time : '',
+          vk: data.get('vk') || '', telegram: data.get('vk') || '',
+          comment: data.get('comment') || '',
+          createdAt: Date.now(),
+          status: 'new',
+          ticketType: 'std',
+          originalPrice: originalPrice,
+          finalPrice: finalPrice,
+          promoCode: booking.promo ? booking.promo.code : null,
+          seats: seatsPayload,
+          source: getSource()
+        }
+      };
+
+      // Успешное оформление: сохраняем ключи и идём к оплате
+      function bookingSucceeded() {
+        localStorage.setItem('huligan_last_booking_id', bookingId);
+        localStorage.setItem('huligan_last_client_key', clientKey);
+        booking.lastBookingId = bookingId;
+        booking.lastClientKey = clientKey;
+        btn.disabled = false;
+        btn.textContent = 'Забронировать';
+        goToStep(4);
+      }
+      // Если запрос оборвался (таймаут/cold start/мобильная сеть) — проверяем,
+      // не создалась ли бронь на самом деле. Если да — тихо продолжаем к оплате.
+      async function bookingWasActuallyCreated() {
+        try {
+          var check = await fetch('/api/huligan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_booking', bookingId: bookingId, clientKey: clientKey }),
+          });
+          return check.ok;
+        } catch (e) { return false; }
+      }
+
+      // Таймаут запроса: 20с. Мягкая обработка обрыва вместо «Ошибка сети».
+      var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      var to = ctrl ? setTimeout(function(){ ctrl.abort(); }, 20000) : null;
+      try {
+        var r = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: ctrl ? ctrl.signal : undefined,
+        });
+        if (to) clearTimeout(to);
+        if (r.ok) {
+          bookingSucceeded();
+        } else {
+          var json = {};
+          try { json = await r.json(); } catch (e) {}
+          alert('Не удалось оформить бронирование: ' + (json.error || 'попробуйте позже.'));
+          btn.disabled = false;
+          btn.textContent = 'Забронировать';
+        }
+      } catch (err) {
+        if (to) clearTimeout(to);
+        // Запрос оборвался — но бронь могла успеть создаться на сервере.
+        if (await bookingWasActuallyCreated()) {
+          bookingSucceeded();
+        } else {
+          alert('Не удалось связаться с сервером. Проверьте интернет и попробуйте ещё раз.');
+          btn.disabled = false;
+          btn.textContent = 'Забронировать';
+        }
+      }
+      return false;
+    }
+    window.submitHuliganBooking = submitHuliganBooking;
+
+    function submitTicketDraftHuligan(e) {
+      e.preventDefault();
+      var data = new FormData(e.target);
+      booking.lastDraft = TicketFlowCore.buildDraft({
+        id: 'HUL-' + Date.now().toString(36).toUpperCase(),
+        show: 'Хулиган',
+        date: booking.date,
+        selected: booking.selected,
+        total: booking.calculatedTotal,
+        contact: {
+          name: data.get('name') || '',
+          phone: data.get('phone') || '',
+          vk: data.get('vk') || '', telegram: data.get('vk') || '',
+          comment: data.get('comment') || ''
+        }
+      });
+      TicketFlowCore.storeDraft('kostyuk_ticket_draft_huligan', booking.lastDraft);
+      goToStep(4);
+      return false;
+    }
+    function showPaymentPendingHuligan() {
+      TicketFlowCore.showPaymentPending(document.getElementById('paymentPendingStatus'), document.getElementById('tbankPayBtn'));
+    }
+    window.submitTicketDraftHuligan = submitTicketDraftHuligan;
+    window.showPaymentPendingHuligan = showPaymentPendingHuligan;
+
+    async function initTbankPaymentHuligan() {
+      var btn = document.getElementById('tbankPayBtn');
+      if (!btn) return;
+      btn.disabled = true;
+      btn.textContent = 'Инициализация...';
+      try {
+        var r = await fetch('/api/huligan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'tbank_init',
+            bookingId: booking.lastBookingId,
+            clientKey: booking.lastClientKey
+          })
+        });
+        var json = await r.json();
+        if (json && json.paymentUrl) {
+          if (typeof window.kpOpenPayment === 'function') {
+            await window.kpOpenPayment(json.paymentUrl);
+            btn.disabled = false;
+            btn.textContent = 'Открыть оплату повторно';
+          } else {
+            window.location.href = json.paymentUrl;
+          }
+        } else {
+          alert('Не удалось запустить онлайн-оплату: ' + (json.error || 'попробуйте позже.'));
+          btn.disabled = false;
+          btn.textContent = 'Оплатить онлайн (Т-Банк)';
+        }
+      } catch (e) {
+        alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');
+        btn.disabled = false;
+        btn.textContent = 'Оплатить онлайн (Т-Банк)';
+      }
+    }
+    window.initTbankPaymentHuligan = initTbankPaymentHuligan;
+
+    // Check query params for payment status
+    document.addEventListener('DOMContentLoaded', function() {
+      var params = new URLSearchParams(window.location.search);
+      var payStatus = params.get('pay');
+      if (payStatus === 'success') {
+        booking.selected = [];
+        openBookingModal();
+        goToStep(5);
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        var lastId = localStorage.getItem('huligan_last_booking_id');
+        var lastKey = localStorage.getItem('huligan_last_client_key');
+        var linkEl = document.getElementById('ticketOpenLink');
+        if (lastId && linkEl) {
+          // Билет подтверждается вебхуком T-Bank, который может прийти чуть позже
+          // редиректа. Держим кнопку в состоянии «готовится» и опрашиваем до ~30с.
+          var ticketReady = false;
+          var origText = linkEl.textContent;
+          linkEl.textContent = 'Билет готовится…';
+          linkEl.addEventListener('click', function(e) { if (!ticketReady) { e.preventDefault(); } });
+          (function tryFetchTicketLink(attempt) {
+            fetch('/api/huligan?action=ticket_link&id=' + encodeURIComponent(lastId) + '&clientKey=' + encodeURIComponent(lastKey || ''))
+              .then(function(r) { return r.json(); })
+              .then(function(j) {
+                if (j && j.url) { linkEl.href = j.url; linkEl.textContent = origText; ticketReady = true; }
+                else if (attempt < 20) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
+                else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
+              })
+              .catch(function() {
+                if (attempt < 20) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
+                else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
+              });
+          })(0);
+        }
+      } else if (payStatus === 'fail') {
+        alert('Платеж был отклонен или отменен. Вы можете попробовать заново выбрать места и оплатить.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
+
+    // Скрипт глитча и неоновых вспышек для шоу ХУЛИgan
+    (function() {
+      const hero = document.getElementById('huliganHero');
+      const poster = document.getElementById('huliganPoster');
+      if (!hero || !poster) return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const touchDevice = window.matchMedia('(pointer: coarse)').matches;
+      if (reduceMotion || touchDevice || window.innerWidth < 821) return;
+
+      // Создаем холст для вспышек и частиц
+      const canvas = document.createElement('canvas');
+      canvas.className = 'strobe-canvas';
+      hero.insertBefore(canvas, hero.firstChild);
+
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = hero.clientWidth * dpr;
+        canvas.height = hero.clientHeight * dpr;
+        canvas.style.width = hero.clientWidth + 'px';
+        canvas.style.height = hero.clientHeight + 'px';
+        ctx.scale(dpr, dpr);
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      let isVisible = true;
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(entries => {
+          isVisible = entries[0].isIntersecting;
+        });
+        observer.observe(hero);
+      }
+
+      // Текущие и целевые координаты мыши
+      let currentX = window.innerWidth / 2;
+      let currentY = window.innerHeight * 0.45;
+      let targetX = currentX;
+      let targetY = currentY;
+
+      // Сила амортизации
+      const ease = 0.08;
+
+      let lastX = null;
+      let lastY = null;
+      let lastTime = null;
+      let glitchTimeout = null;
+
+      window.addEventListener('mousemove', function(e) {
+        const rect = hero.getBoundingClientRect();
+        targetX = e.clientX - rect.left;
+        targetY = e.clientY - rect.top;
+
+        const now = Date.now();
+        if (lastX !== null && lastTime !== null) {
+          const dx = targetX - lastX;
+          const dy = targetY - lastY;
+          const dt = now - lastTime;
+          if (dt > 0) {
+            const speed = Math.sqrt(dx * dx + dy * dy) / dt;
+            if (speed > 1.8) {
+              triggerGlitch();
+              // Спавним вспышки при высокой скорости
+              spawnBurst(targetX, targetY, Math.round(speed * 3));
+            }
+          }
+        }
+
+        // Обычный спавн небольшого количества частиц при движении
+        if (Math.random() < 0.4) {
+          spawnParticle(targetX, targetY);
+        }
+
+        lastX = targetX;
+        lastY = targetY;
+        lastTime = now;
+      });
+
+      window.addEventListener('touchmove', function(e) {
+        if (e.touches && e.touches[0]) {
+          const rect = hero.getBoundingClientRect();
+          targetX = e.touches[0].clientX - rect.left;
+          targetY = e.touches[0].clientY - rect.top;
+          if (Math.random() < 0.5) {
+            spawnParticle(targetX, targetY);
+          }
+        }
+      });
+
+      function triggerGlitch() {
+        if (glitchTimeout) clearTimeout(glitchTimeout);
+        poster.classList.add('glitch');
+        const titleEl = document.querySelector('.title');
+        if (titleEl) titleEl.classList.add('glitch');
+
+        glitchTimeout = setTimeout(function() {
+          poster.classList.remove('glitch');
+          if (titleEl) titleEl.classList.remove('glitch');
+        }, 300);
+      }
+
+      const PARTICLE_COLORS = [
+        'rgba(255, 110, 0, ',  // Сочный оранжевый
+        'rgba(255, 190, 0, ',  // Теплый желтый/золотой
+        'rgba(232, 83, 72, ',  // Насыщенный красно-оранжевый
+        'rgba(255, 230, 100, ' // Яркая золотая искра
+      ];
+
+      function spawnParticle(x, y) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+          alpha: 1,
+          decay: 0.02 + Math.random() * 0.03,
+          radius: 2 + Math.random() * 4
+        });
+      }
+
+      function spawnBurst(x, y, count) {
+        const num = Math.min(count, 25);
+        for (let i = 0; i < num; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1 + Math.random() * 8;
+          particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+            alpha: 1,
+            decay: 0.02 + Math.random() * 0.04,
+            radius: 2 + Math.random() * 5
+          });
+        }
+      }
+
+      function animate() {
+        // Линейная интерполяция
+        currentX += (targetX - currentX) * ease;
+        currentY += (targetY - currentY) * ease;
+
+        // Вычисляем наклон 3D карточки
+        const posterRect = poster.getBoundingClientRect();
+        const pCenterX = posterRect.left + posterRect.width / 2;
+        const pCenterY = posterRect.top + posterRect.height / 2;
+
+        const rect = hero.getBoundingClientRect();
+        const absoluteMouseX = currentX + rect.left;
+        const absoluteMouseY = currentY + rect.top;
+
+        const tiltX = (absoluteMouseY - pCenterY) / 15;
+        const tiltY = -(absoluteMouseX - pCenterX) / 15;
+
+        // Ограничиваем наклон
+        const maxTilt = 15;
+        const clampedTiltX = Math.max(-maxTilt, Math.min(maxTilt, tiltX));
+        const clampedTiltY = Math.max(-maxTilt, Math.min(maxTilt, tiltY));
+
+        poster.style.transform = `rotateX(${clampedTiltX}deg) rotateY(${clampedTiltY}deg)`;
+
+        // Рисуем вспышки на Canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Фоновый градиент подсветки вокруг курсора
+        const glow = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 250);
+        glow.addColorStop(0, 'rgba(255, 110, 0, 0.08)');
+        glow.addColorStop(0.5, 'rgba(255, 190, 0, 0.03)');
+        glow.addColorStop(1, 'transparent');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Рендерим и обновляем частицы
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.98; // трение
+          p.vy *= 0.98;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + p.alpha + ')';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color + '0.8)';
+          ctx.fill();
+        }
+        ctx.shadowBlur = 0; // Сбрасываем свечение
+
+        // Спавним фоновые редкие искры, чтобы сцена была живой даже без мыши
+        if (Math.random() < 0.05) {
+          const rx = Math.random() * canvas.width;
+          const ry = Math.random() * canvas.height;
+          spawnParticle(rx, ry);
+        }
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Сброс при выходе за пределы
+      window.addEventListener('mouseleave', function() {
+        targetX = hero.clientWidth / 2;
+        targetY = hero.clientHeight * 0.45;
+      });
+    })();
+  </script>
+
+  <!-- ===== FLOATING TELEGRAM CONTACT BUTTON ===== -->
+  <style>
+  </style>
+
+
+  <!-- Yandex.Metrika counter -->
+  
+  
+  <!-- /Yandex.Metrika counter -->
+
+  <!-- STICKY CTA -->
+  <div id="stickyCta" style="position: fixed; bottom: -100px; left: 0; right: 0; background: rgba(14,12,36,0.95); backdrop-filter: blur(10px); padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 99; transition: bottom 0.3s ease; display:flex; justify-content:space-between; align-items:center; max-width: 600px; margin: 0 auto; border-radius: 16px 16px 0 0;">
+    <div>
+      <div style="font-weight: 600; font-size: 16px;">Шоу ХУЛИgan</div>
+      <div style="color: var(--gold); font-size: 14px; opacity:0.8;">Билеты от 1100 ₽</div>
+    </div>
+    <button class="buy-cta" style="margin:0; padding: 12px 24px; font-size: 15px;" onclick="openBookingModal()">Купить билет</button>
+  </div>
+  
+  <script>
+    window.addEventListener('scroll', () => {
+       const sticky = document.getElementById('stickyCta');
+       // Show sticky CTA if scrolled past the first 500px, but hide if we are near the very bottom footer CTA
+       const footerCta = document.querySelector('.footer-cta');
+       let hideNearBottom = false;
+       if (footerCta) {
+          const rect = footerCta.getBoundingClientRect();
+          if (rect.top < window.innerHeight) {
+             hideNearBottom = true;
+          }
+       }
+       if (window.scrollY > 500 && !hideNearBottom) {
+          sticky.style.bottom = '0px';
+       } else {
+          sticky.style.bottom = '-100px';
+       }
+    });
+  </script>
+
+  
+  
+  
+  <script>window.addEventListener('load',function(){ if(window.KTrack) KTrack.step('huligan','visit'); });</script>
+  <script>
+    (function(){
+      function esc(s){ var d=document.createElement('div'); d.textContent=String(s==null?'':s); return d.innerHTML; }
+      fetch('./data/reviews-huligan.json').then(function(r){ return r.ok?r.json():[]; }).then(function(items){
+        if(!Array.isArray(items) || !items.length) return;
+        var box=document.getElementById('reviewsGrid'), sec=document.getElementById('reviewsSection'); if(!box) return;
+        box.innerHTML = items.map(function(rv){
+          var rating=Math.max(1,Math.min(5,rv.rating||5));
+          var stars='★'.repeat(rating)+'☆'.repeat(5-rating);
+          var photoHtml = rv.photo ? '<img src="'+rv.photo+'" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,110,0,.5);flex:none">' : '';
+          var nameRow = '<div class="review-item__name" style="display:flex;align-items:center;gap:10px;margin-top:4px">'+photoHtml+'<span>— '+esc(rv.name||'Гость')+'</span></div>';
+          return '<div class="review-item"><div class="review-item__stars">'+stars+'</div><div class="review-item__text">«'+esc(rv.text)+'»</div>'+nameRow+'</div>';
+        }).join('');
+        if(sec) sec.style.display='';
+      }).catch(function(){});
+    })();
+  </script>
+</body>
+</html>
