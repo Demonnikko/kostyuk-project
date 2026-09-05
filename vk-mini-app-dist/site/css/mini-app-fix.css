@@ -60,3 +60,24 @@ html, body { scroll-padding-top: 8px !important; }
 /* Секции афиши (ближайшие показы, карточки, экосистема) — компактнее. */
 .next-shows { padding-top: 8px !important; padding-bottom: 8px !important; }
 .shows { padding-top: 8px !important; padding-bottom: 16px !important; }
+
+/* =========================================================================
+   Чёлка (safe-area) + запрет зума для мини-аппа
+   ========================================================================= */
+
+/* Запрет пинч-зума через CSS (в дополнение к viewport user-scalable=no,
+   который iOS Safari игнорирует). pan-x pan-y оставляет обычный скролл. */
+html { touch-action: pan-x pan-y !important; -ms-touch-action: pan-x pan-y !important; }
+* { -webkit-text-size-adjust: 100% !important; text-size-adjust: 100% !important; }
+
+/* Чёлка iPhone: контент не должен залезать под вырез сверху.
+   Добавляем safe-area к верхнему отступу hero страниц шоу и интро афиши. */
+body.show-page .hero,
+.hero {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 16px) !important;
+}
+.concerts-intro {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 18px) !important;
+}
+/* Боковые вырезы (ландшафт) и низ (домашняя полоса). */
+body { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
