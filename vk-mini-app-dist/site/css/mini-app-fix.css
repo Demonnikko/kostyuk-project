@@ -79,5 +79,15 @@ body.show-page .hero,
 .concerts-intro {
   padding-top: calc(env(safe-area-inset-top, 0px) + 18px) !important;
 }
-/* Боковые вырезы (ландшафт) и низ (домашняя полоса). */
-body { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+/* Жёстко запрещаем горизонтальное переполнение в мини-аппе: карточки-постеры
+   на витрине (.show) на iPhone могли чуть выходить за поля из-за боковых
+   safe-area. Отступ по бокам даём контейнеру .stage (а не body), а корень
+   обрезает любой горизонтальный вынос. */
+html, body { max-width: 100% !important; overflow-x: hidden !important; }
+.stage {
+  padding-left: calc(16px + env(safe-area-inset-left, 0px)) !important;
+  padding-right: calc(16px + env(safe-area-inset-right, 0px)) !important;
+}
+/* Карточки и постеры витрины не шире своего столбца. */
+.shows, .show, .show__poster, .next-shows, .next-show { max-width: 100% !important; }
+.show__poster { width: 100% !important; height: auto !important; }
