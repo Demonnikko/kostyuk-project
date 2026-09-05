@@ -16,7 +16,6 @@
   <link rel="apple-touch-icon" href="./admin-icon-192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./admin-icon-192.png">
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
   <style>
     *,
@@ -921,6 +920,150 @@
     .show-ov-num { display: block; font-size: 22px; font-weight: 700; color: var(--gold); line-height: 1.1; }
     .show-ov-lbl { font-size: 12px; color: var(--dim); }
 
+    /* Full-screen ticket scanner. The decoder reads the complete camera frame;
+       the visible guide is only an aiming aid and never crops the image. */
+    body.scanner-active { overflow: hidden; }
+    .scanner-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      z-index: 20000;
+      display: none;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      isolation: isolate;
+    }
+    .scanner-overlay.is-open { display: block; }
+    .scanner-camera {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      border: 0 !important;
+    }
+    #qr-reader video {
+      position: absolute !important;
+      inset: 0;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      object-fit: cover;
+    }
+    .scanner-decoder {
+      position: fixed;
+      left: -10000px;
+      top: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .scanner-topbar {
+      position: absolute;
+      z-index: 3;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: calc(64px + env(safe-area-inset-top, 0px));
+      padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px;
+      background: linear-gradient(to bottom, rgba(0,0,0,.86), rgba(0,0,0,0));
+      pointer-events: none;
+    }
+    .scanner-topbar-title { font-size: 16px; font-weight: 750; text-shadow: 0 1px 5px #000; }
+    .scanner-close {
+      pointer-events: auto;
+      width: 46px;
+      height: 46px;
+      flex: none;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 50%;
+      background: rgba(0,0,0,.62);
+      color: #fff;
+      font-size: 27px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .scanner-guide {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 88px 24px calc(42px + env(safe-area-inset-bottom, 0px));
+      pointer-events: none;
+    }
+    .scanner-reticle {
+      width: min(72vw, 330px);
+      aspect-ratio: 1;
+      border: 3px solid rgba(255,255,255,.94);
+      border-radius: 22px;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,.32), 0 0 30px rgba(0,0,0,.45);
+    }
+    .scanner-hint {
+      max-width: 330px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(0,0,0,.7);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.4;
+      text-align: center;
+      text-shadow: 0 1px 4px #000;
+    }
+    .scanner-result {
+      position: absolute;
+      z-index: 4;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      padding: calc(82px + env(safe-area-inset-top, 0px)) 20px calc(28px + env(safe-area-inset-bottom, 0px));
+      background: rgba(8,8,16,.96);
+      text-align: center;
+    }
+    .scanner-result-card { width: min(100%, 520px); }
+    .scanner-seat-summary {
+      display: none;
+      margin: 18px auto 12px;
+      padding: 16px 18px;
+      border: 1px solid rgba(61,191,110,.58);
+      border-radius: 12px;
+      background: rgba(61,191,110,.15);
+      color: #7df0a8;
+      font-size: clamp(22px, 5vw, 32px);
+      font-weight: 850;
+      line-height: 1.25;
+    }
+    .scanner-seat-summary small {
+      display: block;
+      margin-bottom: 5px;
+      color: rgba(255,255,255,.68);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .scanner-result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+    @media (max-width: 520px) {
+      .scanner-result-actions { grid-template-columns: 1fr; }
+      .scanner-result-actions .btn { width: 100%; }
+    }
+
     .metric-card {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -956,6 +1099,56 @@
       text-transform: uppercase;
       letter-spacing: .8px;
       margin-bottom: 6px;
+    }
+
+    /* ═══ Планировщик ═══ */
+    .pl-preset {
+      background: var(--bg2); border: 1px solid var(--border); color: var(--txt, #f0e6d0);
+      border-radius: 12px; padding: 10px 16px; font-size: 14px; cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .pl-preset:hover { border-color: var(--gold); background: rgba(201,162,39,.08); }
+    .pl-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.2fr); gap: 16px; align-items: start; }
+    .pl-inputs { margin: 0; }
+    .pl-grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .pl-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pl-zone { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+    .pl-zone label { display: block; font-size: 12px; color: var(--dim); margin-bottom: 4px; }
+    .pl-zone .inp { padding: 8px 10px; }
+    .pl-divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .pl-results { min-width: 0; }
+    .pl-verdict {
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; font-size: 15px;
+      line-height: 1.5; border: 1px solid var(--border); background: var(--bg2);
+    }
+    .pl-verdict.good { border-color: rgba(61,191,110,.5); background: rgba(61,191,110,.08); }
+    .pl-verdict.warn { border-color: rgba(232,197,64,.5); background: rgba(232,197,64,.08); }
+    .pl-verdict.bad  { border-color: rgba(232,83,72,.5); background: rgba(232,83,72,.08); }
+    .pl-cpa-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--dim); }
+    .pl-cpa-row:last-of-type { border-bottom: none; }
+    .pl-cpa-row b { color: var(--gold2); font-size: 15px; }
+    .pl-cpa-hint { margin-top: 10px; font-size: 13px; color: var(--dim); line-height: 1.5; }
+    .pl-brk-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; }
+    .pl-brk-bar { height: 8px; border-radius: 4px; flex: none; }
+    .pl-brk-label { flex: 1; color: var(--dim); }
+    .pl-brk-val { font-weight: 700; color: #f0e6d0; }
+    .pl-scenarios { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; }
+    .pl-scen-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+      text-align: center; transition: transform .2s;
+    }
+    .pl-scen-card:hover { transform: translateY(-2px); }
+    .pl-scen-pct { font-size: 13px; color: var(--dim); margin-bottom: 4px; }
+    .pl-scen-tickets { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+    .pl-scen-profit { font-size: 20px; font-weight: 700; font-family: 'Playfair Display', serif; }
+    @media (max-width: 860px) {
+      .pl-wrap { grid-template-columns: 1fr; }
+      .pl-grid3 { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+      .pl-grid3 .inp { padding: 7px 6px; font-size: 13px; }
+    }
+    @media (max-width: 600px) {
+      .pl-grid2 { grid-template-columns: 1fr; }
+      .pl-grid3 { grid-template-columns: 1fr 1fr; }
     }
 
     .metric-value {
@@ -1078,6 +1271,17 @@
       align-items: center;
       gap: 8px;
     }
+
+    .audience-card { margin-top: 16px; height: auto; }
+    .audience-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding-top: 4px; }
+    .audience-column { min-width: 0; }
+    .audience-heading { color: var(--dim); font-size: 12px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; }
+    .audience-row { margin-bottom: 11px; }
+    .audience-row-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 4px; font-size: 12px; }
+    .audience-row-value { color: var(--gold); font-weight: 700; white-space: nowrap; }
+    .audience-bar { height: 7px; overflow: hidden; border-radius: 4px; background: rgba(255,255,255,.06); }
+    .audience-bar > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#c9a228,#e0b94a); }
+    @media (max-width: 760px) { .audience-grid { grid-template-columns: 1fr; gap: 22px; } }
 
     .activity-timeline {
       display: flex;
@@ -1420,6 +1624,27 @@
       line-height: 1;
     }
 
+    /* Плавающая кнопка обновления — видна только на мобильном (sidebar там скрыт) */
+    .mobile-update-btn { display: none; }
+    @media (max-width: 600px) {
+      .mobile-update-btn {
+        display: flex;
+        position: fixed;
+        top: calc(10px + env(safe-area-inset-top, 0px));
+        right: 12px;
+        z-index: 9999;
+        align-items: center;
+        gap: 6px;
+        background: var(--bg2);
+        border: 1px solid rgba(201,162,39,.5);
+        color: var(--gold);
+        border-radius: 12px;
+        padding: 9px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(0,0,0,.4);
+      }
+    }
     /* Mobile adaptation */
     @media (max-width: 600px) {
       .sidebar {
@@ -1572,6 +1797,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="/vendor/fonts/fonts.css?v=3">
 </head>
 
 <body>
@@ -1598,6 +1824,9 @@
 
   <!-- App -->
   <div id="app" class="app" style="display:none">
+
+    <!-- Плавающая кнопка обновления для мобильных (sidebar на телефоне скрыт) -->
+    <button class="mobile-update-btn" onclick="forceUpdateApp()">🔄 Обновить <span style="opacity:.7;font-size:11px">v16</span></button>
 
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -1629,11 +1858,11 @@
           <div class="nav-item active" onclick="showSection('dashboard')" data-sec="dashboard">
             <span class="nav-icon">📊</span> Обзор шоу
           </div>
-          <div class="nav-item" onclick="showSection('finances')" data-sec="finances">
-            <span class="nav-icon">💰</span> Финансы
-          </div>
           <div class="nav-item" onclick="showSection('scanner')" data-sec="scanner">
             <span class="nav-icon">📷</span> Сканер на входе
+          </div>
+          <div class="nav-item" onclick="showSection('planner')" data-sec="planner">
+            <span class="nav-icon">🧮</span> Планировщик и финансы
           </div>
         </nav>
 
@@ -1731,6 +1960,7 @@
       </div>
 
       <div class="sidebar-footer">
+        <button class="btn-logout" onclick="forceUpdateApp()" style="margin-bottom:8px;border-color:rgba(201,162,39,.4);color:var(--gold)">🔄 Обновить приложение</button>
         <button class="btn-logout" onclick="logout()">↩ Выйти</button>
       </div>
     </aside>
@@ -1760,14 +1990,10 @@
             <option value="matvey">Спасти Матвея</option>
           </select>
 
-          <!-- Область камеры -->
-          <div id="qr-reader" style="width:100%; max-width:420px; aspect-ratio:1/1; margin:0 auto 8px; border-radius:14px; overflow:hidden; background:#000; border:1px solid rgba(255,255,255,.08);"></div>
-          <p id="scannerHint" style="text-align:center; font-size:13px; color:var(--dim); margin-bottom:16px;">Нажмите «Запустить камеру» и наведите на QR-код билета</p>
-
-          <!-- Кнопки камеры -->
-          <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
-            <button class="btn btn--gold" id="btnStartScan" onclick="startScanner()" style="min-width:180px;">📷 Запустить камеру</button>
-            <button class="btn btn--red" id="btnStopScan" onclick="stopScanner()" style="display:none; min-width:180px;">⏹ Остановить</button>
+          <!-- Камера открывается отдельным полноэкранным слоем -->
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:20px;">
+            <button class="btn btn--gold" id="btnStartScan" onclick="startScanner()" style="width:min(100%,320px);">📷 Открыть сканер</button>
+            <p style="text-align:center; font-size:13px; color:var(--dim); line-height:1.45;">Камера откроется на весь экран и автоматически определит шоу и место.</p>
           </div>
 
           <!-- Ручной ввод -->
@@ -1780,11 +2006,30 @@
           </div>
         </div>
 
-        <div id="scanFeedback" class="card" style="display:none; text-align:center; padding: 40px 20px; max-width:560px; margin:0 auto 16px;">
-          <div id="scanFeedbackIcon" style="font-size: 64px; margin-bottom: 10px;"></div>
-          <h2 id="scanFeedbackTitle" style="margin-bottom: 10px;"></h2>
-          <p id="scanFeedbackText" style="color:var(--dim); font-size: 16px; margin-bottom: 20px;"></p>
-          <div id="scanFeedbackDetails" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; text-align:left; font-size: 14px; color: #ddd; max-width: 400px; margin: 0 auto;"></div>
+        <div id="scannerOverlay" class="scanner-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Сканер билетов">
+          <div id="qr-reader" class="scanner-camera"></div>
+          <div id="qr-decoder" class="scanner-decoder" aria-hidden="true"></div>
+          <div class="scanner-topbar">
+            <div class="scanner-topbar-title">Сканер билетов</div>
+            <button class="scanner-close" type="button" onclick="closeScanner()" aria-label="Закрыть сканер">×</button>
+          </div>
+          <div id="scannerGuide" class="scanner-guide">
+            <div class="scanner-reticle" aria-hidden="true"></div>
+            <p id="scannerHint" class="scanner-hint">Наведите камеру на QR-код билета</p>
+          </div>
+          <div id="scanFeedback" class="scanner-result" aria-live="assertive">
+            <div class="scanner-result-card">
+              <div id="scanFeedbackIcon" style="font-size:64px; margin-bottom:10px;"></div>
+              <h2 id="scanFeedbackTitle" style="margin-bottom:10px;"></h2>
+              <p id="scanFeedbackText" style="color:rgba(255,255,255,.7); font-size:16px; margin-bottom:10px;"></p>
+              <div id="scanSeatSummary" class="scanner-seat-summary"></div>
+              <div id="scanFeedbackDetails" style="background:rgba(255,255,255,.07); border-radius:10px; padding:15px; text-align:left; font-size:14px; color:#ddd; max-width:440px; margin:0 auto;"></div>
+              <div class="scanner-result-actions">
+                <button class="btn btn--gold" id="btnScanNext" type="button" onclick="scanNextTicket()">📷 Следующий билет</button>
+                <button class="btn btn--ghost" type="button" onclick="closeScanner()">Закрыть</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Контроль зала: сколько куплено / прошло / ждём -->
@@ -1808,11 +2053,32 @@
             </div>
           </div>
           <div id="scanStatsByShow" style="margin-top:12px; font-size:13px; color:#bbb;"></div>
+
+          <!-- Явка + деньги по концерту -->
+          <div id="scanMoneyRow" style="margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center;">
+            <div style="background:rgba(214,172,69,.08); border-radius:10px; padding:12px;">
+              <div id="scanStatAttendance" style="font-size:22px; font-weight:800; color:var(--gold);">—</div>
+              <div style="font-size:11px; color:var(--dim);">Явка</div>
+            </div>
+            <div style="background:rgba(61,191,110,.10); border-radius:10px; padding:12px;">
+              <div id="scanStatRevenue" style="font-size:22px; font-weight:800; color:var(--std);">—</div>
+              <div style="font-size:11px; color:var(--dim);">Собрано</div>
+            </div>
+            <div style="background:rgba(255,255,255,.04); border-radius:10px; padding:12px;">
+              <div id="scanStatPromo" style="font-size:22px; font-weight:800; color:#c89cff;">—</div>
+              <div style="font-size:11px; color:var(--dim);">С промокодом</div>
+            </div>
+          </div>
         </div>
 
         <!-- Кто уже прошёл (последние проходы) -->
         <div class="card" style="padding: 18px; max-width:560px; margin:0 auto;">
-          <div class="section-title" style="margin:0 0 12px; font-size:16px;">✅ Кто прошёл</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin:0 0 12px; gap:10px; flex-wrap:wrap;">
+            <div class="section-title" style="margin:0; font-size:16px;">✅ Кто прошёл</div>
+            <label style="font-size:12px; color:var(--dim); display:flex; align-items:center; gap:6px; cursor:pointer;">
+              <input type="checkbox" id="scanArchiveToggle" onchange="loadScanStats()"> Показать прошлые концерты
+            </label>
+          </div>
           <div id="scanHistoryList" style="display:flex; flex-direction:column; gap:8px; font-size:14px;">
             <div style="color:var(--dim); text-align:center; padding:16px;">Нажмите «Обновить» выше, чтобы загрузить список</div>
           </div>
@@ -1931,9 +2197,203 @@
             </div>
           </div>
         </div>
+
+        <div class="activity-card audience-card">
+          <div class="activity-title" style="justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <span>📱 Устройства посетителей</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span id="audienceTotal" style="font:12px Arial,sans-serif;color:var(--dim);">0 сеансов</span>
+              <select id="audiencePeriod" onchange="loadAudienceAnalytics()" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;">
+                <option value="today">Сегодня</option><option value="7">7 дней</option><option value="30">30 дней</option>
+              </select>
+            </div>
+          </div>
+          <div id="audienceContent" class="audience-grid"><div class="empty-state" style="grid-column:1/-1;padding:24px 0;">⏳ Загрузка статистики...</div></div>
+        </div>
       </div>
 
       <!-- Финансы -->
+      <!-- ══════ ПЛАНИРОВЩИК ШОУ ══════ -->
+      <div class="section" id="sec-planner">
+        <div class="section-title">🧮 Планировщик — расчёт бюджета и прибыли</div>
+        <p style="color:var(--dim);margin:-6px 0 18px;font-size:14px;max-width:680px">
+          Введите параметры концерта — мгновенно увидите точку безубыточности, сколько можно потратить на рекламу и прогноз прибыли. Всё считается на лету.
+        </p>
+
+        <!-- Пресеты шоу -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+          <button class="pl-preset" onclick="loadPlannerWorkspace('huligan')">😈 ХУЛИgan</button>
+          <button class="pl-preset" onclick="loadPlannerWorkspace('secret')">🎭 Секрет</button>
+          <button class="pl-preset" onclick="loadPlannerWorkspace('matvey')">🧸 Матвей</button>
+          <button class="pl-preset" onclick="plLoadReal()" style="margin-left:auto">🔄 Подтянуть реальные продажи</button>
+        </div>
+
+        <div class="pl-wrap">
+          <!-- ЛЕВО: ввод -->
+          <div class="settings-card pl-inputs">
+            <div class="settings-card-title">📥 Данные концерта</div>
+
+            <div class="pl-grid3" id="plZones"></div>
+
+            <div class="pl-divider"></div>
+
+            <div class="pl-grid2">
+              <div class="form-group" style="margin-bottom:10px">
+                <label>🏠 Аренда зала, ₽</label>
+                <input class="inp" id="plRent" type="number" value="27000" oninput="plCalc()">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>💳 Абонплата счёта, ₽/мес</label>
+                <input class="inp" id="plAccount" type="number" value="490" oninput="plCalc()">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>🏦 Комиссия эквайринга, %</label>
+                <input class="inp" id="plAcq" type="number" step="0.1" value="3" oninput="plCalc()">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>🧾 Налог НПД, %</label>
+                <input class="inp" id="plTax" type="number" step="0.1" value="4" oninput="plCalc()">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>🤝 Сотрудник, % от сбора</label>
+                <input class="inp" id="plSalary" type="number" step="0.1" value="7" oninput="plCalc()">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>📣 Бюджет на рекламу, ₽</label>
+                <input class="inp" id="plAd" type="number" value="15000" oninput="plCalc()">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>🧾 Прочие расходы, ₽</label>
+                <input class="inp" id="plOther" type="number" value="0" oninput="plCalc()">
+              </div>
+            </div>
+
+            <div class="pl-divider"></div>
+            <label style="display:block;color:var(--dim);font-size:13px;margin-bottom:6px">
+              🎟 Сколько билетов рассчитываем продать: <b id="plSoldLbl" style="color:var(--gold)">100% зала</b>
+            </label>
+            <input type="range" id="plSold" min="0" max="100" value="100" oninput="plCalc()" style="width:100%">
+          </div>
+
+          <!-- ПРАВО: результаты -->
+          <div class="pl-results">
+            <div class="dashboard-grid" style="margin-bottom:14px">
+              <div class="metric-card">
+                <span class="metric-title">Полный сбор</span>
+                <span class="metric-value" id="plGross" style="color:#3dbf6e">0 ₽</span>
+                <span class="metric-sub"><span id="plSeats">0</span> мест в зале</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-title">🎯 Точка безубыточности</span>
+                <span class="metric-value" id="plBreakeven" style="color:var(--gold)">0</span>
+                <span class="metric-sub" id="plBreakevenPct">билетов, чтобы выйти в ноль</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-title">Прогноз прибыли</span>
+                <span class="metric-value" id="plProfit" style="color:var(--gold)">0 ₽</span>
+                <span class="metric-sub" id="plProfitSub">при выбранной заполняемости</span>
+              </div>
+            </div>
+
+            <!-- Вердикт -->
+            <div class="pl-verdict" id="plVerdict"></div>
+
+            <!-- Лимит рекламы / CPA -->
+            <div class="settings-card" style="margin-bottom:14px">
+              <div class="settings-card-title">📣 Сколько платить за рекламу</div>
+              <div class="pl-cpa-row">
+                <span>С каждого билета остаётся чистыми:</span>
+                <b id="plNetPerTicket" style="color:#3dbf6e">0 ₽</b>
+              </div>
+              <div class="pl-cpa-row">
+                <span>🟢 Отлично — цена привлечения до:</span>
+                <b id="plCpaGood">0 ₽</b>
+              </div>
+              <div class="pl-cpa-row">
+                <span>🟡 Рабочая зона — до:</span>
+                <b id="plCpaOk">0 ₽</b>
+              </div>
+              <div class="pl-cpa-row">
+                <span>🔴 Стоп (убыток) — дороже:</span>
+                <b id="plCpaBad" style="color:#e85348">0 ₽</b>
+              </div>
+              <div class="pl-cpa-hint" id="plCpaHint"></div>
+            </div>
+
+            <!-- Разбивка расходов -->
+            <div class="settings-card">
+              <div class="settings-card-title">📊 Куда уходят деньги (при выбранной заполняемости)</div>
+              <div id="plBreakdown"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Сценарии -->
+        <div class="section-title" style="font-size:16px;margin:24px 0 12px">📈 Прогноз по заполняемости зала</div>
+        <div class="pl-scenarios" id="plScenarios"></div>
+
+        <!-- Существующий финансовый учёт переносится сюда без потери данных. -->
+        <div id="plannerFinanceHost" style="margin-top:28px"></div>
+
+        <!-- ══ РЕКЛАМНЫЕ ПРОМОКОДЫ ПО ПАБЛИКАМ ══ -->
+        <div class="section-title" style="font-size:16px;margin:28px 0 6px">📣 Реклама по пабликам — промокоды и эффективность</div>
+        <p style="color:var(--dim);margin:0 0 14px;font-size:14px;max-width:680px">
+          Создайте промокод под каждый паблик. По нему увидите, сколько билетов он привёл и окупилась ли реклама.
+        </p>
+
+        <div class="pl-wrap">
+          <!-- Создание рекламного промокода -->
+          <div class="settings-card" style="margin:0">
+            <div class="settings-card-title">➕ Промокод под паблик</div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label>Шоу</label>
+              <select class="inp" id="adShow">
+                <option value="huligan">😈 ХУЛИgan</option>
+                <option value="secret">🎭 Секрет</option>
+                <option value="matvey">🧸 Матвей</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label>Название паблика</label>
+              <input class="inp" id="adPublic" placeholder="Афиша Ярославль" oninput="adSuggestCode()">
+            </div>
+            <div class="pl-grid2">
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Промокод</label>
+                <input class="inp" id="adCode" placeholder="AFISHA" style="text-transform:uppercase">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Потрачено на пост, ₽</label>
+                <input class="inp" id="adSpent" type="number" placeholder="1900">
+              </div>
+            </div>
+            <div class="pl-grid2">
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Скидка</label>
+                <select class="inp" id="adType">
+                  <option value="percent">Процент</option>
+                  <option value="fixed">Сумма ₽</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Значение</label>
+                <input class="inp" id="adValue" type="number" value="10" placeholder="10">
+              </div>
+            </div>
+            <button class="btn-save-settings" onclick="adCreatePromo()">+ Создать промокод для паблика</button>
+          </div>
+
+          <!-- Статистика по пабликам -->
+          <div class="settings-card" style="margin:0">
+            <div class="settings-card-title">📊 Эффективность рекламы</div>
+            <button class="pl-preset" onclick="adLoadStats()" style="width:100%;margin-bottom:12px">🔄 Обновить статистику</button>
+            <div id="adStatsList">
+              <div style="color:var(--dim);font-size:13px;text-align:center;padding:14px">Нажмите «Обновить статистику», чтобы увидеть, какой паблик сколько продал.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="section" id="sec-finances">
         <div class="section-title">💰 Финансы — доход, расходы, чистая прибыль</div>
 
@@ -1942,7 +2402,7 @@
           <div class="metric-card">
             <span class="metric-title">Грязный доход</span>
             <span class="metric-value" id="finRevenue" style="color:#3dbf6e">0 ₽</span>
-            <span class="metric-sub">Оплаченные билеты (все шоу)</span>
+            <span class="metric-sub">Оплаченные билеты выбранного шоу</span>
           </div>
           <div class="metric-card">
             <span class="metric-title">Расходы</span>
@@ -1963,7 +2423,7 @@
         <!-- Добавить расход -->
         <div class="settings-card" style="max-width:640px;margin-bottom:20px">
           <div class="settings-card-title">➕ Добавить расход</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="pl-grid2" style="margin-bottom:12px">
             <div class="form-group" style="margin-bottom:0">
               <label>Шоу</label>
               <select class="inp" id="expShow">
@@ -1977,7 +2437,7 @@
               <input class="inp" id="expAmount" type="number" placeholder="5000">
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="pl-grid2" style="margin-bottom:12px">
             <div class="form-group" style="margin-bottom:0">
               <label>Категория</label>
               <select class="inp" id="expCategory">
@@ -2002,7 +2462,7 @@
         </div>
 
         <!-- Список расходов -->
-        <div class="section-title" style="font-size:16px;margin-bottom:12px">📋 Все расходы</div>
+        <div class="section-title" style="font-size:16px;margin-bottom:12px">📋 Расходы выбранного шоу</div>
         <div id="expensesList">
           <div class="empty-state"><span class="empty-icon">💸</span>Расходов пока нет</div>
         </div>
@@ -2821,6 +3281,11 @@
             <label>Текст отзыва</label>
             <textarea class="inp" id="revSecretText" rows="3" placeholder="Невероятное шоу!" style="resize:vertical"></textarea>
           </div>
+          <div class="form-group">
+            <label>Фото зрителя (необязательно)</label>
+            <input type="file" accept="image/*" id="revSecretPhoto" onchange="pickReviewPhoto('secret', this)" style="font-size:13px">
+            <div id="revSecretPhotoPreview" style="margin-top:8px"></div>
+          </div>
           <button class="btn-save-settings" onclick="addReview('secret')">➕ Добавить отзыв</button>
         </div>
 
@@ -3083,6 +3548,11 @@
             <label>Текст отзыва</label>
             <textarea class="inp" id="revMatText" rows="3" placeholder="Дети в восторге!" style="resize:vertical"></textarea>
           </div>
+          <div class="form-group">
+            <label>Фото зрителя (необязательно)</label>
+            <input type="file" accept="image/*" id="revMatPhoto" onchange="pickReviewPhoto('matvey', this)" style="font-size:13px">
+            <div id="revMatPhotoPreview" style="margin-top:8px"></div>
+          </div>
           <button class="btn-save-settings" onclick="addReview('matvey')">➕ Добавить отзыв</button>
         </div>
         <div class="review-list" id="matveyReviewsList">
@@ -3179,6 +3649,11 @@
           <div class="form-group">
             <label>Текст отзыва</label>
             <textarea class="inp" id="revHulText" rows="3" placeholder="Огонь, ржали весь вечер!" style="resize:vertical"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Фото зрителя (необязательно)</label>
+            <input type="file" accept="image/*" id="revHulPhoto" onchange="pickReviewPhoto('huligan', this)" style="font-size:13px">
+            <div id="revHulPhotoPreview" style="margin-top:8px"></div>
           </div>
           <button class="btn-save-settings" onclick="addReview('huligan')">➕ Добавить отзыв</button>
         </div>
@@ -3540,6 +4015,7 @@
       // ── Разбивка по шоу за всё время ──
       updateShowsOverview(allBookings, allHuliganOrders, allMatveyBookings);
       loadOwnAnalytics();
+      loadAudienceAnalytics();
 
       // Обновляем метрики на экране
       revEl.textContent = `${fmt(revenueToday)} ₽`;
@@ -3683,6 +4159,43 @@
       }).join('');
     }
 
+    const AUDIENCE_LABELS = {
+      devices: { iphone: 'iPhone', ipad: 'iPad', android: 'Android', desktop: 'Компьютер', other: 'Другое' },
+      browsers: { safari: 'Safari', chrome: 'Chrome', yandex: 'Яндекс', firefox: 'Firefox', edge: 'Edge', samsung: 'Samsung Internet', other: 'Другое' },
+      areas: { hub: 'Главная', shows: 'Афиша', secret: 'Секрет', huligan: 'ХУЛИgan', matvey: 'Матвей', events: 'Частные события', school: 'Школа фокусов' }
+    };
+
+    function renderAudienceColumn(title, values, labels, total) {
+      const rows = Object.keys(labels).map(key => ({ key, value: Number(values[key] || 0) })).filter(row => row.value > 0).sort((a, b) => b.value - a.value);
+      return `<div class="audience-column"><div class="audience-heading">${title}</div>${rows.map(row => {
+        const pct = total ? Math.round(row.value / total * 100) : 0;
+        return `<div class="audience-row"><div class="audience-row-head"><span>${labels[row.key]}</span><span class="audience-row-value">${row.value} · ${pct}%</span></div><div class="audience-bar"><span style="width:${pct}%"></span></div></div>`;
+      }).join('') || '<div style="color:var(--dim);font-size:12px;">Нет данных</div>'}</div>`;
+    }
+
+    async function loadAudienceAnalytics() {
+      const box = document.getElementById('audienceContent');
+      if (!box) return;
+      const period = document.getElementById('audiencePeriod')?.value || 'today';
+      const days = period === 'today' ? 1 : parseInt(period);
+      const dayKeys = [];
+      for (let i = 0; i < days; i++) dayKeys.push(analyticsDayKey(i));
+      const raw = await fbGet('analytics/audience') || {};
+      const totals = { total: 0, devices: {}, browsers: {}, areas: {} };
+      for (const day of dayKeys) {
+        const data = raw[day] || {};
+        totals.total += Number(data.total || 0);
+        for (const group of ['devices', 'browsers', 'areas']) for (const [key, value] of Object.entries(data[group] || {})) totals[group][key] = Number(totals[group][key] || 0) + Number(value || 0);
+      }
+      const totalEl = document.getElementById('audienceTotal');
+      if (totalEl) totalEl.textContent = totals.total + ' ' + (totals.total === 1 ? 'сеанс' : totals.total >= 2 && totals.total <= 4 ? 'сеанса' : 'сеансов');
+      if (!totals.total) {
+        box.innerHTML = '<div class="empty-state" style="grid-column:1/-1;padding:24px 0;"><span class="empty-icon">📱</span>Пока нет данных за период.<br><span style="font-size:11px;opacity:.7">Статистика начнёт собираться после публикации обновления.</span></div>';
+        return;
+      }
+      box.innerHTML = renderAudienceColumn('Устройства', totals.devices, AUDIENCE_LABELS.devices, totals.total) + renderAudienceColumn('Браузеры', totals.browsers, AUDIENCE_LABELS.browsers, totals.total) + renderAudienceColumn('Разделы сайта', totals.areas, AUDIENCE_LABELS.areas, totals.total);
+    }
+
     // ── Финансы: доход, расходы, чистая прибыль ──
     const EXP_CAT_ICON = { 'Аренда': '🏠', 'Реклама': '📣', 'Оборудование': '🔊', 'Зарплаты': '👥', 'Реквизит': '🎩', 'Прочее': '📦' };
     const SHOW_LABEL = { secret: '🎭 Секрет', huligan: '😈 ХУЛИgan', matvey: '🧸 Матвей' };
@@ -3691,23 +4204,25 @@
     function showRevenue(orders, priceOf) {
       let sum = 0;
       for (const o of Object.values(orders || {})) {
-        if (o && o.status === 'confirmed') sum += Number(priceOf(o) || 0);
+        if (o && (o.status === 'confirmed' || o.status === 'paid' || o.paid === true)) sum += Number(priceOf(o) || 0);
       }
       return sum;
     }
 
     async function loadFinances() {
       // Доходы (из уже загруженных броней или подтягиваем)
-      const [sec, hul, mat, expensesRaw] = await Promise.all([
-        Object.keys(allBookings).length ? Promise.resolve(allBookings) : fbGet('ticket_bookings'),
-        Object.keys(allHuliganOrders).length ? Promise.resolve(allHuliganOrders) : fbGet('huligan_bookings'),
-        Object.keys(window.allMatveyBookings).length ? Promise.resolve(window.allMatveyBookings) : fbGet('matvey_bookings'),
-        fbGet('finances/expenses')
+      const selectedShow = window._plShow || 'secret';
+      const [sec, hul, mat, expensesRaw, selectedPromos] = await Promise.all([
+        fbGet('ticket_bookings'),
+        fbGet('huligan_bookings'),
+        fbGet('matvey_bookings'),
+        fbGet('finances/expenses'),
+        fbGet(AD_PROMO_PATH[selectedShow])
       ]);
       const revenue = {
         secret: showRevenue(sec, o => o.discountedTotal != null ? o.discountedTotal : o.total),
         huligan: showRevenue(hul, o => o.finalPrice != null ? o.finalPrice : o.originalPrice),
-        matvey: showRevenue(mat, o => o.totalPrice != null ? o.totalPrice : o.total)
+        matvey: showRevenue(mat, o => o.discountedTotal != null ? o.discountedTotal : (o.totalPrice != null ? o.totalPrice : o.total))
       };
       const expenses = expensesRaw || {};
 
@@ -3717,8 +4232,18 @@
         if (e && expBy[e.show] != null) expBy[e.show] += Number(e.amount || 0);
       }
 
-      const totalRev = revenue.secret + revenue.huligan + revenue.matvey;
-      const totalExp = expBy.secret + expBy.huligan + expBy.matvey;
+      const selectedExpenses = Object.values(expenses).filter(e => e && e.show === selectedShow);
+      const categoryTotal = category => selectedExpenses.reduce((sum, e) => sum + (e.category === category ? Number(e.amount || 0) : 0), 0);
+      const rentSpent = categoryTotal('Аренда');
+      const promoSpent = Object.values(selectedPromos || {}).reduce((sum, p) => sum + Number(p && p.adPublic ? p.adSpent || 0 : 0), 0);
+      const otherSpent = selectedExpenses.reduce((sum, e) => sum + (!['Аренда', 'Реклама'].includes(e.category) ? Number(e.amount || 0) : 0), 0);
+      if (rentSpent > 0) document.getElementById('plRent').value = rentSpent;
+      if (promoSpent > 0) document.getElementById('plAd').value = promoSpent;
+      document.getElementById('plOther').value = otherSpent;
+      plCalc();
+
+      const totalRev = revenue[selectedShow];
+      const totalExp = expBy[selectedShow];
       const profit = totalRev - totalExp;
 
       // Итоговые метрики
@@ -3728,13 +4253,13 @@
       const profitEl = document.getElementById('finProfit');
       if (profitEl) { profitEl.textContent = fmt(profit) + ' ₽'; profitEl.style.color = profit >= 0 ? 'var(--gold)' : '#e85348'; }
 
-      // Разбивка по шоу
+      // Сводка по всем шоу остаётся видимой, выбранное шоу выделено.
       const grid = document.getElementById('finByShow');
       if (grid) {
         grid.innerHTML = ['secret', 'huligan', 'matvey'].map(function (s) {
           const rev = revenue[s], exp = expBy[s], prof = rev - exp;
           return `
-            <div class="show-ov-card" style="cursor:default">
+            <div class="show-ov-card" onclick="loadPlannerWorkspace('${s}')" style="cursor:pointer;${s === selectedShow ? 'border-color:var(--gold)' : ''}">
               <div class="show-ov-head"><span class="show-ov-name">${SHOW_LABEL[s]}</span></div>
               <div style="display:grid;gap:6px;font-size:13px">
                 <div style="display:flex;justify-content:space-between"><span style="color:var(--dim)">Доход</span><b style="color:#3dbf6e">${fmt(rev)} ₽</b></div>
@@ -3748,7 +4273,7 @@
       // Список расходов
       const list = document.getElementById('expensesList');
       if (list) {
-        const items = Object.entries(expenses).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+        const items = Object.entries(expenses).filter(([, e]) => e && e.show === selectedShow).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
         if (!items.length) {
           list.innerHTML = `<div class="empty-state"><span class="empty-icon">💸</span>Расходов пока нет</div>`;
         } else {
@@ -3756,9 +4281,9 @@
             <div class="booking-card" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
               <div style="flex:1">
                 <div style="font-weight:600">${EXP_CAT_ICON[e.category] || '📦'} ${esc(e.category || 'Прочее')} · <span style="color:#e85348">−${fmt(e.amount)} ₽</span></div>
-                <div style="font-size:12px;color:var(--dim);margin-top:3px">${SHOW_LABEL[e.show] || e.show} · ${e.date || '—'}${e.comment ? ' · ' + esc(e.comment) : ''}</div>
+                <div style="font-size:12px;color:var(--dim);margin-top:3px">${esc(SHOW_LABEL[e.show] || e.show || '—')} · ${esc(e.date || '—')}${e.comment ? ' · ' + esc(e.comment) : ''}</div>
               </div>
-              <button class="btn-sm btn-sm-del" onclick="deleteExpense('${id}')">🗑</button>
+              <button class="btn-sm btn-sm-del" onclick="deleteExpense(${jsArg(id)})">🗑</button>
             </div>`).join('');
         }
       }
@@ -3977,7 +4502,7 @@
           allChats = data.sessions;
           renderChatsList();
         } else {
-          listEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⚠️</span>Ошибка при получении чатов: ${data?.error || 'Неизвестно'}</div>`;
+          listEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⚠️</span>Ошибка при получении чатов: ${esc(data?.error || 'Неизвестно')}</div>`;
         }
       } catch (e) {
         listEl.innerHTML = `<div class="empty-state"><span class="empty-icon">⚠️</span>Ошибка сети при загрузке чатов</div>`;
@@ -4008,10 +4533,11 @@
         const preview = c.lastUserMsg || c.firstUserMsg || 'Диалог без текста';
         const activeClass = activeChatSid === c.sid ? 'active' : '';
         const badgeHtml = c.hasContact ? `<span class="badge-contact">📞 Контакт</span>` : '';
-        const msgBadge = c.messagesCount ? `<span style="font-size:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1px 6px;">${c.messagesCount}</span>` : '';
+        const messagesCount = Number(c.messagesCount) || 0;
+        const msgBadge = messagesCount ? `<span style="font-size:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:1px 6px;">${messagesCount}</span>` : '';
         
         return `
-          <div class="chat-item ${activeClass}" onclick="openChat('${c.sid}')">
+          <div class="chat-item ${activeClass}" onclick="openChat(${jsArg(c.sid)})">
             <div class="chat-item-head">
               <span class="chat-item-name">${esc(name)}</span>
               <span class="chat-item-time">${timeStr}</span>
@@ -4076,7 +4602,7 @@
           if (actionsEl) {
             actionsEl.innerHTML = '';
             if (s.contact?.phone) {
-              actionsEl.innerHTML += `<a class="btn-confirm" href="tel:${s.contact.phone}" style="padding: 6px 12px; font-size:12px; text-decoration:none; display:inline-block;">📞 Позвонить</a> &nbsp;`;
+              actionsEl.innerHTML += `<a class="btn-confirm" href="tel:${esc(s.contact.phone)}" style="padding: 6px 12px; font-size:12px; text-decoration:none; display:inline-block;">📞 Позвонить</a> &nbsp;`;
             }
           }
 
@@ -4171,6 +4697,11 @@
         { icon: '⭐', label: 'Отзывы', sec: cur.p.reviews }
       ];
 
+      // Инструменты
+      const toolItems = [
+        { icon: '🧮', label: 'Планировщик и финансы', sec: 'planner' }
+      ];
+
       // Другие направления
       const otherItems = [
         { icon: '💍', label: 'Частные события', sec: 'private-config' }
@@ -4182,9 +4713,10 @@
           <span style="font-size:12px; font-weight:600">${it.label}</span>
         </button>`;
 
+      const label = txt => `<div style="grid-column:span 2;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);opacity:.7;margin:8px 0 2px">${txt}</div>`;
       grid.innerHTML = showItems.map(btn).join('') +
-        `<div style="grid-column:span 2;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);opacity:.7;margin:8px 0 2px">Другие направления</div>` +
-        otherItems.map(btn).join('');
+        label('Инструменты') + toolItems.map(btn).join('') +
+        label('Другие направления') + otherItems.map(btn).join('');
     }
 
     // ── Private Config (Цены & ИИ) logic ──
@@ -4431,9 +4963,9 @@
         
         item.innerHTML = `
           <span style="font-size:13px; color:var(--dim); min-width:40px;">от</span>
-          <input class="inp" type="number" min="0" value="${b.threshold}" id="bon_thr_${i}" style="max-width:110px;">
+          <input class="inp" type="number" min="0" value="${esc(b.threshold)}" id="bon_thr_${i}" style="max-width:110px;">
           <span style="font-size:13px; color:var(--dim);">₽</span>
-          <input class="inp" value="${b.text}" id="bon_txt_${i}" style="flex:1; min-width:200px;">
+          <input class="inp" value="${esc(b.text)}" id="bon_txt_${i}" style="flex:1; min-width:200px;">
           <button class="btn-primary" onclick="savePrivateBonus(${i})" style="width:auto; padding: 10px 14px; background: rgba(61, 191, 110, 0.15); border-color: rgba(61, 191, 110, 0.4); color: var(--green); box-shadow:none;">💾</button>
           <button class="btn-logout" onclick="deletePrivateBonus(${i})" style="width:auto; padding: 10px 14px; border-radius:10px; border-color: rgba(232, 83, 72, 0.3); color: var(--red); box-shadow:none;">🗑</button>
         `;
@@ -4530,8 +5062,8 @@
         row.style.background = 'rgba(255,255,255,0.01)';
 
         row.innerHTML = `
-          <input class="inp" value="${p.title}" id="pay_title_${i}" style="max-width:120px;" placeholder="Название">
-          <input class="inp" value="${p.text}" id="pay_text_${i}" style="flex:1; min-width:200px;" placeholder="Реквизиты">
+          <input class="inp" value="${esc(p.title)}" id="pay_title_${i}" style="max-width:120px;" placeholder="Название">
+          <input class="inp" value="${esc(p.text)}" id="pay_text_${i}" style="flex:1; min-width:200px;" placeholder="Реквизиты">
           <button class="btn-primary" onclick="savePrivatePayment(${i})" style="width:auto; padding: 10px 14px; background: rgba(61, 191, 110, 0.15); border-color: rgba(61, 191, 110, 0.4); color: var(--green); box-shadow:none;">💾</button>
           <button class="btn-logout" onclick="deletePrivatePayment(${i})" style="width:auto; padding: 10px 14px; border-radius:10px; border-color: rgba(232, 83, 72, 0.3); color: var(--red); box-shadow:none;">🗑</button>
         `;
@@ -4633,6 +5165,8 @@
         const ans = o.answers || {};
         const price = o.price;
         const extra = o.quizExtra || {};
+        const safeOrderId = esc(id);
+        const safeUserId = /^\d+$/.test(String(o.userId || '')) ? String(o.userId) : '';
         
         const card = document.createElement('div');
         card.className = 'metric-card';
@@ -4650,8 +5184,8 @@
         card.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
             <div>
-              <div style="font-size:16px; font-weight:600; color:var(--text);">${ans.service || '—'}</div>
-              <div style="font-size:12px; color:var(--dim); margin-top:2px;">${date} · ID: ${id.slice(-6)}</div>
+              <div style="font-size:16px; font-weight:600; color:var(--text);">${esc(ans.service || '—')}</div>
+              <div style="font-size:12px; color:var(--dim); margin-top:2px;">${date} · ID: ${safeOrderId.slice(-6)}</div>
             </div>
             <div style="text-align:right;">
               ${price ? `<div style="font-size:18px; font-weight:700; color:var(--gold);">${rubFormat(price.total)}</div><div style="font-size:11px; color:var(--dim);">предоплата ${rubFormat(price.deposit)}</div>` : '<span class="status-pill pill-cancelled">Без цены</span>'}
@@ -4661,17 +5195,17 @@
             </div>
           </div>
           <div style="border-top:1px solid rgba(255,255,255,0.06); margin: 8px 0; padding-top:8px; font-size:13px; line-height:1.6; color:var(--text);">
-            <b>📅 Дата:</b> ${ans.date || '—'} &nbsp;&nbsp;
-            <b>📍 Город:</b> ${extra.selCity || '—'}<br>
-            <b>👥 Гостей:</b> ${extra.selGuests || '—'}<br>
-            <b>⏱ Длительность:</b> ${ans.duration || '—'}<br>
-            <b>👤 VK:</b> <a href="https://vk.com/id${o.userId}" target="_blank" style="color:var(--blue); font-weight:500;">vk.com/id${o.userId || '?'}</a><br>
-            ${ans.wishes && ans.wishes !== 'Не знаю' ? `<b>✨ Пожелания:</b> ${ans.wishes}<br>` : ''}
-            ${ans.host && ans.host !== 'Не знаю' ? `<b>🎤 Ведущий:</b> ${ans.host}<br>` : ''}
+            <b>📅 Дата:</b> ${esc(ans.date || '—')} &nbsp;&nbsp;
+            <b>📍 Город:</b> ${esc(extra.selCity || '—')}<br>
+            <b>👥 Гостей:</b> ${esc(extra.selGuests || '—')}<br>
+            <b>⏱ Длительность:</b> ${esc(ans.duration || '—')}<br>
+            <b>👤 VK:</b> ${safeUserId ? `<a href="https://vk.com/id${safeUserId}" target="_blank" rel="noopener" style="color:var(--blue); font-weight:500;">vk.com/id${safeUserId}</a>` : '—'}<br>
+            ${ans.wishes && ans.wishes !== 'Не знаю' ? `<b>✨ Пожелания:</b> ${esc(ans.wishes)}<br>` : ''}
+            ${ans.host && ans.host !== 'Не знаю' ? `<b>🎤 Ведущий:</b> ${esc(ans.host)}<br>` : ''}
           </div>
           <div style="display:flex; gap:8px; margin-top:8px;">
-            ${o.status === 'new' ? `<button class="btn-primary" onclick="markPrivateOrder('${id}','done')" style="width:auto; padding:6px 12px; font-size:12px; background:rgba(61, 191, 110, 0.15); border-color:rgba(61, 191, 110, 0.4); color:var(--green); box-shadow:none;">✅ Обработана</button>` : ''}
-            <button class="btn-logout" onclick="deletePrivateOrder('${id}')" style="width:auto; padding:6px 12px; font-size:12px; border-radius:8px; border-color:rgba(232, 83, 72, 0.3); color:var(--red); box-shadow:none; border: 1px solid rgba(232, 83, 72, 0.25);">🗑 Удалить</button>
+            ${o.status === 'new' ? `<button class="btn-primary" onclick="markPrivateOrder(${jsArg(id)},${jsArg('done')})" style="width:auto; padding:6px 12px; font-size:12px; background:rgba(61, 191, 110, 0.15); border-color:rgba(61, 191, 110, 0.4); color:var(--green); box-shadow:none;">✅ Обработана</button>` : ''}
+            <button class="btn-logout" onclick="deletePrivateOrder(${jsArg(id)})" style="width:auto; padding:6px 12px; font-size:12px; border-radius:8px; border-color:rgba(232, 83, 72, 0.3); color:var(--red); box-shadow:none; border: 1px solid rgba(232, 83, 72, 0.25);">🗑 Удалить</button>
           </div>
         `;
         el.appendChild(card);
@@ -4800,6 +5334,24 @@
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    function jsArg(value) {
+      return esc(JSON.stringify(String(value == null ? '' : value)));
+    }
+
+    function safeHttpsUrl(value) {
+      try {
+        const url = new URL(String(value));
+        return url.protocol === 'https:' ? esc(url.href) : '';
+      } catch {
+        return '';
+      }
+    }
+
+    function safeVkUserId(value) {
+      const id = String(value == null ? '' : value);
+      return /^\d+$/.test(id) ? id : '';
+    }
+
     // ── Toast ──
     function toast(msg, dur = 2800) {
       const t = document.getElementById('toast');
@@ -4860,13 +5412,12 @@
       if (bindBtn) { bindBtn.style.display = available ? '' : 'none'; bindBtn.textContent = bound ? `☝️ Перепривязать ${bio}` : `☝️ Привязать ${bio} на этом устройстве`; }
     }
 
-    // Получить AES-ключ из WebAuthn PRF (или фолбэк на детерминированный из rawId)
+    // AES-ключ разрешено получать только из WebAuthn PRF. Credential rawId
+    // публичен и хранится в localStorage, поэтому не может быть ключом шифрования.
     async function tidDeriveKey(assertion) {
       const prf = assertion.getClientExtensionResults?.().prf?.results?.first;
-      let raw;
-      if (prf) { raw = prf; }
-      else { raw = assertion.rawId; } // фолбэк: сам ключ credential как секрет (не покидает устройство)
-      const hash = await crypto.subtle.digest('SHA-256', raw);
+      if (!prf) throw new Error('WebAuthn PRF не поддерживается этим устройством');
+      const hash = await crypto.subtle.digest('SHA-256', prf);
       return crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
     }
 
@@ -4886,7 +5437,7 @@
           }
         });
         if (!cred) return toast('Отменено');
-        // Ключ для шифрования — из PRF или rawId
+        // Ключ для шифрования доступен только после проверки пользователя.
         const key = await tidDeriveKey(cred);
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const enc = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(pass));
@@ -4935,15 +5486,24 @@
       const pwd = document.getElementById('loginPwd').value.trim();
       if (!pwd) return;
 
-      // Pass password to the proxy API
+      // Пароль нужен только для создания защищённой сессии этого устройства.
       window._adminPass = pwd;
 
-      let cfg = await fbGet('ticket_config');
+      let session = null;
+      try {
+        const response = await fetch('/api/admin-proxy?action=session', {
+          method: 'POST',
+          headers: adminHeaders({ 'Content-Type': 'application/json' }),
+          body: '{}'
+        });
+        session = await response.json();
+      } catch (_) {}
+      const cfg = session && session.ok ? session.config : null;
 
 
       // If API proxy responds with error, parsing it gives { error: ... }
       if (!cfg || cfg.error) {
-        const errorText = cfg && cfg.error ? String(cfg.error) : '';
+        const errorText = session && session.error ? String(session.error) : '';
         window._adminPass = '';
         if (errorText && errorText !== 'Forbidden' && errorText !== 'No password') {
           return toast(`❌ ${errorText}`);
@@ -4958,11 +5518,47 @@
       }
 
       _loginAttempts = 0;
+      window._adminPass = '';
+      document.getElementById('loginPwd').value = '';
       showAdminPanel(cfg);
     }
-    function logout() {
+    async function logout() {
       window._adminPass = '';
+      try { await fetch('/api/admin-proxy?action=session', { method: 'DELETE' }); } catch (_) {}
       location.reload();
+    }
+
+    async function restoreAdminSession() {
+      try {
+        const response = await fetch('/api/admin-proxy?action=session', { cache: 'no-store' });
+        const session = await response.json();
+        if (response.ok && session && session.ok && session.config) {
+          showAdminPanel(session.config);
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    // Принудительное обновление PWA: чистит весь кэш, обновляет service worker и перезагружает.
+    async function forceUpdateApp() {
+      var btn = event && event.target;
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ Обновляю…'; }
+      try {
+        // 1. чистим все кэши service worker
+        if (window.caches && caches.keys) {
+          var keys = await caches.keys();
+          await Promise.all(keys.map(function (k) { return caches.delete(k); }));
+        }
+        // 2. обновляем и снимаем с регистрации service worker (заберётся свежий при перезагрузке)
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+          var regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(function (r) { return r.update().then(function () { return r.unregister(); }).catch(function () {}); }));
+        }
+      } catch (e) { /* даже если что-то не вышло — всё равно перезагружаем */ }
+      // 3. жёсткая перезагрузка с обходом кэша (добавляем метку времени)
+      var url = location.pathname + '?v=' + Date.now();
+      location.replace(url);
     }
 
     // ── Init ──
@@ -5067,7 +5663,7 @@
       // Load data on demand
       if (sec === 'dashboard') loadDashboard();
       if (sec === 'scanner') loadScanStats();
-      if (sec === 'finances') loadFinances();
+      if (sec === 'planner') loadPlannerWorkspace(currentShow || window._plShow || 'secret');
       if (sec === 'chats') loadChatsList();
       if (sec === 'mobile-menu') renderMobileMenu();
       if (sec === 'hall') loadAdminHall();
@@ -5089,6 +5685,317 @@
       if (sec === 'mat-users') loadMatveyUsers();
     }
 
+    // ═══════════════ ПЛАНИРОВЩИК ШОУ ═══════════════
+    const PL_PRESETS = {
+      huligan: { capacity: 72, rent:27000, configPath:'huligan_config/prices', zones:[
+        { key:'vip', label:'🔴 Красная зона', count:15, price:1700 },
+        { key:'standart', configKey:'std', label:'🟢 Зелёная зона', count:28, price:1400 },
+        { key:'econom', configKey:'eco', label:'🔵 Синяя зона', count:18, price:1100 },
+        { key:'divan', label:'🟣 Диванные столы', count:8, price:900 },
+        { key:'bar', label:'🟠 Бар', count:3, price:800 }
+      ]},
+      secret: { capacity: 107, rent:35000, configPath:'ticket_config/prices', zones:[
+        { key:'vip', label:'🔴 Красная зона', count:48, price:1800 },
+        { key:'standart', label:'🟢 Зелёная зона', count:32, price:1500 },
+        { key:'econom', label:'🔵 Синяя зона', count:16, price:1200 },
+        { key:'sofa_left', label:'🟣 Левый диван', count:5, price:1000 },
+        { key:'sofa_right', label:'🔷 Правый диван', count:5, price:800 },
+        { key:'lampa', configKey:'vip', label:'🔴 Зона Лампа', count:1, price:1800 }
+      ]},
+      matvey: { capacity: 106, rent:20000, configPath:'matvey_config/prices', zones:[
+        { key:'row_front', label:'🔴 Ряды 1–4', count:40, price:1700 },
+        { key:'row_back', label:'🟢 Ряды 5–7', count:36, price:1400 },
+        { key:'table', label:'🔵 Столики', count:16, price:1100 },
+        { key:'divan', label:'🩷 Диваны', count:10, price:1200 },
+        { key:'bar', label:'🟠 Бар', count:3, price:900 },
+        { key:'lampa', configKey:'row_front', label:'🔴 Зона Лампа', count:1, price:1700 }
+      ]}
+    };
+    function plNum(id){ return Number(document.getElementById(id)?.value) || 0; }
+    function plFmt(n){ return Math.round(n).toLocaleString('ru-RU') + ' ₽'; }
+
+    function plRenderZones(zones){
+      const box = document.getElementById('plZones');
+      box.innerHTML = zones.map((z, i) => `<div class="pl-zone">
+        <label>${esc(z.label)} · мест</label>
+        <input class="inp pl-zone-count" data-zone="${esc(z.key)}" type="number" min="0" value="${z.count}" oninput="plCalc()">
+        <label style="margin-top:6px">цена ₽</label>
+        <input class="inp pl-zone-price" data-zone="${esc(z.key)}" type="number" min="0" value="${z.price}" oninput="plCalc()">
+      </div>`).join('');
+    }
+
+    function mountPlannerFinances(){
+      const host = document.getElementById('plannerFinanceHost');
+      const legacy = document.getElementById('sec-finances');
+      if (!host || !legacy || host.dataset.mounted === '1') return;
+      while (legacy.firstChild) host.appendChild(legacy.firstChild);
+      legacy.remove();
+      host.dataset.mounted = '1';
+      const title = host.querySelector('.section-title');
+      if (title) title.textContent = '💰 Фактические финансы выбранного шоу';
+    }
+
+    async function plPreset(show){
+      const p = PL_PRESETS[show]; if(!p) return;
+      let prices = {};
+      try { prices = await fbGet(p.configPath) || {}; } catch (_) {}
+      const zones = p.zones.map(z => ({ ...z, price: Number(prices[z.configKey || z.key]) || z.price }));
+      plRenderZones(zones);
+      document.getElementById('plRent').value = p.rent;
+      window._plShow = show;
+      const expenseShow = document.getElementById('expShow');
+      const promoShow = document.getElementById('adShow');
+      if (expenseShow) expenseShow.value = show;
+      if (promoShow) promoShow.value = show;
+      plCalc();
+    }
+
+    async function loadPlannerWorkspace(show){
+      mountPlannerFinances();
+      await plPreset(show || window._plShow || 'secret');
+      await Promise.all([plLoadReal(true), loadFinances(), adLoadStats()]);
+    }
+
+    // Подтянуть реальные продажи из базы для текущего шоу пресета
+    async function plLoadReal(silent = false){
+      const show = window._plShow || 'secret';
+      const map = { huligan:'huligan_bookings', secret:'ticket_bookings', matvey:'matvey_bookings' };
+      const node = map[show];
+      try {
+        const data = await fbGet(node);
+        if (!data || data.error) { showToast('Не удалось загрузить продажи', 'error'); return; }
+        // считаем оплаченные билеты
+        let soldSeats = 0;
+        Object.values(data).forEach(o => {
+          const paid = o.status === 'confirmed' || o.status === 'paid' || o.paid === true;
+          if (!paid) return;
+          const seats = Array.isArray(o.seats) ? o.seats.length : (o.seatsCount || o.qty || 1);
+          soldSeats += seats;
+        });
+        const totalSeats = [...document.querySelectorAll('.pl-zone-count')].reduce((sum, el) => sum + (Number(el.value) || 0), 0);
+        const pct = totalSeats ? Math.min(100, Math.round(soldSeats/totalSeats*100)) : 0;
+        document.getElementById('plSold').value = pct;
+        plCalc();
+        if (!silent) {
+          await Promise.all([loadFinances(), adLoadStats()]);
+          showToast(`Продано ${soldSeats} билетов (${pct}% зала)`, 'success');
+        }
+      } catch(e){ if (!silent) showToast('Ошибка загрузки', 'error'); }
+    }
+
+    function plCalc(){
+      const counts = [...document.querySelectorAll('.pl-zone-count')];
+      const prices = new Map([...document.querySelectorAll('.pl-zone-price')].map(el => [el.dataset.zone, Number(el.value) || 0]));
+      const seats = counts.reduce((sum, el) => sum + (Number(el.value) || 0), 0);
+      const gross = counts.reduce((sum, el) => sum + (Number(el.value) || 0) * (prices.get(el.dataset.zone) || 0), 0);
+      const avg = seats ? gross/seats : 0;
+
+      const rent=plNum('plRent'), account=plNum('plAccount'), other=plNum('plOther');
+      const acqR=plNum('plAcq')/100, taxR=plNum('plTax')/100, salR=plNum('plSalary')/100, ad=plNum('plAd');
+      const varR = acqR + taxR + salR;               // % с каждого билета
+      const fixed = rent + account + other;          // постоянные
+      const netPerTicket = avg * (1 - varR);         // чистыми с 1 билета
+
+      // Точка безубыточности (с рекламой)
+      const breakeven = netPerTicket > 0 ? Math.ceil((fixed + ad) / netPerTicket) : 0;
+      const bePct = seats ? Math.round(breakeven/seats*100) : 0;
+
+      // Выбранная заполняемость
+      const soldPct = plNum('plSold');
+      const soldN = Math.round(seats * soldPct/100);
+      document.getElementById('plSoldLbl').textContent = soldPct + '% зала (' + soldN + ' билетов)';
+      const soldGross = soldN * avg;
+      const profit = soldGross*(1-varR) - fixed - ad;
+
+      // Вывод метрик
+      document.getElementById('plGross').textContent = plFmt(gross);
+      document.getElementById('plSeats').textContent = seats;
+      document.getElementById('plBreakeven').textContent = breakeven;
+      document.getElementById('plBreakevenPct').textContent = bePct + '% зала — выйти в ноль';
+      document.getElementById('plProfit').textContent = (profit>=0?'+':'−') + plFmt(Math.abs(profit)).replace(' ₽','') + ' ₽';
+      document.getElementById('plProfit').style.color = profit>=0 ? '#3dbf6e' : '#e85348';
+      document.getElementById('plProfitSub').textContent = soldPct + '% зала = ' + soldN + ' билетов';
+
+      // Вердикт
+      const v = document.getElementById('plVerdict');
+      if (breakeven > seats) {
+        v.className = 'pl-verdict bad';
+        v.innerHTML = `⛔ <b>Невозможно окупиться:</b> чтобы выйти в ноль нужно ${breakeven} билетов, а в зале всего ${seats}. Снизьте рекламу или аренду, либо поднимите цены.`;
+      } else if (soldN >= breakeven) {
+        v.className = 'pl-verdict good';
+        v.innerHTML = `✅ <b>В плюсе.</b> При ${soldN} билетах вы зарабатываете <b>${plFmt(profit)}</b>. Окупаемость — ${breakeven} билетов, вы её проходите.`;
+      } else {
+        const need = breakeven - soldN;
+        v.className = 'pl-verdict warn';
+        v.innerHTML = `⚠️ <b>Пока в минусе.</b> Нужно продать ещё <b>${need}</b> билетов (всего ${breakeven}), чтобы выйти в ноль. Сейчас убыток ${plFmt(Math.abs(profit))}.`;
+      }
+
+      // CPA
+      document.getElementById('plNetPerTicket').textContent = plFmt(netPerTicket);
+      document.getElementById('plCpaGood').textContent = 'до ' + plFmt(avg*0.18);
+      document.getElementById('plCpaOk').textContent = plFmt(avg*0.18) + '–' + plFmt(avg*0.33);
+      document.getElementById('plCpaBad').textContent = plFmt(netPerTicket);
+      document.getElementById('plCpaHint').innerHTML =
+        `Если реклама приводит зрителя дороже <b>${plFmt(netPerTicket)}</b> — вы теряете на нём деньги. Держитесь ниже <b>${plFmt(avg*0.33)}</b> за продажу, и реклама окупается.`;
+
+      // Разбивка расходов при выбранной заполняемости
+      const acqSum = soldGross*acqR, taxSum = soldGross*taxR, salSum = soldGross*salR;
+      const items = [
+        ['🏠 Аренда', rent, '#e85348'],
+        ['🏦 Эквайринг', acqSum, '#e8a23c'],
+        ['🧾 Налог НПД', taxSum, '#d98cc4'],
+        ['🤝 Сотрудник', salSum, '#8c9ce8'],
+        ['💳 Счёт', account, '#888'],
+        ['📣 Реклама', ad, '#c9a228'],
+        ['🧾 Прочие расходы', other, '#9b8bb8'],
+        [profit>=0?'💰 Прибыль вам':'📉 Убыток', Math.abs(profit), profit>=0?'#3dbf6e':'#e85348']
+      ];
+      const maxV = Math.max(...items.map(i=>i[1]), 1);
+      document.getElementById('plBreakdown').innerHTML = items.map(([label,val,color])=>
+        `<div class="pl-brk-row">
+          <div class="pl-brk-bar" style="width:${Math.max(4, val/maxV*60)}px;background:${color}"></div>
+          <span class="pl-brk-label">${label}</span>
+          <span class="pl-brk-val">${plFmt(val)}</span>
+        </div>`).join('');
+
+      // Сценарии
+      const scen = [30,50,70,85,100];
+      document.getElementById('plScenarios').innerHTML = scen.map(pct=>{
+        const n = Math.round(seats*pct/100);
+        const g = n*avg;
+        const pr = g*(1-varR) - fixed - ad;
+        const col = pr>=0 ? '#3dbf6e' : '#e85348';
+        return `<div class="pl-scen-card" onclick="document.getElementById('plSold').value=${pct};plCalc()" style="cursor:pointer">
+          <div class="pl-scen-pct">${pct}% зала</div>
+          <div class="pl-scen-tickets">${n} билетов</div>
+          <div class="pl-scen-profit" style="color:${col}">${pr>=0?'+':'−'}${plFmt(Math.abs(pr)).replace(' ₽','')}</div>
+          <div class="pl-scen-tickets" style="margin:4px 0 0">₽ прибыль</div>
+        </div>`;
+      }).join('');
+    }
+    window._plShow = 'secret';
+    plRenderZones(PL_PRESETS.secret.zones);
+
+    // ── Рекламные промокоды по пабликам ──
+    const AD_PROMO_PATH = { huligan:'huligan_promo', secret:'ticket_promo', matvey:'matvey_promo' };
+    const AD_BOOK_PATH  = { huligan:'huligan_bookings', secret:'ticket_bookings', matvey:'matvey_bookings' };
+
+    // Подсказать код из названия паблика (транслит первого слова)
+    function adSuggestCode(){
+      const name = document.getElementById('adPublic').value.trim();
+      if (!name) return;
+      const translit = {а:'A',б:'B',в:'V',г:'G',д:'D',е:'E',ё:'E',ж:'ZH',з:'Z',и:'I',й:'Y',к:'K',л:'L',м:'M',н:'N',о:'O',п:'P',р:'R',с:'S',т:'T',у:'U',ф:'F',х:'H',ц:'C',ч:'CH',ш:'SH',щ:'SH',ъ:'',ы:'Y',ь:'',э:'E',ю:'U',я:'YA',' ':''};
+      const word = name.split(/\s+/)[0].toLowerCase();
+      let code = '';
+      for (const ch of word) code += (translit[ch] !== undefined ? translit[ch] : ch);
+      document.getElementById('adCode').value = code.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12);
+    }
+
+    async function adCreatePromo(){
+      const show = document.getElementById('adShow').value;
+      const code = document.getElementById('adCode').value.trim().toUpperCase();
+      const publicName = document.getElementById('adPublic').value.trim();
+      const spent = Number(document.getElementById('adSpent').value) || 0;
+      const type = document.getElementById('adType').value;
+      const value = Number(document.getElementById('adValue').value) || 0;
+      if (!code) return toast('Введите промокод');
+      if (!publicName) return toast('Введите название паблика');
+      const data = {
+        type, value, usesLeft: -1, active: true,
+        description: 'Реклама: ' + publicName,
+        adPublic: publicName, adSpent: spent, createdAt: Date.now()
+      };
+      await fbPut(`${AD_PROMO_PATH[show]}/${code}`, data);
+      if (spent > 0) {
+        await fbPut(`finances/expenses/ad_${show}_${code}`, {
+          show, amount: spent, category: 'Реклама', promoCode: code,
+          comment: `Реклама в паблике «${publicName}» · промокод ${code}`,
+          date: new Date().toISOString().slice(0, 10), createdAt: Date.now()
+        });
+      }
+      toast(`🎫 ${code} создан для «${publicName}»`);
+      document.getElementById('adCode').value = '';
+      document.getElementById('adPublic').value = '';
+      document.getElementById('adSpent').value = '';
+      await Promise.all([adLoadStats(), loadFinances()]);
+    }
+
+    async function adLoadStats(){
+      const box = document.getElementById('adStatsList');
+      box.innerHTML = '<div style="color:var(--dim);font-size:13px;text-align:center;padding:14px">⏳ Загрузка...</div>';
+      const results = [];
+      for (const show of [window._plShow || 'huligan']){
+        const [promos, books] = await Promise.all([ fbGet(AD_PROMO_PATH[show]), fbGet(AD_BOOK_PATH[show]) ]);
+        if (!promos) continue;
+        // считаем использование каждого промокода в бронях
+        const used = {};   // code -> {tickets, revenue, promoBuyers}
+        Object.entries(books||{}).forEach(([bookingId,o])=>{
+          const code = (o.promoCode||'').toUpperCase();
+          if (!code) return;
+          const paid = o.status==='confirmed'||o.status==='paid'||o.paid===true;
+          if (!paid) return;
+          const seats = Array.isArray(o.seats)?o.seats.length:(o.seatsCount||o.qty||1);
+          const rev = o.discountedTotal != null ? o.discountedTotal
+            : o.finalPrice != null ? o.finalPrice
+            : o.totalPrice != null ? o.totalPrice
+            : o.total != null ? o.total
+            : o.originalPrice != null ? o.originalPrice : 0;
+          used[code] = used[code]||{tickets:0,revenue:0,promoBuyers:[]};
+          used[code].tickets += seats;
+          used[code].revenue += Number(rev)||0;
+          used[code].promoBuyers.push({
+            bookingId,
+            ticketNumber: o.ticketNumber || o.ticketId || o.ticketCode || '',
+            name: o.name || o.customerName || o.guestName || 'Покупатель',
+            tickets: seats,
+            revenue: Number(rev)||0,
+            seats: Array.isArray(o.seats) ? o.seats.map(s => s.label || s.key || s.seatNum).filter(Boolean).join(', ') : ''
+          });
+        });
+        Object.entries(promos).forEach(([code,p])=>{
+          if (!p.adPublic) return;   // только рекламные
+          const u = used[code.toUpperCase()] || {tickets:0,revenue:0,promoBuyers:[]};
+          results.push({ show, code, public:p.adPublic, spent:p.adSpent||0, tickets:u.tickets, revenue:u.revenue, promoBuyers:u.promoBuyers });
+        });
+      }
+      if (!results.length){
+        box.innerHTML = '<div style="color:var(--dim);font-size:13px;text-align:center;padding:14px">Пока нет рекламных промокодов. Создайте слева.</div>';
+        return;
+      }
+      results.sort((a,b)=>b.tickets-a.tickets);
+      const showIcon = {huligan:'😈',secret:'🎭',matvey:'🧸'};
+      box.innerHTML = results.map(r=>{
+        const cpa = r.tickets>0 ? Math.round(r.spent/r.tickets) : 0;
+        const roi = r.spent>0 ? Math.round((r.revenue-r.spent)/r.spent*100) : 0;
+        let verdict, vcolor;
+        if (r.tickets===0){ verdict='нет продаж'; vcolor='#888'; }
+        else if (cpa<=350){ verdict='🟢 отлично'; vcolor='#3dbf6e'; }
+        else if (cpa<=600){ verdict='🟡 норм'; vcolor='#e8c540'; }
+        else { verdict='🔴 дорого'; vcolor='#e85348'; }
+        return `<div style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--bg)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <b style="color:#f0e6d0">${showIcon[r.show]} ${esc(r.public)}</b>
+            <span style="font-size:12px;color:${vcolor};font-weight:600">${verdict}</span>
+          </div>
+          <div style="font-size:12px;color:var(--dim);margin-bottom:8px">Промокод: <b style="color:var(--gold)">${esc(r.code)}</b></div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:12px">
+            <div><div style="color:var(--dim)">Продано</div><b style="color:#f0e6d0">${r.tickets} бил.</b></div>
+            <div><div style="color:var(--dim)">Потрачено</div><b style="color:#f0e6d0">${plFmt(r.spent)}</b></div>
+            <div><div style="color:var(--dim)">Выручка</div><b style="color:#3dbf6e">${plFmt(r.revenue)}</b></div>
+            <div><div style="color:var(--dim)">За 1 билет</div><b style="color:${vcolor}">${r.tickets>0?plFmt(cpa):'—'}</b></div>
+            <div><div style="color:var(--dim)">ROI рекламы</div><b style="color:${roi >= 0 ? '#3dbf6e' : '#e85348'}">${r.spent > 0 ? roi + '%' : '—'}</b></div>
+          </div>
+          ${r.promoBuyers.length ? `<details style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px">
+            <summary style="cursor:pointer;color:var(--gold);font-size:12px">Показать покупателей (${r.promoBuyers.length})</summary>
+            <div style="display:grid;gap:7px;margin-top:8px">${r.promoBuyers.map(b=>`<div style="background:rgba(255,255,255,.03);border-radius:8px;padding:8px;font-size:12px">
+              <div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(b.name)}</b><b style="color:#3dbf6e">${plFmt(b.revenue)}</b></div>
+              <div style="color:var(--dim);margin-top:3px">${b.ticketNumber ? 'Билет '+esc(b.ticketNumber)+' · ' : ''}Заказ ${esc(b.bookingId)} · ${b.tickets} бил.${b.seats ? ' · '+esc(b.seats) : ''}</div>
+            </div>`).join('')}</div>
+          </details>` : ''}
+        </div>`;
+      }).join('');
+    }
+
     // ── ХУЛИgan: Bookings ──
     async function loadHuliganOrders() {
       const list = document.getElementById('huliganOrdersList');
@@ -5096,6 +6003,8 @@
 
       const orders = await fbGet('huligan_bookings');
       window.allHuliganBookings = orders || {};
+      // Дата концерта — для расчёта % возврата
+      try { window.huliganShowCfg = (await fbGet('huligan_config/show')) || {}; } catch { window.huliganShowCfg = {}; }
 
       // Always update badge
       const pending = orders
@@ -5135,9 +6044,11 @@
       list.innerHTML = items.map(([id, o]) => {
         const vkLink = '';  // боты убраны
         const tgLink = '';
+        const safeId = esc(id);
+        const safeStatus = esc(STATUS_LABEL[o.status] || o.status || '—');
         const contactLine = [
-          o.tgUserId ? `<span style="font-size:12px">TG ID: <code>${o.tgUserId}</code></span>` : '',
-          o.tgUsername ? `<span style="font-size:12px">@${String(o.tgUsername).replace(/^@/,'')}</span>` : '',
+          o.tgUserId ? `<span style="font-size:12px">TG ID: <code>${esc(o.tgUserId)}</code></span>` : '',
+          o.tgUsername ? `<span style="font-size:12px">@${esc(String(o.tgUsername).replace(/^@/,''))}</span>` : '',
           o.phone ? `<span style="font-size:12px">📞 ${esc(o.phone)}</span>` : ''
         ].filter(Boolean).join(' &nbsp;·&nbsp; ');
         const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString('ru-RU') : '—';
@@ -5147,30 +6058,30 @@
           ? `<div style="font-size:12px;color:var(--dim);margin-top:8px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px">💬 ${esc(reasonText)}</div>`
           : '';
         const confirmBtn = o.status === 'waiting_admin'
-          ? `<button class="btn-confirm" onclick="confirmHuligan('${id}', this)">✅ Подтвердить оплату</button>`
+          ? `<button class="btn-confirm" onclick="confirmHuligan(${jsArg(id)}, this)">✅ Подтвердить оплату</button>`
           : o.status === 'confirmed'
-            ? `<span style="color:#00c864;font-size:13px;font-weight:600">✅ Подтверждён · №${o.ticketNumber || '—'}</span>`
+            ? `<span style="color:#00c864;font-size:13px;font-weight:600">✅ Подтверждён · №${esc(o.ticketNumber || '—')}</span>`
             : '';
         const refundBtn = (o.status === 'confirmed' || o.status === 'refund_requested')
-          ? `<button class="btn-cancel" onclick="refundHuligan('${id}')">↩ Оформить возврат</button>`
+          ? `<button class="btn-cancel" onclick="refundHuligan(${jsArg(id)})">↩ Оформить возврат</button>`
           : '';
         const cancelBtn = (o.status === 'new' || o.status === 'waiting_admin')
-          ? `<button class="btn-cancel" onclick="cancelHuligan('${id}')">❌ Отменить</button>`
+          ? `<button class="btn-cancel" onclick="cancelHuligan(${jsArg(id)})">❌ Отменить</button>`
           : '';
         return `
       <div class="booking-card" style="border-left:3px solid ${STATUS_COLOR[o.status] || '#444'}">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
           <div>
-            <strong style="font-size:15px">${o.name || '—'}</strong>
-            <span style="margin-left:8px;font-size:12px;color:${STATUS_COLOR[o.status] || '#888'};font-weight:600">${STATUS_LABEL[o.status] || o.status}</span>
+            <strong style="font-size:15px">${esc(o.name || '—')}</strong>
+            <span style="margin-left:8px;font-size:12px;color:${STATUS_COLOR[o.status] || '#888'};font-weight:600">${safeStatus}</span>
           </div>
           <div style="display:flex;gap:6px">${vkLink}${tgLink}</div>
         </div>
         ${contactLine ? `<div style="margin-bottom:6px;color:var(--dim)">${contactLine}</div>` : ''}
         <div style="font-size:13px;color:var(--dim);margin-bottom:4px">
-          Тип: <strong style="color:var(--text)">${TYPE_NAMES[o.ticketType] || o.ticketType || '—'}</strong>
-          &nbsp;·&nbsp; Сумма: <strong style="color:var(--text)">${o.finalPrice != null ? o.finalPrice : (o.originalPrice || '—')} ₽</strong>
-          &nbsp;·&nbsp; 🆔 <code style="font-size:12px">${id}</code>
+          Тип: <strong style="color:var(--text)">${esc(TYPE_NAMES[o.ticketType] || o.ticketType || '—')}</strong>
+          &nbsp;·&nbsp; Сумма: <strong style="color:var(--text)">${esc(o.finalPrice != null ? o.finalPrice : (o.originalPrice || '—'))} ₽</strong>
+          &nbsp;·&nbsp; 🆔 <code style="font-size:12px">${safeId}</code>
         </div>
         <div style="font-size:12px;color:var(--dim);margin-bottom:10px">
           Создан: ${dateStr}${o.paidAt ? `  ·  Оплачен: ${paidStr}` : ''}
@@ -5180,7 +6091,7 @@
           ${confirmBtn}
           ${refundBtn}
           ${cancelBtn}
-          <button class="btn-sm btn-sm-del" onclick="deleteHuliganBooking('${id}')" style="margin-left:auto" title="Удалить заявку полностью">🗑 Удалить</button>
+          <button class="btn-sm btn-sm-del" onclick="deleteHuliganBooking(${jsArg(id)})" style="margin-left:auto" title="Удалить заявку полностью">🗑 Удалить</button>
         </div>
       </div>`;
       }).join('');
@@ -5231,14 +6142,68 @@
       }
     }
 
+    // ── Расчёт процента возврата по дате концерта ──
+    // Правила: 100% за 10+ дней, 50% за 5–10, 30% за 3–5, 0% менее 3 дней.
+    function refundPercentByDate(eventDateStr) {
+      const ev = parseEventDate(eventDateStr);
+      if (!ev) return null; // дату не разобрали — вернём null, спросим вручную
+      const days = Math.floor((ev - Date.now()) / 86400000);
+      if (days >= 10) return { percent: 100, days };
+      if (days >= 5) return { percent: 50, days };
+      if (days >= 3) return { percent: 30, days };
+      return { percent: 0, days };
+    }
+    // Разбор даты вида "2026-09-19", "19.09.2026" или ISO
+    function parseEventDate(s) {
+      if (!s) return null;
+      s = String(s).trim();
+      let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return new Date(+m[1], +m[2] - 1, +m[3], 23, 59).getTime();
+      m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+      if (m) return new Date(+m[3], +m[2] - 1, +m[1], 23, 59).getTime();
+      const t = Date.parse(s);
+      return Number.isNaN(t) ? null : t;
+    }
+
+    // Общий помощник: спрашивает у админа сумму возврата с рекомендацией по дате
+    function askRefundAmount(paidRub, eventDateStr) {
+      const paid = Number(paidRub) || 0;
+      const rp = refundPercentByDate(eventDateStr);
+      let head;
+      let suggested = paid;
+      if (rp) {
+        suggested = Math.round(paid * rp.percent / 100);
+        const daysWord = rp.days < 0 ? 'концерт уже прошёл' : `до концерта ${rp.days} дн.`;
+        head = `${daysWord} → по правилам вернуть ${rp.percent}% = ${suggested} ₽`;
+      } else {
+        head = 'Дату концерта не удалось определить — укажите сумму вручную.';
+      }
+      const ans = prompt(
+        `Возврат билета\n\nОплачено: ${paid} ₽\n${head}\n\n` +
+        `Введите сумму возврата в рублях (можно изменить):`,
+        String(suggested)
+      );
+      if (ans === null) return null; // отмена
+      const amount = Math.round(Number(String(ans).replace(',', '.')));
+      if (!Number.isFinite(amount) || amount < 0 || amount > paid) {
+        toast(`Неверная сумма (0–${paid} ₽)`);
+        return null;
+      }
+      return amount;
+    }
+
     async function refundHuligan(bookingId) {
+      const b = (window.allHuliganBookings && window.allHuliganBookings[bookingId]) || {};
+      const cfg = (window.huliganShowCfg || {});
+      const amount = askRefundAmount(b.finalPrice != null ? b.finalPrice : b.originalPrice, cfg.date || cfg.eventDate || b.eventDate);
+      if (amount === null) return;
       const reason = prompt(`Причина возврата для ${bookingId} (необязательно):`) || '';
-      if (!confirm(`Оформить возврат по заказу ${bookingId}?`)) return;
+      if (!confirm(`Вернуть ${amount} ₽ по заказу ${bookingId}?`)) return;
       try {
         const r = await fetch('/api/huligan', {
           method: 'POST',
           headers: adminHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ action: 'refund', bookingId, reason: reason.trim() })
+          body: JSON.stringify({ action: 'refund', bookingId, amount, reason: reason.trim() })
         });
         const data = await r.json();
         if (data.ok) {
@@ -5297,13 +6262,14 @@
       list.innerHTML = users.map(u => {
         const name = u.vkName || u.name || '—';
         const vkLink = '';  // боты убраны
+        const photo = typeof u.vkPhoto === 'string' && /^https:\/\//.test(u.vkPhoto) ? esc(u.vkPhoto) : '';
         const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ru-RU') : '—';
         return `
       <div class="user-card">
-        ${u.vkPhoto ? `<img class="user-avatar" src="${u.vkPhoto}" alt="">` : `<div class="user-avatar" style="display:flex;align-items:center;justify-content:center;font-size:18px">😈</div>`}
+        ${photo ? `<img class="user-avatar" src="${photo}" alt="">` : `<div class="user-avatar" style="display:flex;align-items:center;justify-content:center;font-size:18px">😈</div>`}
         <div style="flex:1">
-          <div class="user-name">${name}</div>
-          <div class="user-meta">Тип: ${TYPE_NAMES[u.ticketType] || u.ticketType || '—'} · ${dateStr}</div>
+          <div class="user-name">${esc(name)}</div>
+          <div class="user-meta">Тип: ${esc(TYPE_NAMES[u.ticketType] || u.ticketType || '—')} · ${dateStr}</div>
         </div>
         ${vkLink}
       </div>`;
@@ -5324,7 +6290,7 @@
         const starsStr = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
         const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
         const name = r.name || '—';
-        const vkProfileUrl = r.vkUserId ? `https://vk.com/id${r.vkUserId}` : null;
+        const vkProfileUrl = safeVkUserId(r.vkUserId) ? `https://vk.com/id${safeVkUserId(r.vkUserId)}` : null;
         const vkReplyBtn = '';  // боты убраны
         const publishText = [
           `✨ Отзыв о шоу «ХУЛИГАН GAN»`,
@@ -5337,8 +6303,9 @@
           `#ХулиганGAN #KOSTYUKPROJECT #иллюзионист #стендап #18plus`
         ].join('\n');
         window._publishTexts['hul_' + id] = publishText;
-        const vkProfileLink = r.vkUserId ? `<a href="https://vk.com/id${r.vkUserId}" target="_blank" style="color:#6ba5e7;text-decoration:none">vk.com/id${r.vkUserId}</a>` : '';
-        const promoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${r.promoCode}</div>` : '';
+        const vkId = safeVkUserId(r.vkUserId);
+        const vkProfileLink = vkId ? `<a href="https://vk.com/id${vkId}" target="_blank" rel="noopener" style="color:#6ba5e7;text-decoration:none">vk.com/id${vkId}</a>` : '';
+        const promoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${esc(r.promoCode)}</div>` : '';
         return `
       <div class="review-card">
         <div class="review-stars">${starsStr} <span style="font-size:13px;color:var(--dim)">(${r.rating || 5}/5)</span></div>
@@ -5348,8 +6315,8 @@
           <span>👤 ${esc(name)} · ${dateStr} ${vkProfileLink}</span>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             ${vkReplyBtn}
-            <button class="btn-sm" onclick="copyReview('hul_${id}')" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.35);color:#c9a228;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">📋 Опубликовать</button>
-            <button class="btn-sm" onclick="deleteReview('${id}','${r.bookingId || ''}','huligan')" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
+            <button class="btn-sm" onclick="copyReview(${jsArg('hul_' + id)})" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.35);color:#c9a228;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">📋 Опубликовать</button>
+            <button class="btn-sm" onclick="deleteReview(${jsArg(id)},${jsArg(r.bookingId)},${jsArg('huligan')})" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
           </div>
         </div>
       </div>`;
@@ -5424,7 +6391,10 @@
         container.innerHTML = '<div style="color:var(--dim);font-size:13px;padding:8px 0">Типов нет. Нажмите «+ Добавить тип» ниже.</div>';
         return;
       }
-      container.innerHTML = entries.map(([id, t]) => `
+      container.innerHTML = entries.map(([id, t]) => {
+      const idHtml = esc(id);
+      const idArg = jsArg(id);
+      return `
         <div style="display:grid;grid-template-columns:44px 1fr auto;gap:8px;margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid ${esc(t.color || '#444')}55;align-items:center">
           <div style="font-size:26px;text-align:center">${esc(t.icon || '🎟')}</div>
           <div>
@@ -5433,42 +6403,48 @@
             <div style="font-size:11px;color:var(--dim);margin-top:2px;line-height:1.3">${esc(t.description || '')}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
-            <button onclick="editTicketType('${esc(id)}')" title="Редактировать" style="background:rgba(255,255,255,0.08);border:none;color:#fff;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px">✏️</button>
-            <button onclick="deleteTicketType('${esc(id)}')" title="Удалить" style="background:rgba(220,50,50,0.2);border:none;color:#ff7777;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px">🗑</button>
+            <button onclick="editTicketType(${idArg})" title="Редактировать" style="background:rgba(255,255,255,0.08);border:none;color:#fff;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px">✏️</button>
+            <button onclick="deleteTicketType(${idArg})" title="Удалить" style="background:rgba(220,50,50,0.2);border:none;color:#ff7777;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px">🗑</button>
           </div>
         </div>
-        <div id="hul-edit-${esc(id)}" style="display:none;margin:-4px 0 10px 0;padding:12px;background:rgba(255,255,255,0.06);border-radius:10px">
+        <div id="hul-edit-${idHtml}" style="display:none;margin:-4px 0 10px 0;padding:12px;background:rgba(255,255,255,0.06);border-radius:10px">
           <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:start;margin-bottom:8px">
             <div class="form-group" style="margin-bottom:0"><label>Иконка</label>
-              <input class="inp" id="hedit-icon-${esc(id)}" value="${esc(t.icon || '')}" style="text-align:center;font-size:18px">
+              <input class="inp" id="hedit-icon-${idHtml}" value="${esc(t.icon || '')}" style="text-align:center;font-size:18px">
             </div>
             <div class="form-group" style="margin-bottom:0"><label>Название</label>
-              <input class="inp" id="hedit-name-${esc(id)}" value="${esc(t.name || '')}">
+              <input class="inp" id="hedit-name-${idHtml}" value="${esc(t.name || '')}">
             </div>
             <div class="form-group" style="margin-bottom:0"><label>Цена (₽)</label>
-              <input class="inp" id="hedit-price-${esc(id)}" type="number" value="${t.price || 0}">
+              <input class="inp" id="hedit-price-${idHtml}" type="number" value="${t.price || 0}">
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 110px;gap:8px;margin-bottom:10px;align-items:start">
             <div class="form-group" style="margin-bottom:0"><label>Описание</label>
-              <textarea class="inp" id="hedit-desc-${esc(id)}" rows="2">${esc(t.description || '')}</textarea>
+              <textarea class="inp" id="hedit-desc-${idHtml}" rows="2">${esc(t.description || '')}</textarea>
             </div>
             <div class="form-group" style="margin-bottom:0"><label>Цвет</label>
-              <input class="inp" id="hedit-color-${esc(id)}" type="color" value="${esc(t.color || '#c9a228')}" style="height:42px;padding:4px;cursor:pointer">
+              <input class="inp" id="hedit-color-${idHtml}" type="color" value="${esc(t.color || '#c9a228')}" style="height:42px;padding:4px;cursor:pointer">
             </div>
           </div>
           <div style="display:flex;gap:8px">
-            <button class="btn-save-settings" onclick="saveTicketType('${esc(id)}')" style="margin-top:0;flex:1">💾 Сохранить</button>
-            <button onclick="document.getElementById('hul-edit-${esc(id)}').style.display='none'" style="flex:none;background:none;border:1px solid rgba(255,255,255,0.15);color:var(--dim);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13px">Отмена</button>
+            <button class="btn-save-settings" onclick="saveTicketType(${idArg})" style="margin-top:0;flex:1">💾 Сохранить</button>
+            <button onclick="closeTicketTypeEditor(${idArg})" style="flex:none;background:none;border:1px solid rgba(255,255,255,0.15);color:var(--dim);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:13px">Отмена</button>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function editTicketType(id) {
       document.querySelectorAll('[id^="hul-edit-"]').forEach(el => el.style.display = 'none');
       const row = document.getElementById(`hul-edit-${id}`);
       if (row) row.style.display = '';
+    }
+
+    function closeTicketTypeEditor(id) {
+      const editor = document.getElementById(`hul-edit-${id}`);
+      if (editor) editor.style.display = 'none';
     }
 
     async function saveTicketType(id) {
@@ -5581,17 +6557,21 @@
           ? `📅 ${fmtShortDate(p.validFrom)} — ${fmtShortDate(p.validUntil)}`
           : p.validFrom ? `📅 с ${fmtShortDate(p.validFrom)}`
             : p.validUntil ? `📅 до ${fmtShortDate(p.validUntil)}` : '';
+        const codeText = esc(code);
+        const codeArg = jsArg(code);
+        const description = esc(p.description || typeLabel);
+        const safeUsesLabel = esc(usesLabel);
         const statusBadge = expired ? ` <span style="color:#e85348;font-size:11px;font-weight:600">● истёк</span>`
           : notStarted ? ` <span style="color:#c9a228;font-size:11px;font-weight:600">● не начался</span>` : '';
         return `
       <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
         <div style="flex:1">
-          <div class="promo-code">${code}${statusBadge}</div>
-          <div class="promo-desc">${p.description || typeLabel} · ${usesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+          <div class="promo-code">${codeText}${statusBadge}</div>
+          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
         </div>
         <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
-                onclick="toggleHuliganPromo('${code}',${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
-        <button class="btn-sm btn-sm-del" onclick="deleteHuliganPromo('${code}')">🗑</button>
+                onclick="toggleHuliganPromo(${codeArg},${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
+        <button class="btn-sm btn-sm-del" onclick="deleteHuliganPromo(${codeArg})">🗑</button>
       </div>`;
       }).join('');
     }
@@ -5643,7 +6623,7 @@
           res.style.color = 'var(--green)';
           const miniUrl = data.bookingId ? `https://vk.com/app54466228_-209268664?tab=tickets&bookingId=${encodeURIComponent(data.bookingId)}#my_tickets/${encodeURIComponent(data.bookingId)}` : '';
           const warning = data.notificationWarning ? `<br><span style="color:#f5a623">⚠ ${esc(data.notificationWarning)}</span>` : '';
-          res.innerHTML = `✅ Билет создан: <b>${data.bookingId}</b>${miniUrl ? `<br><a href="${miniUrl}" target="_blank" style="color:var(--gold);font-size:12px">📱 Открыть в мини-аппе</a>` : ''}${warning}`;
+          res.innerHTML = `✅ Билет создан: <b>${esc(data.bookingId)}</b>${miniUrl ? `<br><a href="${miniUrl}" target="_blank" rel="noopener" style="color:var(--gold);font-size:12px">📱 Открыть в мини-аппе</a>` : ''}${warning}`;
           toast('🎟 Билет Секрет создан и выдан!');
           loadBookings();
         } else {
@@ -5658,7 +6638,7 @@
       const sel = document.getElementById('hulManualType');
       if (!sel) return;
       const sorted = Object.entries(types).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
-      sel.innerHTML = sorted.map(([k, t]) => `<option value="${k}">${t.name} — ${t.price} ₽</option>`).join('') || '<option value="">Нет типов</option>';
+      sel.innerHTML = sorted.map(([k, t]) => `<option value="${esc(k)}">${esc(t.name)} — ${esc(t.price)} ₽</option>`).join('') || '<option value="">Нет типов</option>';
     }
 
 
@@ -5722,9 +6702,10 @@
           }
 
           res.style.color = 'var(--green)';
-          const miniLink = data.miniAppUrl ? `<br><a href="${data.miniAppUrl}" target="_blank" style="color:var(--accent);font-size:12px">📱 Открыть в мини-аппе</a>` : '';
+          const miniAppUrl = safeHttpsUrl(data.miniAppUrl);
+          const miniLink = miniAppUrl ? `<br><a href="${miniAppUrl}" target="_blank" rel="noopener" style="color:var(--accent);font-size:12px">📱 Открыть в мини-аппе</a>` : '';
           const warning = data.notificationWarning ? `<br><span style="color:#f5a623">⚠ ${esc(data.notificationWarning)}</span>` : '';
-          res.innerHTML = `✅ Билет создан: <b>${data.bookingId}</b> (№${data.ticketNumber})${miniLink}${warning}`;
+          res.innerHTML = `✅ Билет создан: <b>${esc(data.bookingId)}</b> (№${esc(data.ticketNumber)})${miniLink}${warning}`;
           toast('🎟 Билет ХУЛИgan создан и выдан!');
           loadHuliganOrders();
         } else {
@@ -5745,13 +6726,15 @@
       list.innerHTML = items.map(u => {
         const name = u.name || [u.firstName, u.lastName].filter(Boolean).join(' ') || '—';
         const vkLink = '';  // боты убраны
+        const photo = safeHttpsUrl(u.photo);
+        const totalBookings = Number.isFinite(Number(u.totalBookings)) ? Number(u.totalBookings) : 1;
         const dateStr = u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('ru-RU') : '—';
         return `
       <div class="user-card">
-        ${u.photo ? `<img class="user-avatar" src="${u.photo}" alt="">` : `<div class="user-avatar" style="display:flex;align-items:center;justify-content:center;font-size:18px">👤</div>`}
+        ${photo ? `<img class="user-avatar" src="${photo}" alt="">` : `<div class="user-avatar" style="display:flex;align-items:center;justify-content:center;font-size:18px">👤</div>`}
         <div style="flex:1">
-          <div class="user-name">${name}</div>
-          <div class="user-meta">${u.phone || '—'} · Билетов: ${u.totalBookings || 1} · ${dateStr}</div>
+          <div class="user-name">${esc(name)}</div>
+          <div class="user-meta">${esc(u.phone || '—')} · Билетов: ${totalBookings} · ${dateStr}</div>
         </div>
         ${vkLink}
       </div>`;
@@ -5760,6 +6743,37 @@
 
     // ── Reviews (Секрет) ──
     // Ручное добавление отзыва в админке (собранного в соцсетях/лично)
+    // Хранилище выбранного фото по шоу (сжатый base64)
+    window._reviewPhotos = window._reviewPhotos || {};
+
+    // Выбор фото: сжимаем в браузере до ~400px, показываем превью
+    function pickReviewPhoto(show, input) {
+      const pref = show === 'huligan' ? 'revHul' : show === 'matvey' ? 'revMat' : 'revSecret';
+      const file = input.files && input.files[0];
+      const prev = document.getElementById(pref + 'PhotoPreview');
+      if (!file) { window._reviewPhotos[show] = null; if (prev) prev.innerHTML = ''; return; }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          // сжимаем: макс сторона 400px, квадратный кроп по центру
+          const size = 400;
+          const canvas = document.createElement('canvas');
+          canvas.width = size; canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          // квадратный кроп по центру
+          const min = Math.min(img.width, img.height);
+          const sx = (img.width - min) / 2, sy = (img.height - min) / 2;
+          ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+          const base64 = canvas.toDataURL('image/jpeg', 0.82);
+          window._reviewPhotos[show] = base64;
+          if (prev) prev.innerHTML = '<img src="' + base64 + '" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"> <span style="font-size:12px;color:var(--dim)">фото готово</span>';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     async function addReview(show) {
       // Префикс полей формы по шоу: revSecret* / revHul* / revMat*
       const pref = show === 'huligan' ? 'revHul' : show === 'matvey' ? 'revMat' : 'revSecret';
@@ -5770,10 +6784,18 @@
       if (!text) return toast('Введите текст отзыва');
       const path = show === 'huligan' ? 'huligan_reviews' : show === 'matvey' ? 'matvey_reviews' : 'ticket_reviews';
       const id = 'rev_' + Date.now().toString(36);
-      await fbPut(`${path}/${id}`, { name, text, rating, manual: true, createdAt: Date.now() });
+      const photo = window._reviewPhotos[show] || null;
+      const review = { name, text, rating, manual: true, createdAt: Date.now() };
+      if (photo) review.photo = photo;
+      await fbPut(`${path}/${id}`, review);
       toast('⭐ Отзыв добавлен');
       document.getElementById(pref + 'Name').value = '';
       document.getElementById(pref + 'Text').value = '';
+      window._reviewPhotos[show] = null;
+      var photoInput = document.getElementById(pref + 'Photo');
+      if (photoInput) photoInput.value = '';
+      var photoPrev = document.getElementById(pref + 'PhotoPreview');
+      if (photoPrev) photoPrev.innerHTML = '';
       if (show === 'huligan') await loadHuliganReviews();
       else if (show === 'matvey') await loadMatveyReviews();
       else await loadReviews();
@@ -5792,7 +6814,7 @@
         const name = r.name || booking?.name || r.bookingId || '—';
         const starsStr = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
         const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
-        const vkUserId = booking?.vkUserId;
+        const vkUserId = safeVkUserId(booking?.vkUserId);
         const vkProfileUrl = vkUserId ? `https://vk.com/id${vkUserId}` : null;
         const vkReplyBtn = '';  // боты убраны
         // Текст для публикации ВКонтакте
@@ -5809,8 +6831,8 @@
           `#ШоуСекрет #KOSTYUKPROJECT #иллюзионист #фокусник #Ярославль`
         ].join('\n');
         window._publishTexts[id] = publishText;
-        const secVkProfileLink = vkUserId ? `<a href="https://vk.com/id${vkUserId}" target="_blank" style="color:#6ba5e7;text-decoration:none">vk.com/id${vkUserId}</a>` : '';
-        const secPromoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${r.promoCode}</div>` : '';
+        const secVkProfileLink = vkUserId ? `<a href="https://vk.com/id${vkUserId}" target="_blank" rel="noopener" style="color:#6ba5e7;text-decoration:none">vk.com/id${vkUserId}</a>` : '';
+        const secPromoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${esc(r.promoCode)}</div>` : '';
         return `
       <div class="review-card">
         <div class="review-stars">${starsStr} <span style="font-size:13px;color:var(--dim)">(${r.rating || 5}/5)</span></div>
@@ -5820,8 +6842,8 @@
           <span>👤 ${esc(name)} · ${dateStr} ${secVkProfileLink}</span>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             ${vkReplyBtn}
-            <button class="btn-sm" onclick="copyReview('${id}')" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.35);color:#c9a228;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">📋 Опубликовать</button>
-            <button class="btn-sm" onclick="deleteReview('${id}','${r.bookingId || ''}','secret')" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
+            <button class="btn-sm" onclick="copyReview(${jsArg(id)})" style="background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.35);color:#c9a228;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">📋 Опубликовать</button>
+            <button class="btn-sm" onclick="deleteReview(${jsArg(id)},${jsArg(r.bookingId)},${jsArg('secret')})" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
           </div>
         </div>
       </div>`;
@@ -5837,6 +6859,8 @@
       } else {
         allBookings = data;
       }
+      // Дата концерта — для расчёта % возврата
+      try { window.secretShowCfg = (await fbGet('ticket_config/show')) || {}; } catch { window.secretShowCfg = {}; }
       renderBookings();
       const pending = Object.values(allBookings).filter(b => b.status === 'pending_confirmation' || b.status === 'pending_payment').length;
       const badge = document.getElementById('pendingBadge');
@@ -5877,7 +6901,7 @@
         : (o => o.discountedTotal != null ? o.discountedTotal : o.total);
       Object.values(src || {}).forEach(b => {
         if (!b || b.status === 'cancelled' || b.status === 'refunded') return;
-        const seats = Array.isArray(b.seats) ? b.seats.map(s => s.label || (s.tableId != null ? `Стол ${s.tableId} м.${(s.seatIdx || 0) + 1}` : '')).filter(Boolean).join('; ') : '';
+        const seats = Array.isArray(b.seats) ? b.seats.map(s => s.label || (s.tableId != null ? `Стол ${s.tableId} м.${s.seatIdx || 0}` : '')).filter(Boolean).join('; ') : '';
         rows.push([b.name || '', b.phone || b.telegram || '', seats, priceOf(b) || 0, b.status || '', b.createdAt ? new Date(b.createdAt).toLocaleDateString('ru-RU') : '']);
       });
       if (rows.length === 1) return toast('Нет покупателей для экспорта');
@@ -5904,11 +6928,12 @@
     function bookingCardHtml(b) {
       const [pillClass, pillText] = STATUS_LABELS[b.status] || ['pill-cancelled', '?'];
       const seatsHtml = (b.seats || []).map(s =>
-        `<span class="bk-seat-tag">Стол ${s.tableId}, м.${s.seatIdx + 1} (${ZONE_LABELS[s.zone] || s.zone})</span>`
+        `<span class="bk-seat-tag">Стол ${esc(s.tableId)}, м.${esc(Number(s.seatIdx))} (${esc(ZONE_LABELS[s.zone] || s.zone || '—')})</span>`
       ).join('');
       const promo = b.promoCode ? `<span>Промокод: <b>${esc(b.promoCode)}</b></span>` : '';
       const createdStr = b.createdAt ? new Date(b.createdAt).toLocaleString('ru-RU') : '—';
       const safeId = esc(b.id);
+      const idArg = jsArg(b.id);
       const vkBtn = '';  // боты убраны
       const reasonHtml = (b.cancelReason || b.refundReason)
         ? `<div style="font-size:12px;color:var(--dim);margin-top:6px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px">💬 ${esc(b.cancelReason || b.refundReason)}</div>`
@@ -5917,17 +6942,17 @@
       if (b.status === 'pending_confirmation' || b.status === 'pending_payment') {
         // Показываем кнопку подтверждения для обоих статусов —
         // pending_payment означает что пользователь нажал «Я оплатил», но статус не обновился на клиенте
-        actions.push(`<button class="btn-confirm" onclick="confirmBooking('${safeId}')">✅ Подтвердить оплату</button>`);
-        actions.push(`<button class="btn-cancel" onclick="cancelBooking('${safeId}')">❌ Отменить</button>`);
+        actions.push(`<button class="btn-confirm" onclick="confirmBooking(${idArg})">✅ Подтвердить оплату</button>`);
+        actions.push(`<button class="btn-cancel" onclick="cancelBooking(${idArg})">❌ Отменить</button>`);
       }
       if (b.status === 'confirmed') {
-        actions.push(`<a class="btn-view-ticket" href="#" onclick="openSecureTicket('${safeId}');return false;">🎟 Билет</a>`);
-        actions.push(`<button class="btn-cancel" onclick="cancelBooking('${safeId}')">↩ Возврат</button>`);
+        actions.push(`<a class="btn-view-ticket" href="#" onclick="openSecureTicket(${idArg});return false;">🎟 Билет</a>`);
+        actions.push(`<button class="btn-cancel" onclick="cancelBooking(${idArg})">↩ Возврат</button>`);
       }
       if (b.status === 'refund_requested') {
-        actions.push(`<button class="btn-cancel" onclick="cancelBooking('${safeId}')">↩ Оформить возврат</button>`);
+        actions.push(`<button class="btn-cancel" onclick="cancelBooking(${idArg})">↩ Оформить возврат</button>`);
       }
-      actions.push(`<button class="btn-sm btn-sm-del" onclick="deleteBooking('${safeId}')" style="margin-left:auto" title="Удалить заявку полностью">🗑 Удалить</button>`);
+      actions.push(`<button class="btn-sm btn-sm-del" onclick="deleteBooking(${idArg})" style="margin-left:auto" title="Удалить заявку полностью">🗑 Удалить</button>`);
       return `
     <div class="booking-card">
       <div class="bk-head">
@@ -6017,13 +7042,17 @@
 
       // Возврат оплаченной брони — через сервер (реальный возврат денег T-Bank Cancel).
       if (isRefund) {
-        if (!confirm(`Оформить ВОЗВРАТ по заказу ${id}?\n\nДеньги вернутся покупателю через T-Bank, билет аннулируется, место освободится.`)) return;
+        const cfg = (window.secretShowCfg || {});
+        const paid = b.discountedTotal != null ? b.discountedTotal : b.total;
+        const amount = askRefundAmount(paid, cfg.date || cfg.eventDate || b.eventDate);
+        if (amount === null) return;
         const reason = prompt('Причина возврата (необязательно):') || '';
+        if (!confirm(`Вернуть ${amount} ₽ по заказу ${id}?\n\nДеньги вернутся покупателю через T-Bank, билет аннулируется, место освободится.`)) return;
         try {
           const r = await fetch('/api/book', {
             method: 'POST',
             headers: adminHeaders({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ action: 'refund', bookingId: id, reason: reason.trim() })
+            body: JSON.stringify({ action: 'refund', bookingId: id, amount, reason: reason.trim() })
           });
           const j = await r.json();
           if (!r.ok || !j.ok) {
@@ -6266,17 +7295,21 @@
           ? `📅 ${fmtShortDate(p.validFrom)} — ${fmtShortDate(p.validUntil)}`
           : p.validFrom ? `📅 с ${fmtShortDate(p.validFrom)}`
             : p.validUntil ? `📅 до ${fmtShortDate(p.validUntil)}` : '';
+        const codeText = esc(code);
+        const codeArg = jsArg(code);
+        const description = esc(p.description || typeLabel);
+        const safeUsesLabel = esc(usesLabel);
         const statusBadge = expired ? ` <span style="color:#e85348;font-size:11px;font-weight:600">● истёк</span>`
           : notStarted ? ` <span style="color:#c9a228;font-size:11px;font-weight:600">● не начался</span>` : '';
         return `
       <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
         <div style="flex:1">
-          <div class="promo-code">${code}${statusBadge}</div>
-          <div class="promo-desc">${p.description || typeLabel} · ${usesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+          <div class="promo-code">${codeText}${statusBadge}</div>
+          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
         </div>
         <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
-                onclick="toggleMatveyPromo('${code}',${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
-        <button class="btn-sm btn-sm-del" onclick="deleteMatveyPromo('${code}')">🗑</button>
+                onclick="toggleMatveyPromo(${codeArg},${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
+        <button class="btn-sm btn-sm-del" onclick="deleteMatveyPromo(${codeArg})">🗑</button>
       </div>`;
       }).join('');
     }
@@ -6306,7 +7339,7 @@
         const starsStr = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
         const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ru-RU') : '—';
         const name = r.name || '—';
-        const promoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${r.promoCode}</div>` : '';
+        const promoInfo = r.promoCode ? `<div style="margin-top:6px;font-size:12px;color:#c9a228">🎁 Промокод: ${esc(r.promoCode)}</div>` : '';
         return `
       <div class="review-card">
         <div class="review-stars">${starsStr} <span style="font-size:13px;color:var(--dim)">(${r.rating || 5}/5)</span></div>
@@ -6314,7 +7347,7 @@
         ${promoInfo}
         <div class="review-meta" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px">
           <span style="color:var(--dim);font-size:12px">${esc(name)} · ${dateStr}</span>
-          <button class="btn-sm" onclick="deleteReview('${id}','${r.bookingId || ''}','matvey')" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
+          <button class="btn-sm" onclick="deleteReview(${jsArg(id)},${jsArg(r.bookingId)},${jsArg('matvey')})" style="background:rgba(232,83,72,0.12);border:1px solid rgba(232,83,72,0.3);color:#e85348;cursor:pointer;border-radius:6px;padding:4px 10px;font-size:12px">🗑 Удалить</button>
         </div>
       </div>`;
       }).join('');
@@ -6369,6 +7402,8 @@
 
       const orders = await fbGet('matvey_bookings') || {};
       window.allMatveyBookings = orders;
+      // Дата квеста — для расчёта % возврата
+      try { window.matveyShowCfg = (await fbGet('matvey_config/show')) || {}; } catch { window.matveyShowCfg = {}; }
 
       // Update badge
       const pending = Object.values(orders).filter(o => o.status === 'pending_confirmation' || o.status === 'pending_payment').length;
@@ -6420,6 +7455,8 @@
       };
 
       list.innerHTML = items.map(([id, o]) => {
+        const idArg = jsArg(id);
+        const safeStatus = esc(STATUS_LABEL[o.status] || o.status || '—');
         const contactLine = [
           o.telegram ? `✈️ TG: <b>${esc(o.telegram)}</b>` : '',
           o.phone ? `📞 <b>${esc(o.phone)}</b>` : ''
@@ -6427,29 +7464,29 @@
         
         const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString('ru-RU') : '—';
         const confirmBtn = (o.status === 'pending_confirmation' || o.status === 'pending_payment')
-          ? `<button class="btn-confirm" onclick="confirmMatvey('${id}')">✅ Подтвердить оплату</button>`
+          ? `<button class="btn-confirm" onclick="confirmMatvey(${idArg})">✅ Подтвердить оплату</button>`
           : '';
         const refundBtn = (o.status === 'confirmed')
-          ? `<button class="btn-cancel" style="background:rgba(124,200,255,0.12);border-color:rgba(124,200,255,0.4);color:#7cc8ff" onclick="refundMatvey('${id}')">↩ Оформить возврат</button>`
+          ? `<button class="btn-cancel" style="background:rgba(124,200,255,0.12);border-color:rgba(124,200,255,0.4);color:#7cc8ff" onclick="refundMatvey(${idArg})">↩ Оформить возврат</button>`
           : '';
         const cancelBtn = (o.status !== 'cancelled' && o.status !== 'refunded' && o.status !== 'confirmed')
-          ? `<button class="btn-cancel" onclick="cancelMatvey('${id}')">❌ Отменить заказ</button>`
+          ? `<button class="btn-cancel" onclick="cancelMatvey(${idArg})">❌ Отменить заказ</button>`
           : '';
-        const deleteBtn = `<button class="btn-sm btn-sm-del" onclick="deleteMatvey('${id}')" style="margin-left:auto">🗑 Удалить</button>`;
+        const deleteBtn = `<button class="btn-sm btn-sm-del" onclick="deleteMatvey(${idArg})" style="margin-left:auto">🗑 Удалить</button>`;
 
         return `
           <div class="booking-card" style="border-left:3px solid ${STATUS_COLOR[o.status] || '#444'}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
               <div>
                 <strong style="font-size:15px">${esc(o.name || '—')}</strong>
-                <span style="margin-left:8px;font-size:12px;color:${STATUS_COLOR[o.status] || '#888'};font-weight:600">${STATUS_LABEL[o.status] || o.status}</span>
+                <span style="margin-left:8px;font-size:12px;color:${STATUS_COLOR[o.status] || '#888'};font-weight:600">${safeStatus}</span>
               </div>
               <div style="font-size:11px;color:var(--dim)">${dateStr}</div>
             </div>
             ${contactLine ? `<div style="margin-bottom:6px;color:var(--dim)">${contactLine}</div>` : ''}
             <div style="font-size:13px;color:var(--dim);margin-bottom:4px">
               Места: <strong style="color:var(--text)">${esc(Array.isArray(o.seats) ? o.seats.map(s => s.label).join(', ') : o.seats || '—')}</strong>
-              &nbsp;·&nbsp; Сумма: <strong style="color:var(--text)">${o.totalPrice || o.total || '—'} ₽</strong>
+              &nbsp;·&nbsp; Сумма: <strong style="color:var(--text)">${esc(o.totalPrice || o.total || '—')} ₽</strong>
             </div>
             ${o.comment ? `<div style="font-size:12px;color:var(--dim);margin-top:6px">💬 ${esc(o.comment)}</div>` : ''}
             <div style="margin-top:10px;display:flex;gap:8px;align-items:center">${confirmBtn}${refundBtn}${cancelBtn}${deleteBtn}</div>
@@ -6495,13 +7532,18 @@
     }
 
     async function refundMatvey(id) {
+      const b = (window.allMatveyBookings && window.allMatveyBookings[id]) || {};
+      const cfg = (window.matveyShowCfg || {});
+      const paid = b.totalPrice != null ? b.totalPrice : b.total;
+      const amount = askRefundAmount(paid, cfg.date || cfg.eventDate || b.eventDate);
+      if (amount === null) return;
       const reason = prompt(`Причина возврата для ${id} (необязательно):`) || '';
-      if (!confirm(`Оформить возврат по заказу ${id}? Деньги вернутся через T-Bank, места освободятся.`)) return;
+      if (!confirm(`Вернуть ${amount} ₽ по заказу ${id}? Деньги вернутся через T-Bank, места освободятся.`)) return;
       try {
         const r = await fetch('/api/matvey', {
           method: 'POST',
           headers: adminHeaders({ 'Content-Type': 'application/json' }),
-          body: JSON.stringify({ action: 'refund', bookingId: id, reason: reason.trim() })
+          body: JSON.stringify({ action: 'refund', bookingId: id, amount, reason: reason.trim() })
         });
         const data = await r.json();
         if (data.ok) {
@@ -6613,6 +7655,8 @@
       row_front: { color: '#e85348', label: 'Красная зона' },
       row_back: { color: '#3dbf6e', label: 'Зелёная зона' },
       table: { color: '#4a8fd9', label: 'Синяя зона' },
+      divan: { color: '#e8559e', label: 'Розовая зона' },
+      bar: { color: '#f0913d', label: 'Оранжевая зона' },
       sofa: { color: '#e85348', label: 'Красная зона' },
       lampa: { color: '#e85348', label: 'Красная зона' }
     };
@@ -6682,6 +7726,15 @@
           MATVEY_LAYOUT_SEATS.push({ key: `t${tableNum}_${b.s}`, x: tx + b.dx, y: tabY + b.dy, zone: 'table', label: `Столик ${tableNum}, место ${b.s}`, r: 5.5 });
         });
       });
+      [
+        { s:1, x:40, y:118 }, { s:2, x:40, y:143 }, { s:3, x:40, y:168 }, { s:4, x:55, y:205 }, { s:5, x:78, y:205 }
+      ].forEach(ch => MATVEY_LAYOUT_SEATS.push({ key: 'dl_' + ch.s, x:ch.x, y:ch.y, zone:'divan', label:`Левый диван, место ${ch.s}`, r:5.5 }));
+      [
+        { s:6, x:505, y:65 }, { s:7, x:525, y:65 }, { s:8, x:545, y:65 }, { s:9, x:545, y:100 }, { s:10, x:545, y:128 }
+      ].forEach(ch => MATVEY_LAYOUT_SEATS.push({ key: 'dr_' + ch.s, x:ch.x, y:ch.y, zone:'divan', label:`Правый диван, место ${ch.s}`, r:5.5 }));
+      [
+        { key:'bar_1', x:455, y:340 }, { key:'bar_2', x:475, y:340 }, { key:'bar_3', x:495, y:340 }
+      ].forEach(b => MATVEY_LAYOUT_SEATS.push({ key: b.key, x: b.x, y: b.y, zone: 'bar', label: `Бар, место ${b.key.split('_')[1]}`, r:5.5 }));
 
       for (const seat of MATVEY_LAYOUT_SEATS) {
         const key = seat.key;
@@ -6727,49 +7780,27 @@
       }
 
       // 2. Draw Left Sofa
-      const infoL = seatInfo['dl_1'];
-      const rawL = seats['dl_1'];
-      let effL;
-      if (infoL?.bookingStatus === 'confirmed') { effL = 'confirmed'; totalConfirmed++; }
-      else if (infoL?.bookingStatus === 'pending') { effL = 'pending'; totalPending++; }
-      else if (rawL?.status === 'reserved' && rawL.reservedAt && (now - rawL.reservedAt) < 600000) effL = 'reserved';
-      else effL = 'available';
-
       const leftSofa = svgEl('path', {
         d: 'M 30 100 L 50 100 Q 55 100 55 105 L 55 185 Q 55 190 60 190 L 85 190 Q 90 190 90 195 L 90 215 Q 90 220 85 220 L 30 220 Q 25 220 25 215 L 25 105 Q 25 100 30 100',
-        fill: effL === 'confirmed' ? '#ff7ebb' : (effL === 'pending' ? '#f5a623' : (effL === 'reserved' ? 'rgba(203,161,53,0.3)' : 'rgba(60,60,75,0.4)')),
-        stroke: effL === 'confirmed' ? '#fff' : (effL === 'pending' ? '#ffcc44' : 'rgba(255,255,255,0.15)'),
-        'stroke-width': effL !== 'available' ? 1.5 : 1
+        fill: 'rgba(232,85,158,0.10)', stroke: 'rgba(232,85,158,0.35)', 'stroke-width': 1,
+        'pointer-events': 'none'
       });
-      leftSofa.style.cursor = 'pointer';
-      leftSofa.addEventListener('click', () => manageSeatStatus('dl_1', 'matvey'));
       g.appendChild(leftSofa);
 
-      const leftText = svgEl('text', { x: 40, y: 160, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: effL !== 'available' ? '#fff' : 'rgba(255,255,255,0.4)', 'font-size': 9, 'font-weight': '700', 'font-family': 'Inter,sans-serif', 'pointer-events': 'none' });
-      leftText.textContent = infoL ? (infoL.name || 'ДИВАН') : 'ДИВАН Л';
+      const leftText = svgEl('text', { x: 40, y: 160, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.4)', 'font-size': 9, 'font-weight': '700', 'font-family': 'Inter,sans-serif', 'pointer-events': 'none' });
+      leftText.textContent = 'ДИВАН Л';
       g.appendChild(leftText);
 
       // 3. Draw Right Sofa
-      const infoR = seatInfo['dr_1'];
-      const rawR = seats['dr_1'];
-      let effR;
-      if (infoR?.bookingStatus === 'confirmed') { effR = 'confirmed'; totalConfirmed++; }
-      else if (infoR?.bookingStatus === 'pending') { effR = 'pending'; totalPending++; }
-      else if (rawR?.status === 'reserved' && rawR.reservedAt && (now - rawR.reservedAt) < 600000) effR = 'reserved';
-      else effR = 'available';
-
       const rightSofa = svgEl('path', {
         d: 'M 495 50 L 555 50 Q 560 50 560 55 L 560 145 Q 560 150 555 150 L 535 150 Q 530 150 530 145 L 530 85 Q 530 80 525 80 L 495 80 Q 490 80 490 75 L 490 55 Q 490 50 495 50',
-        fill: effR === 'confirmed' ? '#ff7ebb' : (effR === 'pending' ? '#f5a623' : (effR === 'reserved' ? 'rgba(203,161,53,0.3)' : 'rgba(60,60,75,0.4)')),
-        stroke: effR === 'confirmed' ? '#fff' : (effR === 'pending' ? '#ffcc44' : 'rgba(255,255,255,0.15)'),
-        'stroke-width': effR !== 'available' ? 1.5 : 1
+        fill: 'rgba(232,85,158,0.10)', stroke: 'rgba(232,85,158,0.35)', 'stroke-width': 1,
+        'pointer-events': 'none'
       });
-      rightSofa.style.cursor = 'pointer';
-      rightSofa.addEventListener('click', () => manageSeatStatus('dr_1', 'matvey'));
       g.appendChild(rightSofa);
 
-      const rightText = svgEl('text', { x: 525, y: 100, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: effR !== 'available' ? '#fff' : 'rgba(255,255,255,0.4)', 'font-size': 9, 'font-weight': '700', 'font-family': 'Inter,sans-serif', 'pointer-events': 'none' });
-      rightText.textContent = infoR ? (infoR.name || 'ДИВАН') : 'ДИВАН П';
+      const rightText = svgEl('text', { x: 525, y: 100, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: 'rgba(255,255,255,0.4)', 'font-size': 9, 'font-weight': '700', 'font-family': 'Inter,sans-serif', 'pointer-events': 'none' });
+      rightText.textContent = 'ДИВАН П';
       g.appendChild(rightText);
 
       // 4. Draw Lampa Room
@@ -6842,17 +7873,21 @@
           ? `📅 ${fmtShortDate(p.validFrom)} — ${fmtShortDate(p.validUntil)}`
           : p.validFrom ? `📅 с ${fmtShortDate(p.validFrom)}`
             : p.validUntil ? `📅 до ${fmtShortDate(p.validUntil)}` : '';
+        const codeText = esc(code);
+        const codeArg = jsArg(code);
+        const description = esc(p.description || typeLabel);
+        const safeUsesLabel = esc(usesLabel);
         const statusBadge = expired ? ` <span style="color:#e85348;font-size:11px;font-weight:600">● истёк</span>`
           : notStarted ? ` <span style="color:#c9a228;font-size:11px;font-weight:600">● не начался</span>` : '';
         return `
       <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
         <div style="flex:1">
-          <div class="promo-code">${code}${statusBadge}</div>
-          <div class="promo-desc">${p.description || typeLabel} · ${usesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+          <div class="promo-code">${codeText}${statusBadge}</div>
+          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
         </div>
         <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
-                onclick="togglePromo('${code}',${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
-        <button class="btn-sm btn-sm-del" onclick="deletePromo('${code}')">🗑</button>
+                onclick="togglePromo(${codeArg},${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
+        <button class="btn-sm btn-sm-del" onclick="deletePromo(${codeArg})">🗑</button>
       </div>`;
       }).join('');
     }
@@ -7067,6 +8102,7 @@
       // Стулья у диванов
       SECRET_LEFT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_left', [`dl_${ch.s}`], ch.s, 9); });
       SECRET_RIGHT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_right', [`dr_${ch.s}`], ch.s, 9); });
+      drawSeat(1155, 350, 'vip', ['lampa'], 'Л', 41);
 
       // Счётчик
       const counter = document.getElementById('hallCounter');
@@ -7227,18 +8263,13 @@
       });
       g.appendChild(rightSofaText);
 
-      // Draw Bar
-      const barEff = getSeatEff('bar_0');
-      const barStyle = getFillAndStroke(barEff, 'rgba(60,60,75,0.85)');
+      // Барная стойка — фон; реальные продаваемые места bar_1..bar_3 рисуются отдельно.
       const bar = svgEl('path', {
         d: 'M 440 380 Q 435 380 435 375 L 435 355 Q 435 350 440 350 L 515 350 Q 520 350 520 345 L 520 295 Q 520 290 525 290 L 550 290 Q 555 290 555 295 L 555 375 Q 555 380 550 380 Z',
-        fill: barStyle.fill,
-        stroke: barStyle.stroke,
-        'stroke-width': barStyle.strokeWidth,
-        opacity: barStyle.opacity || '1'
+        fill: 'rgba(60,60,75,0.85)',
+        stroke: 'rgba(255,255,255,0.18)',
+        'stroke-width': 1
       });
-      bar.style.cursor = 'pointer';
-      bar.addEventListener('click', () => manageSeatStatus('bar_0', 'huligan'));
       g.appendChild(bar);
 
       const barText = svgEl('text', {
@@ -7452,6 +8483,27 @@
         if (info && info.name) dot.setAttribute('title', `✓ ${info.name}`);
       });
 
+      // Диванные столы 13–14 и бар: те же ключи и координаты, что на сайте.
+      [{ id:13, cx:220, cy:340 }, { id:14, cx:320, cy:340 }].forEach(tbl => {
+        const offsets = [{dx:14.5,dy:-7.3},{dx:14.5,dy:7.3},{dx:-14.5,dy:7.3},{dx:-14.5,dy:-7.3}];
+        g.appendChild(svgEl('rect', { x:tbl.cx-9, y:tbl.cy-15, width:18, height:30, rx:4, fill:'rgba(160,108,240,.1)', stroke:'rgba(160,108,240,.45)', 'stroke-width':1 }));
+        offsets.forEach((off, i) => {
+          const key = `t${tbl.id}_${i + 1}`;
+          const style = getFillAndStroke(getSeatEff(key), '#a06cf0');
+          const dot = svgEl('circle', { cx:tbl.cx+off.dx, cy:tbl.cy+off.dy, r:5.2, fill:style.fill, stroke:style.stroke, 'stroke-width':style.strokeWidth, opacity:style.opacity || '1' });
+          dot.style.cursor = 'pointer';
+          dot.addEventListener('click', () => manageSeatStatus(key, 'huligan'));
+          g.appendChild(dot);
+        });
+      });
+      [{key:'bar_1',x:455,y:340},{key:'bar_2',x:475,y:340},{key:'bar_3',x:495,y:340}].forEach(b => {
+        const style = getFillAndStroke(getSeatEff(b.key), '#f0913d');
+        const dot = svgEl('circle', { cx:b.x, cy:b.y, r:6, fill:style.fill, stroke:style.stroke, 'stroke-width':style.strokeWidth, opacity:style.opacity || '1' });
+        dot.style.cursor = 'pointer';
+        dot.addEventListener('click', () => manageSeatStatus(b.key, 'huligan'));
+        g.appendChild(dot);
+      });
+
       // Счётчик
       const counter = document.getElementById('huliganHallCounter');
       if (counter) {
@@ -7557,12 +8609,10 @@
       touchIdInit();  // обновить статус Touch ID в настройках
     }
 
-    // ── No password persistence in browser storage ──
+    // Восстанавливаем HttpOnly-сессию текущего устройства. Пароль в браузере не хранится.
     (async () => {
-      // Всегда требуем новый ввод пароля после перезагрузки страницы.
-      // Это снижает риск кражи пароля из sessionStorage/XSS.
-      touchIdInit();  // показать кнопку «Войти по Touch ID», если привязка есть
-
+      const restored = await restoreAdminSession();
+      if (!restored) touchIdInit();
     })();
 
     // Auto refresh every 30s for active section
@@ -7575,7 +8625,7 @@
     // ── SCANNER LOGIC ──
     // Разбирает места всех 3 шоу в человекочитаемый вид:
     // t5_30 → «Стол 5, место 30», r1_3 → «Ряд 1, место 3»,
-    // dl_1/dr_1 → «Диван», lampa → «Лампа», bar_0 → «Бар».
+    // dl_1/dr_1 → «Диван», lampa → «Лампа», bar_1 → «Бар».
     function formatScanSeats(seats) {
       if (!Array.isArray(seats) || !seats.length) return '';
       return seats.map(s => {
@@ -7588,27 +8638,43 @@
         if (key === 'lampa') return 'Место «Лампа»';
         if (/^bar_/.test(key)) return 'Барная стойка';
         // запасной вариант — по table/seatNum/seatIdx
-        if (s.table && (s.seatNum != null || s.seatIdx != null)) return `${s.table}, место ${s.seatNum ?? s.seatIdx}`;
-        return key || 'Место';
+        if (s.table && (s.seatNum != null || s.seatIdx != null)) return `${esc(s.table)}, место ${esc(s.seatNum ?? s.seatIdx)}`;
+        return esc(key || 'Место');
       }).join('<br>');
     }
 
     // Загружает контроль зала: статистику (куплено/прошло/ждём) и список прошедших
     async function loadScanStats() {
       try {
+        const archive = document.getElementById('scanArchiveToggle')?.checked ? '&archive=1' : '';
         const [statsRes, histRes] = await Promise.all([
           fetch('/api/checkin?action=stats&show=all', { headers: adminHeaders() }).then(r => r.json()),
-          fetch('/api/checkin?action=history&show=all&limit=60', { headers: adminHeaders() }).then(r => r.json())
+          fetch(`/api/checkin?action=history&show=all&limit=60${archive}`, { headers: adminHeaders() }).then(r => r.json())
         ]);
 
+        const labels = { secret: 'СЕКРЕТ', huligan: 'ХУЛИgan', matvey: 'Спасти Матвея' };
         if (statsRes && statsRes.ok) {
           document.getElementById('scanStatConfirmed').innerText = statsRes.totalConfirmed ?? 0;
           document.getElementById('scanStatCheckedIn').innerText = statsRes.totalCheckedIn ?? 0;
           document.getElementById('scanStatPending').innerText = statsRes.totalPending ?? 0;
-          const labels = { secret: 'СЕКРЕТ', huligan: 'ХУЛИgan', matvey: 'Спасти Матвея' };
-          const byShow = Object.entries(statsRes.shows || {}).map(([s, v]) =>
-            `<b>${labels[s] || s}:</b> прошло ${v.checkedIn}/${v.confirmed}`
-          ).join(' &nbsp;·&nbsp; ');
+
+          // Явка % (по всем шоу), собрано ₽, сколько с промокодами
+          const attend = statsRes.totalConfirmed > 0
+            ? Math.round((statsRes.totalCheckedIn / statsRes.totalConfirmed) * 100) : 0;
+          document.getElementById('scanStatAttendance').innerText = attend + '%';
+          document.getElementById('scanStatRevenue').innerText = fmt(statsRes.totalRevenue || 0) + ' ₽';
+          const promoTxt = (statsRes.totalWithPromo || 0) > 0
+            ? `${statsRes.totalWithPromo} (−${fmt(statsRes.totalDiscount || 0)} ₽)`
+            : '0';
+          document.getElementById('scanStatPromo').innerText = promoTxt;
+
+          // Разбивка по шоу — с датой концерта, явкой и деньгами
+          const byShow = Object.entries(statsRes.shows || {}).map(([s, v]) => {
+            const d = v.eventDate ? ` <span style="color:var(--dim)">(${esc(v.eventDate)})</span>` : '';
+            const money = (v.revenue || 0) > 0 ? ` · ${fmt(v.revenue)} ₽` : '';
+            const promo = (v.withPromo || 0) > 0 ? ` · промо ${v.withPromo}` : '';
+            return `<div style="padding:4px 0;"><b>${esc(labels[s] || s || '—')}</b>${d}: прошло ${Number(v.checkedIn) || 0}/${Number(v.confirmed) || 0} (${Number(v.attendance) || 0}%)${money}${promo}</div>`;
+          }).join('');
           document.getElementById('scanStatsByShow').innerHTML = byShow;
         }
 
@@ -7618,11 +8684,13 @@
           if (!admits.length) {
             list.innerHTML = `<div style="color:var(--dim); text-align:center; padding:16px;">Пока никто не прошёл</div>`;
           } else {
-            const labels = { secret: 'СЕКРЕТ', huligan: 'ХУЛИgan', matvey: 'Матвей' };
+            const showArchive = document.getElementById('scanArchiveToggle')?.checked;
             list.innerHTML = admits.map(e => {
               const t = e.ts ? new Date(e.ts).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '';
+              // В режиме архива показываем дату концерта, чтобы различать концерты
+              const dateBadge = (showArchive && e.eventDate) ? ` · <span style="color:#c89cff">${esc(e.eventDate)}</span>` : '';
               return `<div style="display:flex; justify-content:space-between; gap:10px; padding:8px 10px; background:rgba(61,191,110,.08); border-radius:8px;">
-                <span>✅ <b>${e.name || 'Гость'}</b> <span style="color:var(--dim)">· ${labels[e.show] || e.show} · ${e.ticketNumber || e.bookingId}</span></span>
+                <span>✅ <b>${esc(e.name || 'Гость')}</b> <span style="color:var(--dim)">· ${esc(labels[e.show] || e.show || '—')} · ${esc(e.ticketNumber || e.bookingId || '—')}${dateBadge}</span></span>
                 <span style="color:var(--dim); white-space:nowrap;">${t}</span>
               </div>`;
             }).join('');
@@ -7634,58 +8702,237 @@
     }
 
     let html5QrcodeScanner = null;
+    let scannerStream = null;
+    let scannerVideo = null;
+    let scannerFrameCanvas = null;
+    let scannerDecodeTimer = null;
+    let scannerDecodeBusy = false;
+    let scannerDecodeSession = 0;
+    let scannerCropIndex = 0;
     let scanCooldown = false;
-    let scanAudioSuccess = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-    let scanAudioError = new Audio('https://actions.google.com/sounds/v1/alarms/error_beep.ogg');
+    let scannerStarting = false;
+    let scannerStopping = false;
+    let scannerWantedOpen = false;
 
     function playSound(type) {
       try {
-        if (type === 'success') {
-           scanAudioSuccess.currentTime = 0;
-           scanAudioSuccess.play().catch(e => console.log('Audio error:', e));
-        } else {
-           scanAudioError.currentTime = 0;
-           scanAudioError.play().catch(e => console.log('Audio error:', e));
-        }
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = type === 'success' ? 880 : 220;
+        gain.gain.setValueAtTime(.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.22, ctx.currentTime + .015);
+        gain.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + (type === 'success' ? .16 : .28));
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + (type === 'success' ? .17 : .29));
+        oscillator.addEventListener('ended', () => ctx.close().catch(() => {}), { once: true });
       } catch (e) {}
     }
 
-    function startScanner() {
-      if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5Qrcode("qr-reader");
-      }
-      document.getElementById('btnStartScan').style.display = 'none';
-      document.getElementById('btnStopScan').style.display = 'inline-block';
+    function openScannerOverlay() {
+      scannerWantedOpen = true;
+      const overlay = document.getElementById('scannerOverlay');
+      overlay.classList.add('is-open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('scanner-active');
+      document.getElementById('scannerGuide').style.display = 'flex';
       document.getElementById('scanFeedback').style.display = 'none';
-      const hint = document.getElementById('scannerHint');
-      if (hint) hint.innerText = '📷 Наведите камеру на QR-код билета зрителя';
+      document.getElementById('scanSeatSummary').style.display = 'none';
+    }
 
-      const config = { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
-      html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-      .catch((err) => {
-        alert("Ошибка доступа к камере. Разрешите доступ в настройках браузера. Детали: " + err);
-        stopScanner();
+    function hideScannerOverlay() {
+      scannerWantedOpen = false;
+      const overlay = document.getElementById('scannerOverlay');
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('scanner-active');
+    }
+
+    function setScannerButtonState(scanning) {
+      const button = document.getElementById('btnStartScan');
+      if (!button) return;
+      button.disabled = Boolean(scanning);
+      button.innerText = scanning ? '📷 Камера открыта' : '📷 Открыть сканер';
+    }
+
+    function showScannerError(message) {
+      document.getElementById('scannerGuide').style.display = 'none';
+      const feedback = document.getElementById('scanFeedback');
+      feedback.style.display = 'flex';
+      document.getElementById('scanFeedbackIcon').innerText = '❌';
+      document.getElementById('scanFeedbackTitle').innerText = 'Камера недоступна';
+      document.getElementById('scanFeedbackTitle').style.color = '#e85348';
+      document.getElementById('scanFeedbackText').innerText = 'Разрешите доступ к камере для kostyukproject.ru и попробуйте ещё раз.';
+      document.getElementById('scanFeedbackDetails').innerText = String(message || 'Не удалось запустить камеру');
+      document.getElementById('scanSeatSummary').style.display = 'none';
+    }
+
+    function scannerStreamIsActive() {
+      return Boolean(scannerStream?.getVideoTracks().some((track) => track.readyState === 'live'));
+    }
+
+    function scheduleScannerDecode(session, delay = 0) {
+      clearTimeout(scannerDecodeTimer);
+      scannerDecodeTimer = setTimeout(() => decodeScannerFrame(session), delay);
+    }
+
+    function scannerCanvasToFile(canvas) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (!blob) return reject(new Error('Не удалось получить кадр камеры'));
+          resolve(new File([blob], 'ticket-frame.png', { type: 'image/png' }));
+        }, 'image/png');
       });
     }
 
-    function stopScanner() {
-      const hint = document.getElementById('scannerHint');
-      if (hint) hint.innerText = 'Нажмите «Запустить камеру» и наведите на QR-код билета';
-      if (html5QrcodeScanner && html5QrcodeScanner.isScanning) {
-        html5QrcodeScanner.stop().then(() => {
-          document.getElementById('btnStartScan').style.display = 'inline-block';
-          document.getElementById('btnStopScan').style.display = 'none';
-        }).catch(err => console.log("Stop error", err));
-      } else {
-        document.getElementById('btnStartScan').style.display = 'inline-block';
-        document.getElementById('btnStopScan').style.display = 'none';
+    async function decodeScannerFrame(session) {
+      if (session !== scannerDecodeSession || !scannerStreamIsActive() || scanCooldown) return;
+      if (scannerDecodeBusy) {
+        scheduleScannerDecode(session, 80);
+        return;
+      }
+
+      const video = scannerVideo;
+      if (!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) {
+        scheduleScannerDecode(session, 100);
+        return;
+      }
+
+      scannerDecodeBusy = true;
+      try {
+        if (!scannerFrameCanvas) scannerFrameCanvas = document.createElement('canvas');
+        const outputSize = 1200;
+        if (scannerFrameCanvas.width !== outputSize) scannerFrameCanvas.width = outputSize;
+        if (scannerFrameCanvas.height !== outputSize) scannerFrameCanvas.height = outputSize;
+
+        // The stock live decoder shrinks a phone frame to the CSS viewport
+        // (about 390 px wide). Dense signed ticket URLs then lose module detail.
+        // Capture the centre of the native camera frame and decode it at 1200 px.
+        const cropScales = [.82, .66, .96];
+        const scale = cropScales[scannerCropIndex++ % cropScales.length];
+        const side = Math.max(1, Math.floor(Math.min(video.videoWidth, video.videoHeight) * scale));
+        const sourceX = Math.floor((video.videoWidth - side) / 2);
+        const sourceY = Math.floor((video.videoHeight - side) / 2);
+        const context = scannerFrameCanvas.getContext('2d');
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, outputSize, outputSize);
+        context.drawImage(video, sourceX, sourceY, side, side, 0, 0, outputSize, outputSize);
+
+        const file = await scannerCanvasToFile(scannerFrameCanvas);
+        const decodedText = await html5QrcodeScanner.scanFile(file, false);
+        if (session === scannerDecodeSession && !scanCooldown) await onScanSuccess(decodedText);
+        return;
+      } catch (error) {
+        // Most frames do not contain a readable QR code yet. Keep scanning.
+      } finally {
+        scannerDecodeBusy = false;
+      }
+
+      if (session === scannerDecodeSession && scannerStreamIsActive() && !scanCooldown) {
+        scheduleScannerDecode(session, 80);
       }
     }
 
-    function onScanSuccess(decodedText) {
+    async function startScanner() {
+      if (scannerStarting || scannerStreamIsActive()) return;
+      scannerStarting = true;
+      scanCooldown = false;
+      openScannerOverlay();
+      setScannerButtonState(true);
+
+      if (!html5QrcodeScanner) {
+        html5QrcodeScanner = new Html5Qrcode('qr-decoder', {
+          formatsToSupport: window.Html5QrcodeSupportedFormats
+            ? [Html5QrcodeSupportedFormats.QR_CODE]
+            : undefined
+        });
+      }
+      const hint = document.getElementById('scannerHint');
+      if (hint) hint.innerText = 'Наведите камеру на QR-код билета';
+
+      try {
+        if (!navigator.mediaDevices?.getUserMedia) throw new Error('Браузер не поддерживает доступ к камере');
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+          }
+        });
+
+        if (!scannerWantedOpen) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
+        scannerStream = stream;
+        scannerVideo = document.createElement('video');
+        scannerVideo.autoplay = true;
+        scannerVideo.muted = true;
+        scannerVideo.playsInline = true;
+        scannerVideo.setAttribute('playsinline', '');
+        scannerVideo.srcObject = stream;
+        document.getElementById('qr-reader').replaceChildren(scannerVideo);
+        await scannerVideo.play();
+
+        scannerCropIndex = 0;
+        const session = ++scannerDecodeSession;
+        scheduleScannerDecode(session);
+      } catch (err) {
+        if (scannerStream) scannerStream.getTracks().forEach((track) => track.stop());
+        scannerStream = null;
+        scannerVideo = null;
+        setScannerButtonState(false);
+        showScannerError(err?.message || err);
+      } finally {
+        scannerStarting = false;
+      }
+    }
+
+    async function stopScanner() {
+      if (scannerStopping) return;
+      scannerStopping = true;
+      try {
+        scannerDecodeSession += 1;
+        clearTimeout(scannerDecodeTimer);
+        scannerDecodeTimer = null;
+        if (scannerStream) scannerStream.getTracks().forEach((track) => track.stop());
+        scannerStream = null;
+        if (scannerVideo) {
+          scannerVideo.pause();
+          scannerVideo.srcObject = null;
+          scannerVideo.remove();
+        }
+        scannerVideo = null;
+        document.getElementById('qr-reader').replaceChildren();
+      } catch (err) {
+        console.warn('Scanner stop error', err);
+      } finally {
+        scannerStopping = false;
+        setScannerButtonState(false);
+      }
+    }
+
+    async function closeScanner() {
+      scanCooldown = false;
+      scannerWantedOpen = false;
+      await stopScanner();
+      hideScannerOverlay();
+    }
+
+    async function onScanSuccess(decodedText) {
       if (scanCooldown) return;
-      stopScanner(); // Auto-stop to show result clearly
-      processScan(decodedText);
+      scanCooldown = true;
+      await stopScanner();
+      await processScan(decodedText);
     }
 
     function onScanFailure(error) {
@@ -7695,9 +8942,48 @@
     function manualScan() {
       const val = document.getElementById('scannerInput').value.trim();
       if (!val) return;
+      openScannerOverlay();
       processScan(val);
       document.getElementById('scannerInput').value = '';
     }
+
+    function renderScanBookingDetails(booking) {
+      const b = booking || {};
+      const seatsHtml = formatScanSeats(b.seats);
+      const seatSummary = document.getElementById('scanSeatSummary');
+      if (seatsHtml) {
+        seatSummary.innerHTML = `<small>Место гостя</small>${seatsHtml}`;
+        seatSummary.style.display = 'block';
+      } else {
+        seatSummary.innerHTML = '';
+        seatSummary.style.display = 'none';
+      }
+
+      const showName = b.showLabel || (b.show === 'secret' ? 'СЕКРЕТ' : b.show === 'huligan' ? 'ХУЛИgan' : b.show === 'matvey' ? 'Спасти Матвея' : b.show);
+      const safeShowName = esc(showName || '—');
+      const safeGuestName = esc(b.name || 'Не указано');
+      const safeTicket = esc(b.ticketNumber || b.bookingId || b.ticketType || '—');
+      const safePhone = esc(b.phone || '');
+      const details = document.getElementById('scanFeedbackDetails');
+      details.innerHTML = `
+        <div><strong>Шоу:</strong> ${safeShowName}</div>
+        <div><strong>Гость:</strong> ${safeGuestName}</div>
+        <div><strong>Билет:</strong> ${safeTicket}</div>
+        ${b.phone ? `<div><strong>Телефон:</strong> ${safePhone}</div>` : ''}
+      `;
+    }
+
+    async function scanNextTicket() {
+      scanCooldown = false;
+      document.getElementById('scanFeedback').style.display = 'none';
+      document.getElementById('scanSeatSummary').style.display = 'none';
+      document.getElementById('scannerGuide').style.display = 'flex';
+      await startScanner();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && scannerWantedOpen) closeScanner();
+    });
 
     async function processScan(payload) {
       scanCooldown = true;
@@ -7707,8 +8993,12 @@
       const title = document.getElementById('scanFeedbackTitle');
       const text = document.getElementById('scanFeedbackText');
       const details = document.getElementById('scanFeedbackDetails');
+      const seatSummary = document.getElementById('scanSeatSummary');
       
-      feedback.style.display = 'block';
+      document.getElementById('scannerGuide').style.display = 'none';
+      feedback.style.display = 'flex';
+      seatSummary.innerHTML = '';
+      seatSummary.style.display = 'none';
       icon.innerHTML = '⏳';
       title.innerText = 'Проверка...';
       title.style.color = 'var(--text)';
@@ -7738,16 +9028,7 @@
            text.innerText = 'Билет успешно проверен и погашен.';
            
            if (data.booking) {
-              const b = data.booking;
-              const seatsHtml = formatScanSeats(b.seats);
-              const showName = b.showLabel || (b.show === 'secret' ? 'СЕКРЕТ' : b.show === 'huligan' ? 'ХУЛИgan' : b.show === 'matvey' ? 'Спасти Матвея' : b.show);
-              details.innerHTML = `
-                <div><strong>Шоу:</strong> ${showName}</div>
-                <div><strong>Гость:</strong> ${b.name || 'Не указано'}</div>
-                <div><strong>Билет:</strong> ${b.ticketNumber || b.ticketType || '—'}</div>
-                ${b.phone ? `<div><strong>Телефон:</strong> ${b.phone}</div>` : ''}
-                ${seatsHtml ? `<div style="margin-top:10px; padding:10px; background:rgba(61,191,110,0.2); border-radius:6px; font-weight:bold; color:var(--std);">${seatsHtml}</div>` : ''}
-              `;
+              renderScanBookingDetails(data.booking);
            }
         } else if (data.state === 'duplicate') {
            playSound('error');
@@ -7755,16 +9036,18 @@
            title.innerText = 'УЖЕ ОТСКАНИРОВАН';
            title.style.color = '#e85348';
            text.innerText = 'Этот билет уже был активирован ранее!';
+           if (data.booking) renderScanBookingDetails(data.booking);
            if (data.checkin && data.checkin.checkedInAt) {
               const dt = new Date(data.checkin.checkedInAt).toLocaleString('ru-RU');
-              details.innerHTML = `Время первого сканирования:<br><strong style="color:#e85348">${dt}</strong>`;
+              details.insertAdjacentHTML('beforeend', `<div style="margin-top:10px"><strong>Первое сканирование:</strong> <span style="color:#ff8c83">${esc(dt)}</span></div>`);
            }
         } else {
            playSound('error');
            icon.innerHTML = '❓';
            title.innerText = 'Отказ';
            title.style.color = '#e85348';
-           text.innerText = `Статус билета: ${data.state} / ${data.reason}`;
+           text.innerText = `Статус билета: ${data.state || 'неизвестен'}${data.reason ? ` / ${data.reason}` : ''}`;
+           if (data.booking) renderScanBookingDetails(data.booking);
         }
       } catch (err) {
          playSound('error');
@@ -7774,12 +9057,11 @@
          text.innerText = err.message;
       }
       
-      setTimeout(() => { scanCooldown = false; }, 2000);
       // Обновляем счётчики и список прошедших после каждого скана
       loadScanStats();
     }
   </script>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="/vendor/qrcode/html5-qrcode.min.js" type="text/javascript"></script>
   <script>
     // Регистрируем service worker админки с АВТООБНОВЛЕНИЕМ.
     // PWA сама подхватывает свежую версию при каждом открытии — ничего нажимать не надо.
