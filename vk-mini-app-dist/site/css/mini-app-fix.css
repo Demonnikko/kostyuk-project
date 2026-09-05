@@ -97,3 +97,12 @@ html, body { max-width: 100% !important; overflow-x: hidden !important; }
 /* Карточки и постеры витрины не шире своего столбца. */
 .shows, .show, .show__poster, .next-shows, .next-show { max-width: 100% !important; }
 .show__poster { width: 100% !important; height: auto !important; }
+
+/* =========================================================================
+   Мини-апп ТОЛЬКО про авторские шоу. Убираем все упоминания школы фокусов
+   и частных заказов (блоки экосистемы) — по решению заказчика.
+   Футер про само шоу (.footer-cta) оставляем.
+   ========================================================================= */
+.show-ecosystem-quick,
+.kp-ecosystem-promo,
+.concerts-ecosystem { display: none !important; }
