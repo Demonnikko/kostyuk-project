@@ -1,0 +1,62 @@
+/* =========================================================================
+   Точечная адаптация страниц шоу ПОД МИНИ-АПП (только в бандле vk-mini-app).
+   Сайт не трогаем — этот файл подключается последним и переопределяет
+   отступы, рассчитанные на полноэкранный сайт с шапкой/подвалом экосистемы,
+   которых в мини-аппе нет. Цель: убрать огромные пробелы, ужать вертикаль.
+   ========================================================================= */
+
+/* Hero занимал целый экран (min-height:100svh) + большой верхний padding
+   под шапку сайта. В мини-аппе шапки нет — убираем пустоту сверху и высоту. */
+body.show-page .hero,
+.hero {
+  min-height: 0 !important;
+  padding-top: 16px !important;
+  padding-bottom: 18px !important;
+}
+
+/* Секции сайта имеют крупный вертикальный padding (56–96px) — в узком
+   мини-аппе это большие пустоты между блоками. Ужимаем. */
+body.show-page .section,
+.section {
+  padding-top: 28px !important;
+  padding-bottom: 28px !important;
+}
+
+/* Блок брендов/логотипов — лишний в мини-аппе, но если остаётся — ужать. */
+.brands {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+/* Быстрые ссылки экосистемы под hero — ужать вертикальные отступы. */
+.show-ecosystem-quick {
+  margin-top: 10px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Промо-блок экосистемы (events/school) внизу — компактнее. */
+.kp-ecosystem-promo {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+/* Убираем лишний нижний воздух у последних секций перед подвалом,
+   которого в мини-аппе нет. */
+body.show-page > *:last-child,
+main > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Прокрутка внутри iframe мини-аппа: плавная, без залипаний. */
+html, body { scroll-padding-top: 8px !important; }
+
+/* --- Афиша (site/afisha.html) под мини-апп --- */
+/* Интро-блок афиши: min-height:100vh + padding:100px под шапку сайта. Ужимаем. */
+.concerts-intro {
+  min-height: 0 !important;
+  padding-top: 18px !important;
+  padding-bottom: 22px !important;
+}
+/* Секции афиши (ближайшие показы, карточки, экосистема) — компактнее. */
+.next-shows { padding-top: 8px !important; padding-bottom: 8px !important; }
+.shows { padding-top: 8px !important; padding-bottom: 16px !important; }

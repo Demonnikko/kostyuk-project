@@ -855,6 +855,7 @@
   <link rel="stylesheet" href="./css/show-system.css" />
   <link rel="stylesheet" href="./css/ticket-flow.css" />
   <script src="./js/ticket-flow.js"></script>
+  <link rel="stylesheet" href="./css/mini-app-fix.css" />
 </head>
 <body class="show-page show-page--matvey">
   <a class="back-btn show-back-to-afisha" style="display:none" href="/concerts/" aria-label="Вернуться к афише шоу">К афише</a>
@@ -1943,5 +1944,22 @@
       }).catch(function(){});
     })();
   </script>
+<script>
+/* Мини-апп: ссылки экосистемы (events/school/concerts) пока ведут в другие
+   мини-аппы, которых ещё нет. Временно гасим переход, чтобы не выбрасывать
+   из ВК в пустоту. Позже заменим на переход между мини-аппами. */
+document.addEventListener('click', function(e){
+  var a = e.target.closest('a[href^="/events/"], a[href^="/school/"], a[href^="/concerts/"]');
+  if(!a) return;
+  e.preventDefault(); e.stopPropagation();
+  try {
+    var t = document.createElement('div');
+    t.textContent = 'Скоро в мини-приложении';
+    t.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99999;background:rgba(20,18,26,.95);color:#f0d98b;padding:12px 18px;border-radius:12px;border:1px solid rgba(214,172,69,.4);font:600 14px Inter,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,.5)';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 1800);
+  } catch(_){}
+}, true);
+</script>
 </body>
 </html>
