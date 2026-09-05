@@ -1,8 +1,11 @@
 const FB_URL = process.env.FIREBASE_DB_URL || '';
 const FIREBASE_SECRET = process.env.FIREBASE_SECRET || '';
 import { 
-  getAdminPassword, setAdminPassword, readAdminPass,
-  verifyPassword, isHashedPassword,
+  setAdminPassword, readAdminPass,
+  isAdminAuthorized,
+  createAdminSessionToken,
+  ADMIN_SESSION_COOKIE,
+  ADMIN_SESSION_MAX_AGE_SECONDS,
   SECURE_PASS_PATH
  } from '../../shared/adminAuth.js';
 
@@ -41,11 +44,14 @@ function isPathAllowed(path) {
   return ALLOWED_PATH_PREFIXES.some(prefix => path === prefix || path.startsWith(prefix + '/'));
 }
 
-// ── ЛОКАЛЬНЫЙ обход пароля (только для проверки на localhost) ──
-// Работает ТОЛЬКО когда сервер запущен через `vercel dev` (VERCEL_ENV=development)
-// или вне Vercel вовсе. На боевом Vercel (VERCEL_ENV=production) — всегда false,
-// пароль остаётся обязательным. Даже если этот код задеплоится, дыры нет.
-const IS_LOCAL_DEV = process.env.VERCEL_ENV !== 'production';
+// Локальный обход выключен по умолчанию и требует явного одноразового opt-in.
+const IS_LOCAL_DEV = process.env.ALLOW_INSECURE_ADMIN_DEV === 'true'
+  && process.env.NODE_ENV !== 'production';
+
+function setSessionCookie(res) {
+  const token = createAdminSessionToken();
+  res.setHeader('Set-Cookie', `${ADMIN_SESSION_COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${ADMIN_SESSION_MAX_AGE_SECONDS}`);
+}
 
 // ── Server-side rate limiting (per IP, in-memory) ──
 const _rl = new Map();
@@ -62,38 +68,51 @@ export default async (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    const ip = (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').split(',')[0].trim();
+    const ip = String(
+      req.headers['x-real-ip']
+      || req.headers['cf-connecting-ip']
+      || req.headers['x-forwarded-for']
+      || req.socket?.remoteAddress
+      || 'unknown'
+    ).split(',')[0].trim().slice(0, 64);
     if (!checkRateLimit(ip)) return res.status(429).json({ error: 'Too many requests. Try again in 30 seconds.' });
 
     const adminPass = readAdminPass(req, req.body);
     const method = req.method;
+    const action = String(req.query.action || '');
     const path = String(req.query.path || '').replace(/^\/+/, '');
 
-    if (!adminPass && !IS_LOCAL_DEV) return res.status(401).json({ error: 'No password' });
-    if (!path) return res.status(400).json({ error: 'No path' });
-    if (!isPathAllowed(path)) return res.status(403).json({ error: 'Path not allowed' });
     if (!FIREBASE_SECRET) return res.status(500).json({ error: 'FIREBASE_SECRET is not configured' });
 
     try {
         const secretAuth = `?auth=${FIREBASE_SECRET}`;
 
-        // 1) Verify password
-        const storedPass = await getAdminPassword();
-
-        const isPasswordPath = path === SECURE_PASS_PATH;
-        if (!storedPass && !IS_LOCAL_DEV) {
-            return res.status(403).json({ error: 'Admin password is not initialized' });
+        if (action === 'session') {
+            if (method === 'DELETE') {
+                res.setHeader('Set-Cookie', `${ADMIN_SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`);
+                return res.json({ ok: true });
+            }
+            const authorized = await isAdminAuthorized(req, req.body);
+            if (!authorized && !IS_LOCAL_DEV) return res.status(401).json({ error: 'Unauthorized' });
+            if (method === 'POST' || method === 'GET') setSessionCookie(res);
+            const cfgRes = await fetch(`${FB_URL}/ticket_config.json${secretAuth}`);
+            const cfg = await cfgRes.json().catch(() => null);
+            if (!cfgRes.ok) return res.status(502).json({ error: 'Failed to load admin config' });
+            return res.json({ ok: true, config: cfg });
         }
 
-        // Проверяем пароль (поддержка и plaintext, и хешей).
-        // Локальный dev: сверку пропускаем — КРОМЕ смены самого пароля (защита от
-        // случайной перезаписи боевого пароля через локальную админку).
-        const passOk = storedPass ? await verifyPassword(adminPass, storedPass) : false;
-        if (!passOk) {
-            const changingPassword = isPasswordPath && (method === 'PUT' || method === 'PATCH');
-            if (!IS_LOCAL_DEV || changingPassword) {
-                return res.status(403).json({ error: 'Forbidden' });
-            }
+        if (!path) return res.status(400).json({ error: 'No path' });
+        if (!isPathAllowed(path)) return res.status(403).json({ error: 'Path not allowed' });
+
+        // 1) Verify password or the signed session cookie.
+        const isPasswordPath = path === SECURE_PASS_PATH;
+        const changingPassword = isPasswordPath && (method === 'PUT' || method === 'PATCH');
+        const authReq = changingPassword
+          ? { ...req, headers: { ...req.headers, cookie: '' } }
+          : req;
+        const passOk = await isAdminAuthorized(authReq, req.body);
+        if (!passOk && (!IS_LOCAL_DEV || changingPassword)) {
+            return res.status(403).json({ error: 'Forbidden' });
         }
 
         // Handle direct password updates explicitly

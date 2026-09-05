@@ -1,7 +1,8 @@
 import crypto from 'crypto';
 
 const FB_URL = process.env.FIREBASE_DB_URL || '';
-const FIREBASE_SECRET = process.env.FIREBASE_SECRET ? `?auth=${process.env.FIREBASE_SECRET}` : '';
+const FIREBASE_SECRET_RAW = process.env.FIREBASE_SECRET || '';
+const FIREBASE_SECRET = FIREBASE_SECRET_RAW ? `?auth=${FIREBASE_SECRET_RAW}` : '';
 
 const SECURE_PASS_PATH = 'ticket_admin/adminPassword';
 const LEGACY_PASS_PATH = 'ticket_config/adminPassword';
@@ -12,7 +13,47 @@ const ALLOW_ADMIN_PASSWORD_IN_BODY = String(process.env.ALLOW_ADMIN_PASSWORD_IN_
 const AUTH_FAILURE_WINDOW_MS = 10 * 60 * 1000;
 const AUTH_MAX_FAILURES = 8;
 const AUTH_FAILURE_BUCKET_LIMIT = 2000;
+const ADMIN_SESSION_COOKIE = 'kp_admin_session';
+const ADMIN_SESSION_TTL_MS = 180 * 24 * 60 * 60 * 1000;
+const ADMIN_SESSION_MAX_AGE_SECONDS = Math.floor(ADMIN_SESSION_TTL_MS / 1000);
 const authFailures = new Map();
+
+function createAdminSessionToken(secret = FIREBASE_SECRET_RAW, now = Date.now()) {
+  if (!secret) throw new Error('Admin session secret is not configured');
+  const payload = Buffer.from(JSON.stringify({ exp: now + ADMIN_SESSION_TTL_MS }), 'utf8').toString('base64url');
+  const signature = crypto.createHmac('sha256', secret).update(`kp-admin.${payload}`).digest('base64url');
+  return `${payload}.${signature}`;
+}
+
+function verifyAdminSessionToken(token, secret = FIREBASE_SECRET_RAW, now = Date.now()) {
+  if (!token || !secret) return false;
+  const [payload, signature, extra] = String(token).split('.');
+  if (!payload || !signature || extra) return false;
+  const expected = crypto.createHmac('sha256', secret).update(`kp-admin.${payload}`).digest();
+  let actual;
+  try { actual = Buffer.from(signature, 'base64url'); } catch { return false; }
+  if (actual.length !== expected.length || !crypto.timingSafeEqual(actual, expected)) return false;
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return Number.isFinite(data.exp) && data.exp > now;
+  } catch {
+    return false;
+  }
+}
+
+function readCookie(req, name) {
+  const raw = headerString(req, 'cookie');
+  for (const part of raw.split(';')) {
+    const index = part.indexOf('=');
+    if (index < 0 || part.slice(0, index).trim() !== name) continue;
+    try { return decodeURIComponent(part.slice(index + 1).trim()); } catch { return ''; }
+  }
+  return '';
+}
+
+function hasValidAdminSession(req) {
+  return verifyAdminSessionToken(readCookie(req, ADMIN_SESSION_COOKIE));
+}
 
 function headerString(req, key) {
   const value = req?.headers?.[key];
@@ -173,6 +214,7 @@ async function setAdminPassword(newPass) {
 // короткий TTL. Безопасно: неверный пароль всегда идёт полным путём; при смене пароля
 // кэш очищается (setAdminPassword) и старый хэш не совпадёт; TTL короткий.
 async function isAdminAuthorized(req, body) {
+  if (hasValidAdminSession(req)) return true;
   const adminPass = readAdminPass(req, body);
   if (!adminPass) return false;
   const attemptKey = adminAttemptKey(req);
@@ -217,5 +259,11 @@ export {
   verifyPassword,
   hashPassword,
   isHashedPassword,
-  SECURE_PASS_PATH
+  SECURE_PASS_PATH,
+  createAdminSessionToken,
+  verifyAdminSessionToken,
+  hasValidAdminSession,
+  ADMIN_SESSION_COOKIE,
+  ADMIN_SESSION_TTL_MS,
+  ADMIN_SESSION_MAX_AGE_SECONDS
 };
