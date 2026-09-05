@@ -27,10 +27,23 @@ const ADMIN_ID = parseInt(process.env.ADMIN_VK_ID || '196783025', 10) || 1967830
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 
 const BOOKING_ID_RE = /^[A-Z0-9-]{4,30}$/i;
-const VALID_ZONES = new Set(['vip', 'standart', 'econom', 'sofa', 'sofa_left', 'sofa_right', 'lampa']);
+const VALID_ZONES = new Set(['vip', 'standart', 'econom', 'sofa', 'sofa_left', 'sofa_right', 'bar', 'lampa']);
 const MAX_SEATS_PER_BOOKING = 10;
 const NAME_MAX = 100;
 const PHONE_MIN_DIGITS = 10;
+
+function formatSecretSeat(s) {
+  const key = String(s?.key || '');
+  const zone = String(s?.zone || '').toUpperCase();
+  let label;
+  let match;
+  if ((match = key.match(/^bar_(\d+)$/))) label = `Бар, место ${106 + Number(match[1])}`;
+  else if ((match = key.match(/^dl_(\d+)$/))) label = `Левый диван, место ${96 + Number(match[1])}`;
+  else if ((match = key.match(/^dr_(\d+)$/))) label = `Правый диван, место ${96 + Number(match[1])}`;
+  else if (key === 'lampa') label = 'Место «Лампа»';
+  else label = `Стол ${s.tableId}, место ${Number(s.seatIdx)}`;
+  return zone ? `${label} (${zone})` : label;
+}
 
 function randomFromAlphabet(length, alphabet) {
   let out = '';
@@ -194,7 +207,7 @@ export async function confirmSecretBooking(bookingId, meta = {}) {
       }));
       
       const seatLines = (seats || [])
-        .map(s => `• Стол ${s.tableId}, место ${Number(s.seatIdx) + 1} (${String(s.zone || '').toUpperCase()})`)
+        .map(s => `• ${formatSecretSeat(s)}`)
         .join('\n');
       const adminMsg = [
         '💳 БРОНЬ ОПЛАЧЕНА (T-BANK) — Шоу «СЕКРЕТ»',
@@ -231,7 +244,7 @@ export async function confirmSecretBooking(bookingId, meta = {}) {
           });
           const [eventDatePart, eventTimePart] = String(booking.eventDate || '').split(/\s+(?=\d{1,2}:\d{2}$)/);
           const seatsReadable = (seats || [])
-            .map(s => `Стол ${s.tableId}, место ${Number(s.seatIdx) + 1} (${String(s.zone || '').toUpperCase()})`)
+            .map(s => formatSecretSeat(s))
             .join(', ');
           const ticketImage = await renderTicketImage('secret', {
             name: booking.name,
@@ -269,6 +282,7 @@ const ZONE_PRICES_FALLBACK = {
   econom: 1200,
   sofa_left: 1000,   // левый диван (обзор частично перекрыт колонной)
   sofa_right: 800,   // правый диван (обзор хуже)
+  bar: 800,
   lampa: 1800
 };
 
@@ -698,10 +712,12 @@ export default async (req, res) => {
 
   const SOFA_LEFT_KEYS = new Set(['dl_1', 'dl_2', 'dl_3', 'dl_4', 'dl_5']);
   const SOFA_RIGHT_KEYS = new Set(['dr_6', 'dr_7', 'dr_8', 'dr_9', 'dr_10']);
+  const BAR_KEYS = new Set(['bar_1', 'bar_2', 'bar_3']);
   for (const s of seats) {
-    if (s.zone === 'sofa_left' || s.zone === 'sofa_right' || s.zone === 'lampa') {
+    if (s.zone === 'sofa_left' || s.zone === 'sofa_right' || s.zone === 'bar' || s.zone === 'lampa') {
       const validKey = s.zone === 'sofa_left' ? SOFA_LEFT_KEYS.has(s.key)
         : s.zone === 'sofa_right' ? SOFA_RIGHT_KEYS.has(s.key)
+        : s.zone === 'bar' ? BAR_KEYS.has(s.key)
         : s.key === 'lampa';
       if (!validKey) {
         return res.status(400).json({ error: `Invalid special seat key: ${s.key}` });
@@ -846,7 +862,7 @@ export default async (req, res) => {
     const vkRef = booking.vkUserId ? `https://vk.com/id${booking.vkUserId}` : '—';
     const tgRef = booking.tgUserId ? `tg://user?id=${booking.tgUserId}` : '—';
     const seatLines = (seats || [])
-      .map(s => `• Стол ${s.tableId}, место ${Number(s.seatIdx) + 1} (${String(s.zone || '').toUpperCase()})`)
+      .map(s => `• ${formatSecretSeat(s)}`)
       .join('\n');
     const adminMsg = [
       '🆕 Новая бронь создана — Шоу «СЕКРЕТ»',

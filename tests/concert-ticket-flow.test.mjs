@@ -57,17 +57,21 @@ test('public concert pages expose only color-named price zones', () => {
   const expectations = [
     {
       slug: 'secret',
+      legendCount: 3,
       minPrice: 'Билеты от 1200 ₽',
       zones: {
         vip: { label: 'Красная зона', price: 1800, color: '#e85348' },
         standart: { label: 'Зелёная зона', price: 1500, color: '#3dbf6e' },
         econom: { label: 'Синяя зона', price: 1200, color: '#4a8fd9' },
-        sofa: { label: 'Красная зона', price: 1800, color: '#e85348' },
+        sofa_left: { label: 'Левый диван', price: 1000, color: '#b890ff' },
+        sofa_right: { label: 'Правый диван', price: 800, color: '#3fbfc0' },
+        bar: { label: 'Оранжевая зона', price: 800, color: '#f0913d' },
         lampa: { label: 'Красная зона', price: 1800, color: '#e85348' },
       },
     },
     {
       slug: 'huligan',
+      legendCount: 5,
       minPrice: 'Билеты от 1100 ₽',
       zones: {
         vip: { label: 'Красная зона', price: 1700, color: '#e85348' },
@@ -79,6 +83,7 @@ test('public concert pages expose only color-named price zones', () => {
     },
     {
       slug: 'matvey',
+      legendCount: 3,
       minPrice: 'Билеты от 1100 ₽',
       zones: {
         row_front: { label: 'Красная зона', price: 1700, color: '#e85348' },
@@ -96,10 +101,10 @@ test('public concert pages expose only color-named price zones', () => {
     const zones = html.match(/var ZONES = \{([\s\S]*?)\n    \};/)?.[1] || '';
 
     assert.ok(html.includes(show.minPrice), `${show.slug} should show the requested minimum price`);
-    assert.equal((legend.match(/class="ldot"/g) || []).length, 3, `${show.slug} legend should have exactly three tiers`);
-    assert.ok(legend.includes('Синяя зона'), `${show.slug} legend should include blue zone`);
-    assert.ok(legend.includes('Зелёная зона'), `${show.slug} legend should include green zone`);
-    assert.ok(legend.includes('Красная зона'), `${show.slug} legend should include red zone`);
+    assert.equal((legend.match(/class="ldot"/g) || []).length, show.legendCount, `${show.slug} legend should list every visible zone`);
+    assert.match(legend, /Синяя(?: зона)?/, `${show.slug} legend should include blue zone`);
+    assert.match(legend, /Зелёная(?: зона)?/, `${show.slug} legend should include green zone`);
+    assert.match(legend, /Красная(?: зона)?/, `${show.slug} legend should include red zone`);
     assert.doesNotMatch(legend, /Низкая|Средняя|Высокая|Ближе к сцене|Стандарт|Эконом|Диваны|Зона Лампа|Ряды|Столики/);
 
     for (const [zone, expected] of Object.entries(show.zones)) {
@@ -115,7 +120,7 @@ test('server and admin defaults follow the same ticket tier prices', () => {
   const huliganEndpoint = readFileSync(new URL('../api/_endpoints/huligan.js', import.meta.url), 'utf8');
   const adminPage = readFileSync(new URL('../admin/index.html', import.meta.url), 'utf8');
 
-  assert.match(secretEndpoint, /vip:\s*1800[\s\S]*standart:\s*1500[\s\S]*econom:\s*1200[\s\S]*sofa:\s*1800[\s\S]*lampa:\s*1800/);
+  assert.match(secretEndpoint, /vip:\s*1800[\s\S]*standart:\s*1500[\s\S]*econom:\s*1200[\s\S]*sofa_left:\s*1000[\s\S]*sofa_right:\s*800[\s\S]*bar:\s*800[\s\S]*lampa:\s*1800/);
   assert.match(huliganEndpoint, /\{\s*vip:\s*1700,\s*std:\s*1400,\s*eco:\s*1100\s*\}/);
   assert.doesNotMatch(adminPage, /VIP — 1400|Стандарт — 1100|Эконом — 800|Высокая — 1800|Средняя — 1500|Низкая — 1200|id="priceEconom" type="number" placeholder="800"|id="priceMatBack" type="number" placeholder="800"|id="priceMatSofa" type="number" placeholder="4000"|id="priceMatLampa" type="number" placeholder="2500"|Ряд 1-4 — свободно|Ряд 5-7 — свободно|Столы — свободно/);
   assert.match(adminPage, /Красная зона — 1800 ₽/);

@@ -13,7 +13,8 @@ function isValidTempBookingId(v) {
 const SPECIAL_SEAT_KEYS = new Set([
   'sl_0', 'sr_0', 'bar_0', 'dl_0', 'dr_0', 'lampa',
   'dl_1', 'dl_2', 'dl_3', 'dl_4', 'dl_5',
-  'dr_6', 'dr_7', 'dr_8', 'dr_9', 'dr_10'
+  'dr_6', 'dr_7', 'dr_8', 'dr_9', 'dr_10',
+  'bar_1', 'bar_2', 'bar_3'
 ]);
 
 function normalizeSeat(raw) {

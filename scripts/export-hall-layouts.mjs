@@ -16,7 +16,7 @@
 //
 // ПЕРЕД записью: локальный статик-сервер должен отдавать страницы (python3 -m http.server 8899).
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -60,11 +60,12 @@ const SHOWS = {
 };
 
 function parseArgs(argv) {
-  const args = { dryRun: false, base: 'http://localhost:8899', show: null };
+  const args = { dryRun: false, base: 'http://localhost:8899', show: null, writeDist: false };
   for (const a of argv.slice(2)) {
     if (a === '--dry-run') args.dryRun = true;
     else if (a.startsWith('--base=')) args.base = a.slice('--base='.length);
     else if (a.startsWith('--show=')) args.show = a.slice('--show='.length);
+    else if (a === '--write-dist') args.writeDist = true;
   }
   return args;
 }
@@ -143,6 +144,12 @@ async function main() {
       };
 
       console.log(`[${id}] ${payload.seatCount} seats, viewBox ${payload.viewBox}, zones ${layout.zones ? Object.keys(layout.zones).length : 0}`);
+
+      if (args.writeDist) {
+        const distPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'vk-mini-app-dist', 'data', `layout-${id}.json`);
+        writeFileSync(distPath, JSON.stringify({ ok: true, show: id, layout: payload }));
+        console.log(`[${id}] written to ${path.relative(process.cwd(), distPath)}`);
+      }
 
       if (args.dryRun) {
         console.log(`[${id}] dry-run: not writing. Sample seat:`, JSON.stringify(payload.seats[0]));

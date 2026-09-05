@@ -5710,12 +5710,13 @@
         { key:'divan', label:'🟣 Диванные столы', count:8, price:900 },
         { key:'bar', label:'🟠 Бар', count:3, price:800 }
       ]},
-      secret: { capacity: 107, rent:35000, configPath:'ticket_config/prices', zones:[
+      secret: { capacity: 110, rent:35000, configPath:'ticket_config/prices', zones:[
         { key:'vip', label:'🔴 Красная зона', count:48, price:1800 },
         { key:'standart', label:'🟢 Зелёная зона', count:32, price:1500 },
         { key:'econom', label:'🔵 Синяя зона', count:16, price:1200 },
         { key:'sofa_left', label:'🟣 Левый диван', count:5, price:1000 },
         { key:'sofa_right', label:'🔷 Правый диван', count:5, price:800 },
+        { key:'bar', label:'🟠 Бар', count:3, price:800 },
         { key:'lampa', configKey:'vip', label:'🔴 Зона Лампа', count:1, price:1800 }
       ]},
       matvey: { capacity: 106, rent:20000, configPath:'matvey_config/prices', zones:[
@@ -8037,7 +8038,7 @@
     const SECRET_RECT_STARTS = { 16: 81, 17: 85, 18: 89, 19: 93 };
     const SECRET_LEFT_SOFA_CHAIRS = [ {x:371.4,y:394.2,s:1},{x:331.8,y:340.2,s:2},{x:304.2,y:299.4,s:3},{x:305.4,y:251.4,s:4},{x:305.4,y:198.6,s:5} ];
     const SECRET_RIGHT_SOFA_CHAIRS = [ {x:1129.8,y:279,s:6},{x:1129.8,y:239.4,s:7},{x:1128.6,y:198.6,s:8},{x:1102.2,y:171,s:9},{x:1069.8,y:112.2,s:10} ];
-    const SECRET_ZONE_COLORS = { vip: '#e85348', standart: '#3dbf6e', econom: '#4a8fd9', sofa_left: '#b890ff', sofa_right: '#3fbfc0' };
+    const SECRET_ZONE_COLORS = { vip: '#e85348', standart: '#3dbf6e', econom: '#4a8fd9', sofa_left: '#b890ff', sofa_right: '#3fbfc0', bar: '#f0913d' };
 
     async function loadAdminHall() {
       const g = document.getElementById('adminHall');
@@ -8145,8 +8146,11 @@
         tbl.chairs.forEach(function(p, i){ const num = start + i; drawSeat(p[0], p[1], tbl.zone, [`t${tbl.id}_${num}`, `${tbl.id}_${num}`, `${tbl.id}_${i}`], num, 9); });
       }
       // Стулья у диванов
-      SECRET_LEFT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_left', [`dl_${ch.s}`], ch.s, 9); });
-      SECRET_RIGHT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_right', [`dr_${ch.s}`], ch.s, 9); });
+      SECRET_LEFT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_left', [`dl_${ch.s}`], 96 + ch.s, 9); });
+      SECRET_RIGHT_SOFA_CHAIRS.forEach(function(ch){ drawSeat(ch.x, ch.y, 'sofa_right', [`dr_${ch.s}`], 96 + ch.s, 9); });
+      drawSeat(1000, 642, 'bar', ['bar_1'], 107, 11);
+      drawSeat(1060, 642, 'bar', ['bar_2'], 108, 11);
+      drawSeat(1120, 642, 'bar', ['bar_3'], 109, 11);
       drawSeat(1155, 350, 'vip', ['lampa'], 'Л', 41);
 
       // Счётчик
@@ -8681,7 +8685,7 @@
         if (/^dl_/.test(key)) return 'Левый диван';
         if (/^dr_/.test(key)) return 'Правый диван';
         if (key === 'lampa') return 'Место «Лампа»';
-        if (/^bar_/.test(key)) return 'Барная стойка';
+        if ((m = key.match(/^bar_(\d+)$/))) return `Бар, место ${106 + Number(m[1])}`;
         // запасной вариант — по table/seatNum/seatIdx
         if (s.table && (s.seatNum != null || s.seatIdx != null)) return `${esc(s.table)}, место ${esc(s.seatNum ?? s.seatIdx)}`;
         return esc(key || 'Место');

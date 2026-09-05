@@ -8,7 +8,7 @@ const read = (path) => readFile(new URL(path, root), 'utf8');
 test('planner uses every sellable zone and exact website capacity', async () => {
   const html = await read('admin/index.html');
   assert.match(html, /huligan:\s*\{[\s\S]*?capacity:\s*72\b/);
-  assert.match(html, /secret:\s*\{[\s\S]*?capacity:\s*107\b/);
+  assert.match(html, /secret:\s*\{[\s\S]*?capacity:\s*110\b/);
   assert.match(html, /matvey:\s*\{[\s\S]*?capacity:\s*106\b/);
   for (const zone of ['sofa_left', 'sofa_right', 'divan', 'bar', 'row_front', 'row_back', 'table', 'lampa']) {
     assert.match(html, new RegExp(`key:\\s*['\"]${zone}['\"]`), `planner misses ${zone}`);
@@ -23,6 +23,9 @@ test('admin hall maps include every website-only seat group', async () => {
     "manageSeatStatus(b.key, 'huligan')",
     "key: 'dl_' + ch.s",
     "key: 'dr_' + ch.s",
+    "drawSeat(1000, 642, 'bar', ['bar_1'], 107",
+    "drawSeat(1060, 642, 'bar', ['bar_2'], 108",
+    "drawSeat(1120, 642, 'bar', ['bar_3'], 109",
     "key: b.key, x: b.x, y: b.y, zone: 'bar'",
     "manageSeatStatus('lampa', 'matvey')"
   ]) assert.ok(html.includes(marker), `admin map misses ${marker}`);
