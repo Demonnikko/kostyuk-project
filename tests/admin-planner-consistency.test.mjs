@@ -93,3 +93,12 @@ test('expenses and promos confirm persistence and shows use requested order', as
   assert.match(admin, /\['huligan', 'secret', 'matvey'\]\.map/);
   assert.ok(admin.indexOf('value="huligan">😈 ХУЛИgan') < admin.indexOf('value="secret">🎭 Секрет'));
 });
+
+test('browser and PWA admin expose the same visible release version', async () => {
+  const [admin, serviceWorker] = await Promise.all([
+    read('admin/index.html'),
+    read('admin/admin-sw.js')
+  ]);
+  assert.match(admin, /id="adminVersionLabel"[\s\S]*?Версия админки v22/);
+  assert.match(serviceWorker, /const VERSION = 'kp-admin-v22'/);
+});
