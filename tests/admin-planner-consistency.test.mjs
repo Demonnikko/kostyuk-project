@@ -63,11 +63,21 @@ test('advertising promo links track unique visits and remain visible in admin', 
     read('api/_endpoints/track.js')
   ]);
   assert.match(admin, /id="adCreatedNotice"/);
+  assert.match(admin, /function adPromoLink\(/);
+  assert.match(admin, /Копировать ссылку/);
   assert.match(admin, /Переходы/);
   assert.match(admin, /promoClicks/);
   assert.match(tracker, /promoCode/);
   assert.match(tracker, /promoCodeInput/);
   assert.match(api, /analytics\/promoClicks/);
+});
+
+test('deleting an advertising promo removes its promo, click stats, and linked expense', async () => {
+  const admin = await read('admin/index.html');
+  assert.match(admin, /function deletePromoFully\(/);
+  assert.match(admin, /analytics\/promoClicks\/\$\{show\}\/\$\{code\}/);
+  assert.match(admin, /finances\/expenses\/ad_\$\{show\}_\$\{code\}/);
+  assert.match(admin, /Удалить промокод .* всю его статистику/);
 });
 
 test('expenses and promos confirm persistence and shows use requested order', async () => {

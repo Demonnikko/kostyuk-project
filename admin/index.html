@@ -5890,6 +5890,39 @@
     const AD_PROMO_PATH = { huligan:'huligan_promo', secret:'ticket_promo', matvey:'matvey_promo' };
     const AD_BOOK_PATH  = { huligan:'huligan_bookings', secret:'ticket_bookings', matvey:'matvey_bookings' };
 
+    function adPromoLink(show, code){
+      return `${location.origin}/concerts/${show}/?promo=${encodeURIComponent(code)}`;
+    }
+
+    async function deletePromoFully(show, promoPath, code, reload){
+      if (!confirm(`Удалить промокод «${code}» и всю его статистику? Это действие нельзя отменить.`)) return;
+      try {
+        await Promise.all([
+          fbDelete(`${promoPath}/${code}`),
+          fbDelete(`analytics/promoClicks/${show}/${code}`),
+          fbDelete(`finances/expenses/ad_${show}_${code}`)
+        ]);
+        const [promo, clicks, expense] = await Promise.all([
+          fbGet(`${promoPath}/${code}`),
+          fbGet(`analytics/promoClicks/${show}/${code}`),
+          fbGet(`finances/expenses/ad_${show}_${code}`)
+        ]);
+        if (promo || clicks || expense) throw new Error('сервер не подтвердил полное удаление');
+        toast('🗑 Промокод и его статистика удалены полностью');
+        if (typeof reload === 'function') await reload();
+        if (document.getElementById('sec-planner')?.classList.contains('active')) {
+          await Promise.all([adLoadStats(), loadFinances()]);
+        }
+      } catch (error) {
+        console.error('Promo delete failed:', error);
+        toast(`Не удалось удалить промокод полностью: ${error.message || 'ошибка сервера'}`);
+      }
+    }
+
+    async function adDeletePromo(show, code){
+      await deletePromoFully(show, AD_PROMO_PATH[show], code, null);
+    }
+
     // Подсказать код из названия паблика (транслит первого слова)
     function adSuggestCode(){
       const name = document.getElementById('adPublic').value.trim();
@@ -5932,7 +5965,7 @@
           const savedExpense = await fbGet(expensePath);
           if (!savedExpense || Number(savedExpense.amount) !== spent) throw new Error('сервер не подтвердил расход на рекламу');
         }
-        const link = `${location.origin}/concerts/${show}/?promo=${encodeURIComponent(code)}`;
+        const link = adPromoLink(show, code);
         const notice = document.getElementById('adCreatedNotice');
         if (notice) {
           notice.style.display = 'block';
@@ -6010,6 +6043,7 @@
       results.sort((a,b)=>b.tickets-a.tickets);
       const showIcon = {huligan:'😈',secret:'🎭',matvey:'🧸'};
       box.innerHTML = results.map(r=>{
+        const link = adPromoLink(r.show, r.code);
         const cpa = r.tickets>0 ? Math.round(r.spent/r.tickets) : 0;
         const roi = r.spent>0 ? Math.round((r.revenue-r.spent)/r.spent*100) : 0;
         let verdict, vcolor;
@@ -6030,6 +6064,14 @@
             <div><div style="color:var(--dim)">Выручка</div><b style="color:#3dbf6e">${plFmt(r.revenue)}</b></div>
             <div><div style="color:var(--dim)">За 1 билет</div><b style="color:${vcolor}">${r.tickets>0?plFmt(cpa):'—'}</b></div>
             <div><div style="color:var(--dim)">ROI рекламы</div><b style="color:${roi >= 0 ? '#3dbf6e' : '#e85348'}">${r.spent > 0 ? roi + '%' : '—'}</b></div>
+          </div>
+          <div style="margin-top:10px;padding-top:9px;border-top:1px solid var(--border)">
+            <div style="font-size:11px;color:var(--dim);margin-bottom:5px">Ссылка для публикации</div>
+            <a href="${esc(link)}" target="_blank" rel="noopener" style="display:block;word-break:break-all;color:var(--gold);font-size:12px">${esc(link)}</a>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+              <button class="btn-sm" onclick="copyPromoLink(${jsArg(link)})">Копировать ссылку</button>
+              <button class="btn-sm btn-sm-del" onclick="adDeletePromo(${jsArg(r.show)},${jsArg(r.code)})">Удалить полностью</button>
+            </div>
           </div>
           ${r.promoBuyers.length ? `<details style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px">
             <summary style="cursor:pointer;color:var(--gold);font-size:12px">Показать покупателей (${r.promoBuyers.length})</summary>
@@ -6627,9 +6669,7 @@
       loadHuliganPromos();
     }
     async function deleteHuliganPromo(code) {
-      await fbDelete(`huligan_promo/${code}`);
-      toast('🗑 Промокод удалён');
-      loadHuliganPromos();
+      await deletePromoFully('huligan', 'huligan_promo', code, loadHuliganPromos);
     }
 
     // ── Ручное создание билетов ──
@@ -7365,9 +7405,7 @@
       loadMatveyPromos();
     }
     async function deleteMatveyPromo(code) {
-      await fbDelete(`matvey_promo/${code}`);
-      toast('🗑 Промокод удалён');
-      loadMatveyPromos();
+      await deletePromoFully('matvey', 'matvey_promo', code, loadMatveyPromos);
     }
 
     // ── Матвей: Отзывы ──
@@ -7943,10 +7981,7 @@
       loadPromos();
     }
     async function deletePromo(code) {
-      if (!confirm(`Удалить промокод «${code}»?`)) return;
-      await fbDelete(`ticket_promo/${code}`);
-      toast('🗑 Промокод удалён');
-      loadPromos();
+      await deletePromoFully('secret', 'ticket_promo', code, loadPromos);
     }
 
     // ── Hall mini map (Секрет) ──
