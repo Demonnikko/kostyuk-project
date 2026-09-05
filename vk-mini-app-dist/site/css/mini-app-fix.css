@@ -34,6 +34,12 @@ body.show-page .section,
   margin-bottom: 4px !important;
 }
 
+/* На веб-версии Mini App полоса «Перед визитом» не должна подниматься
+   отрицательным отступом поверх карточки «Ближайший показ». */
+.show-visit-strip {
+  margin-top: 16px !important;
+}
+
 /* Промо-блок экосистемы (events/school) внизу — компактнее. */
 .kp-ecosystem-promo {
   padding-top: 24px !important;
