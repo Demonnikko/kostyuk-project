@@ -82,6 +82,8 @@ function renderShow({ doc, root, show, bridge, vkUserId, onBack, onError }) {
 // открыть в iframe без обращения к заблокированному kostyukproject.ru.
 const FULL_PAGE = Object.freeze({
   huligan: './site/huligan.html',
+  secret: './site/secret.html',
+  matvey: './site/matvey.html',
 });
 
 // Открывает полную страницу шоу из бандла в iframe (идентично сайту).
