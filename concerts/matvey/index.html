@@ -7,13 +7,13 @@
   <meta property="og:url" content="https://www.kostyukproject.ru/concerts/matvey/" />
   <meta property="og:title" content="Спасти Матвея | Магический квест-спектакль" />
   <meta property="og:description" content="Семейное квест-шоу иллюзиониста Дмитрия Костюка. Интерактивная спасательная операция с фокусами." />
-  <meta property="og:image" content="https://www.kostyukproject.ru/concerts/images/matvey.jpg" />
+  <meta property="og:image" content="https://www.kostyukproject.ru/images/brand/kp-og-preview.png" />
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://www.kostyukproject.ru/concerts/matvey/" />
   <meta property="twitter:title" content="Спасти Матвея | Магический квест-спектакль" />
   <meta property="twitter:description" content="Семейное квест-шоу иллюзиониста Дмитрия Костюка. Интерактивная спасательная операция с фокусами." />
-  <meta property="twitter:image" content="https://www.kostyukproject.ru/concerts/images/matvey.jpg" />
+  <meta property="twitter:image" content="https://www.kostyukproject.ru/images/brand/kp-og-preview.png" />
 
   <meta charset="UTF-8" />
   <meta name="theme-color" content="#030303">
@@ -852,7 +852,7 @@
     .seat.taken { opacity: 0.18; cursor: not-allowed; }
     .seat.taken:hover { opacity: 0.18; }
   </style>
-  <link rel="stylesheet" href="/concerts/show-system.css?v=18" />
+  <link rel="stylesheet" href="/concerts/show-system.css?v=19" />
   <link rel="stylesheet" href="/concerts/ticket-flow.css?v=1" />
   <script src="/concerts/ticket-flow.js?v=1"></script>
 </head>
@@ -1124,13 +1124,19 @@
           </label>
 
           <label class="field">
-            <span class="field__label">Telegram (необязательно)</span>
-            <input class="field__input" type="text" name="telegram" placeholder="@username" />
+            <span class="field__label">Ник ВКонтакте (необязательно)</span>
+            <input class="field__input" type="text" name="vk" placeholder="vk.com/id или ник" />
           </label>
 
           <label class="field">
             <span class="field__label">Возраст детей и комментарий</span>
             <textarea class="field__textarea" name="comment" placeholder="Например: ребёнку 7 лет, нужно близко к сцене"></textarea>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Промокод</span>
+            <input class="field__input" type="text" name="promoCode" id="promoCodeInput" placeholder="PROMO" oninput="applyPromoCodeMatvey()" style="text-transform:uppercase" />
+            <span id="promoStatus" style="font-size:11px;margin-top:4px;display:block"></span>
           </label>
 
           <div class="modal__nav">
@@ -1195,8 +1201,10 @@
       bookingModal.classList.remove('show');
       document.body.style.overflow = '';
       setTimeout(function() {
-        booking.date = null; booking.selected = [];
+        booking.date = null; booking.selected = []; booking.promo = null;
         var f = document.getElementById('bookingFormEl'); if(f) f.reset();
+        var promoInput=document.getElementById('promoCodeInput'); if(promoInput) promoInput.value='';
+        var promoStatus=document.getElementById('promoStatus'); if(promoStatus){promoStatus.textContent='';promoStatus.style.color='';}
         var paymentStatus=document.getElementById('paymentPendingStatus'); if(paymentStatus) paymentStatus.hidden=true;
         var paymentButton=document.getElementById('tbankPayBtn'); if(paymentButton){paymentButton.disabled=false;paymentButton.textContent='Оплатить онлайн (Т-Банк)';}
         booking.lastDraft=null;
@@ -1226,6 +1234,8 @@
       row_front: { color:'#e85348', rgb:'232,83,72',  label:'Красная зона', price:1700 },
       row_back:  { color:'#3dbf6e', rgb:'61,191,110', label:'Зелёная зона', price:1400 },
       table:     { color:'#4a8fd9', rgb:'74,143,217', label:'Синяя зона', price:1100 },
+      divan:     { color:'#e8559e', rgb:'232,85,158',  label:'Розовая зона (диваны)', price:1200 },
+      bar:       { color:'#f0913d', rgb:'240,145,61',  label:'Оранжевая зона (бар)', price:900 },
       sofa:      { color:'#e85348', rgb:'232,83,72',  label:'Красная зона', price:1700 },
       lampa:     { color:'#e85348', rgb:'232,83,72',  label:'Красная зона', price:1700 }
     };
@@ -1329,18 +1339,48 @@
       });
     });
 
-    // Диваны (Left Sofa, Right Sofa)
-    SEATS.push({
-      key: 'dl_1',
-      zone: 'sofa',
-      label: 'Левый диван (целиком)',
-      price: 1700
+    // Левый диван — 5 мест вдоль Г-образного дивана (сверху вниз по вертикали, потом в выступ).
+    var matveyLeftSofa = [
+      { s: 1, x: 40, y: 118 },
+      { s: 2, x: 40, y: 143 },
+      { s: 3, x: 40, y: 168 },
+      { s: 4, x: 55, y: 205 },
+      { s: 5, x: 78, y: 205 }
+    ];
+    matveyLeftSofa.forEach(function(ch) {
+      SEATS.push({
+        key: 'dl_' + ch.s, x: ch.x, y: ch.y,
+        zone: 'divan', table: 'Левый диван',
+        label: 'Левый диван, место ' + ch.s, seatNum: ch.s
+      });
     });
-    SEATS.push({
-      key: 'dr_1',
-      zone: 'sofa',
-      label: 'Правый диван (целиком)',
-      price: 1700
+    // Правый диван — 5 мест вдоль Г-образного дивана (сверху по горизонтали, потом вниз в выступ).
+    var matveyRightSofa = [
+      { s: 6,  x: 505, y: 65 },
+      { s: 7,  x: 525, y: 65 },
+      { s: 8,  x: 545, y: 65 },
+      { s: 9,  x: 545, y: 100 },
+      { s: 10, x: 545, y: 128 }
+    ];
+    matveyRightSofa.forEach(function(ch) {
+      SEATS.push({
+        key: 'dr_' + ch.s, x: ch.x, y: ch.y,
+        zone: 'divan', table: 'Правый диван',
+        label: 'Правый диван, место ' + ch.s, seatNum: ch.s
+      });
+    });
+    // Барная стойка — 3 места в ряд (оранжевая зона, 900₽), как на хулигане.
+    var matveyBar = [
+      { key: 'bar_1', x: 455, y: 340 },
+      { key: 'bar_2', x: 475, y: 340 },
+      { key: 'bar_3', x: 495, y: 340 }
+    ];
+    matveyBar.forEach(function(b) {
+      SEATS.push({
+        key: b.key, x: b.x, y: b.y,
+        zone: 'bar', table: 'Бар',
+        label: 'Бар, место ' + b.key.split('_')[1], seatNum: b.key
+      });
     });
 
     // Зона Лампа
@@ -1351,7 +1391,24 @@
       price: 1700
     });
 
-    var booking = {step:1, date:null, selected:[], tempBookingId:'TEMP-MTV-'+Math.random().toString(36).slice(2).toUpperCase()};
+    // Сквозная нумерация 1..105 БЕЗ ПОВТОРОВ (только видимый seatNum; ключи и label не трогаем,
+    // чтобы не сломать проданные брони и сохранить читаемое «Ряд N, место M» / «Столик N, место M»).
+    var MATVEY_DISPLAY_NUM = {"r1_1":1,"r1_2":2,"r1_3":3,"r1_4":4,"r1_5":5,"r1_6":6,"r1_7":7,"r1_8":8,"r1_9":9,"r1_10":10,"r2_1":11,"r2_2":12,"r2_3":13,"r2_4":14,"r2_5":15,"r2_6":16,"r2_7":17,"r2_8":18,"r2_9":19,"r2_10":20,"r3_1":21,"r3_2":22,"r3_3":23,"r3_4":24,"r3_5":25,"r3_6":26,"r3_7":27,"r3_8":28,"r3_9":29,"r3_10":30,"r4_1":31,"r4_2":32,"r4_3":33,"r4_4":34,"r4_5":35,"r4_6":36,"r4_7":37,"r4_8":38,"r4_9":39,"r4_10":40,"r5_1":41,"r5_2":42,"r5_3":43,"r5_4":44,"r5_5":45,"r5_6":46,"r5_7":47,"r5_8":48,"r5_9":49,"r5_10":50,"r5_11":51,"r5_12":52,"r6_1":53,"r6_2":54,"r6_3":55,"r6_4":56,"r6_5":57,"r6_6":58,"r6_7":59,"r6_8":60,"r6_9":61,"r6_10":62,"r6_11":63,"r6_12":64,"r7_1":65,"r7_2":66,"r7_3":67,"r7_4":68,"r7_5":69,"r7_6":70,"r7_7":71,"r7_8":72,"r7_9":73,"r7_10":74,"r7_11":75,"r7_12":76,"t1_1":77,"t1_2":78,"t1_3":79,"t1_4":80,"t2_1":81,"t2_2":82,"t2_3":83,"t2_4":84,"t3_1":85,"t3_2":86,"t3_3":87,"t3_4":88,"t4_1":89,"t4_2":90,"t4_3":91,"t4_4":92,"dl_1":93,"dl_2":94,"dl_3":95,"dl_4":96,"dl_5":97,"dr_6":98,"dr_7":99,"dr_8":100,"dr_9":101,"dr_10":102,"bar_1":103,"bar_2":104,"bar_3":105};
+    SEATS.forEach(function(s) {
+      var num = MATVEY_DISPLAY_NUM[s.key];
+      if (num == null) return;
+      s.seatNum = num;
+      // Пересобираем label: ряд/столик/диван/бар для ориентира + сквозной уникальный номер места.
+      var mRow = String(s.key).match(/^r(\d+)_/);
+      var mTab = String(s.key).match(/^t(\d+)_/);
+      if (mRow) s.label = 'Ряд ' + mRow[1] + ' · место ' + num;
+      else if (mTab) s.label = 'Столик ' + mTab[1] + ' · место ' + num;
+      else if (String(s.key).indexOf('dl_') === 0) s.label = 'Левый диван · место ' + num;
+      else if (String(s.key).indexOf('dr_') === 0) s.label = 'Правый диван · место ' + num;
+      else if (String(s.key).indexOf('bar_') === 0) s.label = 'Бар · место ' + num;
+    });
+
+    var booking = {step:1, date:null, selected:[], promo:null, tempBookingId:'TEMP-MTV-'+Math.random().toString(36).slice(2).toUpperCase()};
     var SHOWS = [
       {date:'21 ноября 2026', day:21, month:'НОЯ', time:'15:00', venue:'ЛАМПА · Ярославль'}
     ];
@@ -1397,78 +1454,27 @@
         lbl.textContent=r; g.appendChild(lbl);
       }
       
-      // 3. Диваны
+      // 3. Диваны — теперь ДЕКОРАЦИЯ (фон). Места (dl_1..5, dr_6..10) рисуются кружками ниже.
       // Left Sofa
-      var isSofaLeftSelected = booking.selected.some(function(x){return x.key==='dl_1';});
-      var isSofaLeftTaken = DEMO_TAKEN.has('dl_1');
-      var leftSofaFill = isSofaLeftSelected ? '#fff' : (isSofaLeftTaken ? 'rgba(255,255,255,0.1)' : 'rgba(60,60,75,0.85)');
-      var leftSofaStroke = isSofaLeftSelected ? ZONES.sofa.color : (isSofaLeftTaken ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.22)');
-      
       var leftSofa = svgEl('path', {
         d: 'M 30 100 L 50 100 Q 55 100 55 105 L 55 185 Q 55 190 60 190 L 85 190 Q 90 190 90 195 L 90 215 Q 90 220 85 220 L 30 220 Q 25 220 25 215 L 25 105 Q 25 100 30 100',
-        fill: leftSofaFill,
-        stroke: leftSofaStroke,
-        'stroke-width': isSofaLeftSelected ? 2 : 1,
-        style: isSofaLeftTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        fill: 'rgba(232,85,158,0.10)',
+        stroke: 'rgba(232,85,158,0.35)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
       });
-      if (!isSofaLeftTaken) {
-        leftSofa.addEventListener('click', function(){ toggleSeat('dl_1', 'sofa', 'Левый диван (целиком)'); });
-      }
       g.appendChild(leftSofa);
-      
-      // Text "ДИВАНЫ" inside Left Sofa
-      var leftSofaText = svgEl('text', {
-        x: 40,
-        y: 120,
-        'text-anchor': 'middle',
-        'font-size': '11',
-        'font-weight': '700',
-        'font-family': 'Inter, sans-serif',
-        fill: isSofaLeftSelected ? '#14082e' : (isSofaLeftTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
-        'pointer-events': 'none'
-      });
-      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
-        var tspan = svgEl('tspan', { x: 40, dy: i === 0 ? 0 : 14 });
-        tspan.textContent = char;
-        leftSofaText.appendChild(tspan);
-      });
-      g.appendChild(leftSofaText);
 
-      // Right Sofa
-      var isSofaRightSelected = booking.selected.some(function(x){return x.key==='dr_1';});
-      var isSofaRightTaken = DEMO_TAKEN.has('dr_1');
-      var rightSofaFill = isSofaRightSelected ? '#fff' : (isSofaRightTaken ? 'rgba(255,255,255,0.1)' : 'rgba(60,60,75,0.85)');
-      var rightSofaStroke = isSofaRightSelected ? ZONES.sofa.color : (isSofaRightTaken ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.22)');
-      
+      // Right Sofa — декорация
       var rightSofa = svgEl('path', {
         d: 'M 495 50 L 555 50 Q 560 50 560 55 L 560 145 Q 560 150 555 150 L 535 150 Q 530 150 530 145 L 530 85 Q 530 80 525 80 L 495 80 Q 490 80 490 75 L 490 55 Q 490 50 495 50',
-        fill: rightSofaFill,
-        stroke: rightSofaStroke,
-        'stroke-width': isSofaRightSelected ? 2 : 1,
-        style: isSofaRightTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        fill: 'rgba(232,85,158,0.10)',
+        stroke: 'rgba(232,85,158,0.35)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
       });
-      if (!isSofaRightTaken) {
-        rightSofa.addEventListener('click', function(){ toggleSeat('dr_1', 'sofa', 'Правый диван (целиком)'); });
-      }
       g.appendChild(rightSofa);
-      
-      // Text "ДИВАНЫ" inside Right Sofa
-      var rightSofaText = svgEl('text', {
-        x: 545,
-        y: 65,
-        'text-anchor': 'middle',
-        'font-size': '11',
-        'font-weight': '700',
-        'font-family': 'Inter, sans-serif',
-        fill: isSofaRightSelected ? '#14082e' : (isSofaRightTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
-        'pointer-events': 'none'
-      });
-      ['Д','И','В','А','Н','Ы'].forEach(function(char, i){
-        var tspan = svgEl('tspan', { x: 545, dy: i === 0 ? 0 : 14 });
-        tspan.textContent = char;
-        rightSofaText.appendChild(tspan);
-      });
-      g.appendChild(rightSofaText);
+      // (надписи ДИВАНЫ убраны — на диванах теперь отдельные места)
 
       // 4. Лампа
       var isLampaSelected = booking.selected.some(function(x){return x.key==='lampa';});
@@ -1549,8 +1555,8 @@
 
       // 7. Места (кружки)
       SEATS.forEach(function(seat){
-        // Пропускаем диваны и лампу, они отрисованы отдельно выше
-        if(seat.key === 'dl_1' || seat.key === 'dr_1' || seat.key === 'lampa') return;
+        // Пропускаем только лампу (диваны/бар теперь обычные места и рисуются здесь).
+        if(seat.key === 'lampa') return;
         
         var z = ZONES[seat.zone];
         var isTaken = DEMO_TAKEN.has(seat.key);
@@ -1657,11 +1663,37 @@
 
     function renderSummary(){
       var box=document.getElementById('summaryBox'),total=booking.selected.reduce(function(a,s){return a+s.price;},0),html='';
+      var finalTotal=total;
+      if(booking.promo){
+        if(booking.promo.type==='free') finalTotal=0;
+        else if(booking.promo.type==='percent') finalTotal=Math.round(total*(1-booking.promo.value/100));
+        else if(booking.promo.type==='fixed') finalTotal=Math.max(0,total-booking.promo.value);
+      }
       if(booking.date) html+='<div class="summary__row"><span>Дата</span><span>'+booking.date.date+' · '+booking.date.time+'</span></div>';
       html+='<div class="summary__row"><span>Билетов</span><span>'+booking.selected.length+' шт</span></div>';
-      html+='<div class="summary__row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span style="color:var(--gold);text-transform:uppercase;font-size:11px;letter-spacing:0.16em">Итого</span><span style="font-family:\'Cinzel\',serif;font-size:20px;font-weight:700;font-style:italic;color:var(--gold)">'+total.toLocaleString('ru-RU')+' ₽</span></div>';
+      if(booking.promo) html+='<div class="summary__row"><span>Промокод '+booking.promo.code+'</span><span>−'+(total-finalTotal).toLocaleString('ru-RU')+' ₽</span></div>';
+      html+='<div class="summary__row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><span style="color:var(--gold);text-transform:uppercase;font-size:11px;letter-spacing:0.16em">Итого</span><span style="font-family:\'Cinzel\',serif;font-size:20px;font-weight:700;font-style:italic;color:var(--gold)">'+finalTotal.toLocaleString('ru-RU')+' ₽</span></div>';
       box.innerHTML=html;
     }
+
+    var matveyPromoTimer;
+    function applyPromoCodeMatvey(){
+      clearTimeout(matveyPromoTimer);
+      var input=document.getElementById('promoCodeInput'), status=document.getElementById('promoStatus');
+      var code=(input.value||'').trim().toUpperCase();
+      booking.promo=null; status.textContent=''; renderSummary();
+      if(!code)return;
+      matveyPromoTimer=setTimeout(async function(){
+        try{
+          var r=await fetch('/api/matvey?action=get_promo&code='+encodeURIComponent(code));
+          var p=await r.json();
+          if(r.ok&&p&&p.activeNow){ booking.promo={code:code,type:p.type,value:Number(p.value)||0}; status.textContent='Промокод применён'; status.style.color='#3dbf6e'; }
+          else { status.textContent='Промокод не действует'; status.style.color='#e85348'; }
+        }catch(_){ status.textContent='Не удалось проверить промокод'; status.style.color='#e85348'; }
+        renderSummary();
+      },300);
+    }
+    window.applyPromoCodeMatvey=applyPromoCodeMatvey;
 
     async function submitMatveyBooking(e) {
       e.preventDefault();
@@ -1674,7 +1706,8 @@
         eventDate:booking.date?booking.date.date+' '+booking.date.time:'',
         seats:booking.selected.map(function(s){return {key:s.key, zone:s.zone};}),
         name:data.get('name')||'', phone:data.get('phone')||'', email:data.get('email')||'',
-        tempBookingId:booking.tempBookingId
+        tempBookingId:booking.tempBookingId,
+        promoCode:booking.promo ? booking.promo.code : null
       };
       try{
         var r=await fetch('/api/matvey',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -1704,7 +1737,12 @@
       try{
         var r=await fetch('/api/matvey',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'tbank_init',bookingId:booking.lastBookingId,clientKey:booking.lastClientKey})});
         var json=await r.json();
-        if(json&&json.paymentUrl){window.location.href=json.paymentUrl;}
+        if(json&&json.paymentUrl){
+          if(typeof window.kpOpenPayment==='function'){
+            await window.kpOpenPayment(json.paymentUrl);
+            btn.disabled=false;btn.textContent='Открыть оплату повторно';
+          }else{window.location.href=json.paymentUrl;}
+        }
         else{alert('Не удалось запустить онлайн-оплату: '+(json.error||'попробуйте позже.'));btn.disabled=false;btn.textContent='Оплатить онлайн (Т-Банк)';}
       }catch(e){alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');btn.disabled=false;btn.textContent='Оплатить онлайн (Т-Банк)';}
     }
@@ -1930,7 +1968,7 @@
     });
   </script>
 
-<script src="/ecosystem.js?v=12" data-root="/" data-section="shows" defer></script>
+<script src="/ecosystem.js?v=14" data-root="/" data-section="shows" defer></script>
   <script src="/concerts/show-ambient.js?v=1" defer></script>
   <script src="/concerts/show-nav.js?v=1" defer></script>
   <script src="/concerts/matvey-quest.js?v=2" defer></script>
@@ -1945,7 +1983,9 @@
         box.innerHTML = items.map(function(rv){
           var rating=Math.max(1,Math.min(5,rv.rating||5));
           var stars='★'.repeat(rating)+'☆'.repeat(5-rating);
-          return '<div class="review-item"><div class="review-item__stars">'+stars+'</div><div class="review-item__text">«'+esc(rv.text)+'»</div><div class="review-item__name">— '+esc(rv.name||'Гость')+'</div></div>';
+          var photoHtml = rv.photo ? '<img src="'+rv.photo+'" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(184,144,255,.5);flex:none">' : '';
+          var nameRow = '<div class="review-item__name" style="display:flex;align-items:center;gap:10px;margin-top:4px">'+photoHtml+'<span>— '+esc(rv.name||'Гость')+'</span></div>';
+          return '<div class="review-item"><div class="review-item__stars">'+stars+'</div><div class="review-item__text">«'+esc(rv.text)+'»</div>'+nameRow+'</div>';
         }).join('');
         if(sec) sec.style.display='';
       }).catch(function(){});

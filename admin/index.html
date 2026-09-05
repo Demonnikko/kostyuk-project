@@ -2237,35 +2237,17 @@
 
             <div class="pl-divider"></div>
 
-            <div class="pl-grid2">
-              <div class="form-group" style="margin-bottom:10px">
-                <label>🏠 Аренда зала, ₽</label>
-                <input class="inp" id="plRent" type="number" value="27000" oninput="plCalc()">
+            <!-- Мои расходы по шоу (реальные, из формы «Добавить расход») -->
+            <div class="settings-card" style="margin-bottom:4px">
+              <div class="settings-card-title" style="display:flex;justify-content:space-between;align-items:center">
+                <span>💸 Расходы этого шоу</span>
+                <b id="plExpensesTotal" style="color:#e85348">0 ₽</b>
               </div>
-              <div class="form-group" style="margin-bottom:10px">
-                <label>💳 Абонплата счёта, ₽/мес</label>
-                <input class="inp" id="plAccount" type="number" value="490" oninput="plCalc()">
-              </div>
-              <div class="form-group" style="margin-bottom:10px">
-                <label>🏦 Комиссия эквайринга, %</label>
-                <input class="inp" id="plAcq" type="number" step="0.1" value="3" oninput="plCalc()">
-              </div>
-              <div class="form-group" style="margin-bottom:10px">
-                <label>🧾 Налог НПД, %</label>
-                <input class="inp" id="plTax" type="number" step="0.1" value="4" oninput="plCalc()">
-              </div>
-              <div class="form-group" style="margin-bottom:10px">
-                <label>🤝 Сотрудник, % от сбора</label>
-                <input class="inp" id="plSalary" type="number" step="0.1" value="7" oninput="plCalc()">
-              </div>
-              <div class="form-group" style="margin-bottom:10px">
-                <label>📣 Бюджет на рекламу, ₽</label>
-                <input class="inp" id="plAd" type="number" value="15000" oninput="plCalc()">
-              </div>
-              <div class="form-group" style="margin-bottom:10px">
-                <label>🧾 Прочие расходы, ₽</label>
-                <input class="inp" id="plOther" type="number" value="0" oninput="plCalc()">
-              </div>
+              <div id="plExpensesList" style="margin:8px 0"></div>
+              <p style="color:var(--dim);font-size:12.5px;margin:6px 0 0">
+                Добавляйте расходы ниже (кнопка «➕ Добавить расход») — каждый со своим названием и суммой.
+                Планировщик считает окупаемость от них.
+              </p>
             </div>
 
             <div class="pl-divider"></div>
@@ -2439,15 +2421,8 @@
           </div>
           <div class="pl-grid2" style="margin-bottom:12px">
             <div class="form-group" style="margin-bottom:0">
-              <label>Категория</label>
-              <select class="inp" id="expCategory">
-                <option value="Аренда">Аренда зала</option>
-                <option value="Реклама">Реклама</option>
-                <option value="Оборудование">Оборудование</option>
-                <option value="Зарплаты">Зарплаты / гонорары</option>
-                <option value="Реквизит">Реквизит</option>
-                <option value="Прочее">Прочее</option>
-              </select>
+              <label>Название расхода</label>
+              <input class="inp" id="expName" placeholder="Например: Аренда зала ЛАМПА">
             </div>
             <div class="form-group" style="margin-bottom:0">
               <label>Дата</label>
@@ -2455,8 +2430,8 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Комментарий (за что)</label>
-            <input class="inp" id="expComment" placeholder="Например: аренда ЛАМПА на 31 октября">
+            <label>Комментарий (необязательно)</label>
+            <input class="inp" id="expComment" placeholder="Например: за 31 октября, наличными">
           </div>
           <button class="btn-save-settings" onclick="addExpense()">➕ Добавить расход</button>
         </div>
@@ -4234,12 +4209,24 @@
 
       const selectedExpenses = Object.values(expenses).filter(e => e && e.show === selectedShow);
       const categoryTotal = category => selectedExpenses.reduce((sum, e) => sum + (e.category === category ? Number(e.amount || 0) : 0), 0);
-      const rentSpent = categoryTotal('Аренда');
-      const promoSpent = Object.values(selectedPromos || {}).reduce((sum, p) => sum + Number(p && p.adPublic ? p.adSpent || 0 : 0), 0);
-      const otherSpent = selectedExpenses.reduce((sum, e) => sum + (!['Аренда', 'Реклама'].includes(e.category) ? Number(e.amount || 0) : 0), 0);
-      if (rentSpent > 0) document.getElementById('plRent').value = rentSpent;
-      if (promoSpent > 0) document.getElementById('plAd').value = promoSpent;
-      document.getElementById('plOther').value = otherSpent;
+      // Мои реальные расходы выбранного шоу → в планировщик (единый источник)
+      const plExpArr = selectedExpenses
+        .slice()
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+        .map(e => ({ name: e.name || e.category || 'Расход', amount: Number(e.amount || 0), comment: e.comment || '' }));
+      window._plExpensesArr = plExpArr;
+      window._plExpensesSum = plExpArr.reduce((s, e) => s + e.amount, 0);
+      const plTotEl = document.getElementById('plExpensesTotal');
+      if (plTotEl) plTotEl.textContent = fmt(window._plExpensesSum) + ' ₽';
+      const plListEl = document.getElementById('plExpensesList');
+      if (plListEl) {
+        plListEl.innerHTML = plExpArr.length
+          ? plExpArr.map(e => `<div style="display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);font-size:13.5px">
+              <span>💸 ${esc(e.name)}${e.comment ? ` <span style="color:var(--dim)">· ${esc(e.comment)}</span>` : ''}</span>
+              <b style="color:#e85348;white-space:nowrap">−${fmt(e.amount)} ₽</b>
+            </div>`).join('')
+          : `<div style="color:var(--dim);font-size:13px;padding:4px 0">Пока нет расходов. Добавьте ниже.</div>`;
+      }
       plCalc();
 
       const totalRev = revenue[selectedShow];
@@ -4280,7 +4267,7 @@
           list.innerHTML = items.map(([id, e]) => `
             <div class="booking-card" style="display:flex;justify-content:space-between;align-items:center;gap:12px">
               <div style="flex:1">
-                <div style="font-weight:600">${EXP_CAT_ICON[e.category] || '📦'} ${esc(e.category || 'Прочее')} · <span style="color:#e85348">−${fmt(e.amount)} ₽</span></div>
+                <div style="font-weight:600">💸 ${esc(e.name || e.category || 'Расход')} · <span style="color:#e85348">−${fmt(e.amount)} ₽</span></div>
                 <div style="font-size:12px;color:var(--dim);margin-top:3px">${esc(SHOW_LABEL[e.show] || e.show || '—')} · ${esc(e.date || '—')}${e.comment ? ' · ' + esc(e.comment) : ''}</div>
               </div>
               <button class="btn-sm btn-sm-del" onclick="deleteExpense(${jsArg(id)})">🗑</button>
@@ -4292,10 +4279,12 @@
     async function addExpense() {
       const amount = parseInt(document.getElementById('expAmount').value) || 0;
       if (amount <= 0) return toast('Введите сумму расхода');
+      const name = document.getElementById('expName').value.trim();
+      if (!name) return toast('Впишите название расхода');
       const exp = {
         show: document.getElementById('expShow').value,
         amount: amount,
-        category: document.getElementById('expCategory').value,
+        name: name,
         comment: document.getElementById('expComment').value.trim(),
         date: document.getElementById('expDate').value || new Date().toISOString().slice(0, 10),
         createdAt: Date.now()
@@ -4304,8 +4293,10 @@
       await fbPut(`finances/expenses/${id}`, exp);
       toast('💾 Расход добавлен');
       document.getElementById('expAmount').value = '';
+      document.getElementById('expName').value = '';
       document.getElementById('expComment').value = '';
       await loadFinances();
+      if (typeof loadPlannerWorkspace === 'function' && window._plShow) loadPlannerWorkspace(window._plShow);
     }
 
     async function deleteExpense(id) {
@@ -5741,7 +5732,6 @@
       try { prices = await fbGet(p.configPath) || {}; } catch (_) {}
       const zones = p.zones.map(z => ({ ...z, price: Number(prices[z.configKey || z.key]) || z.price }));
       plRenderZones(zones);
-      document.getElementById('plRent').value = p.rent;
       window._plShow = show;
       const expenseShow = document.getElementById('expShow');
       const promoShow = document.getElementById('adShow');
@@ -5790,14 +5780,12 @@
       const gross = counts.reduce((sum, el) => sum + (Number(el.value) || 0) * (prices.get(el.dataset.zone) || 0), 0);
       const avg = seats ? gross/seats : 0;
 
-      const rent=plNum('plRent'), account=plNum('plAccount'), other=plNum('plOther');
-      const acqR=plNum('plAcq')/100, taxR=plNum('plTax')/100, salR=plNum('plSalary')/100, ad=plNum('plAd');
-      const varR = acqR + taxR + salR;               // % с каждого билета
-      const fixed = rent + account + other;          // постоянные
-      const netPerTicket = avg * (1 - varR);         // чистыми с 1 билета
+      // Все расходы — реальные, из формы «Добавить расход» (window._plExpensesSum)
+      const fixed = Number(window._plExpensesSum || 0);   // сумма моих расходов
+      const netPerTicket = avg;                           // чистыми с 1 билета (расходы учтены общей суммой)
 
-      // Точка безубыточности (с рекламой)
-      const breakeven = netPerTicket > 0 ? Math.ceil((fixed + ad) / netPerTicket) : 0;
+      // Точка безубыточности
+      const breakeven = netPerTicket > 0 ? Math.ceil(fixed / netPerTicket) : 0;
       const bePct = seats ? Math.round(breakeven/seats*100) : 0;
 
       // Выбранная заполняемость
@@ -5805,7 +5793,7 @@
       const soldN = Math.round(seats * soldPct/100);
       document.getElementById('plSoldLbl').textContent = soldPct + '% зала (' + soldN + ' билетов)';
       const soldGross = soldN * avg;
-      const profit = soldGross*(1-varR) - fixed - ad;
+      const profit = soldGross - fixed;
 
       // Вывод метрик
       document.getElementById('plGross').textContent = plFmt(gross);
@@ -5820,7 +5808,7 @@
       const v = document.getElementById('plVerdict');
       if (breakeven > seats) {
         v.className = 'pl-verdict bad';
-        v.innerHTML = `⛔ <b>Невозможно окупиться:</b> чтобы выйти в ноль нужно ${breakeven} билетов, а в зале всего ${seats}. Снизьте рекламу или аренду, либо поднимите цены.`;
+        v.innerHTML = `⛔ <b>Невозможно окупиться:</b> чтобы выйти в ноль нужно ${breakeven} билетов, а в зале всего ${seats}. Снизьте расходы или поднимите цены.`;
       } else if (soldN >= breakeven) {
         v.className = 'pl-verdict good';
         v.innerHTML = `✅ <b>В плюсе.</b> При ${soldN} билетах вы зарабатываете <b>${plFmt(profit)}</b>. Окупаемость — ${breakeven} билетов, вы её проходите.`;
@@ -5838,16 +5826,12 @@
       document.getElementById('plCpaHint').innerHTML =
         `Если реклама приводит зрителя дороже <b>${plFmt(netPerTicket)}</b> — вы теряете на нём деньги. Держитесь ниже <b>${plFmt(avg*0.33)}</b> за продажу, и реклама окупается.`;
 
-      // Разбивка расходов при выбранной заполняемости
-      const acqSum = soldGross*acqR, taxSum = soldGross*taxR, salSum = soldGross*salR;
+      // Разбивка: сбор при выбранной заполняемости − мои расходы = прибыль
+      const palette = ['#e85348','#e8a23c','#d98cc4','#8c9ce8','#c9a228','#9b8bb8','#5aa9b5','#b57a5a'];
+      const expItems = (window._plExpensesArr || []).map((e, i) => [`💸 ${e.name || 'Расход'}`, Number(e.amount || 0), palette[i % palette.length]]);
       const items = [
-        ['🏠 Аренда', rent, '#e85348'],
-        ['🏦 Эквайринг', acqSum, '#e8a23c'],
-        ['🧾 Налог НПД', taxSum, '#d98cc4'],
-        ['🤝 Сотрудник', salSum, '#8c9ce8'],
-        ['💳 Счёт', account, '#888'],
-        ['📣 Реклама', ad, '#c9a228'],
-        ['🧾 Прочие расходы', other, '#9b8bb8'],
+        ['🟢 Сбор с билетов', soldGross, '#3dbf6e'],
+        ...expItems,
         [profit>=0?'💰 Прибыль вам':'📉 Убыток', Math.abs(profit), profit>=0?'#3dbf6e':'#e85348']
       ];
       const maxV = Math.max(...items.map(i=>i[1]), 1);
@@ -5863,7 +5847,7 @@
       document.getElementById('plScenarios').innerHTML = scen.map(pct=>{
         const n = Math.round(seats*pct/100);
         const g = n*avg;
-        const pr = g*(1-varR) - fixed - ad;
+        const pr = g - fixed;
         const col = pr>=0 ? '#3dbf6e' : '#e85348';
         return `<div class="pl-scen-card" onclick="document.getElementById('plSold').value=${pct};plCalc()" style="cursor:pointer">
           <div class="pl-scen-pct">${pct}% зала</div>

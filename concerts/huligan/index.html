@@ -7,13 +7,13 @@
   <meta property="og:url" content="https://www.kostyukproject.ru/concerts/huligan/" />
   <meta property="og:title" content="Шоу ХУЛИgan | Магический стендап 16+" />
   <meta property="og:description" content="Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор." />
-  <meta property="og:image" content="https://www.kostyukproject.ru/concerts/images/huligan.jpg" />
+  <meta property="og:image" content="https://www.kostyukproject.ru/images/brand/kp-og-preview.png" />
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://www.kostyukproject.ru/concerts/huligan/" />
   <meta property="twitter:title" content="Шоу ХУЛИgan | Магический стендап 16+" />
   <meta property="twitter:description" content="Магический стендап Дмитрия Костюка: профессиональная иллюзия, импровизация и взрослый юмор." />
-  <meta property="twitter:image" content="https://www.kostyukproject.ru/concerts/images/huligan.jpg" />
+  <meta property="twitter:image" content="https://www.kostyukproject.ru/images/brand/kp-og-preview.png" />
 
   <meta charset="UTF-8" />
   <meta name="theme-color" content="#030303">
@@ -1058,7 +1058,7 @@
       border-color: rgba(214, 172, 69, 0.3);
     }
   </style>
-  <link rel="stylesheet" href="/concerts/show-system.css?v=18" />
+  <link rel="stylesheet" href="/concerts/show-system.css?v=19" />
   <link rel="stylesheet" href="/concerts/ticket-flow.css?v=1" />
   <script src="/concerts/ticket-flow.js?v=1"></script>
 </head>
@@ -1069,7 +1069,7 @@
     <section class="hero" id="huliganHero">
       <div class="show-hero-shell">
         <div class="poster-wrap reveal" id="huliganPoster">
-          <img class="poster" src="/concerts/images/huligan.webp?v=10" width="540" height="652" loading="eager" fetchpriority="high" decoding="async" alt="Афиша магического стендапа «ХУЛИgan»" />
+          <img class="poster" src="/concerts/images/huligan.webp?v=11" width="540" height="652" loading="eager" fetchpriority="high" decoding="async" alt="Афиша магического стендапа «ХУЛИgan»" />
         </div>
         <div class="show-hero-copy">
           <div class="eyebrow reveal d-1">Магический стендап</div>
@@ -1286,9 +1286,11 @@
             <g id="hallG"></g>
           </svg>
           <div class="legend">
-            <span><span class="ldot" style="background:var(--eco);box-shadow:0 0 6px var(--eco)"></span>Синяя зона · 1100 ₽</span>
-            <span><span class="ldot" style="background:var(--std);box-shadow:0 0 6px var(--std)"></span>Зелёная зона · 1400 ₽</span>
-            <span><span class="ldot" style="background:var(--vip);box-shadow:0 0 6px var(--vip)"></span>Красная зона · 1700 ₽</span>
+            <span><span class="ldot" style="background:#f0913d;box-shadow:0 0 6px #f0913d"></span>Бар · 800 ₽</span>
+            <span><span class="ldot" style="background:#a06cf0;box-shadow:0 0 6px #a06cf0"></span>Фиолетовая · 900 ₽</span>
+            <span><span class="ldot" style="background:var(--eco);box-shadow:0 0 6px var(--eco)"></span>Синяя · 1100 ₽</span>
+            <span><span class="ldot" style="background:var(--std);box-shadow:0 0 6px var(--std)"></span>Зелёная · 1400 ₽</span>
+            <span><span class="ldot" style="background:var(--vip);box-shadow:0 0 6px var(--vip)"></span>Красная · 1700 ₽</span>
           </div>
         </div>
 
@@ -1336,8 +1338,8 @@
           </label>
 
           <label class="field">
-            <span class="field__label">Telegram (необязательно)</span>
-            <input class="field__input" type="text" name="telegram" placeholder="@username" />
+            <span class="field__label">Ник ВКонтакте (необязательно)</span>
+            <input class="field__input" type="text" name="vk" placeholder="vk.com/id или ник" />
           </label>
 
           <label class="field">
@@ -1382,9 +1384,9 @@
         <div class="modal__success">
           <div class="modal__success-icon">✨</div>
           <h3>Оплата прошла успешно</h3>
-          <p>Ваш билет готов.</p>
-          <a id="ticketOpenLink" href="#" target="_blank" rel="noopener" class="btn-primary" style="margin-top:12px;max-width:220px;margin-left:auto;margin-right:auto;display:block;text-align:center;text-decoration:none;">Открыть билет</a>
-          <button class="btn-secondary" onclick="closeBookingModal()" style="margin-top:12px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">Готово</button>
+          <p style="margin-top:8px">Ваш билет отправлен на почту.<br><b style="color:var(--show-accent)">Проверьте почту</b> — если письма нет, загляните в папку <b>«Спам»</b>.</p>
+          <p style="font-size:13px;color:rgba(245,240,229,0.6);margin-top:10px">Билет с QR-кодом покажете на входе прямо с телефона.</p>
+          <button class="btn-primary" onclick="closeBookingModal()" style="margin-top:16px;max-width:220px;margin-left:auto;margin-right:auto;display:block;">На главную</button>
         </div>
       </div>
     </div>
@@ -1424,6 +1426,8 @@
       vip:      { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 },
       standart: { color: '#3dbf6e', rgb: '61,191,110', label: 'Зелёная зона', price: 1400 },
       econom:   { color: '#4a8fd9', rgb: '74,143,217', label: 'Синяя зона', price: 1100 },
+      divan:    { color: '#a06cf0', rgb: '160,108,240', label: 'Фиолетовая зона', price: 900 },
+      bar:      { color: '#f0913d', rgb: '240,145,61',  label: 'Оранжевая зона', price: 800 },
       sofa:     { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 },
       lampa:    { color: '#e85348', rgb: '232,83,72',  label: 'Красная зона', price: 1700 }
     };
@@ -1591,13 +1595,80 @@
       });
     });
 
-    // --- 4. Бар (Добавляем в SEATS для отслеживания выбора) ---
-    SEATS.push({
-      key: 'bar_0',
-      zone: 'econom',
-      table: 'Бар',
-      seatIdx: 'целиком',
-      label: 'Барная стойка (целиком)'
+    // --- 4. Столы-диваны 13 и 14 (прямоугольные, по 4 места, фиолетовая зона 900₽) ---
+    //     Внизу по центру, между столами 11/12 и баром. Нумерация столов идёт подряд 1..14.
+    var divanTables = [
+      { id: 13, cx: 220, cy: 340 },
+      { id: 14, cx: 320, cy: 340 }
+    ];
+    divanTables.forEach(function(tbl) {
+      // Форм-фактор как у столов 16-19 на «Секрете»: вертикальный прямоугольник,
+      // 4 места по углам (право-верх, право-низ, лево-низ, лево-верх). Масштаб huligan (÷2.2 от секрета).
+      var offsets = [
+        { dx:  14.5, dy: -7.3 }, // право-верх
+        { dx:  14.5, dy:  7.3 }, // право-низ
+        { dx: -14.5, dy:  7.3 }, // лево-низ
+        { dx: -14.5, dy: -7.3 }  // лево-верх
+      ];
+      offsets.forEach(function(off, i) {
+        SEATS.push({
+          key: 't' + tbl.id + '_' + (i + 1),
+          x: tbl.cx + off.dx, y: tbl.cy + off.dy,
+          zone: 'divan',
+          table: tbl.id,
+          seatIdx: i + 1,
+          seatNum: i + 1,
+          type: 'divanSeat',
+          tableCx: tbl.cx, tableCy: tbl.cy
+        });
+      });
+    });
+
+    // --- 5. Барная стойка: 3 места В РЯД на самой стойке (как на эталоне), оранжевая зона 800₽ ---
+    var barSeats = [
+      { key: 'bar_1', x: 455, y: 340 },
+      { key: 'bar_2', x: 475, y: 340 },
+      { key: 'bar_3', x: 495, y: 340 }
+    ];
+    barSeats.forEach(function(b) {
+      SEATS.push({
+        key: b.key,
+        x: b.x, y: b.y,
+        zone: 'bar',
+        table: 'Бар',
+        seatIdx: b.key,
+        seatNum: b.key,
+        type: 'chair',
+        tableCx: b.x, tableCy: b.y
+      });
+    });
+
+    // --- 6. Сквозная нумерация мест 1..N (ТОЛЬКО видимый номер; ключи не трогаем,
+    //     чтобы не сломать уже проданные брони). Порядок: столы 1-12, столы 18-19, стулья, бар. ---
+    var SEAT_DISPLAY_NUM = {
+      't1_3':1,'t1_4':2,'t1_5':3,'t1_6':4,'t1_7':5,
+      't2_11':6,'t2_12':7,'t2_13':8,'t2_14':9,'t2_15':10,
+      't3_19':11,'t3_20':12,'t3_21':13,'t3_22':14,'t3_23':15,
+      't4_25':16,'t4_26':17,'t4_27':18,'t4_28':19,
+      't5_25':20,'t5_26':21,'t5_27':22,'t5_28':23,
+      't6_25':24,'t6_26':25,'t6_27':26,'t6_28':27,
+      't7_25':28,'t7_26':29,'t7_27':30,'t7_28':31,
+      't8_25':32,'t8_26':33,'t8_27':34,'t8_28':35,
+      't9_25':36,'t9_26':37,'t9_27':38,'t9_28':39,
+      't10_25':40,'t10_26':41,'t10_27':42,'t10_28':43,
+      't11_25':44,'t11_26':45,'t11_27':46,'t11_28':47,
+      't12_25':48,'t12_26':49,'t12_27':50,'t12_28':51,
+      't13_1':52,'t13_2':53,'t13_3':54,'t13_4':55,
+      't14_1':56,'t14_2':57,'t14_3':58,'t14_4':59,
+      'c_5':60,'c_4':61,'c_3':62,'c_2':63,'c_1':64,
+      'cr_29':65,'cr_30':66,'cr_31':67,'cr_32':68,'cr_33':69,
+      'bar_1':70,'bar_2':71,'bar_3':72
+    };
+    SEATS.forEach(function(s) {
+      if (SEAT_DISPLAY_NUM[s.key] != null) {
+        s.seatNum = SEAT_DISPLAY_NUM[s.key];
+        s.seatIdx = SEAT_DISPLAY_NUM[s.key];
+      }
     });
 
     // === Состояние брони ===
@@ -1753,37 +1824,50 @@
       });
       g.appendChild(rightSofaText);
 
-      // 4. Бар
-      var isBarSelected = booking.selected.some(function(x){return x.key==='bar_0';});
-      var isBarTaken = DEMO_TAKEN.has('bar_0') || (liveSeats['bar_0'] && (liveSeats['bar_0'].status === 'taken' || liveSeats['bar_0'].status === 'reserved'));
-      var barFill = isBarSelected ? '#fff' : (isBarTaken ? 'rgba(255,255,255,0.06)' : 'rgba(60,60,75,0.85)');
-      var barStroke = isBarSelected ? ZONES.econom.color : (isBarTaken ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)');
-
+      // 4. Барная стойка — теперь только ДЕКОРАЦИЯ (фон). Места бара (bar_1..3)
+      //    рисуются вместе с остальными кружками ниже и кликаются как обычные места.
       var bar = el('path', {
         d: 'M 440 380 Q 435 380 435 375 L 435 355 Q 435 350 440 350 L 515 350 Q 520 350 520 345 L 520 295 Q 520 290 525 290 L 550 290 Q 555 290 555 295 L 555 375 Q 555 380 550 380 Z',
-        fill: barFill,
-        stroke: barStroke,
-        'stroke-width': isBarSelected ? 2 : 1,
-        style: isBarTaken ? 'cursor:not-allowed;' : 'cursor:pointer;'
+        fill: 'rgba(60,60,75,0.85)',
+        stroke: 'rgba(255,255,255,0.22)',
+        'stroke-width': 1,
+        style: 'pointer-events:none;'
       });
-      if (!isBarTaken) {
-        bar.addEventListener('click', function(){ toggleSeat('bar_0', 'econom', 'Барная стойка (целиком)', 'Бар', 'целиком'); });
-      }
       g.appendChild(bar);
-      
+
       var barText = el('text', {
-        x: 480,
-        y: 365,
+        x: 487,
+        y: 368,
         'text-anchor': 'middle',
         'dominant-baseline': 'central',
         'font-size': '11',
         'font-weight': '700',
         'font-family': 'Inter, sans-serif',
-        fill: isBarSelected ? '#14080a' : (isBarTaken ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)'),
+        fill: 'rgba(255,255,255,0.7)',
         'pointer-events': 'none'
       });
       barText.textContent = 'БАР';
       g.appendChild(barText);
+
+      // 4b. Столы 13/14 — вертикальные прямоугольники (форм-фактор как столы 16-19 на «Секрете»)
+      divanTables.forEach(function(tbl) {
+        var z = ZONES.divan;
+        var rect = el('rect', {
+          x: tbl.cx - 8, y: tbl.cy - 14.5, width: 16, height: 29, rx: 4,
+          fill: 'rgba(' + z.rgb + ', 0.08)',
+          stroke: 'rgba(' + z.rgb + ', 0.35)',
+          'stroke-width': 1
+        });
+        g.appendChild(rect);
+        var lbl = el('text', {
+          x: tbl.cx, y: tbl.cy,
+          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          'font-size': '10', 'font-weight': '700', 'font-family': 'Inter, sans-serif',
+          fill: 'rgba(' + z.rgb + ', 0.9)'
+        });
+        lbl.textContent = tbl.id;
+        g.appendChild(lbl);
+      });
 
       // 5. Отрисовка столов
       // Столы на 5 мест
@@ -1836,7 +1920,7 @@
 
       // 6. Отрисовка стульев (кружков)
       SEATS.forEach(function(seat) {
-        if (seat.key === 'sl_0' || seat.key === 'sr_0' || seat.key === 'bar_0') return;
+        if (seat.key === 'sl_0' || seat.key === 'sr_0') return;
 
         var z = ZONES[seat.zone];
         var isTaken = DEMO_TAKEN.has(seat.key) || (liveSeats[seat.key] && (liveSeats[seat.key].status === 'taken' || liveSeats[seat.key].status === 'reserved'));
@@ -1847,6 +1931,8 @@
           sr = 5.2;
         } else if (seat.type === 'chair') {
           sr = 6.0;
+        } else if (seat.type === 'divanSeat') {
+          sr = 5.6;
         }
 
         var fill = isSelected ? '#fff' : (isTaken ? 'rgba(255,255,255,0.06)' : 'rgba(' + z.rgb + ',0.88)');
@@ -1865,7 +1951,9 @@
         if (isTaken) c.classList.add('taken');
         if (isSelected) c.classList.add('selected');
 
-        var seatAriaLabel = seat.type === 'chair' ? 'Стул ' + seat.seatNum : 'Стол ' + seat.table + ', место ' + seat.seatNum;
+        var isBarSeat = seat.table === 'Бар';
+        var seatAriaLabel = isBarSeat ? 'Бар, место ' + seat.seatNum
+          : (seat.type === 'chair' ? 'Стул ' + seat.seatNum : 'Стол ' + seat.table + ', место ' + seat.seatNum);
         var hitArea = el('circle', {
           cx: seat.x.toFixed(1),
           cy: seat.y.toFixed(1),
@@ -1883,7 +1971,10 @@
         if (!isTaken) {
           var handleSeatClick = function() {
             var label = '';
-            if (seat.type === 'chair') {
+            if (isBarSeat) {
+              label = 'Бар, место ' + seat.seatNum;
+              toggleSeat(seat.key, seat.zone, label, 'Бар', 'Место ' + seat.seatNum);
+            } else if (seat.type === 'chair') {
               label = 'Стул ' + seat.seatNum;
               toggleSeat(seat.key, seat.zone, label, 'Стулья', 'Стул ' + seat.seatNum);
             } else {
@@ -2245,7 +2336,7 @@
           phone: data.get('phone') || '',
           email: data.get('email') || '',
           eventDate: booking.date ? booking.date.date + ' ' + booking.date.time : '',
-          telegram: data.get('telegram') || '',
+          vk: data.get('vk') || '', telegram: data.get('vk') || '',
           comment: data.get('comment') || '',
           createdAt: Date.now(),
           status: 'new',
@@ -2328,7 +2419,7 @@
         contact: {
           name: data.get('name') || '',
           phone: data.get('phone') || '',
-          telegram: data.get('telegram') || '',
+          vk: data.get('vk') || '', telegram: data.get('vk') || '',
           comment: data.get('comment') || ''
         }
       });
@@ -2359,7 +2450,13 @@
         });
         var json = await r.json();
         if (json && json.paymentUrl) {
-          window.location.href = json.paymentUrl;
+          if (typeof window.kpOpenPayment === 'function') {
+            await window.kpOpenPayment(json.paymentUrl);
+            btn.disabled = false;
+            btn.textContent = 'Открыть оплату повторно';
+          } else {
+            window.location.href = json.paymentUrl;
+          }
         } else {
           alert('Не удалось запустить онлайн-оплату: ' + (json.error || 'попробуйте позже.'));
           btn.disabled = false;
@@ -2683,7 +2780,7 @@
        }
     });
   </script>
-<script src="/ecosystem.js?v=12" data-root="/" data-section="shows" defer></script>
+<script src="/ecosystem.js?v=14" data-root="/" data-section="shows" defer></script>
   <script src="/concerts/show-ambient.js?v=1" defer></script>
   <script src="/concerts/show-nav.js?v=1" defer></script>
   <script src="/concerts/track.js?v=1"></script>
@@ -2697,7 +2794,9 @@
         box.innerHTML = items.map(function(rv){
           var rating=Math.max(1,Math.min(5,rv.rating||5));
           var stars='★'.repeat(rating)+'☆'.repeat(5-rating);
-          return '<div class="review-item"><div class="review-item__stars">'+stars+'</div><div class="review-item__text">«'+esc(rv.text)+'»</div><div class="review-item__name">— '+esc(rv.name||'Гость')+'</div></div>';
+          var photoHtml = rv.photo ? '<img src="'+rv.photo+'" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,110,0,.5);flex:none">' : '';
+          var nameRow = '<div class="review-item__name" style="display:flex;align-items:center;gap:10px;margin-top:4px">'+photoHtml+'<span>— '+esc(rv.name||'Гость')+'</span></div>';
+          return '<div class="review-item"><div class="review-item__stars">'+stars+'</div><div class="review-item__text">«'+esc(rv.text)+'»</div>'+nameRow+'</div>';
         }).join('');
         if(sec) sec.style.display='';
       }).catch(function(){});
