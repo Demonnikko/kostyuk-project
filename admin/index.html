@@ -5341,7 +5341,16 @@
       } catch (e) { }
     }
     async function fbDelete(path) {
-      try { await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, { method: 'DELETE', headers: adminHeaders() }); } catch (e) { }
+      const response = await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, {
+        method: 'DELETE', headers: adminHeaders()
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || payload?.error) {
+        const error = new Error(payload?.error || `ошибка сервера ${response.status}`);
+        error.status = response.status;
+        throw error;
+      }
+      return payload;
     }
 
     // ── XSS escape ──

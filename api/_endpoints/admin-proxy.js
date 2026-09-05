@@ -139,6 +139,11 @@ export default async (req, res) => {
         let targetData = null;
         try { targetData = text ? JSON.parse(text) : null; } catch { targetData = null; }
 
+        if (!targetRes.ok) {
+            const firebaseMessage = targetData?.error || `Firebase request failed with status ${targetRes.status}`;
+            return res.status(502).json({ error: firebaseMessage });
+        }
+
         return res.json(targetData);
     } catch (e) {
         const message = String(e?.message || 'Internal server error');
