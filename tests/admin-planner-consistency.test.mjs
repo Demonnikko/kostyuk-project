@@ -66,3 +66,12 @@ test('advertising promo links track unique visits and remain visible in admin', 
   assert.match(tracker, /promoCodeInput/);
   assert.match(api, /analytics\/promoClicks/);
 });
+
+test('expenses and promos confirm persistence and shows use requested order', async () => {
+  const admin = await read('admin/index.html');
+  assert.match(admin, /if \(!response\.ok\)/);
+  assert.match(admin, /const saved = await fbGet\(path\)/);
+  assert.match(admin, /const savedPromo = await fbGet\(promoPath\)/);
+  assert.match(admin, /\['huligan', 'secret', 'matvey'\]\.map/);
+  assert.ok(admin.indexOf('value="huligan">😈 ХУЛИgan') < admin.indexOf('value="secret">🎭 Секрет'));
+});

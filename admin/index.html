@@ -1826,7 +1826,7 @@
   <div id="app" class="app" style="display:none">
 
     <!-- Плавающая кнопка обновления для мобильных (sidebar на телефоне скрыт) -->
-    <button class="mobile-update-btn" onclick="forceUpdateApp()">🔄 Обновить <span style="opacity:.7;font-size:11px">v17</span></button>
+    <button class="mobile-update-btn" onclick="forceUpdateApp()">🔄 Обновить <span style="opacity:.7;font-size:11px">v18</span></button>
 
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -1869,8 +1869,8 @@
         <!-- Выбор конкретного шоу -->
         <div class="nav-group-label" style="padding-bottom:0;">Выберите шоу</div>
         <div class="show-switcher">
-          <div class="show-tab active" data-show="secret" onclick="switchShow('secret')">Секрет</div>
           <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')">ХУЛИgan</div>
+          <div class="show-tab active" data-show="secret" onclick="switchShow('secret')">Секрет</div>
           <div class="show-tab" data-show="matvey" onclick="switchShow('matvey')">Матвей</div>
         </div>
 
@@ -1970,10 +1970,11 @@
 
       <!-- Mobile show switcher -->
       <div class="mobile-show-switcher">
-        <div class="show-tab active" data-show="secret" onclick="switchShow('secret')" style="padding:12px 8px">🎭
-          Секрет</div>
         <div class="show-tab" data-show="huligan" onclick="switchShow('huligan')" style="padding:12px 8px">😈 ХУЛИgan
         </div>
+        <div class="show-tab active" data-show="secret" onclick="switchShow('secret')" style="padding:12px 8px">🎭
+          Секрет</div>
+        <div class="show-tab" data-show="matvey" onclick="switchShow('matvey')" style="padding:12px 8px">🧸 Матвей</div>
       </div>
 
       <!-- Scanner Section -->
@@ -2362,7 +2363,7 @@
                 <input class="inp" id="adValue" type="number" value="10" placeholder="10">
               </div>
             </div>
-            <button class="btn-save-settings" onclick="adCreatePromo()">+ Создать промокод для паблика</button>
+            <button class="btn-save-settings" id="adCreatePromoBtn" onclick="adCreatePromo()">+ Создать промокод для паблика</button>
             <div id="adCreatedNotice" style="display:none;margin-top:12px;border:1px solid rgba(61,191,110,.45);background:rgba(61,191,110,.08);border-radius:8px;padding:12px;font-size:13px"></div>
           </div>
 
@@ -2410,8 +2411,8 @@
             <div class="form-group" style="margin-bottom:0">
               <label>Шоу</label>
               <select class="inp" id="expShow">
-                <option value="secret">🎭 Секрет</option>
                 <option value="huligan">😈 ХУЛИgan</option>
+                <option value="secret">🎭 Секрет</option>
                 <option value="matvey">🧸 Матвей</option>
               </select>
             </div>
@@ -2434,7 +2435,7 @@
             <label>Комментарий (необязательно)</label>
             <input class="inp" id="expComment" placeholder="Например: за 31 октября, наличными">
           </div>
-          <button class="btn-save-settings" onclick="addExpense()">➕ Добавить расход</button>
+          <button class="btn-save-settings" id="addExpenseBtn" onclick="addExpense()">➕ Добавить расход</button>
         </div>
 
         <!-- Список расходов -->
@@ -4244,7 +4245,7 @@
       // Сводка по всем шоу остаётся видимой, выбранное шоу выделено.
       const grid = document.getElementById('finByShow');
       if (grid) {
-        grid.innerHTML = ['secret', 'huligan', 'matvey'].map(function (s) {
+        grid.innerHTML = ['huligan', 'secret', 'matvey'].map(function (s) {
           const rev = revenue[s], exp = expBy[s], prof = rev - exp;
           return `
             <div class="show-ov-card" onclick="loadPlannerWorkspace('${s}')" style="cursor:pointer;${s === selectedShow ? 'border-color:var(--gold)' : ''}">
@@ -4291,13 +4292,29 @@
         createdAt: Date.now()
       };
       const id = 'exp_' + Date.now().toString(36);
-      await fbPut(`finances/expenses/${id}`, exp);
-      toast('💾 Расход добавлен');
-      document.getElementById('expAmount').value = '';
-      document.getElementById('expName').value = '';
-      document.getElementById('expComment').value = '';
-      await loadFinances();
-      if (typeof loadPlannerWorkspace === 'function' && window._plShow) loadPlannerWorkspace(window._plShow);
+      const path = `finances/expenses/${id}`;
+      const button = document.getElementById('addExpenseBtn');
+      if (button) { button.disabled = true; button.textContent = 'Сохраняю...'; }
+      try {
+        await fbPut(path, exp);
+        const saved = await fbGet(path);
+        if (!saved || Number(saved.amount) !== amount || saved.show !== exp.show) {
+          throw new Error('сервер не подтвердил запись');
+        }
+        document.getElementById('expAmount').value = '';
+        document.getElementById('expName').value = '';
+        document.getElementById('expComment').value = '';
+        window._plShow = exp.show;
+        await loadFinances();
+        toast('💾 Расход добавлен и сохранён');
+      } catch (error) {
+        console.error('Expense save failed:', error);
+        toast(error.status === 401 || error.status === 403
+          ? 'Сессия истекла. Войдите в админку заново.'
+          : `Расход не сохранён: ${error.message || 'ошибка сервера'}`);
+      } finally {
+        if (button) { button.disabled = false; button.textContent = '➕ Добавить расход'; }
+      }
     }
 
     async function deleteExpense(id) {
@@ -5307,9 +5324,16 @@
       try { const r = await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, { headers: adminHeaders() }); return await r.json(); } catch (e) { return null; }
     }
     async function fbPut(path, data) {
-      try {
-        await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, { method: 'PUT', headers: adminHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(data) });
-      } catch (e) { }
+      const response = await fetch(`/api/admin-proxy?path=${encodeURIComponent(path)}`, {
+        method: 'PUT', headers: adminHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(data)
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        const error = new Error(payload?.error || `ошибка сервера ${response.status}`);
+        error.status = response.status;
+        throw error;
+      }
+      return payload;
     }
     async function fbPatch(path, data) {
       try {
@@ -5890,28 +5914,46 @@
         description: 'Реклама: ' + publicName,
         adPublic: publicName, adSpent: spent, createdAt: Date.now()
       };
-      await fbPut(`${AD_PROMO_PATH[show]}/${code}`, data);
-      if (spent > 0) {
-        await fbPut(`finances/expenses/ad_${show}_${code}`, {
-          show, amount: spent, name: `Реклама: ${publicName}`, promoCode: code,
-          comment: `Реклама в паблике «${publicName}» · промокод ${code}`,
-          date: new Date().toISOString().slice(0, 10), createdAt: Date.now()
-        });
+      const promoPath = `${AD_PROMO_PATH[show]}/${code}`;
+      const expensePath = `finances/expenses/ad_${show}_${code}`;
+      const button = document.getElementById('adCreatePromoBtn');
+      if (button) { button.disabled = true; button.textContent = 'Сохраняю...'; }
+      try {
+        await fbPut(promoPath, data);
+        const savedPromo = await fbGet(promoPath);
+        if (!savedPromo || savedPromo.adPublic !== publicName) throw new Error('сервер не подтвердил промокод');
+        if (spent > 0) {
+          await fbPut(expensePath, {
+            show, amount: spent, name: `Реклама: ${publicName}`, promoCode: code,
+            comment: `Реклама в паблике «${publicName}» · промокод ${code}`,
+            date: new Date().toISOString().slice(0, 10), createdAt: Date.now()
+          });
+          const savedExpense = await fbGet(expensePath);
+          if (!savedExpense || Number(savedExpense.amount) !== spent) throw new Error('сервер не подтвердил расход на рекламу');
+        }
+        const link = `${location.origin}/concerts/${show}/?promo=${encodeURIComponent(code)}`;
+        const notice = document.getElementById('adCreatedNotice');
+        if (notice) {
+          notice.style.display = 'block';
+          notice.innerHTML = `<b style="color:#3dbf6e">✓ Промокод ${esc(code)} создан и сохранён</b>
+            <div style="color:var(--dim);margin:5px 0 8px">${esc(publicName)} · ${value}${type === 'percent' ? '%' : ' ₽'} скидка</div>
+            <div style="word-break:break-all;color:var(--gold)">${esc(link)}</div>
+            <button class="pl-preset" style="width:100%;margin-top:8px" onclick="copyPromoLink(${jsArg(link)})">Копировать рекламную ссылку</button>`;
+        }
+        toast(`🎫 ${code} создан и сохранён для «${publicName}»`);
+        document.getElementById('adCode').value = '';
+        document.getElementById('adPublic').value = '';
+        document.getElementById('adSpent').value = '';
+        window._plShow = show;
+        await Promise.all([adLoadStats(), loadFinances()]);
+      } catch (error) {
+        console.error('Promo save failed:', error);
+        toast(error.status === 401 || error.status === 403
+          ? 'Сессия истекла. Войдите в админку заново.'
+          : `Промокод не сохранён: ${error.message || 'ошибка сервера'}`);
+      } finally {
+        if (button) { button.disabled = false; button.textContent = '+ Создать промокод для паблика'; }
       }
-      const link = `${location.origin}/concerts/${show}/?promo=${encodeURIComponent(code)}`;
-      const notice = document.getElementById('adCreatedNotice');
-      if (notice) {
-        notice.style.display = 'block';
-        notice.innerHTML = `<b style="color:#3dbf6e">✓ Промокод ${esc(code)} создан</b>
-          <div style="color:var(--dim);margin:5px 0 8px">${esc(publicName)} · ${value}${type === 'percent' ? '%' : ' ₽'} скидка</div>
-          <div style="word-break:break-all;color:var(--gold)">${esc(link)}</div>
-          <button class="pl-preset" style="width:100%;margin-top:8px" onclick="copyPromoLink(${jsArg(link)})">Копировать рекламную ссылку</button>`;
-      }
-      toast(`🎫 ${code} создан для «${publicName}»`);
-      document.getElementById('adCode').value = '';
-      document.getElementById('adPublic').value = '';
-      document.getElementById('adSpent').value = '';
-      await Promise.all([adLoadStats(), loadFinances()]);
     }
 
     async function copyPromoLink(link){
