@@ -1707,14 +1707,44 @@
         var json=await r.json();
         if(json&&json.paymentUrl){
           if(typeof window.kpOpenPayment==='function'){
+            // Мини-апп: оплата в отдельном окне ВК, приложение остаётся открытым.
+            // Редирект T-Bank ведёт на сайт (недоступен под белыми списками) — не
+            // ждём его, сразу показываем «билет готовится» и опрашиваем статус.
             await window.kpOpenPayment(json.paymentUrl);
             btn.disabled=false;btn.textContent='Открыть оплату повторно';
+            try{ goToStep(5); }catch(e){}
+            if(typeof window.kpPollTicketMatvey==='function') window.kpPollTicketMatvey();
           }else{window.location.href=json.paymentUrl;}
         }
         else{alert('Не удалось запустить онлайн-оплату: '+(json.error||'попробуйте позже.'));btn.disabled=false;btn.textContent='Оплатить онлайн (Т-Банк)';}
       }catch(e){alert('Ошибка сети. Пожалуйста, попробуйте еще раз.');btn.disabled=false;btn.textContent='Оплатить онлайн (Т-Банк)';}
     }
     window.initTbankPaymentMatvey=initTbankPaymentMatvey;
+
+    // Опрос статуса билета после оплаты (веб-редирект и мини-апп). Работает через реле.
+    window.kpPollTicketMatvey=function(){
+      var lastId=localStorage.getItem('matvey_last_booking_id');
+      var lastKey=localStorage.getItem('matvey_last_client_key');
+      var linkEl=document.getElementById('ticketOpenLink');
+      if(!lastId||!linkEl)return;
+      var ticketReady=false;
+      var origText=linkEl.textContent&&linkEl.textContent!=='Билет готовится…'?linkEl.textContent:'Открыть билет';
+      linkEl.textContent='Билет готовится…';
+      linkEl.addEventListener('click',function(e){ if(!ticketReady){ e.preventDefault(); } });
+      (function tryFetch(attempt){
+        fetch('/api/matvey?action=ticket_link&id='+encodeURIComponent(lastId)+'&clientKey='+encodeURIComponent(lastKey||''))
+          .then(function(r){return r.json();})
+          .then(function(j){
+            if(j&&j.url){ linkEl.href=j.url; linkEl.textContent=origText; ticketReady=true; }
+            else if(attempt<20){ setTimeout(function(){tryFetch(attempt+1);},1500); }
+            else { linkEl.textContent='Билет придёт на почту'; linkEl.removeAttribute('href'); }
+          })
+          .catch(function(){
+            if(attempt<20){ setTimeout(function(){tryFetch(attempt+1);},1500); }
+            else { linkEl.textContent='Билет придёт на почту'; linkEl.removeAttribute('href'); }
+          });
+      })(0);
+    };
 
     document.addEventListener('DOMContentLoaded',function(){
       var params=new URLSearchParams(window.location.search);
@@ -1724,33 +1754,7 @@
         openMatveyModal();
         goToStep(5);
         window.history.replaceState({},document.title,window.location.pathname);
-        var lastId=localStorage.getItem('matvey_last_booking_id');
-        var lastKey=localStorage.getItem('matvey_last_client_key');
-        var linkEl=document.getElementById('ticketOpenLink');
-        if(lastId&&linkEl){
-          // Билет подтверждается вебхуком T-Bank, который может прийти на пару секунд
-          // позже редиректа. Пока ссылки нет — держим кнопку в состоянии «готовится»
-          // и опрашиваем до ~30с. По клику до готовности не даём уйти на пустой href.
-          var ticketReady=false;
-          var origText=linkEl.textContent;
-          linkEl.textContent='Билет готовится…';
-          linkEl.addEventListener('click',function(e){
-            if(!ticketReady){ e.preventDefault(); }
-          });
-          (function tryFetch(attempt){
-            fetch('/api/matvey?action=ticket_link&id='+encodeURIComponent(lastId)+'&clientKey='+encodeURIComponent(lastKey||''))
-              .then(function(r){return r.json();})
-              .then(function(j){
-                if(j&&j.url){ linkEl.href=j.url; linkEl.textContent=origText; ticketReady=true; }
-                else if(attempt<20){ setTimeout(function(){tryFetch(attempt+1);},1500); }
-                else { linkEl.textContent='Билет придёт на почту'; linkEl.removeAttribute('href'); }
-              })
-              .catch(function(){
-                if(attempt<20){ setTimeout(function(){tryFetch(attempt+1);},1500); }
-                else { linkEl.textContent='Билет придёт на почту'; linkEl.removeAttribute('href'); }
-              });
-          })(0);
-        }
+        if(typeof window.kpPollTicketMatvey==='function') window.kpPollTicketMatvey();
       }else if(payStatus==='fail'){
         alert('Платеж был отклонен или отменен. Вы можете попробовать заново выбрать места и оплатить.');
         window.history.replaceState({},document.title,window.location.pathname);

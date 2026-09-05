@@ -2454,9 +2454,15 @@
         var json = await r.json();
         if (json && json.paymentUrl) {
           if (typeof window.kpOpenPayment === 'function') {
+            // Мини-апп: оплата открывается в отдельном окне ВК, само приложение
+            // остаётся открытым. Редирект T-Bank ведёт на сайт (под белыми списками
+            // недоступен), поэтому НЕ ждём его — сразу показываем «билет готовится»
+            // и опрашиваем статус билета сами (webhook подтвердит оплату на сервере).
             await window.kpOpenPayment(json.paymentUrl);
             btn.disabled = false;
             btn.textContent = 'Открыть оплату повторно';
+            try { goToStep(5); } catch (e) {}
+            if (typeof window.kpPollTicketHuligan === 'function') window.kpPollTicketHuligan();
           } else {
             window.location.href = json.paymentUrl;
           }
@@ -2473,6 +2479,34 @@
     }
     window.initTbankPaymentHuligan = initTbankPaymentHuligan;
 
+    // Опрос статуса билета после оплаты (общий для веб-редиректа и мини-аппа).
+    // Билет подтверждается вебхуком T-Bank на сервере; здесь ждём его до ~30с и
+    // подставляем ссылку на билет. Работает под белыми списками (fetch через реле).
+    window.kpPollTicketHuligan = function () {
+      var lastId = localStorage.getItem('huligan_last_booking_id');
+      var lastKey = localStorage.getItem('huligan_last_client_key');
+      var linkEl = document.getElementById('ticketOpenLink');
+      if (!lastId || !linkEl) return;
+      var ticketReady = false;
+      var origText = linkEl.textContent && linkEl.textContent !== 'Билет готовится…'
+        ? linkEl.textContent : 'Открыть билет';
+      linkEl.textContent = 'Билет готовится…';
+      linkEl.addEventListener('click', function (e) { if (!ticketReady) { e.preventDefault(); } });
+      (function tryFetchTicketLink(attempt) {
+        fetch('/api/huligan?action=ticket_link&id=' + encodeURIComponent(lastId) + '&clientKey=' + encodeURIComponent(lastKey || ''))
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (j && j.url) { linkEl.href = j.url; linkEl.textContent = origText; ticketReady = true; }
+            else if (attempt < 20) { setTimeout(function () { tryFetchTicketLink(attempt + 1); }, 1500); }
+            else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
+          })
+          .catch(function () {
+            if (attempt < 20) { setTimeout(function () { tryFetchTicketLink(attempt + 1); }, 1500); }
+            else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
+          });
+      })(0);
+    };
+
     // Check query params for payment status
     document.addEventListener('DOMContentLoaded', function() {
       var params = new URLSearchParams(window.location.search);
@@ -2483,30 +2517,7 @@
         goToStep(5);
         window.history.replaceState({}, document.title, window.location.pathname);
 
-        var lastId = localStorage.getItem('huligan_last_booking_id');
-        var lastKey = localStorage.getItem('huligan_last_client_key');
-        var linkEl = document.getElementById('ticketOpenLink');
-        if (lastId && linkEl) {
-          // Билет подтверждается вебхуком T-Bank, который может прийти чуть позже
-          // редиректа. Держим кнопку в состоянии «готовится» и опрашиваем до ~30с.
-          var ticketReady = false;
-          var origText = linkEl.textContent;
-          linkEl.textContent = 'Билет готовится…';
-          linkEl.addEventListener('click', function(e) { if (!ticketReady) { e.preventDefault(); } });
-          (function tryFetchTicketLink(attempt) {
-            fetch('/api/huligan?action=ticket_link&id=' + encodeURIComponent(lastId) + '&clientKey=' + encodeURIComponent(lastKey || ''))
-              .then(function(r) { return r.json(); })
-              .then(function(j) {
-                if (j && j.url) { linkEl.href = j.url; linkEl.textContent = origText; ticketReady = true; }
-                else if (attempt < 20) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
-                else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
-              })
-              .catch(function() {
-                if (attempt < 20) { setTimeout(function() { tryFetchTicketLink(attempt + 1); }, 1500); }
-                else { linkEl.textContent = 'Билет придёт на почту'; linkEl.removeAttribute('href'); }
-              });
-          })(0);
-        }
+        if (typeof window.kpPollTicketHuligan === 'function') window.kpPollTicketHuligan();
       } else if (payStatus === 'fail') {
         alert('Платеж был отклонен или отменен. Вы можете попробовать заново выбрать места и оплатить.');
         window.history.replaceState({}, document.title, window.location.pathname);
