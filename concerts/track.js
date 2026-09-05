@@ -39,6 +39,12 @@
 
   var SID = getSessionId();
   var SRC = getSource();
+  var PROMO = '';
+  try {
+    var promoParams = new URLSearchParams(location.search);
+    PROMO = String(promoParams.get('promo') || promoParams.get('promocode') || promoParams.get('promoCode') || '')
+      .trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 24);
+  } catch (e) { PROMO = ''; }
   var sent = {}; // не шлём один и тот же шаг повторно в рамках визита
 
   function step(show, stepName) {
@@ -50,11 +56,19 @@
       fetch('/api/track', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ show: show, step: stepName, sessionId: SID, source: SRC }),
+        body: JSON.stringify({ show: show, step: stepName, sessionId: SID, source: SRC, promoCode: PROMO }),
         keepalive: true
       }).catch(function () {});
     } catch (e) { /* тихо */ }
   }
 
   window.KTrack = { step: step, sessionId: SID, source: SRC };
+
+  // Рекламная ссылка сразу подставляет промокод в форму покупки.
+  if (PROMO) window.addEventListener('DOMContentLoaded', function () {
+    var input = document.getElementById('promoCodeInput');
+    if (!input) return;
+    input.value = PROMO;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
 })();

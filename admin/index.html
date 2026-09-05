@@ -1826,7 +1826,7 @@
   <div id="app" class="app" style="display:none">
 
     <!-- Плавающая кнопка обновления для мобильных (sidebar на телефоне скрыт) -->
-    <button class="mobile-update-btn" onclick="forceUpdateApp()">🔄 Обновить <span style="opacity:.7;font-size:11px">v16</span></button>
+    <button class="mobile-update-btn" onclick="forceUpdateApp()">🔄 Обновить <span style="opacity:.7;font-size:11px">v17</span></button>
 
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -2363,6 +2363,7 @@
               </div>
             </div>
             <button class="btn-save-settings" onclick="adCreatePromo()">+ Создать промокод для паблика</button>
+            <div id="adCreatedNotice" style="display:none;margin-top:12px;border:1px solid rgba(61,191,110,.45);background:rgba(61,191,110,.08);border-radius:8px;padding:12px;font-size:13px"></div>
           </div>
 
           <!-- Статистика по пабликам -->
@@ -5892,10 +5893,19 @@
       await fbPut(`${AD_PROMO_PATH[show]}/${code}`, data);
       if (spent > 0) {
         await fbPut(`finances/expenses/ad_${show}_${code}`, {
-          show, amount: spent, category: 'Реклама', promoCode: code,
+          show, amount: spent, name: `Реклама: ${publicName}`, promoCode: code,
           comment: `Реклама в паблике «${publicName}» · промокод ${code}`,
           date: new Date().toISOString().slice(0, 10), createdAt: Date.now()
         });
+      }
+      const link = `${location.origin}/concerts/${show}/?promo=${encodeURIComponent(code)}`;
+      const notice = document.getElementById('adCreatedNotice');
+      if (notice) {
+        notice.style.display = 'block';
+        notice.innerHTML = `<b style="color:#3dbf6e">✓ Промокод ${esc(code)} создан</b>
+          <div style="color:var(--dim);margin:5px 0 8px">${esc(publicName)} · ${value}${type === 'percent' ? '%' : ' ₽'} скидка</div>
+          <div style="word-break:break-all;color:var(--gold)">${esc(link)}</div>
+          <button class="pl-preset" style="width:100%;margin-top:8px" onclick="copyPromoLink(${jsArg(link)})">Копировать рекламную ссылку</button>`;
       }
       toast(`🎫 ${code} создан для «${publicName}»`);
       document.getElementById('adCode').value = '';
@@ -5904,12 +5914,19 @@
       await Promise.all([adLoadStats(), loadFinances()]);
     }
 
+    async function copyPromoLink(link){
+      try { await navigator.clipboard.writeText(link); toast('Ссылка скопирована'); }
+      catch (_) { window.prompt('Скопируйте ссылку', link); }
+    }
+
     async function adLoadStats(){
       const box = document.getElementById('adStatsList');
       box.innerHTML = '<div style="color:var(--dim);font-size:13px;text-align:center;padding:14px">⏳ Загрузка...</div>';
       const results = [];
       for (const show of [window._plShow || 'huligan']){
-        const [promos, books] = await Promise.all([ fbGet(AD_PROMO_PATH[show]), fbGet(AD_BOOK_PATH[show]) ]);
+        const [promos, books, promoClicks] = await Promise.all([
+          fbGet(AD_PROMO_PATH[show]), fbGet(AD_BOOK_PATH[show]), fbGet(`analytics/promoClicks/${show}`)
+        ]);
         if (!promos) continue;
         // считаем использование каждого промокода в бронях
         const used = {};   // code -> {tickets, revenue, promoBuyers}
@@ -5939,7 +5956,8 @@
         Object.entries(promos).forEach(([code,p])=>{
           if (!p.adPublic) return;   // только рекламные
           const u = used[code.toUpperCase()] || {tickets:0,revenue:0,promoBuyers:[]};
-          results.push({ show, code, public:p.adPublic, spent:p.adSpent||0, tickets:u.tickets, revenue:u.revenue, promoBuyers:u.promoBuyers });
+          const clicks = Object.keys((promoClicks || {})[code.toUpperCase()] || {}).length;
+          results.push({ show, code, public:p.adPublic, spent:p.adSpent||0, clicks, tickets:u.tickets, revenue:u.revenue, promoBuyers:u.promoBuyers });
         });
       }
       if (!results.length){
@@ -5963,6 +5981,7 @@
           </div>
           <div style="font-size:12px;color:var(--dim);margin-bottom:8px">Промокод: <b style="color:var(--gold)">${esc(r.code)}</b></div>
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:12px">
+            <div><div style="color:var(--dim)">Переходы</div><b style="color:#f0e6d0">${r.clicks}</b></div>
             <div><div style="color:var(--dim)">Продано</div><b style="color:#f0e6d0">${r.tickets} бил.</b></div>
             <div><div style="color:var(--dim)">Потрачено</div><b style="color:#f0e6d0">${plFmt(r.spent)}</b></div>
             <div><div style="color:var(--dim)">Выручка</div><b style="color:#3dbf6e">${plFmt(r.revenue)}</b></div>

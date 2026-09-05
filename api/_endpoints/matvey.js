@@ -278,6 +278,24 @@ export default async (req, res) => {
       return res.status(200).json({ mode: 'tbank', tbank: { enabled: Boolean(TBANK_MATVEY_ENABLED && creds.terminalKey && creds.password), testMode: creds.testMode, provider: 'tbank' } });
     }
 
+    if (getAction === 'get_promo') {
+      const pCode = String(req.query?.code || '').trim().toUpperCase();
+      if (!/^[A-Z0-9_-]{2,24}$/.test(pCode)) return res.status(400).json({ error: 'Invalid promo code' });
+      const promo = await fbGet(`matvey_promo/${pCode}`);
+      const nowTs = Date.now();
+      const activeNow = Boolean(promo && promo.active === true
+        && (!promo.expiresAt || nowTs <= Number(promo.expiresAt))
+        && (!promo.validFrom || nowTs >= Number(promo.validFrom))
+        && (!promo.validUntil || nowTs <= Number(promo.validUntil))
+        && (promo.usesLeft == null || promo.usesLeft === -1 || Number(promo.usesLeft) > 0));
+      if (!promo) return res.status(404).json({ activeNow: false });
+      return res.status(200).json({
+        activeNow,
+        type: activeNow ? String(promo.type || '') : '',
+        value: activeNow ? Number(promo.value || 0) : 0
+      });
+    }
+
     if (getAction === 'ticket_link') {
       const id = String(req.query?.id || '').trim();
       const clientKey = String(req.query?.clientKey || '').trim();
@@ -458,7 +476,7 @@ export default async (req, res) => {
   }
 
   // ── Создание брони (основное действие без action) ──
-  const { bookingId, name, phone, email, seats, tempBookingId, eventDate } = body || {};
+  const { bookingId, name, phone, email, seats, tempBookingId, eventDate, promoCode } = body || {};
 
   if (await isMatveySalesPaused()) return res.status(409).json({ error: 'Продажи на «Спасти Матвея» временно остановлены' });
   if (!bookingId || !BOOKING_ID_RE.test(String(bookingId))) return res.status(400).json({ error: 'Invalid bookingId' });
@@ -498,14 +516,32 @@ export default async (req, res) => {
   // Расчёт цены на сервере (клиенту не доверяем)
   const prices = await getZonePrices();
   const total = seats.reduce((sum, s) => sum + (prices[s.zone] || 0), 0);
-  const discountedTotal = total;
+  let discountedTotal = total;
+  let promoApplied = null;
+  if (promoCode) {
+    const pCode = String(promoCode).trim().toUpperCase();
+    const promo = /^[A-Z0-9_-]{2,24}$/.test(pCode) ? await fbGet(`matvey_promo/${pCode}`) : null;
+    const nowTs = Date.now();
+    const valid = Boolean(promo && promo.active === true
+      && (!promo.expiresAt || nowTs <= Number(promo.expiresAt))
+      && (!promo.validFrom || nowTs >= Number(promo.validFrom))
+      && (!promo.validUntil || nowTs <= Number(promo.validUntil))
+      && (promo.usesLeft == null || promo.usesLeft === -1 || Number(promo.usesLeft) > 0));
+    if (valid) {
+      const value = Number(promo.value || 0);
+      if (promo.type === 'free') discountedTotal = 0;
+      else if (promo.type === 'percent') discountedTotal = Math.round(total * (1 - value / 100));
+      else if (promo.type === 'fixed') discountedTotal = Math.max(0, total - value);
+      promoApplied = pCode;
+    }
+  }
 
   try {
     const clientKey = crypto.randomBytes(24).toString('hex');
     const booking = {
       name: cleanName, phone: digits, email: cleanEmail,
       eventDate: String(eventDate || '').trim().slice(0, 100),
-      seats, total, discountedTotal,
+      seats, total, discountedTotal, promoCode: promoApplied,
       status: 'pending_payment', createdAt: now, clientKey, ticketLinkVersion: 1
     };
     await fbPut(`matvey_bookings/${bookingId}`, booking);

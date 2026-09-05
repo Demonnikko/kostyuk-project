@@ -19,6 +19,10 @@ function sanitizeSource(v) {
   // Источник: короткая строка (utm/поддомен/direct). Чистим от мусора.
   return String(v || 'direct').trim().slice(0, 60).replace(/[^\wа-яА-Я.\-:/? =&]/g, '') || 'direct';
 }
+function sanitizePromo(v) {
+  const code = String(v || '').trim().toUpperCase();
+  return /^[A-Z0-9_-]{2,24}$/.test(code) ? code : null;
+}
 
 // Атомарный-ish инкремент счётчика (read-modify-write). Для нашей нагрузки достаточно.
 async function bump(path) {
@@ -42,6 +46,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'show, step, sessionId required' });
   }
   const source = sanitizeSource(body.source);
+  const promoCode = sanitizePromo(body.promoCode);
   const day = todayKey();
   const now = Date.now();
 
@@ -64,6 +69,11 @@ export default async function handler(req, res) {
     if (!sess) { sessPatch.source = source; sessPatch.firstAt = now; sessPatch.day = day; }
     if (thisIdx > reached) sessPatch.maxStep = step;
     await fbPatch(`analytics/sessions/${sessionId}`, sessPatch);
+
+    // Один переход по рекламной ссылке на одну сессию. Повторная загрузка не накручивает счётчик.
+    if (promoCode && step === 'visit') {
+      await fbPut(`analytics/promoClicks/${show}/${promoCode}/${sessionId}`, { firstAt: now, source });
+    }
 
     return res.status(200).json({ ok: true });
   } catch (e) {

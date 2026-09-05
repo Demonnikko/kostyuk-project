@@ -36,19 +36,33 @@ test('Matvey checkout validates and stores advertising promo codes', async () =>
   assert.match(page, /id="promoCodeInput"/);
   assert.match(page, /promoCode:\s*booking\.promo\s*\?/);
   assert.match(api, /matvey_promo\/\$\{pCode\}/);
-  assert.match(api, /promoCode:\s*promoApplied\s*\?/);
-  assert.match(api, /discountedTotal\s*=\s*applyPromo/);
+  assert.match(api, /promoCode:\s*promoApplied/);
+  assert.match(api, /discountedTotal\s*=\s*Math\.round\(total\s*\*\s*\(1\s*-\s*value\s*\/\s*100\)\)/);
 });
 
 test('planner combines per-show expenses, actual sales, and promo buyer attribution', async () => {
   const html = await read('admin/index.html');
   assert.match(html, /id="plannerFinanceHost"/);
   assert.match(html, /function mountPlannerFinances\(/);
-  assert.match(html, /id="plOther"/);
+  assert.match(html, /_plExpensesSum/);
   assert.match(html, /promoBuyers/);
   assert.match(html, /ticketNumber/);
   assert.match(html, /plLoadReal\(true\)/);
   assert.match(html, /Планировщик и финансы/);
   assert.match(html, /loadPlannerWorkspace\(/);
   assert.doesNotMatch(html, /data-sec="finances"/);
+});
+
+test('advertising promo links track unique visits and remain visible in admin', async () => {
+  const [admin, tracker, api] = await Promise.all([
+    read('admin/index.html'),
+    read('concerts/track.js'),
+    read('api/_endpoints/track.js')
+  ]);
+  assert.match(admin, /id="adCreatedNotice"/);
+  assert.match(admin, /Переходы/);
+  assert.match(admin, /promoClicks/);
+  assert.match(tracker, /promoCode/);
+  assert.match(tracker, /promoCodeInput/);
+  assert.match(api, /analytics\/promoClicks/);
 });
