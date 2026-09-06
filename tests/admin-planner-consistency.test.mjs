@@ -10,9 +10,25 @@ test('planner uses every sellable zone and exact website capacity', async () => 
   assert.match(html, /huligan:\s*\{[\s\S]*?capacity:\s*72\b/);
   assert.match(html, /secret:\s*\{[\s\S]*?capacity:\s*110\b/);
   assert.match(html, /matvey:\s*\{[\s\S]*?capacity:\s*106\b/);
-  for (const zone of ['sofa_left', 'sofa_right', 'divan', 'bar', 'row_front', 'row_back', 'table', 'lampa']) {
+  for (const zone of ['sofa_left', 'sofa_right', 'divan', 'bar', 'row_front', 'row_back', 'table']) {
     assert.match(html, new RegExp(`key:\\s*['\"]${zone}['\"]`), `planner misses ${zone}`);
   }
+  assert.match(html, /secret:[\s\S]*?key:'vip'[\s\S]*?count:49/);
+  assert.match(html, /matvey:[\s\S]*?key:'row_front'[\s\S]*?count:41/);
+  assert.doesNotMatch(html, /label:'🔴 Зона Лампа'/);
+});
+
+test('promo forms provide exact zone presets for every show', async () => {
+  const html = await read('admin/index.html');
+  for (const marker of [
+    'adAllowedZones', 'adExcludedZones',
+    'secretAllowedZones', 'secretExcludedZones',
+    'huliganAllowedZones', 'huliganExcludedZones',
+    'matveyAllowedZones', 'matveyExcludedZones'
+  ]) assert.match(html, new RegExp('id="' + marker + '"'));
+  assert.match(html, /const PROMO_ZONE_PRESETS = \{/);
+  assert.match(html, /allowedZoneLabels/);
+  assert.match(html, /excludedZoneLabels/);
 });
 
 test('admin hall maps include every website-only seat group', async () => {
@@ -99,6 +115,6 @@ test('browser and PWA admin expose the same visible release version', async () =
     read('admin/index.html'),
     read('admin/admin-sw.js')
   ]);
-  assert.match(admin, /id="adminVersionLabel"[\s\S]*?Версия админки v23/);
-  assert.match(serviceWorker, /const VERSION = 'kp-admin-v23'/);
+  assert.match(admin, /id="adminVersionLabel"[\s\S]*?Версия админки v24/);
+  assert.match(serviceWorker, /const VERSION = 'kp-admin-v24'/);
 });
