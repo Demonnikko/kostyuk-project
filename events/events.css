@@ -1851,7 +1851,7 @@
     }
 
     .events-show-card--huligan .events-show-card__poster {
-      aspect-ratio: 1055 / 1491;
+      aspect-ratio: 2 / 3;
     }
 
     .events-show-card--huligan .events-show-card__content {
@@ -2213,4 +2213,3 @@
     }
 
     /* End Custom CSS */
-

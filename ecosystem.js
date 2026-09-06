@@ -18,6 +18,69 @@
     shows: 'images/brand/kostyuk-author-shows-logo-v1.png',
     school: 'images/brand/kostyuk-project-monogram-gold-transparent-v1.png'
   };
+  var ANALYTICS_AREAS = ['hub', 'shows', 'secret', 'huligan', 'matvey', 'events', 'school'];
+
+  function analyticsSessionId() {
+    try {
+      var key = 'k_sid';
+      var value = sessionStorage.getItem(key);
+      if (!value) {
+        value = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        sessionStorage.setItem(key, value);
+      }
+      return value;
+    } catch (e) {
+      return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+  }
+
+  function analyticsArea() {
+    var path = String(location.pathname || '/').toLowerCase();
+    if (/\/concerts\/secret(?:\/|$)/.test(path)) return 'secret';
+    if (/\/concerts\/huligan(?:\/|$)/.test(path)) return 'huligan';
+    if (/\/concerts\/matvey(?:\/|$)/.test(path)) return 'matvey';
+    if (/\/concerts(?:\/|$)/.test(path)) return 'shows';
+    if (/\/events(?:\/|$)/.test(path)) return 'events';
+    if (/\/school(?:\/|$)/.test(path)) return 'school';
+    return ANALYTICS_AREAS.indexOf(SECTION) !== -1 ? SECTION : 'hub';
+  }
+
+  function analyticsDevice() {
+    var ua = navigator.userAgent || '';
+    if (/iPad/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ipad';
+    if (/iPhone|iPod/i.test(ua)) return 'iphone';
+    if (/Android/i.test(ua)) return 'android';
+    if (/Windows|Macintosh|Linux|CrOS/i.test(ua)) return 'desktop';
+    return 'other';
+  }
+
+  function analyticsBrowser() {
+    var ua = navigator.userAgent || '';
+    if (/YaBrowser|Yowser/i.test(ua)) return 'yandex';
+    if (/SamsungBrowser/i.test(ua)) return 'samsung';
+    if (/Edg\//i.test(ua)) return 'edge';
+    if (/Firefox|FxiOS/i.test(ua)) return 'firefox';
+    if (/Chrome|CriOS/i.test(ua)) return 'chrome';
+    if (/Safari/i.test(ua)) return 'safari';
+    return 'other';
+  }
+
+  function trackAudienceView() {
+    try {
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          kind: 'audience',
+          area: analyticsArea(),
+          sessionId: analyticsSessionId(),
+          device: analyticsDevice(),
+          browser: analyticsBrowser()
+        }),
+        keepalive: true
+      }).catch(function () {});
+    } catch (e) { /* Аналитика не должна мешать странице. */ }
+  }
 
   function toggleProjectSwitcher(open) {
     var s = document.getElementById('projectSwitcher');
@@ -129,6 +192,7 @@
     buildSwitcher();
     buildTelegram();
     buildFooter();
+    trackAudienceView();
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') toggleProjectSwitcher(false);
     });

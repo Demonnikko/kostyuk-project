@@ -255,7 +255,7 @@ body.show-page--huligan .poster-wrap {
   background: #050505;
 }
 body.show-page--huligan .poster {
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   background: #050505;
 }
@@ -267,7 +267,8 @@ body.show-page--huligan .poster-wrap:hover .poster { transform: none !important;
     gap: clamp(56px, 6vw, 96px);
   }
   body.show-page--huligan .poster-wrap {
-    height: min(58svh, 550px);
+    width: min(100%, 440px);
+    height: auto;
     max-width: 440px;
     justify-self: end;
   }

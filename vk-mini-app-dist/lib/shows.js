@@ -9,7 +9,7 @@ const showEntries = {
     id: 'huligan',
     title: 'Хулиган',
     description: 'Дерзкое иллюзионное шоу Дмитрия Костюка',
-    poster: './images/huligan.webp',
+    poster: './images/huligan.png',
   },
   matvey: {
     id: 'matvey',

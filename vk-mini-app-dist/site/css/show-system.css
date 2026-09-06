@@ -251,7 +251,7 @@ body.show-page .poster {
 }
 body.show-page .poster-wrap:hover .poster { transform: scale(1.025) !important; }
 body.show-page--huligan .poster-wrap {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 2 / 3;
   background: #050505;
 }
 body.show-page--huligan .poster {
@@ -709,7 +709,6 @@ body.show-page #stickyCta .buy-cta {
   /* Постер на мобильном: сохраняем пропорции 2/3, не растягиваем по высоте (иначе картинка режется/арка) */
   body.show-page .poster-wrap { width: min(72vw, 300px); height: auto; max-height: none; aspect-ratio: 2 / 3; border-radius: 17px; }
   /* Афиша ХУЛИgan — полная (4/5), не режем */
-  body.show-page--huligan .poster-wrap { aspect-ratio: 4 / 5; }
   .show-hero-copy { width: min(100%, 560px); align-items: center; text-align: center; }
   body.show-page h1.title,
   body.show-page .subtitle { text-align: center; }

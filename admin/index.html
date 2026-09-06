@@ -15,6 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="KP Админ">
   <link rel="apple-touch-icon" href="./admin-icon-192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./admin-icon-192.png">
+  <script type="module" src="./analytics-trend.js?v=1"></script>
   <link
     rel="stylesheet">
   <style>
@@ -1329,7 +1330,19 @@
     .audience-row-value { color: var(--gold); font-weight: 700; white-space: nowrap; }
     .audience-bar { height: 7px; overflow: hidden; border-radius: 4px; background: rgba(255,255,255,.06); }
     .audience-bar > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#c9a228,#e0b94a); }
+    .audience-trend { width: 100%; padding: 16px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+    .audience-trend-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 10px; color: var(--text); font-size: 13px; font-weight: 700; }
+    .audience-trend-title span { color: var(--dim); font-size: 11px; font-weight: 500; }
+    .audience-trend-summary { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 8px; color: var(--dim); font-size: 11px; }
+    .audience-trend-summary strong { color: var(--gold); font-size: 13px; }
+    .audience-trend-chart { display: block; width: 100%; height: 230px; overflow: visible; }
+    .audience-trend-grid { stroke: rgba(255,255,255,.07); stroke-width: 1; }
+    .audience-trend-axis { fill: var(--dim); font: 10px Arial,sans-serif; }
+    .audience-trend-line { fill: none; stroke: var(--gold2); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px rgba(232,197,64,.28)); }
+    .audience-trend-dot { fill: var(--bg2); stroke: var(--green); stroke-width: 3; outline: none; }
+    .audience-trend-dot:focus { r: 6; stroke: var(--gold2); }
     @media (max-width: 760px) { .audience-grid { grid-template-columns: 1fr; gap: 22px; } }
+    @media (max-width: 760px) { .audience-trend-chart { height: 190px; } .audience-trend-axis { font-size: 9px; } }
 
     .activity-timeline {
       display: flex;
@@ -2010,7 +2023,7 @@
       <div class="sidebar-footer">
         <button class="btn-logout" onclick="forceUpdateApp()" style="margin-bottom:8px;border-color:rgba(201,162,39,.4);color:var(--gold)">🔄 Обновить приложение</button>
         <button class="btn-logout" onclick="logout()">↩ Выйти</button>
-        <div id="adminVersionLabel" style="margin-top:10px;text-align:center;color:var(--dim);font-size:11px;letter-spacing:.08em">Версия админки v25</div>
+        <div id="adminVersionLabel" style="margin-top:10px;text-align:center;color:var(--dim);font-size:11px;letter-spacing:.08em">Версия админки v26</div>
       </div>
     </aside>
 
@@ -2250,13 +2263,17 @@
 
         <div class="activity-card audience-card">
           <div class="activity-title" style="justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <span>📱 Устройства посетителей</span>
+            <span>📈 Посещения и устройства</span>
             <div style="display:flex;align-items:center;gap:10px;">
               <span id="audienceTotal" style="font:12px Arial,sans-serif;color:var(--dim);">0 сеансов</span>
               <select id="audiencePeriod" onchange="loadAudienceAnalytics()" style="background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;">
-                <option value="today">Сегодня</option><option value="7">7 дней</option><option value="30">30 дней</option>
+                <option value="7" selected>7 дней</option><option value="30">30 дней</option>
               </select>
             </div>
+          </div>
+          <div class="audience-trend">
+            <div class="audience-trend-title">Посещения по дням <span>вся экосистема</span></div>
+            <div id="audienceTrendContent"><div class="empty-state" style="padding:22px 0;">⏳ Загрузка графика...</div></div>
           </div>
           <div id="audienceContent" class="audience-grid"><div class="empty-state" style="grid-column:1/-1;padding:24px 0;">⏳ Загрузка статистики...</div></div>
         </div>
@@ -4244,11 +4261,16 @@
     async function loadAudienceAnalytics() {
       const box = document.getElementById('audienceContent');
       if (!box) return;
-      const period = document.getElementById('audiencePeriod')?.value || 'today';
-      const days = period === 'today' ? 1 : parseInt(period);
+      const period = document.getElementById('audiencePeriod')?.value || '7';
+      const days = parseInt(period) || 7;
       const dayKeys = [];
       for (let i = 0; i < days; i++) dayKeys.push(analyticsDayKey(i));
       const raw = await fbGet('analytics/audience') || {};
+      const trendBox = document.getElementById('audienceTrendContent');
+      if (trendBox && window.AdminAnalyticsTrend) {
+        const series = window.AdminAnalyticsTrend.buildAudienceTrendSeries(raw, dayKeys);
+        trendBox.innerHTML = window.AdminAnalyticsTrend.renderAudienceTrend(series);
+      }
       const totals = { total: 0, devices: {}, browsers: {}, areas: {} };
       for (const day of dayKeys) {
         const data = raw[day] || {};

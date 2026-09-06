@@ -968,7 +968,7 @@ test('huligan poster is fully visible on the showcase and detail page, including
   const page = await connectCdp(chrome.pageWebSocketUrl);
 
   try {
-    const posterRatio = 1055 / 1491;
+    const posterRatio = 660 / 990;
     const showcase = await collectPosterFitMetrics(
       page,
       server.origin,
@@ -978,11 +978,11 @@ test('huligan poster is fully visible on the showcase and detail page, including
       1440,
       1000,
     );
-    assert.match(showcase.currentSrc, /\/concerts\/images\/huligan\.webp\?v=9$/);
-    assert.equal(showcase.naturalWidth, 720);
-    assert.equal(showcase.naturalHeight, 1080);
+    assert.match(showcase.currentSrc, /\/concerts\/images\/huligan\.png\?v=12$/);
+    assert.equal(showcase.naturalWidth, 660);
+    assert.equal(showcase.naturalHeight, 990);
     assert.ok(['contain', 'cover'].includes(showcase.objectFit), `unexpected showcase object-fit: ${showcase.objectFit}`);
-    assert.ok(Math.abs((showcase.imageWidth / showcase.imageHeight) - (720 / 1080)) < 0.02, `showcase poster ratio is ${showcase.imageWidth / showcase.imageHeight}`);
+    assert.ok(Math.abs((showcase.imageWidth / showcase.imageHeight) - posterRatio) < 0.02, `showcase poster ratio is ${showcase.imageWidth / showcase.imageHeight}`);
     assert.equal(showcase.transformAfterHover, 'none');
 
     const detail = await collectPosterFitMetrics(
@@ -995,8 +995,8 @@ test('huligan poster is fully visible on the showcase and detail page, including
       1000,
     );
     assert.match(detail.currentSrc, /\/concerts\/images\/huligan\.png\?v=\d+$/);
-    assert.equal(detail.naturalWidth, 1055);
-    assert.equal(detail.naturalHeight, 1491);
+    assert.equal(detail.naturalWidth, 660);
+    assert.equal(detail.naturalHeight, 990);
     assert.equal(detail.objectFit, 'contain');
     assert.ok(Math.abs(detail.frameRatio - posterRatio) < 0.02, `detail poster frame ratio is ${detail.frameRatio}`);
     assert.equal(detail.transformAfterHover, 'none');
@@ -1010,11 +1010,11 @@ test('huligan poster is fully visible on the showcase and detail page, including
       390,
       844,
     );
-    assert.match(mobileShowcase.currentSrc, /\/concerts\/images\/huligan\.webp\?v=9$/);
-    assert.equal(mobileShowcase.naturalWidth, 720);
-    assert.equal(mobileShowcase.naturalHeight, 1080);
+    assert.match(mobileShowcase.currentSrc, /\/concerts\/images\/huligan\.png\?v=12$/);
+    assert.equal(mobileShowcase.naturalWidth, 660);
+    assert.equal(mobileShowcase.naturalHeight, 990);
     assert.ok(['contain', 'cover'].includes(mobileShowcase.objectFit), `unexpected mobile showcase object-fit: ${mobileShowcase.objectFit}`);
-    assert.ok(Math.abs((mobileShowcase.imageWidth / mobileShowcase.imageHeight) - (720 / 1080)) < 0.02, `mobile showcase poster ratio is ${mobileShowcase.imageWidth / mobileShowcase.imageHeight}`);
+    assert.ok(Math.abs((mobileShowcase.imageWidth / mobileShowcase.imageHeight) - posterRatio) < 0.02, `mobile showcase poster ratio is ${mobileShowcase.imageWidth / mobileShowcase.imageHeight}`);
     assert.equal(mobileShowcase.transformAfterHover, 'none');
 
     const mobileDetail = await collectPosterFitMetrics(
@@ -1027,8 +1027,8 @@ test('huligan poster is fully visible on the showcase and detail page, including
       844,
     );
     assert.match(mobileDetail.currentSrc, /\/concerts\/images\/huligan\.png\?v=\d+$/);
-    assert.equal(mobileDetail.naturalWidth, 1055);
-    assert.equal(mobileDetail.naturalHeight, 1491);
+    assert.equal(mobileDetail.naturalWidth, 660);
+    assert.equal(mobileDetail.naturalHeight, 990);
     assert.equal(mobileDetail.objectFit, 'contain');
     assert.ok(Math.abs(mobileDetail.frameRatio - posterRatio) < 0.02, `mobile detail poster frame ratio is ${mobileDetail.frameRatio}`);
     assert.equal(mobileDetail.transformAfterHover, 'none');
