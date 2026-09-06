@@ -347,6 +347,38 @@ async function fbGet(path) {
   } catch { clear(); return null; }
 }
 
+async function getHuliganPromoResult(codeValue, seatsValue) {
+  const code = normalizePromoCode(codeValue);
+  if (!code) return { status: 400, payload: { error: 'Missing code' } };
+
+  const promo = await fbGet(`huligan_promo/${code}`);
+  if (!promo) return { status: 200, payload: null };
+
+  const nowTs = Date.now();
+  const notExpired = !promo.expiresAt || nowTs <= Number(promo.expiresAt);
+  const notTooEarly = !promo.validFrom || nowTs >= Number(promo.validFrom);
+  const notPastValidUntil = !promo.validUntil || nowTs <= Number(promo.validUntil);
+  const hasUses = promo.usesLeft == null || Number(promo.usesLeft) === -1 || Number(promo.usesLeft) > 0;
+  const seatRule = checkPromoSeatRules(promo, promoSeatsFromQuery(seatsValue));
+  const activeNow = Boolean(promo.active && notExpired && notTooEarly && notPastValidUntil && hasUses && seatRule.ok);
+
+  return {
+    status: 200,
+    payload: {
+      active: activeNow,
+      activeNow,
+      type: promo.type || null,
+      value: Number(promo.value || 0),
+      usesLeft: promo.usesLeft ?? null,
+      expiresAt: promo.expiresAt || null,
+      validFrom: promo.validFrom || null,
+      validUntil: promo.validUntil || null,
+      description: promo.description || null,
+      restrictionReason: seatRule.ok ? null : seatRule.reason
+    }
+  };
+}
+
 async function fbGetWithETag(path) {
   const sep = FIREBASE_SECRET ? '&' : '?';
   try {
@@ -745,6 +777,11 @@ export default async (req, res) => {
   if (req.method === 'GET') {
     const getAction = req.query?.action || '';
 
+    if (getAction === 'get_promo') {
+      const result = await getHuliganPromoResult(req.query?.code, req.query?.seats);
+      return res.status(result.status).json(result.payload);
+    }
+
     // Подписанная ссылка на билет (для QR-кода)
     if (getAction === 'ticket_link') {
       const id = (req.query?.id || '').trim();
@@ -888,29 +925,8 @@ export default async (req, res) => {
 
     // ── Get one promo by code ──
     if (action === 'get_promo') {
-      const code = normalizePromoCode(body?.code);
-      if (!code) return res.status(400).json({ error: 'Missing code' });
-      const promo = await fbGet(`huligan_promo/${code}`);
-      if (!promo) return res.status(200).json(null);
-      const nowTs = Date.now();
-      const notExpired = !promo?.expiresAt || nowTs <= Number(promo.expiresAt);
-      const notTooEarly = !promo?.validFrom || nowTs >= Number(promo.validFrom);
-      const notPastValidUntil = !promo?.validUntil || nowTs <= Number(promo.validUntil);
-      const hasUses = promo?.usesLeft == null || Number(promo.usesLeft) === -1 || Number(promo.usesLeft) > 0;
-      const seatRule = checkPromoSeatRules(promo, promoSeatsFromQuery(req.query?.seats));
-      const activeNow = !!promo.active && notExpired && notTooEarly && notPastValidUntil && hasUses && seatRule.ok;
-      return res.status(200).json({
-        active: !!promo.active,
-        activeNow,
-        type: promo.type || null,
-        value: Number(promo.value || 0),
-        usesLeft: promo.usesLeft ?? null,
-        expiresAt: promo.expiresAt || null,
-        validFrom: promo.validFrom || null,
-        validUntil: promo.validUntil || null,
-        description: promo.description || null,
-        restrictionReason: seatRule.ok ? null : seatRule.reason
-      });
+      const result = await getHuliganPromoResult(body?.code || req.query?.code, req.query?.seats);
+      return res.status(result.status).json(result.payload);
     }
 
     // ── Prepare T-Bank payment link ──
