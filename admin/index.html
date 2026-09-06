@@ -5931,13 +5931,13 @@
     }
 
     function promoSeatKeys(id){
-      return [...new Set((document.getElementById(id)?.value || '').split(/[\s,;]+/).map(v=>v.trim().toLowerCase()).filter(Boolean))];
+      return [...new Set((document.getElementById(id)?.value || '').split(/[\s,;]+/).map(v=>v.trim().toLowerCase()).filter(v=>/^[a-z0-9_-]+$/.test(v)))];
     }
 
     function promoRulesLabel(p){
       const parts = [];
-      if (p?.allowedSeatKeys?.length) parts.push(`только места: ${p.allowedSeatKeys.join(', ')}`);
-      if (p?.excludedSeatKeys?.length) parts.push(`кроме мест: ${p.excludedSeatKeys.join(', ')}`);
+      if (p?.allowedSeatKeys?.length) parts.push(`только места: ${p.allowedSeatKeys.map(esc).join(', ')}`);
+      if (p?.excludedSeatKeys?.length) parts.push(`кроме мест: ${p.excludedSeatKeys.map(esc).join(', ')}`);
       return parts.length ? ` · ${parts.join(' · ')}` : '';
     }
 
