@@ -2,7 +2,7 @@ import {  fbGet, fbPut, fbGetWithETag, fbConditionalPut  } from '../../shared/fi
 import {  setCors  } from '../../shared/cors.js';
 import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
 import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
-import { checkPromoSeatRules, promoSeatsFromQuery } from '../../shared/promoRules.js';
+import { checkPromoSeatRules, promoSeatsFromQuery, normalizePromoCode } from '../../shared/promoRules.js';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const MAX_SEATS_MUTATION = 10;
@@ -104,7 +104,7 @@ export default async (req, res) => {
 
     // ?type=promo — проверка промокода (Секрет)
     if (type === 'promo') {
-      const code = String(req.query?.code || '').trim().toUpperCase();
+      const code = normalizePromoCode(req.query?.code);
       if (!code) return res.status(400).json({ error: 'Missing code' });
       const promo = await fbGet(`ticket_promo/${code}`);
       if (!promo) return res.status(200).json(null);

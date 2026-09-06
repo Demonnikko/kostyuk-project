@@ -6,7 +6,7 @@
 import crypto from 'crypto';
 import https from 'https';
 import { RUSSIAN_CA_BUNDLE } from '../../shared/russianCaBundle.js';
-import { checkPromoSeatRules } from '../../shared/promoRules.js';
+import { checkPromoSeatRules, normalizePromoCode } from '../../shared/promoRules.js';
 
 // securepay.tinkoff.ru использует сертификат «Минцифры России», которого нет
 // в стандартном доверенном хранилище Node.js — без явного CA fetch() падает
@@ -771,7 +771,7 @@ export default async (req, res) => {
   // ── Расчёт цены на сервере (клиенту не доверяем) ──────────
   let promoData = null;
   if (promoCode) {
-    const code = String(promoCode).trim().toUpperCase();
+    const code = normalizePromoCode(promoCode);
     const promo = await fbGet(`ticket_promo/${code}`);
     const nowTs = Date.now();
     const notExpired = !promo?.expiresAt || nowTs <= promo.expiresAt;

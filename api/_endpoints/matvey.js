@@ -18,7 +18,7 @@ import { sendEmail, buildTicketEmailHtml } from '../../shared/email.js';
 import { renderTicketImage } from '../../shared/ticketImage.js';
 import { runMatveyAutoCleanup } from '../../shared/autoCleanup.js';
 import { isAdminAuthorized } from '../../shared/adminAuth.js';
-import { checkPromoSeatRules, promoSeatsFromQuery } from '../../shared/promoRules.js';
+import { checkPromoSeatRules, promoSeatsFromQuery, normalizePromoCode } from '../../shared/promoRules.js';
 
 const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -280,7 +280,7 @@ export default async (req, res) => {
     }
 
     if (getAction === 'get_promo') {
-      const pCode = String(req.query?.code || '').trim().toUpperCase();
+      const pCode = normalizePromoCode(req.query?.code);
       if (!/^[A-Z0-9_-]{2,24}$/.test(pCode)) return res.status(400).json({ error: 'Invalid promo code' });
       const promo = await fbGet(`matvey_promo/${pCode}`);
       const nowTs = Date.now();
@@ -523,7 +523,7 @@ export default async (req, res) => {
   let discountedTotal = total;
   let promoApplied = null;
   if (promoCode) {
-    const pCode = String(promoCode).trim().toUpperCase();
+    const pCode = normalizePromoCode(promoCode);
     const promo = /^[A-Z0-9_-]{2,24}$/.test(pCode) ? await fbGet(`matvey_promo/${pCode}`) : null;
     const nowTs = Date.now();
     const valid = Boolean(promo && promo.active === true

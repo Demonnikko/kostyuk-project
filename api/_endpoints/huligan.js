@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import https from 'https';
 import { RUSSIAN_CA_BUNDLE } from '../../shared/russianCaBundle.js';
-import { checkPromoSeatRules, promoSeatsFromQuery } from '../../shared/promoRules.js';
+import { checkPromoSeatRules, promoSeatsFromQuery, normalizePromoCode } from '../../shared/promoRules.js';
 
 // securepay.tinkoff.ru использует сертификат «Минцифры России», которого нет
 // в стандартном доверенном хранилище Node.js — без явного CA fetch() падает
@@ -888,7 +888,7 @@ export default async (req, res) => {
 
     // ── Get one promo by code ──
     if (action === 'get_promo') {
-      const code = String(body?.code || '').trim().toUpperCase();
+      const code = normalizePromoCode(body?.code);
       if (!code) return res.status(400).json({ error: 'Missing code' });
       const promo = await fbGet(`huligan_promo/${code}`);
       if (!promo) return res.status(200).json(null);
@@ -1552,7 +1552,7 @@ export default async (req, res) => {
       let serverFinalPrice = expectedPrice > 0 ? expectedPrice : Number(data.originalPrice);
       let promoApplied = null;
       if (data.promoCode) {
-        const pCode = String(data.promoCode).trim().toUpperCase();
+        const pCode = normalizePromoCode(data.promoCode);
         const promo = await fbGet(`huligan_promo/${pCode}`);
         const nowTs = Date.now();
         const notExpired = !promo?.expiresAt || nowTs <= Number(promo.expiresAt);

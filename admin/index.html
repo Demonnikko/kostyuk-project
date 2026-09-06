@@ -6170,7 +6170,11 @@
           notice.style.display = 'block';
           notice.innerHTML = `<b style="color:#3dbf6e">✓ Промокод ${esc(code)} создан и сохранён</b>
             <div style="color:var(--dim);margin:5px 0 8px">${esc(publicName)} · ${value}${type === 'percent' ? '%' : ' ₽'} скидка</div>
-            <div style="word-break:break-all;color:var(--gold)">${esc(link)}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin:8px 0;padding:10px 12px;background:rgba(214,172,69,.1);border:1px solid rgba(214,172,69,.35);border-radius:8px">
+              <span style="font-size:20px;font-weight:800;letter-spacing:2px;color:var(--gold);flex:1">${esc(code)}</span>
+              <button class="pl-preset" style="width:auto;padding:8px 16px;margin:0" onclick="copyPromoCode(${jsArg(code)})">📋 Копировать код</button>
+            </div>
+            <div style="word-break:break-all;color:var(--dim);font-size:12px">${esc(link)}</div>
             <button class="pl-preset" style="width:100%;margin-top:8px" onclick="copyPromoLink(${jsArg(link)})">Копировать рекламную ссылку</button>`;
         }
         toast(`🎫 ${code} создан и сохранён для «${publicName}»`);
@@ -6193,6 +6197,11 @@
     async function copyPromoLink(link){
       try { await navigator.clipboard.writeText(link); toast('Ссылка скопирована'); }
       catch (_) { window.prompt('Скопируйте ссылку', link); }
+    }
+
+    async function copyPromoCode(code){
+      try { await navigator.clipboard.writeText(code); toast('Промокод скопирован: ' + code); }
+      catch (_) { window.prompt('Скопируйте промокод', code); }
     }
 
     async function adLoadStats(){
@@ -6256,7 +6265,7 @@
             <b style="color:#f0e6d0">${showIcon[r.show]} ${esc(r.public)}</b>
             <span style="font-size:12px;color:${vcolor};font-weight:600">${verdict}</span>
           </div>
-          <div style="font-size:12px;color:var(--dim);margin-bottom:8px">Промокод: <b style="color:var(--gold)">${esc(r.code)}</b></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);margin-bottom:8px">Промокод: <b style="color:var(--gold);font-size:15px;letter-spacing:1px">${esc(r.code)}</b><button class="btn-sm" style="padding:3px 10px" onclick="copyPromoCode(${jsArg(r.code)})">📋 Копировать</button></div>
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:12px">
             <div><div style="color:var(--dim)">Переходы</div><b style="color:#f0e6d0">${r.clicks}</b></div>
             <div><div style="color:var(--dim)">Продано</div><b style="color:#f0e6d0">${r.tickets} бил.</b></div>
