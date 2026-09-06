@@ -1962,7 +1962,7 @@
       <div class="sidebar-footer">
         <button class="btn-logout" onclick="forceUpdateApp()" style="margin-bottom:8px;border-color:rgba(201,162,39,.4);color:var(--gold)">🔄 Обновить приложение</button>
         <button class="btn-logout" onclick="logout()">↩ Выйти</button>
-        <div id="adminVersionLabel" style="margin-top:10px;text-align:center;color:var(--dim);font-size:11px;letter-spacing:.08em">Версия админки v22</div>
+        <div id="adminVersionLabel" style="margin-top:10px;text-align:center;color:var(--dim);font-size:11px;letter-spacing:.08em">Версия админки v23</div>
       </div>
     </aside>
 
@@ -2362,6 +2362,20 @@
               <div class="form-group" style="margin-bottom:10px">
                 <label>Значение</label>
                 <input class="inp" id="adValue" type="number" value="10" placeholder="10">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label>Максимум использований</label>
+              <input class="inp" id="adUses" type="number" min="1" placeholder="Без ограничений">
+            </div>
+            <div class="pl-grid2">
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Только для этих мест</label>
+                <input class="inp" id="adAllowedSeats" placeholder="Например: t1_1, t1_2">
+              </div>
+              <div class="form-group" style="margin-bottom:10px">
+                <label>Не действует на места</label>
+                <input class="inp" id="adExcludedSeats" placeholder="Например: bar_1, bar_2">
               </div>
             </div>
             <button class="btn-save-settings" id="adCreatePromoBtn" onclick="adCreatePromo()">+ Создать промокод для паблика</button>
@@ -3215,6 +3229,10 @@
               <input class="inp" id="newPromoUntil" type="date">
             </div>
           </div>
+          <div class="promo-grid" style="margin-top:12px">
+            <div class="form-group" style="margin-bottom:0"><label>Только для этих мест</label><input class="inp" id="newPromoAllowedSeats" placeholder="Например: t1_1, t1_2"></div>
+            <div class="form-group" style="margin-bottom:0"><label>Не действует на места</label><input class="inp" id="newPromoExcludedSeats" placeholder="Например: bar_1, bar_2"></div>
+          </div>
           <button class="btn-save-settings" onclick="createPromo()">+ Создать промокод</button>
         </div>
         <div class="promo-list" id="promoList">
@@ -3496,6 +3514,10 @@
               <label>Действует до (необязательно)</label>
               <input class="inp" id="matNewPromoUntil" type="date">
             </div>
+          </div>
+          <div class="promo-grid" style="margin-top:12px">
+            <div class="form-group" style="margin-bottom:0"><label>Только для этих мест</label><input class="inp" id="matNewPromoAllowedSeats" placeholder="Например: t1_1, t1_2"></div>
+            <div class="form-group" style="margin-bottom:0"><label>Не действует на места</label><input class="inp" id="matNewPromoExcludedSeats" placeholder="Например: r1_1, r1_2"></div>
           </div>
           <button class="btn-save-settings" onclick="createMatveyPromo()">+ Создать промокод</button>
         </div>
@@ -3809,6 +3831,10 @@
               <label>Действует до (необязательно)</label>
               <input class="inp" id="hulNewPromoUntil" type="date">
             </div>
+          </div>
+          <div class="promo-grid" style="margin-top:12px">
+            <div class="form-group" style="margin-bottom:0"><label>Только для этих мест</label><input class="inp" id="hulNewPromoAllowedSeats" placeholder="Например: t1_1, t1_2"></div>
+            <div class="form-group" style="margin-bottom:0"><label>Не действует на места</label><input class="inp" id="hulNewPromoExcludedSeats" placeholder="Например: bar_1, bar_2"></div>
           </div>
           <button class="btn-save-settings" onclick="createHuliganPromo()">+ Создать промокод</button>
         </div>
@@ -5904,6 +5930,17 @@
       return `${location.origin}/concerts/${show}/?promo=${encodeURIComponent(code)}`;
     }
 
+    function promoSeatKeys(id){
+      return [...new Set((document.getElementById(id)?.value || '').split(/[\s,;]+/).map(v=>v.trim().toLowerCase()).filter(Boolean))];
+    }
+
+    function promoRulesLabel(p){
+      const parts = [];
+      if (p?.allowedSeatKeys?.length) parts.push(`только места: ${p.allowedSeatKeys.join(', ')}`);
+      if (p?.excludedSeatKeys?.length) parts.push(`кроме мест: ${p.excludedSeatKeys.join(', ')}`);
+      return parts.length ? ` · ${parts.join(' · ')}` : '';
+    }
+
     async function deletePromoFully(show, promoPath, code, reload){
       if (!confirm(`Удалить промокод «${code}» и всю его статистику? Это действие нельзя отменить.`)) return;
       try {
@@ -5951,10 +5988,13 @@
       const spent = Number(document.getElementById('adSpent').value) || 0;
       const type = document.getElementById('adType').value;
       const value = Number(document.getElementById('adValue').value) || 0;
+      const uses = Math.max(0, parseInt(document.getElementById('adUses').value, 10) || 0) || -1;
+      const allowedSeatKeys = promoSeatKeys('adAllowedSeats');
+      const excludedSeatKeys = promoSeatKeys('adExcludedSeats');
       if (!code) return toast('Введите промокод');
       if (!publicName) return toast('Введите название паблика');
       const data = {
-        type, value, usesLeft: -1, active: true,
+        type, value, usesLeft: uses, active: true, allowedSeatKeys, excludedSeatKeys,
         description: 'Реклама: ' + publicName,
         adPublic: publicName, adSpent: spent, createdAt: Date.now()
       };
@@ -6624,7 +6664,7 @@
       const desc = document.getElementById('hulNewPromoDesc').value.trim();
       const fromVal = document.getElementById('hulNewPromoFrom').value;
       const untilVal = document.getElementById('hulNewPromoUntil').value;
-      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
+      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now(), allowedSeatKeys: promoSeatKeys('hulNewPromoAllowedSeats'), excludedSeatKeys: promoSeatKeys('hulNewPromoExcludedSeats') };
       if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
       if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
       await fbPut(`huligan_promo/${code}`, promoData);
@@ -6665,7 +6705,7 @@
       <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
         <div style="flex:1">
           <div class="promo-code">${codeText}${statusBadge}</div>
-          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}${promoRulesLabel(p)}</div>
         </div>
         <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
                 onclick="toggleHuliganPromo(${codeArg},${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
@@ -7308,7 +7348,7 @@
       const desc = document.getElementById('newPromoDesc').value.trim();
       const fromVal = document.getElementById('newPromoFrom').value;
       const untilVal = document.getElementById('newPromoUntil').value;
-      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
+      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now(), allowedSeatKeys: promoSeatKeys('newPromoAllowedSeats'), excludedSeatKeys: promoSeatKeys('newPromoExcludedSeats') };
       if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
       if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
       await fbPut(`ticket_promo/${code}`, promoData);
@@ -7359,7 +7399,7 @@
       const desc = document.getElementById('matNewPromoDesc').value.trim();
       const fromVal = document.getElementById('matNewPromoFrom').value;
       const untilVal = document.getElementById('matNewPromoUntil').value;
-      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now() };
+      const promoData = { type, value, usesLeft: uses, active: true, description: desc, createdAt: Date.now(), allowedSeatKeys: promoSeatKeys('matNewPromoAllowedSeats'), excludedSeatKeys: promoSeatKeys('matNewPromoExcludedSeats') };
       if (fromVal) promoData.validFrom = new Date(fromVal + 'T00:00:00').getTime();
       if (untilVal) promoData.validUntil = new Date(untilVal + 'T23:59:59').getTime();
       await fbPut(`matvey_promo/${code}`, promoData);
@@ -7401,7 +7441,7 @@
       <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
         <div style="flex:1">
           <div class="promo-code">${codeText}${statusBadge}</div>
-          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}${promoRulesLabel(p)}</div>
         </div>
         <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
                 onclick="toggleMatveyPromo(${codeArg},${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>
@@ -7977,7 +8017,7 @@
       <div class="promo-item ${p.active && !expired ? '' : 'promo-inactive'}">
         <div style="flex:1">
           <div class="promo-code">${codeText}${statusBadge}</div>
-          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}</div>
+          <div class="promo-desc">${description} · ${safeUsesLabel} ист.${dateRange ? ' · ' + dateRange : ''}${promoRulesLabel(p)}</div>
         </div>
         <button class="btn-sm btn-sm-toggle ${p.active ? 'active' : ''}"
                 onclick="togglePromo(${codeArg},${!p.active})">${p.active ? 'Вкл' : 'Выкл'}</button>

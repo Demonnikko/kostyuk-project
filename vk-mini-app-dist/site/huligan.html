@@ -2160,7 +2160,8 @@
       status.textContent = 'Проверка...';
       var fetchId = Date.now();
       activePromoFetch = fetchId;
-      fetch('/api/seats?type=promo&code=' + encodeURIComponent(code))
+      var seatKeys = booking.selected.map(function(s){ return s.key; }).join(',');
+      fetch('/api/huligan?action=get_promo&code=' + encodeURIComponent(code) + '&seats=' + encodeURIComponent(seatKeys))
         .then(function(r) { return r.json(); })
         .then(function(res) {
           if (activePromoFetch !== fetchId) return;
@@ -2172,7 +2173,7 @@
           } else {
             booking.promo = null;
             status.style.color = '#e85348';
-            status.textContent = 'Неверный или истекший промокод';
+            status.textContent = res && res.restrictionReason ? 'Промокод не действует для выбранных мест' : 'Неверный или истекший промокод';
           }
           renderSummary();
         })

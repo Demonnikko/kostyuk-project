@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import https from 'https';
 import { RUSSIAN_CA_BUNDLE } from '../../shared/russianCaBundle.js';
+import { checkPromoSeatRules, promoSeatsFromQuery } from '../../shared/promoRules.js';
 
 // securepay.tinkoff.ru использует сертификат «Минцифры России», которого нет
 // в стандартном доверенном хранилище Node.js — без явного CA fetch() падает
@@ -896,7 +897,8 @@ export default async (req, res) => {
       const notTooEarly = !promo?.validFrom || nowTs >= Number(promo.validFrom);
       const notPastValidUntil = !promo?.validUntil || nowTs <= Number(promo.validUntil);
       const hasUses = promo?.usesLeft == null || Number(promo.usesLeft) === -1 || Number(promo.usesLeft) > 0;
-      const activeNow = !!promo.active && notExpired && notTooEarly && notPastValidUntil && hasUses;
+      const seatRule = checkPromoSeatRules(promo, promoSeatsFromQuery(req.query?.seats));
+      const activeNow = !!promo.active && notExpired && notTooEarly && notPastValidUntil && hasUses && seatRule.ok;
       return res.status(200).json({
         active: !!promo.active,
         activeNow,
@@ -906,7 +908,8 @@ export default async (req, res) => {
         expiresAt: promo.expiresAt || null,
         validFrom: promo.validFrom || null,
         validUntil: promo.validUntil || null,
-        description: promo.description || null
+        description: promo.description || null,
+        restrictionReason: seatRule.ok ? null : seatRule.reason
       });
     }
 
@@ -1556,7 +1559,8 @@ export default async (req, res) => {
         const notTooEarly = !promo?.validFrom || nowTs >= Number(promo.validFrom);
         const notPastValidUntil = !promo?.validUntil || nowTs <= Number(promo.validUntil);
         const hasUses = promo?.usesLeft == null || promo.usesLeft === -1 || promo.usesLeft > 0;
-        if (promo && promo.active === true && notExpired && notTooEarly && notPastValidUntil && hasUses) {
+        const seatsAllowed = checkPromoSeatRules(promo, seats).ok;
+        if (promo && promo.active === true && notExpired && notTooEarly && notPastValidUntil && hasUses && seatsAllowed) {
           if (promo.type === 'free') serverFinalPrice = 0;
           else if (promo.type === 'percent') serverFinalPrice = Math.round(serverFinalPrice * (1 - promo.value / 100));
           else if (promo.type === 'fixed') serverFinalPrice = Math.max(0, serverFinalPrice - promo.value);

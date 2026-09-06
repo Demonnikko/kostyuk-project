@@ -1685,10 +1685,11 @@
       if(!code)return;
       matveyPromoTimer=setTimeout(async function(){
         try{
-          var r=await fetch('/api/matvey?action=get_promo&code='+encodeURIComponent(code));
+          var seatKeys=booking.selected.map(function(s){return s.key;}).join(',');
+          var r=await fetch('/api/matvey?action=get_promo&code='+encodeURIComponent(code)+'&seats='+encodeURIComponent(seatKeys));
           var p=await r.json();
           if(r.ok&&p&&p.activeNow){ booking.promo={code:code,type:p.type,value:Number(p.value)||0}; status.textContent='Промокод применён'; status.style.color='#3dbf6e'; }
-          else { status.textContent='Промокод не действует'; status.style.color='#e85348'; }
+          else { status.textContent=p&&p.restrictionReason?'Промокод не действует для выбранных мест':'Промокод не действует'; status.style.color='#e85348'; }
         }catch(_){ status.textContent='Не удалось проверить промокод'; status.style.color='#e85348'; }
         renderSummary();
       },300);

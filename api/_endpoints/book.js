@@ -6,6 +6,7 @@
 import crypto from 'crypto';
 import https from 'https';
 import { RUSSIAN_CA_BUNDLE } from '../../shared/russianCaBundle.js';
+import { checkPromoSeatRules } from '../../shared/promoRules.js';
 
 // securepay.tinkoff.ru использует сертификат «Минцифры России», которого нет
 // в стандартном доверенном хранилище Node.js — без явного CA fetch() падает
@@ -776,7 +777,8 @@ export default async (req, res) => {
     const notExpired = !promo?.expiresAt || nowTs <= promo.expiresAt;
     const notTooEarly = !promo?.validFrom || nowTs >= promo.validFrom;
     const hasUses = promo?.usesLeft == null || promo.usesLeft === -1 || promo.usesLeft > 0;
-    if (promo && promo.active === true && notExpired && notTooEarly && hasUses) {
+    const seatsAllowed = checkPromoSeatRules(promo, seats).ok;
+    if (promo && promo.active === true && notExpired && notTooEarly && hasUses && seatsAllowed) {
       promoData = { code, type: promo.type, value: Number(promo.value || 0) };
     }
   }

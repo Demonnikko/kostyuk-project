@@ -18,6 +18,7 @@ import { sendEmail, buildTicketEmailHtml } from '../../shared/email.js';
 import { renderTicketImage } from '../../shared/ticketImage.js';
 import { runMatveyAutoCleanup } from '../../shared/autoCleanup.js';
 import { isAdminAuthorized } from '../../shared/adminAuth.js';
+import { checkPromoSeatRules, promoSeatsFromQuery } from '../../shared/promoRules.js';
 
 const TICKET_PUBLIC_ORIGIN = process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -283,16 +284,19 @@ export default async (req, res) => {
       if (!/^[A-Z0-9_-]{2,24}$/.test(pCode)) return res.status(400).json({ error: 'Invalid promo code' });
       const promo = await fbGet(`matvey_promo/${pCode}`);
       const nowTs = Date.now();
+      const seatRule = checkPromoSeatRules(promo, promoSeatsFromQuery(req.query?.seats));
       const activeNow = Boolean(promo && promo.active === true
         && (!promo.expiresAt || nowTs <= Number(promo.expiresAt))
         && (!promo.validFrom || nowTs >= Number(promo.validFrom))
         && (!promo.validUntil || nowTs <= Number(promo.validUntil))
-        && (promo.usesLeft == null || promo.usesLeft === -1 || Number(promo.usesLeft) > 0));
+        && (promo.usesLeft == null || promo.usesLeft === -1 || Number(promo.usesLeft) > 0)
+        && seatRule.ok);
       if (!promo) return res.status(404).json({ activeNow: false });
       return res.status(200).json({
         activeNow,
         type: activeNow ? String(promo.type || '') : '',
-        value: activeNow ? Number(promo.value || 0) : 0
+        value: activeNow ? Number(promo.value || 0) : 0,
+        restrictionReason: seatRule.ok ? null : seatRule.reason
       });
     }
 
@@ -526,13 +530,14 @@ export default async (req, res) => {
       && (!promo.expiresAt || nowTs <= Number(promo.expiresAt))
       && (!promo.validFrom || nowTs >= Number(promo.validFrom))
       && (!promo.validUntil || nowTs <= Number(promo.validUntil))
-      && (promo.usesLeft == null || promo.usesLeft === -1 || Number(promo.usesLeft) > 0));
+      && (promo.usesLeft == null || promo.usesLeft === -1 || Number(promo.usesLeft) > 0)
+      && checkPromoSeatRules(promo, seats).ok);
     if (valid) {
       const value = Number(promo.value || 0);
       if (promo.type === 'free') discountedTotal = 0;
       else if (promo.type === 'percent') discountedTotal = Math.round(total * (1 - value / 100));
       else if (promo.type === 'fixed') discountedTotal = Math.max(0, total - value);
-      promoApplied = pCode;
+      promoApplied = { code: pCode, usesLeft: promo.usesLeft };
     }
   }
 
@@ -541,7 +546,7 @@ export default async (req, res) => {
     const booking = {
       name: cleanName, phone: digits, email: cleanEmail,
       eventDate: String(eventDate || '').trim().slice(0, 100),
-      seats, total, discountedTotal, promoCode: promoApplied,
+      seats, total, discountedTotal, promoCode: promoApplied?.code || null,
       status: 'pending_payment', createdAt: now, clientKey, ticketLinkVersion: 1
     };
     await fbPut(`matvey_bookings/${bookingId}`, booking);
@@ -563,6 +568,13 @@ export default async (req, res) => {
       await Promise.all(reserved.map(k => fbPatch(`matvey_seats/${k}`, { bookingId: tempBookingId || null, status: tempBookingId ? 'reserved' : 'available' }).catch(() => {})));
       await fetch(`${FB_URL}/matvey_bookings/${bookingId}.json${FIREBASE_SECRET}`, { method: 'DELETE' }).catch(() => {});
       return res.status(409).json({ error: 'Seats already taken', seats: [conflictKey] });
+    }
+
+    if (promoApplied && promoApplied.usesLeft !== -1) {
+      const { data: currentPromo, etag } = await fbGetWithETag(`matvey_promo/${promoApplied.code}`);
+      if (currentPromo && Number(currentPromo.usesLeft) > 0 && etag) {
+        await fbConditionalPut(`matvey_promo/${promoApplied.code}`, { ...currentPromo, usesLeft: Number(currentPromo.usesLeft) - 1 }, etag);
+      }
     }
 
     return res.status(200).json({ ok: true, bookingId, clientKey, total, discountedTotal });

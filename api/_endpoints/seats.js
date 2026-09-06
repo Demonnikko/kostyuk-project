@@ -2,6 +2,7 @@ import {  fbGet, fbPut, fbGetWithETag, fbConditionalPut  } from '../../shared/fi
 import {  setCors  } from '../../shared/cors.js';
 import {  getTrustedTelegramUserId  } from '../../shared/tg.js';
 import {  runSecretAutoCleanup  } from '../../shared/autoCleanup.js';
+import { checkPromoSeatRules, promoSeatsFromQuery } from '../../shared/promoRules.js';
 const ALLOW_VK_USERID_FALLBACK = String(process.env.ALLOW_VK_USERID_FALLBACK || '').trim().toLowerCase() === 'true';
 const RESERVE_MS = Number(process.env.TEMP_RESERVE_MS || 10 * 60 * 1000);
 const MAX_SEATS_MUTATION = 10;
@@ -107,16 +108,25 @@ export default async (req, res) => {
       if (!code) return res.status(400).json({ error: 'Missing code' });
       const promo = await fbGet(`ticket_promo/${code}`);
       if (!promo) return res.status(200).json(null);
+      const nowTs = Date.now();
+      const seatRule = checkPromoSeatRules(promo, promoSeatsFromQuery(req.query?.seats));
+      const activeNow = Boolean(promo.active === true
+        && (!promo.expiresAt || nowTs <= Number(promo.expiresAt))
+        && (!promo.validFrom || nowTs >= Number(promo.validFrom))
+        && (!promo.validUntil || nowTs <= Number(promo.validUntil))
+        && (promo.usesLeft == null || promo.usesLeft === -1 || Number(promo.usesLeft) > 0)
+        && seatRule.ok);
       // Возвращаем только публичные поля, без служебных
       return res.status(200).json({
-        active: promo.active,
+        active: activeNow,
         type: promo.type,
         value: promo.value,
         usesLeft: promo.usesLeft,
         expiresAt: promo.expiresAt || null,
         validFrom: promo.validFrom || null,
         validUntil: promo.validUntil || null,
-        description: promo.description || null
+        description: promo.description || null,
+        restrictionReason: seatRule.ok ? null : seatRule.reason
       });
     }
 
