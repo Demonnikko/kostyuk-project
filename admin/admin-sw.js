@@ -1,6 +1,6 @@
 // Service worker админки — установка PWA + автообновление.
 // Версию бампаем при каждом значимом деплое, чтобы старый кэш чистился.
-const VERSION = 'kp-admin-v24';
+const VERSION = 'kp-admin-v25';
 const SHELL = ['./manifest.json', './admin-icon-192.png', './admin-icon-512.png'];
 
 self.addEventListener('install', (e) => {

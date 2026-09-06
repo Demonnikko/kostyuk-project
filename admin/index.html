@@ -839,6 +839,18 @@
       padding-top: 10px;
       border-top: 1px solid var(--border);
     }
+    /* Ручной ввод «точных мест» в промокодах скрыт: места подставляются
+       автоматически при выборе цветных зон (чекбоксы). Поля остаются в DOM
+       (их автозаполняет JS от чекбоксов), просто не показываются админу. */
+    .promo-exact-seats,
+    .form-group:has(> #newPromoAllowedSeats),
+    .form-group:has(> #newPromoExcludedSeats),
+    .form-group:has(> #matNewPromoAllowedSeats),
+    .form-group:has(> #matNewPromoExcludedSeats),
+    .form-group:has(> #hulNewPromoAllowedSeats),
+    .form-group:has(> #hulNewPromoExcludedSeats) {
+      display: none !important;
+    }
 
     .btn-sm {
       display: inline-flex;
