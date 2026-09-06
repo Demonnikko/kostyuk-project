@@ -115,6 +115,6 @@ test('browser and PWA admin expose the same visible release version', async () =
     read('admin/index.html'),
     read('admin/admin-sw.js')
   ]);
-  assert.match(admin, /id="adminVersionLabel"[\s\S]*?Версия админки v24/);
-  assert.match(serviceWorker, /const VERSION = 'kp-admin-v24'/);
+  assert.match(admin, /id="adminVersionLabel"[\s\S]*?Версия админки v25/);
+  assert.match(serviceWorker, /const VERSION = 'kp-admin-v25'/);
 });
